@@ -13,7 +13,12 @@ import { expandDecimals } from "lib/numbers";
 import { TxErrorType } from "sdk/utils/errors/transactionsErrors";
 import { GmxRelayError } from "sdk/utils/express";
 
-import { getDebugErrorMessage, getInsufficientBalanceToastBanner, getTxnErrorToast } from "./errorToasts";
+import {
+  getDebugErrorMessage,
+  getInsufficientBalanceToastBanner,
+  getInsufficientExecutionFeeToastContent,
+  getTxnErrorToast,
+} from "./errorToasts";
 import { InsufficientNativeTokenBalanceMessage, InsufficientSourceChainNativeTokenBalanceMessage } from "./gasErrors";
 
 const ACCOUNT = "0x1111111111111111111111111111111111111111";
@@ -380,5 +385,67 @@ describe("getTxnErrorToast relay failures", () => {
     if (hides) {
       expect(text).not.toContain(hides);
     }
+  });
+});
+
+describe("getInsufficientExecutionFeeToastContent", () => {
+  const renderToast = (p: {
+    minExecutionFee: bigint;
+    executionFee: bigint;
+    gasLimit: bigint | undefined;
+    executionFeeBufferBps: number;
+    expressOrdersEnabled: boolean;
+  }) =>
+    renderText(
+      getInsufficientExecutionFeeToastContent({
+        minExecutionFee: p.minExecutionFee,
+        executionFee: p.executionFee,
+        chainId: ARBITRUM,
+        executionFeeBufferBps: p.executionFeeBufferBps,
+        isExpress: false,
+        estimatedExecutionFee: p.gasLimit === undefined ? undefined : p.executionFee,
+        estimatedExecutionGasLimit: p.gasLimit,
+        txUrl: undefined,
+        errorMessage: undefined,
+        shouldOfferExpress: !p.expressOrdersEnabled,
+        expressOrdersEnabled: p.expressOrdersEnabled,
+        setIsSettingsVisible: vi.fn(),
+      })
+    )?.replace(/\s+/g, " ");
+
+  // reverted Arbitrum wallet transactions; the contract accepts the fee at the suggested buffer
+  it.each([
+    {
+      name: "Express on, the fee carries its extra 10%",
+      minExecutionFee: 542809832108922n,
+      executionFee: 322046945539200n,
+      gasLimit: 4126014n,
+      executionFeeBufferBps: 13000,
+      expressOrdersEnabled: true,
+      shows: "buffer to 402%",
+    },
+    {
+      name: "Express off",
+      minExecutionFee: 443001007262658n,
+      executionFee: 231509167336200n,
+      gasLimit: 4122417n,
+      executionFeeBufferBps: 3000,
+      expressOrdersEnabled: false,
+      shows: "buffer to 290%",
+    },
+  ])("suggests a buffer that covers the failed transaction: $name TRD-37", ({ shows, ...p }) => {
+    expect(renderToast(p)).toContain(shows);
+  });
+
+  it("shows no empty buffer value without the fee estimate TRD-37", () => {
+    const text = renderToast({
+      minExecutionFee: 542809832108922n,
+      executionFee: 322046945539200n,
+      gasLimit: undefined,
+      executionFeeBufferBps: 3000,
+      expressOrdersEnabled: true,
+    });
+
+    expect(text).toContain("Increase the max network fee buffer in settings");
   });
 });

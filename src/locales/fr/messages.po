@@ -13182,8 +13182,8 @@ msgid "No — the API, SDK, and docs are open to everyone. Joining the program a
 msgstr "Non — l'API, le SDK et la documentation sont ouverts à tous. Rejoindre le programme apporte en plus un support direct et de la distribution."
 
 #: src/components/Errors/errorToasts.tsx
-msgid "Increase the max network fee buffer to {0} in {settingsLink}"
-msgstr "Augmentez le tampon maximal des frais de réseau à {0} dans {settingsLink}"
+msgid "Increase the max network fee buffer {bufferText} in {settingsLink}"
+msgstr "Augmentez le tampon maximal des frais de réseau {bufferText} dans {settingsLink}"
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "GLP to GM airdrop"

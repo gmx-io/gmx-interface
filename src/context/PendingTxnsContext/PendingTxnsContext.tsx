@@ -167,7 +167,7 @@ function PendingTxnsPoller({
 }) {
   const { chainId } = useChainId();
   const { provider } = useJsonRpcProvider(chainId);
-  const { setIsSettingsVisible, executionFeeBufferBps } = useSettings();
+  const { setIsSettingsVisible, executionFeeBufferBps, expressOrdersEnabled } = useSettings();
   const latestPendingTxns = useLatest(pendingTxns);
   const isMounted = useMountedState();
   const isPolling = useRef(false);
@@ -222,7 +222,8 @@ function PendingTxnsPoller({
                   estimatedOrders: pendingTxn.data?.estimatedOrders,
                   txUrl,
                   errorMessage: errorData?.errorMessage,
-                  shouldOfferExpress: true,
+                  shouldOfferExpress: !expressOrdersEnabled,
+                  expressOrdersEnabled,
                   setIsSettingsVisible,
                 });
               } else {
@@ -278,6 +279,7 @@ function PendingTxnsPoller({
     chainId,
     setIsSettingsVisible,
     executionFeeBufferBps,
+    expressOrdersEnabled,
     isMounted,
     latestPendingTxns,
     setPendingTxns,
