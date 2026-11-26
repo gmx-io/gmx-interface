@@ -3,6 +3,7 @@ import { useLingui } from "@lingui/react";
 import { ReactNode, useCallback, useMemo } from "react";
 import { zeroAddress } from "viem";
 
+import { isSolanaNetwork } from "config/chains";
 import { AVALANCHE, SettlementChainId } from "config/chains";
 import { getNetworkFeatures } from "config/features";
 import { JUMPER_BRIDGE_URL } from "config/links";
@@ -169,6 +170,8 @@ export function useTradeboxButtonState({
   setToTokenInputValue,
   canSwitchGasPaymentToken,
 }: TradeboxButtonStateOptions): TradeboxButtonState {
+  const { networkId } = useChainId();
+  const isSolana = isSolanaNetwork(networkId);
   const chainId = useSelector(selectChainId);
   const { isClassicEnabled: isClassicTokenPermitsEnabled } = useTokenPermitsContext();
   const isExpressTransactionAvailable = useSelector(selectIsExpressTransactionAvailable);
@@ -230,6 +233,7 @@ export function useTradeboxButtonState({
 
   const approvalTokens = useMemo(() => {
     const list: { tokenAddress: string; amount: bigint | undefined }[] = [];
+    if (isSolana) return list;
 
     if (fromToken && payAmount !== undefined) {
       list.push({ tokenAddress: fromToken.address, amount: payAmount });
@@ -241,7 +245,7 @@ export function useTradeboxButtonState({
     }
 
     return list;
-  }, [fromToken, payAmount, expressParams]);
+  }, [isSolana, fromToken, payAmount, expressParams]);
 
   const permitBlockReason = getExpressTokenPermitBlockReason(expressParams);
 
@@ -260,7 +264,7 @@ export function useTradeboxButtonState({
     allowPermit: permitBlockReason === undefined || isClassicTokenPermitsEnabled,
     // a relayed order can't share the wallet's confirmation, so only Classic orders batch the approvals
     allowBatch: !isExpressTransactionAvailable,
-    skip: isFromTokenGmxAccount,
+    skip: isSolana || isFromTokenGmxAccount,
     metric: {
       flow: "trade",
       isExpress: Boolean(expressParams),
@@ -603,6 +607,7 @@ export function useTradeboxButtonState({
   }, [tokenChainDataArray, fromToken, srcChainId]);
 
   const onSubmit = useCallback(async (): Promise<boolean> => {
+    if (isSolana) return false;
     if (!account || !signer) {
       sendUserAnalyticsConnectWalletClickEvent("ActionButton");
       openConnectModal?.();
@@ -688,6 +693,7 @@ export function useTradeboxButtonState({
 
     return true;
   }, [
+    isSolana,
     account,
     approvalBatch,
     chainId,

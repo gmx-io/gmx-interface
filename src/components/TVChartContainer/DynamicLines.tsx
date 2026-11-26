@@ -13,6 +13,7 @@ import {
   selectOrderEditorSetTriggerPriceInputValue,
 } from "context/SyntheticsStateContext/selectors/orderEditorSelectors";
 import { useCalcSelector, useSelector } from "context/SyntheticsStateContext/utils";
+import { useSolanaOrderActions } from "domain/solana/solanaOrderActions";
 import { useSendCancelOrdersTxn } from "domain/synthetics/orders/useSendCancelOrdersTxn";
 import { helperToast } from "lib/helperToast";
 import { calculateDisplayDecimals, formatAmount, numberToBigint } from "lib/numbers";
@@ -36,6 +37,7 @@ export function DynamicLines({
   lines: Array<DynamicChartLine & { lineLength: number }>;
   bodyFontSizePt: number;
 }) {
+  const solanaOrderActions = useSolanaOrderActions();
   const [, setCancellingOrdersKeys] = useCancellingOrdersKeysState();
   const sendCancelOrdersTxn = useSendCancelOrdersTxn();
   const [isSubmitting] = useOrderEditorIsSubmittingState();
@@ -47,6 +49,19 @@ export function DynamicLines({
 
   const onCancelOrder = useCallback(
     async (key: string) => {
+      if (solanaOrderActions) {
+        const order = getByKey(ordersInfoData, key);
+        if (!order) return;
+
+        setCancellingOrdersKeys((prev) => [...prev, key]);
+        try {
+          await solanaOrderActions.cancelOrders([order]);
+        } finally {
+          setCancellingOrdersKeys((prev) => prev.filter((k) => k !== key));
+        }
+        return;
+      }
+
       if (hasOutdatedUi) {
         helperToast.error(getPageOutdatedError());
         return;
@@ -65,7 +80,7 @@ export function DynamicLines({
         setCancellingOrdersKeys((prev) => prev.filter((k) => k !== key));
       }
     },
-    [hasOutdatedUi, ordersInfoData, sendCancelOrdersTxn, setCancellingOrdersKeys]
+    [hasOutdatedUi, ordersInfoData, sendCancelOrdersTxn, setCancellingOrdersKeys, solanaOrderActions]
   );
 
   const calcSelector = useCalcSelector();

@@ -1,6 +1,7 @@
 import uniq from "lodash/uniq";
 import { useCallback, useMemo } from "react";
 
+import { useSolanaOrderActions } from "domain/solana/solanaOrderActions";
 import { useSendCancelOrdersTxn } from "domain/synthetics/orders/useSendCancelOrdersTxn";
 import { helperToast } from "lib/helperToast";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
@@ -30,6 +31,7 @@ export function useCancelOrder(order: OrderInfo) {
   const [cancellingOrdersKeys, setCancellingOrdersKeys] = useCancellingOrdersKeysState();
   const sendCancelOrdersTxn = useSendCancelOrdersTxn();
   const hasOutdatedUi = useHasOutdatedUi();
+  const solanaOrderActions = useSolanaOrderActions();
 
   const isCancelOrderProcessing = cancellingOrdersKeys.includes(order.key);
 
@@ -37,6 +39,16 @@ export function useCancelOrder(order: OrderInfo) {
     async function cancelOrder() {
       if (hasOutdatedUi) {
         helperToast.error(getPageOutdatedError());
+        return;
+      }
+
+      if (solanaOrderActions) {
+        setCancellingOrdersKeys((p) => uniq(p.concat(order.key)));
+        try {
+          await solanaOrderActions.cancelOrders([order]);
+        } finally {
+          setCancellingOrdersKeys((prev) => prev.filter((k) => k !== order.key));
+        }
         return;
       }
 
@@ -48,7 +60,7 @@ export function useCancelOrder(order: OrderInfo) {
         setCancellingOrdersKeys((prev) => prev.filter((k) => k !== order.key));
       }
     },
-    [hasOutdatedUi, order, sendCancelOrdersTxn, setCancellingOrdersKeys]
+    [hasOutdatedUi, order, sendCancelOrdersTxn, setCancellingOrdersKeys, solanaOrderActions]
   );
 
   return [isCancelOrderProcessing, onCancelOrder] as const;

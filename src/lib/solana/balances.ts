@@ -15,7 +15,7 @@ import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { fetchSolanaAccounts } from "./rpc";
 
 const ASSOCIATED_TOKEN_PROGRAM_ID = address("ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL");
-const TOKEN_ACCOUNT_SIZE = 165;
+export const TOKEN_ACCOUNT_SIZE = 165;
 const TOKEN_2022_ACCOUNT_TYPE = 2;
 
 const tokenAccountDecoder = getStructDecoder([

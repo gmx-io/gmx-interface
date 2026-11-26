@@ -5,23 +5,25 @@ import type { ApiPositionInfo } from "sdk/utils/positions/types";
 export type GmsolSlotted<T> = { data: T; slot: number | undefined };
 
 export function commitGmsolSnapshot<T>({
-  acceptedSlot,
+  requestedSlot,
+  floor,
   responseSlot,
   response,
 }: {
-  acceptedSlot: number | undefined;
+  requestedSlot: number | undefined;
+  floor: number | undefined;
   responseSlot: number | undefined;
   response: T;
-}): { slot: number; data: T } {
+}): { slot: number; data: T } | undefined {
   if (responseSlot === undefined) {
     throw new Error("Missing or invalid X-Solana-Slot response header");
   }
 
-  if (acceptedSlot !== undefined && responseSlot < acceptedSlot) {
-    throw new Error("Solana response slot is older than the accepted snapshot");
+  if (requestedSlot !== undefined && responseSlot < requestedSlot) {
+    throw new Error("Solana response slot is older than the requested context slot");
   }
 
-  return { slot: responseSlot, data: response };
+  return floor !== undefined && responseSlot < floor ? undefined : { slot: responseSlot, data: response };
 }
 
 async function readGmsolAccount<T>(

@@ -8,6 +8,7 @@ import { selectChainId, selectSrcChainId } from "context/SyntheticsStateContext/
 import {
   selectTradeboxAvailableTokensOptions,
   selectTradeboxFromToken,
+  selectTradeboxMarginPayTokens,
   selectTradeboxState,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -64,7 +65,8 @@ export function MarginField({
   const { tokenChainDataArray: multichainTokens } = useMultichainTradeTokensRequest(chainId, account);
 
   const availableTokenOptions = useSelector(selectTradeboxAvailableTokensOptions);
-  const { swapTokens, infoTokens, sortedLongAndShortTokens } = availableTokenOptions;
+  const { infoTokens, sortedLongAndShortTokens } = availableTokenOptions;
+  const payTokens = useSelector(selectTradeboxMarginPayTokens);
 
   const { fromTokenAddress, isFromTokenGmxAccount } = useSelector(selectTradeboxState);
 
@@ -146,7 +148,7 @@ export function MarginField({
                 onSelectToken={(token) => {
                   onSelectFromTokenAddress(token.address, false);
                 }}
-                tokens={swapTokens}
+                tokens={payTokens}
                 infoTokens={infoTokens}
                 showSymbolImage={true}
                 showTokenImgInDropdown={true}

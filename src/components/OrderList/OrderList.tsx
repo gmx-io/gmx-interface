@@ -14,6 +14,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectTradeboxAvailableTokensOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useSolanaOrderActions } from "domain/solana/solanaOrderActions";
 import {
   OrderInfo,
   PositionOrderInfo,
@@ -85,6 +86,7 @@ export function OrderList({
   const { isTablet: isContainerSmall } = useBreakpoints();
 
   const chainId = useSelector(selectChainId);
+  const solanaOrderActions = useSolanaOrderActions();
   const sendCancelOrdersTxn = useSendCancelOrdersTxn();
   const [cancellingOrdersKeys, setCancellingOrdersKeys] = useCancellingOrdersKeysState();
   const hasOutdatedUi = useHasOutdatedUi();
@@ -145,6 +147,17 @@ export function OrderList({
   }
 
   async function onCancelOrder(order: OrderInfo) {
+    if (solanaOrderActions) {
+      setCancellingOrdersKeys((prev) => [...prev, order.key]);
+      try {
+        await solanaOrderActions.cancelOrders([order]);
+      } finally {
+        setCancellingOrdersKeys((prev) => prev.filter((k) => k !== order.key));
+        setSelectedOrderKeys?.(EMPTY_ARRAY);
+      }
+      return;
+    }
+
     if (hasOutdatedUi) {
       helperToast.error(getPageOutdatedError());
       return;
