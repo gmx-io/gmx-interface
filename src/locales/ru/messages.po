@@ -457,6 +457,10 @@ msgstr "Куда"
 msgid "FAQ"
 msgstr "ЧаВО"
 
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+msgid "Order updated"
+msgstr ""
+
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 msgid "Approve {depositTokenSymbol}"
 msgstr "Одобрить {depositTokenSymbol}"
@@ -2381,7 +2385,7 @@ msgstr "Не поддерживается"
 msgid "Acceptable price for the order"
 msgstr "Допустимая цена для ордера"
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 msgid "TWAP Swap"
 msgstr "TWAP-обмен"
 
@@ -3002,7 +3006,7 @@ msgstr "Оптимизатор доходности на Avalanche"
 msgid "Withdrew {0} from {positionText}"
 msgstr "Выведено {0} из {positionText}"
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 msgid "{orderTypeText} {0} for {1}"
 msgstr "{orderTypeText} {0} на {1}"
 
@@ -3143,6 +3147,11 @@ msgstr "В рейтинг включаются только позиции с з
 msgid "A standard approval transaction is required to continue"
 msgstr "Для продолжения требуется стандартная транзакция одобрения"
 
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
+msgid "Not enough SOL for network fees, keeper fees and account rent"
+msgstr ""
+
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Decrease leverage to match the max allowed leverage."
 msgstr "Уменьшите кредитное плечо до максимально допустимого значения."
@@ -3220,6 +3229,11 @@ msgstr "от комиссии закрытия"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "FUNDING APR"
 msgstr "APR ФИНАНСИРОВАНИЯ"
+
+#: src/components/TradeBox/components/SideOrderEntry.tsx
+#: src/domain/gmsol/tradebox/tradeboxErrorMessages.ts
+msgid "Edit existing TP/SL orders in the positions list"
+msgstr ""
 
 #: src/components/Claims/filters/ActionFilter.tsx
 #: src/components/TradeHistory/filters/ActionFilter.tsx
@@ -3362,7 +3376,7 @@ msgstr "Создание изображения для публикации..."
 msgid "RANK"
 msgstr "РАНГ"
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 msgid "{txnTypeText} {0} order for"
 msgstr "{txnTypeText} ордер {0} для"
 
@@ -3693,7 +3707,7 @@ msgstr "Автоматически ребалансируемое хранили
 msgid "<0>There's no fixed cutoff — the desk sets your tier from your recent and expected monthly volume. Most traders qualify for the base tier; reach out and we'll confirm your rate.</0>"
 msgstr "<0>Фиксированного порога нет — деск определяет ваш уровень по недавнему и ожидаемому месячному объёму. Большинство трейдеров попадают в базовый уровень; свяжитесь с нами, и мы подтвердим вашу ставку.</0>"
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 msgid "Decreasing {indexTokenText} Short: -{sizeDeltaUsdText}"
 msgstr "Уменьшение шорт-позиции {indexTokenText}: -{sizeDeltaUsdText}"
 
@@ -3918,6 +3932,7 @@ msgid "<0>Deposit</0> or <1>buy</1> {wrappedNativeTokenSymbol}."
 msgstr "<0>Внести</0> или <1>купить</1> {wrappedNativeTokenSymbol}."
 
 #: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
 msgid "This order cannot be changed on Solana"
 msgstr ""
 
@@ -3926,8 +3941,8 @@ msgid "Converting {offerAmount} to {0}"
 msgstr "Конвертация {offerAmount} в {0}"
 
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
-#: src/components/StatusNotification/OrderStatusNotification.tsx
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 #: src/pages/Announcements/AnnouncementCard.tsx
 msgid "Update"
@@ -3949,7 +3964,7 @@ msgstr "Токен GMX служит governance-токеном протокола
 msgid "Max lendable impact USD"
 msgstr "Макс. сумма заимствования из пула влияния (USD)"
 
-#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
 msgid "Previous order request"
 msgstr ""
 
@@ -4630,7 +4645,7 @@ msgstr "Ваш перевод завершён"
 msgid "27% of protocol fees are accumulating in the Treasury and will be distributed proportionally to staking power when GMX reaches $90."
 msgstr "27% комиссий протокола накапливаются в Казначействе и будут распределены пропорционально силе стейкинга, когда цена GMX достигнет $90."
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 msgid "Depositing {amountText} to {indexTokenText} Long..."
 msgstr "Внесение {amountText} в лонг-позицию {indexTokenText}..."
 
@@ -4641,6 +4656,10 @@ msgstr "Остановить вестинг и вывести"
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Position not found. It may have been closed."
 msgstr "Позиция не найдена. Возможно, она была закрыта."
+
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+msgid "Canceled by you"
+msgstr ""
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Trade confirmations"
@@ -4780,6 +4799,10 @@ msgstr "Ошибка части TWAP Swap"
 msgid "No events in the past {DAYS_BACK} days"
 msgstr "За последние {DAYS_BACK} дней событий не было"
 
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+msgid "The transaction expired before it landed. Nothing was executed."
+msgstr ""
+
 #: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
 msgid "Ready to withdraw"
 msgstr "Готово к выводу"
@@ -4811,6 +4834,7 @@ msgid "Net price impact / fees"
 msgstr "Чистое влияние на цену / комиссии"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
 #: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
 msgid "Order canceled"
 msgstr "Ордер отменён"
@@ -5397,7 +5421,7 @@ msgstr "Застейканные токены, зарезервированны�
 msgid "Max 5 auto-cancel TP/SL orders allowed. Extra orders require manual cancellation. Existing orders still close with the position. <0>Read more</0>."
 msgstr "Допускается максимум 5 автоотменяемых ордеров TP/SL. Дополнительные ордера требуют ручной отмены. Существующие ордера по-прежнему закрываются вместе с позицией. <0>Подробнее</0>."
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 msgid "Withdrawing {amountText} from {indexTokenText} Short..."
 msgstr "Вывод {amountText} из шорта {indexTokenText}..."
 
@@ -5671,7 +5695,7 @@ msgstr "Положительный коэффициент"
 #: src/components/OrdersModal/PendingTPSLOrder.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/PositionItem/PositionItemOrders.tsx
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Full position close"
 msgstr "Полное закрытие позиции"
@@ -6413,6 +6437,10 @@ msgstr "Загрузка…"
 msgid "Funds will appear in your GMX Account soon"
 msgstr "Средства скоро поступят на ваш GMX Account"
 
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
+msgid "Not sent: {title}. {reason}"
+msgstr ""
+
 #: src/components/InterviewToast/InterviewToast.tsx
 msgid "Join an anonymous one-on-one chat to share your GMX liquidity provider experience"
 msgstr "Присоединяйтесь к анонимному индивидуальному чату, чтобы поделиться своим опытом поставщика ликвидности GMX"
@@ -6746,8 +6774,8 @@ msgstr "Вывод не найден. Возможно, он был исполн
 #: src/components/PositionShare/PositionShareCard.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
-#: src/components/StatusNotification/OrderStatusNotification.tsx
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -6839,6 +6867,10 @@ msgstr "Макс. фактор влияния, доступного для за�
 msgid "Claim completed"
 msgstr "Получение завершено"
 
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+msgid "Your accounts are prepared and any wrapped SOL is now WSOL in your wallet. Submit again to place the order."
+msgstr ""
+
 #: src/components/GmAssetDropdown/GmAssetDropdown.tsx
 msgid "Open in explorer"
 msgstr "Открыть в обозревателе"
@@ -6894,7 +6926,7 @@ msgstr "PnL после всех комиссий"
 msgid "Build on GMX. Get paid on every trade."
 msgstr "Стройте на GMX. Зарабатывайте на каждой сделке."
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 msgid "Increasing {indexTokenText} Long: +{sizeDeltaUsdText}"
 msgstr "Увеличение лонга по {indexTokenText}: +{sizeDeltaUsdText}"
 
@@ -8181,7 +8213,7 @@ msgstr "Получено: {0}"
 msgid "Receive at least {toAmountText} if executed. Price updates based on fees and price impact."
 msgstr "При исполнении вы получите не менее {toAmountText}. Цена обновляется с учётом комиссий и влияния на цену."
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 msgid "Increasing {indexTokenText} Short: +{sizeDeltaUsdText}"
 msgstr "Увеличение шорта {indexTokenText}: +{sizeDeltaUsdText}"
 
@@ -8512,7 +8544,7 @@ msgstr "Кошелёк отключён. Подключитесь заново �
 msgid "Connect wallet or add an address to the URL"
 msgstr "Подключите кошелёк или добавьте адрес в URL"
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 msgid "Withdrawing {amountText} from {indexTokenText} Long..."
 msgstr "Вывод {amountText} из лонга {indexTokenText}..."
 
@@ -8592,7 +8624,6 @@ msgstr "Изменить маржу"
 msgid "TP/SL orders exceed the position"
 msgstr "Ордера TP/SL превышают позицию"
 
-#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
 #: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
 msgid "Create TP/SL order"
 msgstr ""
@@ -8775,11 +8806,6 @@ msgstr "Переключитесь на аккаунт {receiver}, чтобы з
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Disable validation for testing"
 msgstr "Отключить валидацию для тестирования"
-
-#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
-#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
-msgid "Update order"
-msgstr ""
 
 #: src/pages/Dashboard/GmCard.tsx
 #: src/pages/Dashboard/GmxCard.tsx
@@ -9268,8 +9294,8 @@ msgstr "Оставляйте себе больше с каждой сделки"
 #: src/components/HistoryExport/HistoryExportModal.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
-#: src/components/StatusNotification/OrderStatusNotification.tsx
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Cancel"
 msgstr "Отменить"
@@ -10230,8 +10256,8 @@ msgstr "Больше информации"
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
-#: src/components/StatusNotification/OrderStatusNotification.tsx
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Create"
 msgstr "Создать"
@@ -10431,7 +10457,7 @@ msgstr "<0>Кросс-маржа</0><1>Кросс-обеспечение</1>"
 msgid "Fetching swap route ({0}/{1})..."
 msgstr "Получение маршрута обмена ({0}/{1})..."
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 msgid "Depositing {amountText} to {indexTokenText} Short..."
 msgstr "Внесение {amountText} в маржу шорт-позиции {indexTokenText}..."
 
@@ -10943,7 +10969,6 @@ msgid "You"
 msgstr "Вы"
 
 #: src/components/TVChartContainer/StaticLine.tsx
-#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
 msgid "Close position"
 msgstr "Закрыть позицию"
 
@@ -11892,8 +11917,8 @@ msgstr "Ордер не может быть обновлён. Данный ти�
 #: src/components/PositionShare/PositionShareCard.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
-#: src/components/StatusNotification/OrderStatusNotification.tsx
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -12079,10 +12104,6 @@ msgstr "Застейкать {tokenSymbol}"
 msgid "Link copied to clipboard"
 msgstr "Ссылка скопирована в буфер обмена"
 
-#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
-msgid "Order request"
-msgstr ""
-
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "{nativeTokenSymbol} APR"
 msgstr "{nativeTokenSymbol} APR"
@@ -12171,7 +12192,7 @@ msgstr "Получено в {0}"
 msgid "Allow all tokens to transfer to the new account"
 msgstr "Разрешить перевод всех токенов на новый аккаунт"
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 msgid "{orderTypeText} {visualMultiplierPrefix}{0} {longShortText}: {sizeText}"
 msgstr "{orderTypeText} {visualMultiplierPrefix}{0} {longShortText}: {sizeText}"
 
@@ -12546,7 +12567,7 @@ msgstr "Недействительный адрес получателя"
 msgid "Nonce:"
 msgstr "Nonce:"
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 msgid "{txnTypeText} margin deposit: {amountText} to {indexTokenText} {longShortText}"
 msgstr "{txnTypeText} депозит маржи: {amountText} в {indexTokenText} {longShortText}"
 
@@ -12986,8 +13007,6 @@ msgid "Transfer history"
 msgstr "История переводов"
 
 #: src/components/TVChartContainer/DynamicLine.tsx
-#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
-#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
 msgid "Cancel order"
 msgstr "Отменить ордер"
 
@@ -13196,7 +13215,7 @@ msgstr "Допустимое влияние на цену"
 msgid "Default sorting"
 msgstr "Сортировка по умолчанию"
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 msgid "Decreasing {indexTokenText} Long: -{sizeDeltaUsdText}"
 msgstr "Уменьшение лонга {indexTokenText}: -{sizeDeltaUsdText}"
 
@@ -13283,7 +13302,7 @@ msgstr "Установлено высокое допустимое влияни�
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ModeTabs.tsx
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 #: src/components/SwapCard/SwapCard.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
@@ -13407,7 +13426,7 @@ msgstr "Введите новый размер или цену"
 msgid "Copy your wallet address or scan a QR code"
 msgstr "Скопируйте адрес кошелька или отсканируйте QR-код"
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 #: src/components/TVChartContainer/constants.ts
 msgid "Unknown order"
 msgstr "Неизвестный ордер"
@@ -13655,7 +13674,7 @@ msgstr "Программа для трейдеров и аффилиатов"
 msgid "Explore the VIP Desk"
 msgstr "Узнать о VIP Desk"
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Swap"
 msgstr "Limit Swap"
@@ -13785,6 +13804,7 @@ msgstr "Установить стоп-лосс для шорта @ {formattedPri
 
 #: src/components/Errors/errorToasts.tsx
 #: src/components/Errors/errorToasts.tsx
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
 #: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
 msgid "Transaction canceled"
 msgstr "Транзакция отменена"
@@ -14083,6 +14103,10 @@ msgstr "Поделиться в"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Derivatives portfolio tracker"
 msgstr "Трекер портфеля деривативов"
+
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+msgid "The order could not be executed"
+msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Execution price didn't meet acceptable price. Order will fill when the condition is met."

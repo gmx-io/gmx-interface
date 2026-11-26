@@ -22,5 +22,7 @@ export function getGmsolTradeboxErrorMessage(code: GmsolTradeboxErrorCode) {
       return t`This collateral token is not supported for trading yet`;
     case "tpsl":
       return t`Review your TP/SL orders`;
+    case "tpslEdit":
+      return t`Edit existing TP/SL orders in the positions list`;
   }
 }

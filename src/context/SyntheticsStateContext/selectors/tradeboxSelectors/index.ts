@@ -9,6 +9,7 @@ import {
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { createSelector } from "context/SyntheticsStateContext/utils";
+import { getIsSolanaCollateralToken } from "domain/solana/solanaReceiveTokens";
 import { resolveGasPaymentTokenAddress } from "domain/synthetics/express/gasPaymentTokenFallback";
 import type { ExternalSwapBlockReason } from "domain/synthetics/externalSwaps/types";
 import {
@@ -559,6 +560,19 @@ export const selectTradeboxSwapTokens = createSelector((q) => {
   }
 
   return sourceTokens.filter((token) => !token.isNative && !token.isWrapped);
+});
+
+// A gmsol increase takes no swap yet, so its Pay list holds only what the order builder accepts.
+export const selectTradeboxMarginPayTokens = createSelector((q) => {
+  const { swapTokens } = q(selectTradeboxAvailableTokensOptions);
+
+  if (q(selectTradeboxMarketInfo)?.tradeMath !== "gmsol") {
+    return swapTokens;
+  }
+
+  const collateralToken = q(selectTradeboxCollateralToken);
+
+  return collateralToken ? swapTokens.filter((token) => getIsSolanaCollateralToken(token, collateralToken)) : [];
 });
 
 export const selectTradeboxFromTokenInputValue = (s: SyntheticsState) => s.tradebox.fromTokenInputValue;

@@ -221,6 +221,17 @@ it("validates pinned WASM create, update and cancel transactions for both sides 
         await expect(validateGmsolTransactionPlan(edited)).resolves.toBeDefined();
       }
     }
+  // A swap escrows only its input and output tokens, and a cancel carries no order kind.
+  const { kind: _kind, ...accounts } = orderContext("LimitIncrease", false, other);
+  const swap = { ...accounts, finalOutputToken: market.shortTokenAddress, longToken: undefined, shortToken: undefined };
+  const cancelled = await buildGmsolOrderTransactions({
+    owner,
+    action: { type: "cancel", order: swap },
+    ...lifetime,
+    lookupTables,
+    sdk,
+  });
+  await expect(validateGmsolTransactionPlan(cancelled)).resolves.toBeDefined();
 });
 it("validates native SOL wrapping without allowing arbitrary token operations FESOL-56", async () => {
   const native = {
@@ -308,6 +319,7 @@ it("prepares wallet accounts before an indivisible increase with TP/SL", async (
     expect(signedOrderCounts).toEqual(postBalance < ordersReserve ? [] : [0]);
   }
 });
+// The TradeBox's shape: a native increase that refunds as SOL, then SL before TP, which is not kind id order.
 async function nativeAtomicFixture() {
   const tables = await frozenTables(solMarket);
   const action = {
@@ -318,10 +330,11 @@ async function nativeAtomicFixture() {
         ...order("MarketIncrease", true, solMarket),
         payToken: solMarket.longTokenAddress,
         payWithNativeSol: true,
+        unwrapNative: true,
         collateralDeltaAmount: 5_000_000n,
       },
-      order("LimitDecrease", true, solMarket),
       order("StopLossDecrease", true, solMarket),
+      order("LimitDecrease", true, solMarket),
     ],
   };
   return { tables, action };
@@ -360,13 +373,22 @@ it("wraps only the wallet WSOL shortfall before an indivisible native increase w
       { keeperLamports: 300000n, wrapLamports: shortfall },
       { keeperLamports: 900000n, wrapLamports: 0n },
     ]);
-    const increase = orders.find((ix) => ix.programAddress === GMSOL_STORE_PROGRAM_ID)!;
-    const decoded = decodeGmsolInstruction(
-      copySolanaBytes(increase.data!),
-      [...increase.accounts!].map((account) => account.address)
-    );
-    decoded.reader.read(32);
-    expect([decoded.name, readCreateOrderParams(decoded.reader).amount]).toEqual(["create_order_v2", 5_000_000n]);
+    const created = orders
+      .filter((ix) => gmsolName(ix) === "create_order_v2")
+      .map((ix) => {
+        const decoded = decodeGmsolInstruction(
+          copySolanaBytes(ix.data!),
+          [...ix.accounts!].map((a) => a.address)
+        );
+        decoded.reader.read(32);
+        const { kind, amount, unwrapNative } = readCreateOrderParams(decoded.reader);
+        return [kind, amount, unwrapNative];
+      });
+    expect(created).toEqual([
+      [3n, 5_000_000n, true],
+      [8n, 0n, false],
+      [7n, 0n, false],
+    ]);
     // A plan built before an earlier wrap confirmed cannot wrap again.
     if (shortfall > 0n) {
       await expect(validateGmsolTransactionPlan({ ...plan, wrappedSolBalance: wrapped + shortfall })).rejects.toThrow(

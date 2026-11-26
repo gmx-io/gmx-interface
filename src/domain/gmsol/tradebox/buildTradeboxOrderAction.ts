@@ -1,6 +1,7 @@
 import { GMSOL_MARKETS } from "config/gmsol/markets";
 import { SOLANA_TOKEN_PROGRAM_ID } from "config/gmsol/program";
 import { GMSOL_TOKENS } from "config/gmsol/tokens";
+import { getIsSolanaCollateralToken } from "domain/solana/solanaReceiveTokens";
 import type { SidecarOrderEntry } from "domain/synthetics/sidecarOrders/types";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import type { MarketInfo } from "sdk/utils/markets/types";
@@ -20,7 +21,8 @@ export type GmsolTradeboxErrorCode =
   | "receive"
   | "acceptablePrice"
   | "tokenProgram"
-  | "tpsl";
+  | "tpsl"
+  | "tpslEdit";
 
 export class GmsolTradeboxError extends Error {
   constructor(readonly code: GmsolTradeboxErrorCode) {
@@ -60,7 +62,7 @@ export function buildGmsolTradeboxOrderAction({
   const payWithNativeSol = fromToken.isNative === true && fromToken.address === NATIVE_TOKEN_ADDRESS;
   const payToken = payWithNativeSol ? fromToken.wrappedAddress : fromToken.address;
   if (
-    payToken !== collateralToken.address ||
+    !getIsSolanaCollateralToken(fromToken, collateralToken) ||
     amounts.swapStrategy.type !== "noSwap" ||
     (collateralToken.address !== market.longTokenAddress && collateralToken.address !== market.shortTokenAddress)
   )
@@ -92,39 +94,39 @@ export function buildGmsolTradeboxOrderAction({
     payWithNativeSol,
     receiveToken: undefined,
     swapPath: [],
-    unwrapNative: false,
+    // gmsol refunds a cancelled order's escrowed WSOL as native SOL only with this flag.
+    unwrapNative: payWithNativeSol,
     validFromTs: undefined,
     decreaseSwapType: undefined,
   };
-  const triggers = sidecarEntries
-    .filter((entry) => entry.txnType !== null)
-    .map((entry): GmsolCreateOrder => {
-      const decrease = entry.decreaseAmounts;
-      if (
-        entry.txnType !== "create" ||
-        !decrease ||
-        entry.price.error ||
-        entry.sizeUsd.error ||
-        entry.percentage.error ||
-        (decrease.triggerOrderType !== OrderType.LimitDecrease &&
-          decrease.triggerOrderType !== OrderType.StopLossDecrease) ||
-        decrease.sizeDeltaUsd <= 0n ||
-        decrease.sizeDeltaUsd > (existingPositionSizeUsd ?? 0n) + primary.sizeDeltaUsd
-      )
-        throw new GmsolTradeboxError("tpsl");
-      return {
-        ...primary,
-        kind: decrease.triggerOrderType === OrderType.LimitDecrease ? "LimitDecrease" : "StopLossDecrease",
-        sizeDeltaUsd: decrease.sizeDeltaUsd,
-        collateralDeltaAmount: decrease.collateralDeltaAmount,
-        minOutput: 0n,
-        triggerPrice: decrease.triggerPrice,
-        acceptablePrice: decrease.acceptablePrice,
-        decreaseSwapType: getGmsolDecreaseSwapType(decrease.decreaseSwapType),
-        payToken: undefined,
-        payWithNativeSol: false,
-      };
-    });
+  const triggers = getGmsolTradeboxTriggerEntries(sidecarEntries).map((entry): GmsolCreateOrder => {
+    if (entry.txnType !== "create") throw new GmsolTradeboxError("tpslEdit");
+    const decrease = entry.decreaseAmounts;
+    if (
+      !decrease ||
+      entry.price.error ||
+      entry.sizeUsd.error ||
+      entry.percentage.error ||
+      (decrease.triggerOrderType !== OrderType.LimitDecrease &&
+        decrease.triggerOrderType !== OrderType.StopLossDecrease) ||
+      decrease.sizeDeltaUsd <= 0n ||
+      decrease.sizeDeltaUsd > (existingPositionSizeUsd ?? 0n) + primary.sizeDeltaUsd
+    )
+      throw new GmsolTradeboxError("tpsl");
+    return {
+      ...primary,
+      kind: decrease.triggerOrderType === OrderType.LimitDecrease ? "LimitDecrease" : "StopLossDecrease",
+      sizeDeltaUsd: decrease.sizeDeltaUsd,
+      collateralDeltaAmount: decrease.collateralDeltaAmount,
+      minOutput: 0n,
+      triggerPrice: decrease.triggerPrice,
+      acceptablePrice: decrease.acceptablePrice,
+      decreaseSwapType: getGmsolDecreaseSwapType(decrease.decreaseSwapType),
+      payToken: undefined,
+      payWithNativeSol: false,
+      unwrapNative: false,
+    };
+  });
   if (
     triggers.length > 2 ||
     new Set(triggers.map((order) => order.kind)).size !== triggers.length ||
@@ -132,6 +134,13 @@ export function buildGmsolTradeboxOrderAction({
   )
     throw new GmsolTradeboxError("tpsl");
   return { type: "create", orders: [primary, ...triggers], atomic: triggers.length > 0, existingPositionSizeUsd };
+}
+
+/** Rows that reach the order: a new row the user cleared has no price and is left out, as on EVM. */
+export function getGmsolTradeboxTriggerEntries(entries: readonly SidecarOrderEntry[]) {
+  return entries.filter(
+    (entry) => entry.txnType !== null && !(entry.txnType === "create" && entry.price.value === null)
+  );
 }
 
 /** The shared TP/SL tab creates a trigger against the selected existing position. */

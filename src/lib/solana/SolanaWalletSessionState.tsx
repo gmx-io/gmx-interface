@@ -8,6 +8,7 @@ import type {
   SolanaWalletSessionContextValue,
 } from "lib/wallets/solanaWalletSession";
 
+import { publishSolanaWalletSession } from "./activeSession";
 import SolanaWalletSessionSync from "./SolanaWalletSessionSync";
 
 // Wallets that never restore (no prior authorization), or a Privy that never reports ready, must not leave
@@ -73,8 +74,11 @@ export default function SolanaWalletSessionState({
   );
 
   useEffect(() => {
+    publishSolanaWalletSession(session);
     onChange(session);
   }, [onChange, session]);
+
+  useEffect(() => () => publishSolanaWalletSession(undefined), []);
 
   return <SolanaWalletSessionSync walletId={walletId} onChange={handleWallets} />;
 }

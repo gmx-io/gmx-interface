@@ -110,13 +110,19 @@ describe("shared Solana order intent", () => {
       { tradeMode: TradeMode.StopMarket },
       { fromToken: { ...collateralToken, address: "different-pay-token" } },
       { amounts: { ...amounts, swapStrategy: { type: "internalSwap" } } },
-      { sidecarEntries: [{ ...entry, txnType: "update" }] },
       { sidecarEntries: [entry, entry] },
       { sidecarEntries: [sized(101n * usd)] },
       { existingPositionSizeUsd: 1_000n * usd, sidecarEntries: [sized(1_101n * usd)] },
       { tradeMode: TradeMode.Limit, sidecarEntries: [entry] },
+      { sidecarEntries: [{ ...entry, price: { value: 2_100n * usd, error: null }, decreaseAmounts: undefined }] },
     ])
       expect(() => buildGmsolTradeboxOrderAction({ ...input, ...patch } as typeof input)).toThrow(GmsolTradeboxError);
+    const edited = { ...input, sidecarEntries: [{ ...entry, txnType: "update" }] as SidecarOrderEntry[] };
+    expect(() => buildGmsolTradeboxOrderAction(edited)).toThrow(expect.objectContaining({ code: "tpslEdit" }));
+    const cleared = { ...entry, price: { value: null, error: null }, decreaseAmounts: undefined } as SidecarOrderEntry;
+    expect(buildGmsolTradeboxOrderAction({ ...input, sidecarEntries: [cleared, entry] })).toMatchObject({
+      orders: [{ kind: "MarketIncrease" }, { kind: "LimitDecrease" }],
+    });
     const increased = { ...input, existingPositionSizeUsd: 1_000n * usd, sidecarEntries: [sized(1_100n * usd)] };
     expect(buildGmsolTradeboxOrderAction(increased)).toMatchObject({
       atomic: true,
@@ -135,8 +141,10 @@ describe("shared Solana order intent", () => {
       marketInfo: { ...marketInfo, ...solMarket },
       collateralToken: wsol,
       fromToken: native,
+      sidecarEntries: [entry],
     });
     if (result.type !== "create") throw new Error("Expected create");
-    expect(result.orders[0]).toMatchObject({ payWithNativeSol: true, payToken: wsol.address });
+    expect(result.orders[0]).toMatchObject({ payWithNativeSol: true, payToken: wsol.address, unwrapNative: true });
+    expect(result.orders[1]).toMatchObject({ payWithNativeSol: false, payToken: undefined, unwrapNative: false });
   });
 });

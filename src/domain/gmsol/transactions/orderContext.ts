@@ -1,9 +1,10 @@
 import { OrderType, type ApiOrderInfo, type OrderInfo } from "sdk/utils/orders/types";
 
-import type { GmsolOrderContext, GmsolPositionOrderKind } from "./types";
+import type { GmsolOrderAccounts, GmsolOrderContext, GmsolPositionOrderKind } from "./types";
 import { requireGmsol } from "./validateTransaction";
 
-export function getGmsolOrderContext(order: ApiOrderInfo | OrderInfo): GmsolOrderContext {
+// A cancel closes the order account whatever its kind, a swap included.
+export function getGmsolOrderAccounts(order: ApiOrderInfo | OrderInfo): GmsolOrderAccounts {
   const metadata = "solana" in order ? order.solana : "orderAccount" in order ? order : undefined;
   requireGmsol(
     metadata?.orderAccount && metadata.rentReceiver && metadata.escrowTokens,
@@ -15,17 +16,7 @@ export function getGmsolOrderContext(order: ApiOrderInfo | OrderInfo): GmsolOrde
     metadata.callback === undefined,
     "Callback orders are not supported by the pinned transaction validator"
   );
-  const kinds: Partial<Record<number, GmsolPositionOrderKind>> = {
-    [OrderType.MarketIncrease]: "MarketIncrease",
-    [OrderType.LimitIncrease]: "LimitIncrease",
-    [OrderType.MarketDecrease]: "MarketDecrease",
-    [OrderType.LimitDecrease]: "LimitDecrease",
-    [OrderType.StopLossDecrease]: "StopLossDecrease",
-  };
-  const kind = kinds[order.orderType];
-  requireGmsol(kind, "Unsupported Solana order kind");
   return {
-    kind,
     isLong: order.isLong,
     address: metadata.orderAccount,
     marketToken: order.marketAddress,
@@ -40,4 +31,18 @@ export function getGmsolOrderContext(order: ApiOrderInfo | OrderInfo): GmsolOrde
     unwrapNative: order.shouldUnwrapNativeToken,
     callback: undefined,
   };
+}
+
+export function getGmsolOrderContext(order: ApiOrderInfo | OrderInfo): GmsolOrderContext {
+  const accounts = getGmsolOrderAccounts(order);
+  const kinds: Partial<Record<number, GmsolPositionOrderKind>> = {
+    [OrderType.MarketIncrease]: "MarketIncrease",
+    [OrderType.LimitIncrease]: "LimitIncrease",
+    [OrderType.MarketDecrease]: "MarketDecrease",
+    [OrderType.LimitDecrease]: "LimitDecrease",
+    [OrderType.StopLossDecrease]: "StopLossDecrease",
+  };
+  const kind = kinds[order.orderType];
+  requireGmsol(kind, "Unsupported Solana order kind");
+  return { kind, ...accounts };
 }

@@ -1,5 +1,6 @@
 import { t } from "@lingui/macro";
 import { useCallback, useEffect, useMemo, useRef } from "react";
+import useSWR from "swr";
 
 import {
   selectFeeDiscountError,
@@ -14,13 +15,17 @@ import {
 import {
   selectTradeboxAllowedSlippage,
   selectTradeboxCollateralToken,
+  selectTradeboxFormState,
   selectTradeboxFromToken,
+  selectTradeboxFromTokenAddress,
   selectTradeboxDecreasePositionAmounts,
   selectTradeboxExistingPositionForPreview,
   selectTradeboxSelectedPosition,
   selectTradeboxIncreasePositionAmounts,
   selectTradeboxIsFromTokenGmxAccount,
   selectTradeboxIsTPSLEnabled,
+  selectTradeboxMarginPayTokens,
+  selectTradeboxMarketAddress,
   selectTradeboxMarketInfo,
   selectTradeboxTradeFlags,
   selectTradeboxTradeMode,
@@ -29,17 +34,25 @@ import { selectTradeboxTradeTypeError } from "context/SyntheticsStateContext/sel
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useGmsolWalletBalances } from "domain/gmsol/useGmsolWalletBalances";
 import type { SolanaTradeboxState } from "domain/solana/solanaTradebox";
-import { useSolanaOrderNotifications } from "domain/solanaOrderTracking/useSolanaOrderNotifications";
 import { useSidecarEntries } from "domain/synthetics/sidecarOrders/useSidecarEntries";
 import { useSidecarOrders } from "domain/synthetics/sidecarOrders/useSidecarOrders";
+import { fetchSolanaRentExemptMinimums } from "lib/solana/networkCosts";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import { retryAtRefreshCadence } from "lib/useSWRWithFreshness";
 import { useSolanaWalletSession } from "lib/wallets/solanaWalletSession";
+import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
+import { GmsolMarketsUnavailableError } from "../markets/gmsolMarketsUnavailable";
+import { getGmsolCreateOrderTitles } from "../orderTracking/orderStatusTitles";
+import { useSolanaOrderNotifications } from "../orderTracking/useSolanaOrderNotifications";
+import { getPendingGmsolSubmission } from "../transactions/pendingSubmission";
+import { GMSOL_RENT_ACCOUNT_SIZES, getGmsolIncreaseSolCosts, getGmsolSolReserve } from "../transactions/solReserve";
 import { useGmsolOrderTransactions } from "../transactions/useGmsolOrderTransactions";
 import { useSolanaTradingEnabled } from "../useSolanaTradingEnabled";
 import {
   buildGmsolTradeboxOrderAction,
   buildGmsolTradeboxTriggerAction,
+  getGmsolTradeboxTriggerEntries,
   GmsolTradeboxError,
 } from "./buildTradeboxOrderAction";
 import { getGmsolTradeboxErrorMessage } from "./tradeboxErrorMessages";
@@ -53,7 +66,7 @@ export default function GmsolTradeboxAdapter({
   sessionId: object;
 }) {
   const wallet = useSolanaWalletSession();
-  const { submit, isSubmitting, hasPendingSubmission, pendingTrackExecution } = useGmsolOrderTransactions();
+  const { acquire, isSubmitting, hasPendingSubmission } = useGmsolOrderTransactions();
   const { begin } = useSolanaOrderNotifications();
   const { isSolanaTradingEnabled, isLoading: isTradingLoading } = useSolanaTradingEnabled({ enabled: true });
   const balances = useGmsolWalletBalances(wallet.address);
@@ -81,30 +94,72 @@ export default function GmsolTradeboxAdapter({
   const entries = useSidecarEntries();
   const sidecars = useSidecarOrders();
   const hasOutdatedUi = useHasOutdatedUi();
+  const payTokens = useSelector(selectTradeboxMarginPayTokens);
+  const fromTokenAddress = useSelector(selectTradeboxFromTokenAddress);
+  const selectedMarketAddress = useSelector(selectTradeboxMarketAddress);
+  const { setFromTokenAddress, setFromTokenInputValue } = useSelector(selectTradeboxFormState);
+
+  // The builder takes no swap, so Pay follows the collateral; a typed amount would change token, so it is cleared.
+  useEffect(() => {
+    if (!isIncrease || marketInfo?.tradeMath !== "gmsol" || payTokens.length === 0) return;
+    if (payTokens.some((token) => token.address === fromTokenAddress)) return;
+    setFromTokenAddress((payTokens.find((token) => token.isNative) ?? payTokens[0]).address);
+    setFromTokenInputValue("");
+  }, [fromTokenAddress, isIncrease, marketInfo?.tradeMath, payTokens, setFromTokenAddress, setFromTokenInputValue]);
+
+  const payWithNativeSol = fromToken?.isNative === true && fromToken.address === NATIVE_TOKEN_ADDRESS;
+  const rent = useSWR(
+    wallet.address && payWithNativeSol ? ["gmsolRentExemptMinimums"] : null,
+    () => fetchSolanaRentExemptMinimums(GMSOL_RENT_ACCOUNT_SIZES),
+    { onErrorRetry: retryAtRefreshCadence }
+  );
+  const orderCount = 1 + (isTpSlEnabled ? getGmsolTradeboxTriggerEntries(entries).length : 0);
+  const isPureMarket = marketInfo !== undefined && marketInfo.longTokenAddress === marketInfo.shortTokenAddress;
+  const hasPosition = selectedPosition !== undefined;
+  const solHoldback = useMemo(
+    () =>
+      rent.data
+        ? getGmsolSolReserve(getGmsolIncreaseSolCosts({ orderCount, isPureMarket, hasPosition }), rent.data)
+        : undefined,
+    [hasPosition, isPureMarket, orderCount, rent.data]
+  );
+  const isShortOfSol =
+    isIncrease &&
+    payWithNativeSol &&
+    solHoldback !== undefined &&
+    amounts !== undefined &&
+    fromToken?.balance !== undefined &&
+    amounts.initialCollateralAmount + solHoldback > fromToken.balance;
 
   const intent = useMemo(() => {
     try {
       if (isTrigger) {
         if (!selectedPosition || selectedPosition.account !== wallet.address) return { error: t`Select a position` };
-        return {
-          action: buildGmsolTradeboxTriggerAction({ marketInfo, collateralToken, amounts: decreaseAmounts, isLong }),
-        };
+        const action = buildGmsolTradeboxTriggerAction({
+          marketInfo,
+          collateralToken,
+          amounts: decreaseAmounts,
+          isLong,
+        });
+        return { action, orders: getGmsolCreateOrderTitles(action, { marketInfo, collateralToken }) };
       }
       if (!isIncrease) return { error: t`This order type is not supported on Solana` };
       if (isTpSlEnabled && (sidecars.takeProfit.error || sidecars.stopLoss.error))
         return { error: t`Review your TP/SL orders` };
+      const action = buildGmsolTradeboxOrderAction({
+        marketInfo,
+        fromToken,
+        collateralToken,
+        amounts,
+        tradeMode,
+        allowedSlippage,
+        isLong,
+        sidecarEntries: isTpSlEnabled ? entries : [],
+        existingPositionSizeUsd: existingPosition?.sizeInUsd,
+      });
       return {
-        action: buildGmsolTradeboxOrderAction({
-          marketInfo,
-          fromToken,
-          collateralToken,
-          amounts,
-          tradeMode,
-          allowedSlippage,
-          isLong,
-          sidecarEntries: isTpSlEnabled ? entries : [],
-          existingPositionSizeUsd: existingPosition?.sizeInUsd,
-        }),
+        action,
+        orders: getGmsolCreateOrderTitles(action, { marketInfo, collateralToken, payToken: fromToken }),
       };
     } catch (error) {
       return {
@@ -132,13 +187,22 @@ export default function GmsolTradeboxAdapter({
     tradeMode,
   ]);
 
+  // A coverage gap blocks only its markets; the stored address still names a market that lost its marketInfo.
+  const isBlocking = (dataError: Error | undefined) =>
+    dataError !== undefined &&
+    !(
+      dataError instanceof GmsolMarketsUnavailableError &&
+      dataError.reason === "coverage" &&
+      (selectedMarketAddress === undefined || !dataError.marketAddresses.includes(selectedMarketAddress))
+    );
+
   let error: string | undefined;
   if (hasOutdatedUi) error = t`Page outdated. Refresh`;
   else if (wallet.isRestoring) error = t`Connecting wallet...`;
   else if (isFromTokenGmxAccount) error = t`Select wallet balance to trade on Solana`;
   else if (isTradingLoading) error = t`Loading...`;
   else if (!isSolanaTradingEnabled) error = t`Solana trading is unavailable`;
-  else if (marketsError || positionsError || ordersError || feeDiscountError || balances.error)
+  else if ([marketsError, positionsError, ordersError, balances.error].some(isBlocking))
     error = t`Unable to load trading data`;
   else if (
     wallet.address &&
@@ -147,26 +211,47 @@ export default function GmsolTradeboxAdapter({
       !balances.data ||
       positionsLoading ||
       ordersLoading ||
-      feeDiscountFactor === undefined)
+      // Without the discount the previews only overstate the fee, and the order never reads it.
+      (feeDiscountFactor === undefined && !feeDiscountError))
   )
     error = t`Loading...`;
-  else error = tradeError.buttonErrorMessage ?? intent.error;
+  else
+    error =
+      tradeError.buttonErrorMessage ??
+      intent.error ??
+      (isShortOfSol ? t`Not enough SOL for network fees, keeper fees and account rent` : undefined);
 
   const current = useRef({ error, intent, owner: wallet.address, hasPendingSubmission });
   current.current = { error, intent, owner: wallet.address, hasPendingSubmission };
   const onSubmit = useCallback(async () => {
     const { error, intent, owner, hasPendingSubmission } = current.current;
-    if (!owner || (!hasPendingSubmission && (error || !intent.action))) return false;
-    const notification = begin({ title: t`Order request`, trackExecution: pendingTrackExecution ?? isMarket });
+    if (!owner) return false;
+    // Read at click time: the last render can trail another tab or a send that has just ended.
+    const pending = getPendingGmsolSubmission(owner);
+    if (!pending && (hasPendingSubmission || error || !intent.action)) return false;
+    const submission = acquire(owner);
+    if (!submission) return false;
     try {
-      const result = await submit(intent.action, { onSubmitted: notification.submitted });
-      notification.submitted(result);
-      return true;
-    } catch (error) {
-      notification.failed(error);
-      return false;
+      const notification = begin({
+        owner,
+        operation: pending ? pending.operation : "create",
+        orders: pending ? [] : intent.orders ?? [],
+        trackExecution: pending?.trackExecution ?? isMarket,
+      });
+      try {
+        const result = await submission.submit(pending ? undefined : intent.action, {
+          onSubmitted: notification.submitted,
+        });
+        notification.submitted(result);
+        return true;
+      } catch (error) {
+        notification.failed(error);
+        return false;
+      }
+    } finally {
+      submission.release();
     }
-  }, [begin, isMarket, pendingTrackExecution, submit]);
+  }, [acquire, begin, isMarket]);
 
   const text = isSubmitting
     ? hasPendingSubmission
@@ -177,6 +262,7 @@ export default function GmsolTradeboxAdapter({
       : hasPendingSubmission
         ? t`Check transaction status`
         : error ?? (isTrigger ? t`Create TP/SL order` : isLong ? t`Long` : t`Short`);
+  const isSolHoldbackUnavailable = rent.error !== undefined;
   useEffect(() => {
     onChange({
       sessionId,
@@ -185,14 +271,18 @@ export default function GmsolTradeboxAdapter({
       disabled: isSubmitting || Boolean(wallet.address && error && !hasPendingSubmission) || wallet.isRestoring,
       isSubmitting,
       onSubmit,
+      solHoldback,
+      isSolHoldbackUnavailable,
     });
   }, [
     error,
     hasPendingSubmission,
+    isSolHoldbackUnavailable,
     isSubmitting,
     onChange,
     onSubmit,
     sessionId,
+    solHoldback,
     text,
     wallet.address,
     wallet.isRestoring,

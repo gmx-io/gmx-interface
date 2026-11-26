@@ -33,9 +33,9 @@ function hasMarketTokenPrices(rawMarketsInfoData: RawMarketsInfoData, address: s
 }
 
 // Disabled markets are not part of this check. A missing price on an enabled market is one market, not the page.
-export function hasGmsolListedMarketPrices(rawMarketsInfoData: RawMarketsInfoData, tokensData: TokensData): boolean {
-  return getGmsolEnabledMarketAddresses(rawMarketsInfoData).every((address) =>
-    hasMarketTokenPrices(rawMarketsInfoData, address, tokensData)
+export function getGmsolUnpricedMarketAddresses(rawMarketsInfoData: RawMarketsInfoData, tokensData: TokensData) {
+  return getGmsolEnabledMarketAddresses(rawMarketsInfoData).filter(
+    (address) => !hasMarketTokenPrices(rawMarketsInfoData, address, tokensData)
   );
 }
 

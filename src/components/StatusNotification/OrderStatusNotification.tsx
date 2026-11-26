@@ -14,30 +14,27 @@ import { MarketsInfoData } from "domain/synthetics/markets";
 import {
   isIncreaseOrderType,
   isLimitOrderType,
-  isLimitSwapOrderType,
   isMarketOrderType,
   isSwapOrderType,
   isTriggerDecreaseOrderType,
 } from "domain/synthetics/orders";
 import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
-import { isMarginDepositOrder } from "domain/synthetics/orders/marginDeposit";
-import { getNameByOrderType } from "domain/synthetics/positions";
 import { TokensData } from "domain/synthetics/tokens";
 import { getSwapPathOutputAddresses } from "domain/synthetics/trade";
-import { isFullPositionCloseSizeDeltaUsd } from "domain/tpsl/utils";
 import { useChainId } from "lib/chains";
 import { defined } from "lib/guards";
-import { formatTokenAmount, formatUsd } from "lib/numbers";
+import { formatTokenAmount } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { mustNeverExist } from "lib/types";
 import useWallet from "lib/wallets/useWallet";
-import { getTokenVisualMultiplier, getWrappedToken } from "sdk/configs/tokens";
+import { getWrappedToken } from "sdk/configs/tokens";
 
 import { getDebugErrorMessage } from "components/Errors/errorToasts";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 import { TransactionStatus, TransactionStatusType } from "components/TransactionStatus/TransactionStatus";
 
+import { getOrderStatusTitle } from "./getOrderStatusTitle";
 import { UsdgClosePayoutStatus } from "./UsdgClosePayoutStatus";
 import { useToastAutoClose } from "./useToastAutoClose";
 
@@ -155,115 +152,7 @@ function OrderStatusNotification({
     };
   }, [marketsInfoData, orderStatuses, pendingOrderData, tokensData, wrappedNativeToken]);
 
-  const title = useMemo(() => {
-    if (!orderData) {
-      return t`Unknown order`;
-    }
-
-    if (isSwapOrderType(orderData.orderType)) {
-      const {
-        initialCollateralToken,
-        targetCollateralToken,
-        initialCollateralDeltaAmount,
-        minOutputAmount,
-        expectedOutputAmount,
-      } = orderData;
-
-      let orderTypeText = isLimitSwapOrderType(orderData.orderType) ? t`Limit Swap` : t`Swap`;
-
-      if (orderData.isTwap) {
-        orderTypeText = t`TWAP Swap`;
-      }
-
-      const outputAmount =
-        expectedOutputAmount !== undefined && expectedOutputAmount > 0n ? expectedOutputAmount : minOutputAmount;
-
-      return t`${orderTypeText} ${formatTokenAmount(
-        initialCollateralDeltaAmount,
-        initialCollateralToken?.decimals,
-        initialCollateralToken?.symbol,
-        { isStable: initialCollateralToken?.isStable }
-      )} for ${formatTokenAmount(outputAmount, targetCollateralToken?.decimals, targetCollateralToken?.symbol, {
-        isStable: targetCollateralToken?.isStable,
-      })}`;
-    } else {
-      const {
-        txnType,
-        marketInfo,
-        sizeDeltaUsd,
-        orderType,
-        isLong,
-        initialCollateralDeltaAmount,
-        initialCollateralToken,
-      } = orderData;
-
-      const visualMultiplierPrefix = marketInfo?.indexToken ? getTokenVisualMultiplier(marketInfo.indexToken) : "";
-      const indexTokenText = `${visualMultiplierPrefix}${marketInfo?.indexToken.symbol}`;
-
-      if (sizeDeltaUsd == 0n) {
-        const symbol = orderData.shouldUnwrapNativeToken
-          ? initialCollateralToken?.baseSymbol
-          : initialCollateralToken?.symbol;
-        const amountText = formatTokenAmount(initialCollateralDeltaAmount, initialCollateralToken?.decimals, symbol, {
-          isStable: initialCollateralToken?.isStable,
-        });
-
-        if (isMarginDepositOrder(orderData)) {
-          const longShortText = isLong ? t`Long` : t`Short`;
-          const txnTypeText = {
-            create: t`Create`,
-            cancel: t`Cancel`,
-            update: t`Update`,
-          }[txnType];
-
-          return t`${txnTypeText} margin deposit: ${amountText} to ${indexTokenText} ${longShortText}`;
-        }
-
-        if (isIncreaseOrderType(orderType)) {
-          return isLong
-            ? t`Depositing ${amountText} to ${indexTokenText} Long...`
-            : t`Depositing ${amountText} to ${indexTokenText} Short...`;
-        } else {
-          return isLong
-            ? t`Withdrawing ${amountText} from ${indexTokenText} Long...`
-            : t`Withdrawing ${amountText} from ${indexTokenText} Short...`;
-        }
-      } else {
-        if (isMarketOrderType(orderType)) {
-          const sizeDeltaUsdText = formatUsd(sizeDeltaUsd);
-
-          if (isIncreaseOrderType(orderType)) {
-            return isLong
-              ? t`Increasing ${indexTokenText} Long: +${sizeDeltaUsdText}`
-              : t`Increasing ${indexTokenText} Short: +${sizeDeltaUsdText}`;
-          }
-
-          return isLong
-            ? t`Decreasing ${indexTokenText} Long: -${sizeDeltaUsdText}`
-            : t`Decreasing ${indexTokenText} Short: -${sizeDeltaUsdText}`;
-        } else {
-          const longShortText = isLong ? t`Long` : t`Short`;
-          const txnTypeText = {
-            create: t`Create`,
-            cancel: t`Cancel`,
-            update: t`Update`,
-          }[txnType];
-
-          const orderTypeText = t`${txnTypeText} ${getNameByOrderType(orderType, orderData.isTwap, {
-            abbr: true,
-            lower: true,
-          })} order for`;
-          const sign = isIncreaseOrderType(orderType) ? "+" : "-";
-          const sizeText =
-            isTriggerDecreaseOrderType(orderType) && isFullPositionCloseSizeDeltaUsd(sizeDeltaUsd)
-              ? t`Full position close`
-              : `${sign}${formatUsd(sizeDeltaUsd)}`;
-
-          return t`${orderTypeText} ${visualMultiplierPrefix}${marketInfo?.indexToken?.symbol} ${longShortText}: ${sizeText}`;
-        }
-      }
-    }
-  }, [orderData]);
+  const title = useMemo(() => getOrderStatusTitle(orderData), [orderData]);
 
   const externalSwapStatus = useMemo(() => {
     if (!orderData?.externalSwapQuote) {

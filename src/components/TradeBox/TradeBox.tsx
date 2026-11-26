@@ -457,19 +457,19 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
       isGmxAccount: isFromTokenGmxAccount,
     });
 
+  const solanaState = solanaSubmitState?.sessionId === solanaSessionId ? solanaSubmitState : undefined;
   const submitButtonState = useMemo(() => {
     if (isSolana) {
-      const state = solanaSubmitState?.sessionId === solanaSessionId ? solanaSubmitState : undefined;
       return {
         ...gmxSubmitButtonState,
-        text: state?.text ?? t`Loading...`,
-        disabled: state?.disabled ?? true,
+        text: solanaState?.text ?? t`Loading...`,
+        disabled: solanaState?.disabled ?? true,
         onSubmit: async () => {
           if (!solanaWallet.address) {
             openConnectModal?.();
             return false;
           }
-          return state && !state.disabled ? state.onSubmit() : false;
+          return solanaState && !solanaState.disabled ? solanaState.onSubmit() : false;
         },
         tooltipContent: null,
         bannerErrorContent: null,
@@ -520,8 +520,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
     return gmxSubmitButtonState;
   }, [
     isSolana,
-    solanaSubmitState,
-    solanaSessionId,
+    solanaState,
     solanaWallet.address,
     openConnectModal,
     gmxSubmitButtonState,
@@ -663,9 +662,10 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
     fromTokenAmount,
     isLoading: isPaxosRouteActive ? false : isMaxAmountLoading,
     feeToken: isPaxosRouteActive ? undefined : gasPaymentTokenForMax,
-    feeTokenAmount: isPaxosRouteActive ? undefined : gasPaymentTokenAmountForMax,
+    feeTokenAmount: isPaxosRouteActive ? undefined : isSolana ? solanaState?.solHoldback : gasPaymentTokenAmountForMax,
     fallbackFeeTokenAmount: isPaxosRouteActive ? undefined : fallbackFeeTokenAmountForMax,
     reserveToken: isPaxosRouteActive ? undefined : reserveTokenForMax,
+    isFeeEstimationFailed: isSolana && solanaState?.isSolHoldbackUnavailable === true,
     isGmxAccount: isFromTokenGmxAccount,
   });
 

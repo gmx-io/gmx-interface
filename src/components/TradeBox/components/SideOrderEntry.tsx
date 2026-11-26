@@ -1,3 +1,4 @@
+import { Trans } from "@lingui/macro";
 import { useCallback, useMemo } from "react";
 
 import {
@@ -27,6 +28,8 @@ export function SideOrderEntry({ type, entry, entriesInfo }: Props) {
   const marketInfo = useSelector(selectTradeboxMarketInfo);
   const toTokenAddress = useSelector(selectTradeboxToTokenAddress);
   const { isLong } = useSelector(selectTradeboxTradeFlags);
+  // gmsol can only create TP/SL here, so an existing order the row seeds is edited from the positions list.
+  const isReadOnly = marketInfo?.tradeMath === "gmsol" && entry.order !== null;
 
   const priceError = entry.price?.error ?? undefined;
   const priceWarning = entry.price?.warning ?? undefined;
@@ -67,9 +70,10 @@ export function SideOrderEntry({ type, entry, entriesInfo }: Props) {
 
   const handlePriceChange = useCallback(
     (value: string) => {
+      if (isReadOnly) return;
       entriesInfo.updateEntry(entry.id, "price", value);
     },
-    [entriesInfo, entry.id]
+    [entriesInfo, entry.id, isReadOnly]
   );
 
   const estimatedPnl = useMemo(() => {
@@ -80,7 +84,7 @@ export function SideOrderEntry({ type, entry, entriesInfo }: Props) {
     };
   }, [entry.decreaseAmounts]);
 
-  return (
+  const row = (
     <TPSLInputRow
       type={type}
       priceValue={entry.price?.input ?? ""}
@@ -92,6 +96,18 @@ export function SideOrderEntry({ type, entry, entriesInfo }: Props) {
       estimatedPnl={estimatedPnl}
       carryOverKey={`${toTokenAddress}:${isLong}`}
       existingOrderKey={entry.txnType === null ? entry.order?.key : undefined}
+      isDisabled={isReadOnly}
     />
+  );
+
+  if (!isReadOnly) return row;
+
+  return (
+    <div className="flex flex-col gap-4">
+      {row}
+      <span className="text-body-small text-typography-secondary">
+        <Trans>Edit existing TP/SL orders in the positions list</Trans>
+      </span>
+    </div>
   );
 }

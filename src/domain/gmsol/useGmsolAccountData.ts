@@ -1,11 +1,10 @@
 import { useMemo, useSyncExternalStore } from "react";
-import { mutate } from "swr";
 
 import { getUiApiCacheKey } from "config/api";
 import { SOLANA_NETWORK_ID } from "config/chains";
 import { useGmxSdk } from "context/GmxSdkContext/GmxSdkContext";
 import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
-import { API_STALE_MS, useSWRWithFreshness } from "lib/useSWRWithFreshness";
+import { API_STALE_MS, mutateSWRWithFreshness, useSWRWithFreshness } from "lib/useSWRWithFreshness";
 import type { FeeDiscount, GmxApiSdk } from "sdk/clients/v2";
 import type { ApiOrderInfo } from "sdk/utils/orders/types";
 import type { ApiPositionInfo } from "sdk/utils/positions/types";
@@ -13,7 +12,7 @@ import type { ApiPositionInfo } from "sdk/utils/positions/types";
 import { GmsolAccountSlotTracker } from "./api/GmsolAccountSlotTracker";
 import { fetchGmsolOrders, fetchGmsolPositions } from "./api/refetchAtSlot";
 
-// Positions are read from the Solana RPC on every request; 15 s fits the host's RPC budget.
+// gmx-api serves positions from its Solana index, not from the RPC.
 const POSITIONS_REFRESH_INTERVAL = 15_000;
 // Rank and referrer discounts move slowly. At 5 s the host answers 429 around 120 wallets.
 const FEE_DISCOUNT_REFRESH_INTERVAL = 60_000;
@@ -71,23 +70,15 @@ function useGmsolAccountRequest<T>(
 }
 
 function fetchPositions(sdk: GmxApiSdk, owner: string, apiCacheKey: string) {
-  const key = getAccountSlotKey("gmsolPositions", apiCacheKey, owner);
-  return fetchGmsolPositions(sdk, owner, accountSlots.getMinContextSlot(key))
-    .then((body) => accountSlots.takeSnapshot(key, body.slot, body.data))
-    .catch((error) => {
-      accountSlots.fail(key, error);
-      throw error;
-    });
+  return accountSlots.read(getAccountSlotKey("gmsolPositions", apiCacheKey, owner), (minContextSlot) =>
+    fetchGmsolPositions(sdk, owner, minContextSlot)
+  );
 }
 
 function fetchOrders(sdk: GmxApiSdk, owner: string, apiCacheKey: string) {
-  const key = getAccountSlotKey("gmsolOrders", apiCacheKey, owner);
-  return fetchGmsolOrders(sdk, owner, accountSlots.getMinContextSlot(key))
-    .then((body) => accountSlots.takeSnapshot(key, body.slot, body.data))
-    .catch((error) => {
-      accountSlots.fail(key, error);
-      throw error;
-    });
+  return accountSlots.read(getAccountSlotKey("gmsolOrders", apiCacheKey, owner), (minContextSlot) =>
+    fetchGmsolOrders(sdk, owner, minContextSlot)
+  );
 }
 
 export async function refreshGmsolAccountDataAfterTransaction(sdk: GmxApiSdk, owner: string, slot: number) {
@@ -95,23 +86,14 @@ export async function refreshGmsolAccountDataAfterTransaction(sdk: GmxApiSdk, ow
   for (const request of ["gmsolPositions", "gmsolOrders"] as const) {
     accountSlots.requireSlot(getAccountSlotKey(request, apiCacheKey, owner), slot);
   }
-  // These keys are consumed by useSWRWithFreshness, including its snapshot timestamp.
   await Promise.all([
-    mutate(
+    mutateSWRWithFreshness(
       getGmsolAccountDataKey("gmsolPositions", apiCacheKey, owner),
-      fetchPositions(sdk, owner, apiCacheKey).then((value) => ({
-        value,
-        fetchedAt: Date.now(),
-      })),
-      { revalidate: false }
+      fetchPositions(sdk, owner, apiCacheKey)
     ),
-    mutate(
+    mutateSWRWithFreshness(
       getGmsolAccountDataKey("gmsolOrders", apiCacheKey, owner),
-      fetchOrders(sdk, owner, apiCacheKey).then((value) => ({
-        value,
-        fetchedAt: Date.now(),
-      })),
-      { revalidate: false }
+      fetchOrders(sdk, owner, apiCacheKey)
     ),
   ]);
 }

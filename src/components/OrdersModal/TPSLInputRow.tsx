@@ -46,6 +46,7 @@ type Props = {
   };
   carryOverKey?: string;
   existingOrderKey?: string;
+  isDisabled?: boolean;
 };
 
 export function TPSLInputRow({
@@ -60,6 +61,7 @@ export function TPSLInputRow({
   estimatedPnl: estimatedPnlProp,
   carryOverKey,
   existingOrderKey,
+  isDisabled = false,
 }: Props) {
   const priceInputRef = useRef<HTMLInputElement>(null);
   const secondInputRef = useRef<HTMLInputElement>(null);
@@ -472,6 +474,7 @@ export function TPSLInputRow({
                     inputRef={priceInputRef}
                     onValueChange={handlePriceChange}
                     placeholder={priceLabel}
+                    isDisabled={isDisabled}
                   />
                 </div>
                 <span className="text-13 text-typography-secondary">USD</span>
@@ -496,6 +499,7 @@ export function TPSLInputRow({
                   inputRef={secondInputRef}
                   onValueChange={handleGainLossChange}
                   placeholder={secondLabel}
+                  isDisabled={isDisabled}
                 />
               </div>
               <DisplayModeSelector

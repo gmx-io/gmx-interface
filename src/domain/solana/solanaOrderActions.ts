@@ -22,7 +22,7 @@ export type SolanaOrderChanges = {
 /**
  * Close, TP/SL, edit and cancel on Solana for the shared position and order UI.
  * The Solana state provider supplies it, so it is undefined on EVM networks.
- * Every action resolves to true only after its transactions confirm; failures are shown in a notification.
+ * Actions resolve to true once confirmed, setTriggerOrders to the confirmed entries; failures show in a notification.
  */
 export type SolanaOrderActions = {
   isSubmitting: boolean;
@@ -38,10 +38,11 @@ export type SolanaOrderActions = {
     receiveToken: TokenData;
     allowedSlippage: number;
   }) => Promise<boolean>;
-  setTriggerOrders: (p: { position: PositionInfo; entries: SolanaTriggerEntry[] }) => Promise<boolean>;
+  setTriggerOrders: (p: { position: PositionInfo; entries: SolanaTriggerEntry[] }) => Promise<SolanaTriggerEntry[]>;
   updateOrder: (p: { order: PositionOrderInfo; changes: SolanaOrderChanges }) => Promise<boolean>;
+  // Orders Solana cannot cancel are skipped and named; resolves to true only if every order was cancelled
   cancelOrders: (orders: OrderInfo[]) => Promise<boolean>;
-  // Why this order cannot be edited or cancelled on Solana, or undefined
+  // Why this order cannot be edited on Solana, or undefined
   getOrderError: (order: OrderInfo) => string | undefined;
   // Why these edits cannot be sent on Solana, or undefined; an edit without changes is left to the shared validation
   getUpdateError: (p: { order: PositionOrderInfo; changes: SolanaOrderChanges }) => string | undefined;

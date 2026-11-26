@@ -15,11 +15,13 @@ import { API_STALE_MS, isSnapshotPastGrace, useSWRWithFreshness } from "lib/useS
 import { mergeMarketsConfigValues } from "sdk/utils/markets";
 import type { RawMarketConfig, RawMarketsInfoData, RawMarketValues } from "sdk/utils/markets/types";
 
+import type { GmsolMarketsUnavailableReason } from "./markets/gmsolMarketsUnavailable";
+
 export type GmsolRawMarketsInfoResult = {
   rawMarketsInfoData: RawMarketsInfoData | undefined;
   isLoading: boolean;
   // Solana has no RPC fallback: an error, stale or incomplete response makes the markets unavailable.
-  isUnavailable: boolean;
+  unavailableReason: Exclude<GmsolMarketsUnavailableReason, "coverage"> | undefined;
   error: Error | undefined;
 };
 
@@ -84,17 +86,16 @@ export function useGmsolRawMarketsInfo({ enabled }: { enabled: boolean }): Gmsol
     isSnapshotPastGrace(values.freshness.asOf, FREQUENT_UPDATE_INTERVAL);
 
   if (!enabled) {
-    return { rawMarketsInfoData: undefined, isLoading: false, isUnavailable: false, error: undefined };
+    return { rawMarketsInfoData: undefined, isLoading: false, unavailableReason: undefined, error: undefined };
   }
 
-  const isUnavailable = !sdk || Boolean(error) || isStale || isIncomplete || isExpired;
   // A failed read keeps the last good snapshot until the same grace window EVM uses, then drops it.
   const keepSnapshot = Boolean(rawMarketsInfoData) && !isStale && !isIncomplete && !isExpired;
 
   return {
     rawMarketsInfoData: keepSnapshot ? rawMarketsInfoData : undefined,
     isLoading: !error && !rawMarketsInfoData,
-    isUnavailable,
+    unavailableReason: !sdk || error ? "request" : isStale || isIncomplete || isExpired ? "stale" : undefined,
     error,
   };
 }

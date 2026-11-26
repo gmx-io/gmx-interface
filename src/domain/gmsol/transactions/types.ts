@@ -25,8 +25,7 @@ export type GmsolCreateOrder = {
 };
 
 // Pass the API order's account context, not a display-only OrderInfo with these fields removed.
-export type GmsolOrderContext = {
-  kind: GmsolPositionOrderKind;
+export type GmsolOrderAccounts = {
   isLong: boolean;
   address: string;
   marketToken: string;
@@ -41,6 +40,9 @@ export type GmsolOrderContext = {
   unwrapNative: boolean;
   callback: undefined;
 };
+
+// Only an update reads the kind, and only position orders can be updated on Solana.
+export type GmsolOrderContext = GmsolOrderAccounts & { kind: GmsolPositionOrderKind };
 
 export type GmsolOrderUpdate = {
   kind: GmsolPositionOrderKind;
@@ -57,7 +59,7 @@ export type GmsolOrderUpdate = {
 export type GmsolOrderAction =
   | { type: "create"; orders: GmsolCreateOrder[]; atomic: boolean; existingPositionSizeUsd?: bigint }
   | { type: "update"; order: GmsolOrderContext; changes: GmsolOrderUpdate }
-  | { type: "cancel"; order: GmsolOrderContext };
+  | { type: "cancel"; order: GmsolOrderAccounts };
 
 export type GmsolLookupTables = Record<string, readonly string[]>;
 

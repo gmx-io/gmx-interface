@@ -213,7 +213,7 @@ describe("confirmed transaction account refresh", () => {
 
     await act(async () => {
       await expect(refreshGmsolAccountDataAfterTransaction(result.current.sdk, owner, 3)).rejects.toThrow(
-        "older than the accepted snapshot"
+        "older than the requested context slot"
       );
     });
 

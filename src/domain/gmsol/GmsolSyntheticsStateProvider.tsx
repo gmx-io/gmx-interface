@@ -33,6 +33,7 @@ import { getGmsolOracleSymbol } from "./gmsolOracleUtils";
 import { preloadGmsolSdk } from "./loadGmsolSdk";
 import { composeGmsolMarkets } from "./markets/composeGmsolMarkets";
 import { fetchGmsol24hVolumes } from "./markets/fetchGmsol24hVolumes";
+import { GmsolMarketsUnavailableError } from "./markets/gmsolMarketsUnavailable";
 import { GmsolOrderActionsProvider } from "./orderActions/GmsolOrderActionsProvider";
 import { composeGmsolOrdersInfo } from "./orders/composeGmsolOrdersInfo";
 import { resolveGmsolAccountSnapshot } from "./resolveGmsolAccountSnapshot";
@@ -41,19 +42,20 @@ import { useGmsolTokensData } from "./tokens/useGmsolTokensData";
 import { useGmsolFeeDiscount, useGmsolOrders, useGmsolPositions } from "./useGmsolAccountData";
 import { useGmsolRawMarketsInfo } from "./useGmsolRawMarketsInfo";
 
-// Thrown into marketsInfo when the Solana host or prices fail: Solana has no RPC fallback.
-export class GmsolMarketsUnavailableError extends Error {
-  reason: Error | undefined;
-
-  constructor(reason?: Error) {
-    super("Solana market data is unavailable");
-    this.name = "GmsolMarketsUnavailableError";
-    this.reason = reason;
-  }
-}
-
 const EMPTY_MARKETS: MarketsResult = {};
 const noopSetGasPaymentTokenReplacement = () => undefined;
+
+// A failed request or a stale snapshot wins over a coverage gap, so every list reports the same block.
+function getAccountGapError(
+  uncoveredMarketAddresses: string[],
+  marketsUnavailable: GmsolMarketsUnavailableError | undefined
+) {
+  if (uncoveredMarketAddresses.length === 0) return undefined;
+
+  return marketsUnavailable && marketsUnavailable.reason !== "coverage"
+    ? marketsUnavailable
+    : new GmsolMarketsUnavailableError("coverage", uncoveredMarketAddresses);
+}
 
 function composePositions({
   positions,
@@ -79,11 +81,7 @@ function composePositions({
     positionsInfoData[positionInfo.key] = positionInfo;
   }
 
-  return resolveGmsolAccountSnapshot({
-    keys: positions.map((position) => position.key),
-    data: positionsInfoData,
-    previousData,
-  });
+  return resolveGmsolAccountSnapshot({ items: positions, data: positionsInfoData, previousData });
 }
 
 // The trade state while Solana is selected. It fills the same SyntheticsState the shared trade page reads,
@@ -133,23 +131,39 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
     [rawMarkets.rawMarketsInfoData, tokensData]
   );
 
-  const isMarketsUnavailable = rawMarkets.isUnavailable || tokensDataResult.isUnavailable;
-  const marketsUnavailableError = rawMarkets.error ?? tokensDataResult.error;
-
-  const marketsInfo = useMemo((): MarketsInfoResult => {
-    const error = isMarketsUnavailable ? new GmsolMarketsUnavailableError(marketsUnavailableError) : undefined;
-
-    // Keep the last good markets under the warning until the grace window drops them.
-    if (composedMarkets) {
-      return { marketsInfoData: composedMarkets.marketsInfoData, isLoading: false, dataSource: "api", error };
+  const rawMarketsReason = rawMarkets.unavailableReason;
+  const tokensReason = tokensDataResult.unavailableReason;
+  const unpricedMarketAddresses = tokensDataResult.unpricedMarketAddresses;
+  const marketsUnavailableCause = rawMarkets.error ?? tokensDataResult.error;
+  const marketsUnavailable = useMemo(() => {
+    if (rawMarketsReason || (tokensReason && tokensReason !== "coverage")) {
+      const reason = rawMarketsReason === "request" || tokensReason === "request" ? "request" : "stale";
+      return new GmsolMarketsUnavailableError(reason, [], marketsUnavailableCause);
     }
 
-    if (error) {
-      return { isLoading: false, error };
+    return tokensReason === "coverage"
+      ? new GmsolMarketsUnavailableError("coverage", unpricedMarketAddresses)
+      : undefined;
+  }, [marketsUnavailableCause, rawMarketsReason, tokensReason, unpricedMarketAddresses]);
+  const isMarketsBlocked = marketsUnavailable !== undefined && marketsUnavailable.reason !== "coverage";
+
+  const marketsInfo = useMemo((): MarketsInfoResult => {
+    // Keep the last good markets under the warning until the grace window drops them.
+    if (composedMarkets) {
+      return {
+        marketsInfoData: composedMarkets.marketsInfoData,
+        isLoading: false,
+        dataSource: "api",
+        error: marketsUnavailable,
+      };
+    }
+
+    if (marketsUnavailable) {
+      return { isLoading: false, error: marketsUnavailable };
     }
 
     return { isLoading: true };
-  }, [composedMarkets, isMarketsUnavailable, marketsUnavailableError]);
+  }, [composedMarkets, marketsUnavailable]);
 
   const markets = useMemo(
     (): MarketsResult =>
@@ -211,28 +225,24 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
         isLoading: false,
         dataSource: "api",
         error:
-          positionsRequest.error ??
-          (composedPositions.isIncomplete ? new GmsolMarketsUnavailableError(marketsUnavailableError) : undefined),
+          positionsRequest.error ?? getAccountGapError(composedPositions.uncoveredMarketAddresses, marketsUnavailable),
       };
     }
 
     // Host down drops markets, so this wallet's last list stays with the error instead of "No open positions".
     const cachedPositions = lastPositionsRef.current?.owner === owner ? lastPositionsRef.current.data : undefined;
-    if (isMarketsUnavailable && cachedPositions) {
+    if (isMarketsBlocked && cachedPositions) {
       return {
         isSyncing: positionsRequest.isSyncing,
         positionsInfoData: cachedPositions,
         isLoading: false,
         dataSource: "api",
-        error: positionsRequest.error ?? new GmsolMarketsUnavailableError(marketsUnavailableError),
+        error: positionsRequest.error ?? marketsUnavailable,
       };
     }
 
-    if (positionsRequest.error || isMarketsUnavailable) {
-      return {
-        isLoading: false,
-        error: positionsRequest.error ?? new GmsolMarketsUnavailableError(marketsUnavailableError),
-      };
+    if (positionsRequest.error || isMarketsBlocked) {
+      return { isLoading: false, error: positionsRequest.error ?? marketsUnavailable };
     }
 
     return { isLoading: true };
@@ -241,8 +251,8 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
     composedPositions,
     positionsRequest.error,
     positionsRequest.isSyncing,
-    isMarketsUnavailable,
-    marketsUnavailableError,
+    isMarketsBlocked,
+    marketsUnavailable,
   ]);
 
   const ordersInfo = useMemo((): AggregatedOrdersDataResult => {
@@ -251,7 +261,7 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
     }
 
     const cachedOrders = lastOrdersRef.current?.owner === owner ? lastOrdersRef.current.data : undefined;
-    const ordersInfoData = composedOrders?.data ?? (isMarketsUnavailable ? cachedOrders : undefined);
+    const ordersInfoData = composedOrders?.data ?? (isMarketsBlocked ? cachedOrders : undefined);
 
     if (ordersInfoData) {
       return {
@@ -261,28 +271,18 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
         isLoading: false,
         error:
           ordersRequest.error ??
-          (!composedOrders || composedOrders.isIncomplete
-            ? new GmsolMarketsUnavailableError(marketsUnavailableError)
-            : undefined),
+          (composedOrders
+            ? getAccountGapError(composedOrders.uncoveredMarketAddresses, marketsUnavailable)
+            : marketsUnavailable),
       };
     }
 
-    if (ordersRequest.error || isMarketsUnavailable) {
-      return {
-        isLoading: false,
-        error: ordersRequest.error ?? new GmsolMarketsUnavailableError(marketsUnavailableError),
-      };
+    if (ordersRequest.error || isMarketsBlocked) {
+      return { isLoading: false, error: ordersRequest.error ?? marketsUnavailable };
     }
 
     return { isLoading: true };
-  }, [
-    owner,
-    composedOrders,
-    ordersRequest.error,
-    ordersRequest.isSyncing,
-    isMarketsUnavailable,
-    marketsUnavailableError,
-  ]);
+  }, [owner, composedOrders, ordersRequest.error, ordersRequest.isSyncing, isMarketsBlocked, marketsUnavailable]);
 
   const positionsInfoData = positionsInfo.positionsInfoData;
 

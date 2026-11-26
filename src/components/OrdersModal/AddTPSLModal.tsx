@@ -153,6 +153,8 @@ export function AddTPSLModal({
 }: Props) {
   const [tpPriceInput, setTpPriceInput] = useState("");
   const [slPriceInput, setSlPriceInput] = useState("");
+  const [tpRowKey, setTpRowKey] = useState(0);
+  const [slRowKey, setSlRowKey] = useState(0);
   const [keepLeverage, setKeepLeverage] = useState(true);
   const [editTPSLSize, setEditTPSLSize] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -961,9 +963,23 @@ export function AddTPSLModal({
       try {
         if (solanaOrderActions.hasPendingSubmission) {
           await solanaOrderActions.checkPendingSubmission();
-        } else if (await solanaOrderActions.setTriggerOrders({ position, entries: solanaTriggerEntries })) {
-          setIsVisible(false);
-          onSuccess?.();
+        } else {
+          const [tpEntry, slEntry] = solanaTriggerEntries;
+          const sent = await solanaOrderActions.setTriggerOrders({ position, entries: solanaTriggerEntries });
+          if (sent.length > 0 && solanaTriggerEntries.every((entry) => !entry.amounts || sent.includes(entry))) {
+            setIsVisible(false);
+            onSuccess?.();
+          } else {
+            // A confirmed entry's row is cleared and remounted, so its gain/loss input cannot bring the price back.
+            if (sent.includes(tpEntry)) {
+              setTpPriceInput("");
+              setTpRowKey((key) => key + 1);
+            }
+            if (sent.includes(slEntry)) {
+              setSlPriceInput("");
+              setSlRowKey((key) => key + 1);
+            }
+          }
         }
       } finally {
         setIsSubmitting(false);
@@ -1204,6 +1220,7 @@ export function AddTPSLModal({
       <div className="flex max-w-[464px] flex-col gap-16 px-20 py-16 max-md:max-w-none">
         <div className="flex flex-col gap-4">
           <TPSLInputRow
+            key={tpRowKey}
             type="takeProfit"
             priceValue={tpPriceInput}
             onPriceChange={handleTpPriceChange}
@@ -1218,6 +1235,7 @@ export function AddTPSLModal({
 
         <div className="flex flex-col gap-4">
           <TPSLInputRow
+            key={slRowKey}
             type="stopLoss"
             priceValue={slPriceInput}
             onPriceChange={handleSlPriceChange}

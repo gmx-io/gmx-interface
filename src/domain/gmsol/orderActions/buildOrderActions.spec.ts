@@ -1,3 +1,4 @@
+import { maxUint256 } from "viem";
 import { describe, expect, it } from "vitest";
 
 import { GMSOL_MARKETS } from "config/gmsol/markets";
@@ -173,6 +174,20 @@ describe("Solana close, edit and cancel intents FESOL-59", () => {
     expect(moved.changes).toMatchObject({ triggerPrice: 300n * usd, acceptablePrice: undefined });
   });
 
+  // gmx-api serves a stored u128::MAX as maxUint256, which getOrderInfo scales by the index token decimals.
+  const storedUnlimitedPrice = maxUint256 * 10n ** BigInt(indexToken.decimals);
+  it.each([0n, maxUint256, storedUnlimitedPrice - 1n])(
+    "moves the trigger of an order stored with an unlimited price when the editor sends %s",
+    (acceptablePrice) => {
+      const action = buildGmsolUpdateAction({
+        order: { ...order({}), acceptablePrice: storedUnlimitedPrice } as PositionOrderInfo,
+        changes: { sizeDeltaUsd: 40n * usd, triggerPrice: 300n * usd, acceptablePrice },
+      });
+      if (action.type !== "update") throw new Error("Expected update");
+      expect(action.changes).toMatchObject({ triggerPrice: 300n * usd, acceptablePrice: undefined });
+    }
+  );
+
   it.each([
     ["without API order fields", undefined],
     ["that is no longer pending", { actionState: "completed" as const }],
@@ -181,12 +196,14 @@ describe("Solana close, edit and cancel intents FESOL-59", () => {
     expect(() => buildGmsolCancelAction(order(solana))).toThrow();
   });
 
-  it("cancels with the API order account, rent receiver and escrow", () => {
-    const action = buildGmsolCancelAction(order({ referrer: owner }));
-    expect(action).toMatchObject({
+  it.each([
+    [OrderType.LimitDecrease, false],
+    [OrderType.LimitSwap, true],
+  ])("cancels order type %s with the API order account, rent receiver and escrow", (orderType, refusesUpdate) => {
+    const apiOrder = { ...order({ referrer: owner }), orderType } as PositionOrderInfo;
+    expect(buildGmsolCancelAction(apiOrder)).toMatchObject({
       type: "cancel",
       order: {
-        kind: "LimitDecrease",
         address: "8qbHbw2BbbTHBW1sbeqakYXVKRQM8Ne7pLK7m6CVfeR",
         owner,
         receiver: owner,
@@ -195,5 +212,12 @@ describe("Solana close, edit and cancel intents FESOL-59", () => {
         finalOutputToken: WRAPPED_SOL_MINT,
       },
     });
+    const update = () =>
+      buildGmsolUpdateAction({
+        order: apiOrder,
+        changes: { sizeDeltaUsd: undefined, triggerPrice: 260n * usd, acceptablePrice: undefined },
+      });
+    if (refusesUpdate) expect(update).toThrow("Unsupported Solana order kind");
+    else expect(update).not.toThrow();
   });
 });
