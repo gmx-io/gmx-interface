@@ -1518,7 +1518,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
           {showIncreaseLiquidationRiskWarning && (
             <LiquidatableIncreaseWarningCard positionKey={selectedPosition?.key} />
           )}
-          {showIncreaseFreshPositionWarning && <FreshPositionIncreaseWarningCard />}
+          {showIncreaseFreshPositionWarning && <FreshPositionIncreaseWarningCard isTpSlUnavailable />}
           {gasPaymentTokenWarningContent && !isPaxosRouteActive && (
             <AlertInfoCard hideClose type="warning">
               {gasPaymentTokenWarningContent}
