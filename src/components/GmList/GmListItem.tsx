@@ -310,7 +310,7 @@ export function GmListItem({
 
   return (
     <TableTrActionable key={token.address} className="cursor-pointer" onClick={handleItemClick}>
-      <TableTdActionable className="w-[220px] pl-16">
+      <TableTdActionable className="pl-16">
         <div className="flex items-center gap-8">
           {onFavoriteClick && (
             <Button variant="ghost" className="!h-32 !min-h-32 !w-40 !p-0" onClick={handleFavoriteClick}>
@@ -321,15 +321,15 @@ export function GmListItem({
           <div className="mr-12 flex shrink-0 items-center">
             <TokenIcon
               symbol={tokenIconName}
-              displaySize={40}
+              displaySize={36}
               badge={tokenIconBadge}
-              className="min-h-40 min-w-40"
-              badgeClassName={isGlv ? "left-[50%] -translate-x-1/2 right-[unset] bottom-0" : undefined}
+              className="min-h-36 min-w-36"
+              badgeClassName={isGlv ? "left-[50%] -translate-x-1/2 right-[unset] bottom-0" : "!-bottom-4"}
             />
           </div>
           <div>
             <div className="flex items-center text-16">
-              <span className="font-medium">
+              <span className="whitespace-nowrap font-medium">
                 {isGlv
                   ? getGlvDisplayName(marketOrGlv)
                   : getMarketIndexName({ indexToken, isSpotOnly: Boolean(marketOrGlv?.isSpotOnly) })}
@@ -351,7 +351,7 @@ export function GmListItem({
         </div>
         {showDebugValues && <span style={tokenAddressStyle}>{marketOrGlvTokenAddress}</span>}
       </TableTdActionable>
-      <TableTdActionable className="w-[13%]">
+      <TableTdActionable>
         {totalSupplyUsd ? (
           <AmountWithUsdHuman
             multiline
@@ -365,7 +365,7 @@ export function GmListItem({
           <Skeleton width={60} count={1} baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" />
         )}
       </TableTdActionable>
-      <TableTdActionable className="w-[11%]">
+      <TableTdActionable>
         <GmTokensBalanceInfo
           token={token}
           daysConsidered={daysConsidered}
@@ -383,11 +383,11 @@ export function GmListItem({
         />
       </TableTdActionable>
 
-      <TableTdActionable className="w-[11%]">
+      <TableTdActionable>
         {!apyLoading ? apyValue : <Skeleton width={60} count={1} baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" />}
       </TableTdActionable>
 
-      <TableTdActionable className="w-[18%]">
+      <TableTdActionable>
         {!performanceLoading ? (
           <div className="numbers">{performanceValue}</div>
         ) : (
@@ -395,14 +395,14 @@ export function GmListItem({
         )}
       </TableTdActionable>
 
-      <TableTdActionable className="w-[14%]">
+      <TableTdActionable>
         <SnapshotGraph
           performanceSnapshots={marketPerformanceSnapshots ?? EMPTY_ARRAY}
           performance={marketPerformance ?? 0n}
         />
       </TableTdActionable>
 
-      <TableTdActionable className="w-[10%] pr-16">
+      <TableTdActionable className="pr-16">
         <Button
           className="flex flex-grow items-center gap-4"
           variant="ghost"

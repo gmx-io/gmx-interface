@@ -170,16 +170,16 @@ export function AffiliatesStats({ account, referralsData, handleCreateReferralCo
                 <table className="w-full min-w-full">
                   <thead>
                     <TableTheadTr>
-                      <TableTh scope="col">
+                      <TableTh scope="col" className="w-[32%]">
                         <Trans>REFERRAL CODE</Trans>
                       </TableTh>
-                      <TableTh scope="col">
+                      <TableTh scope="col" className="w-[22%]">
                         <Trans>TOTAL VOLUME</Trans>
                       </TableTh>
-                      <TableTh scope="col">
+                      <TableTh scope="col" className="w-[22%]">
                         <Trans>TRADERS REFERRED</Trans>
                       </TableTh>
-                      <TableTh scope="col">
+                      <TableTh scope="col" className="w-[24%]">
                         <Trans>TOTAL REBATES</Trans>
                       </TableTh>
                       <TableTh scope="col" className="w-0">
@@ -392,8 +392,8 @@ function ReferralCodesMobileTable({
   }, []);
 
   return (
-    <div role="table" className="grid grid-cols-[minmax(0,1fr)_auto_auto] gap-y-4 px-4">
-      <GridRow>
+    <div role="table" className="grid grid-cols-[minmax(0,1fr)_auto_auto]">
+      <GridRow hoverable={false}>
         <GridHeaderCell>
           <Trans>CODE</Trans>
         </GridHeaderCell>

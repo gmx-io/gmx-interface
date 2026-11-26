@@ -144,28 +144,28 @@ export function PositionList(p: Props) {
           hideControls
           className="flex grow flex-col bg-slate-900"
         >
-          <Table className="!w-[max(100%,1180px)] table-fixed">
+          <Table className="!w-[max(100%,1260px)] table-fixed">
             <thead className="text-body-medium">
               <TableTheadTr>
                 <TableTh className="w-[13%]">
                   <SymbolSortDropdown {...getSorterProps("symbol")} />
                 </TableTh>
-                <TableTh className="w-[12%]">
+                <TableTh className="w-[11%]">
                   <Sorter {...getSorterProps("size")} showOnHover>
                     <Trans>SIZE</Trans>
                   </Sorter>
                 </TableTh>
-                <TableTh className="w-[17%]">
+                <TableTh className="w-[14%]">
                   <Sorter {...getSorterProps("netValue")} showOnHover>
                     <Trans>NET VALUE</Trans>
                   </Sorter>
                 </TableTh>
-                <TableTh className="w-[11%]">
+                <TableTh className="w-[10.5%]">
                   <Sorter {...getSorterProps("collateral")} showOnHover>
                     <Trans>MARGIN</Trans>
                   </Sorter>
                 </TableTh>
-                <TableTh className="w-[9%]">
+                <TableTh className="w-[11%]">
                   <Sorter {...getSorterProps("entryPrice")} showOnHover>
                     <Trans>ENTRY PRICE</Trans>
                   </Sorter>
@@ -175,7 +175,7 @@ export function PositionList(p: Props) {
                     <Trans>MARK PRICE</Trans>
                   </Sorter>
                 </TableTh>
-                <TableTh className="w-[9%]">
+                <TableTh className="w-[13%]">
                   <Sorter {...getSorterProps("liqPrice")} showOnHover>
                     <Trans>LIQUIDATION PRICE</Trans>
                   </Sorter>
@@ -185,7 +185,7 @@ export function PositionList(p: Props) {
                     <Trans>TP/SL</Trans>
                   </TableTh>
                 )}
-                {!isLoading && !p.hideActions && <TableTh className="PositionItem-actions-cell w-[11%]" />}
+                {!p.hideActions && <TableTh className="PositionItem-actions-cell w-[10.5%]" />}
               </TableTheadTr>
             </thead>
             <tbody>

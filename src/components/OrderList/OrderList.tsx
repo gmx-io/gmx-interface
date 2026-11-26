@@ -239,7 +239,7 @@ export function OrderList({
 
       {!isContainerSmall && (
         <TableScrollFadeContainer disableScrollFade={orders.length === 0} className="flex grow flex-col bg-slate-900">
-          <Table className="!w-[max(100%,580px)] table-fixed">
+          <Table className="!w-[max(100%,650px)] table-fixed">
             <thead>
               <TableTheadTr>
                 {!hideActions && (
@@ -258,16 +258,16 @@ export function OrderList({
                     onChange={setMarketsDirectionsFilter}
                   />
                 </TableTh>
-                <TableTh className="w-[10%]">
+                <TableTh className="w-[11%]">
                   <OrderTypeFilter value={orderTypesFilter} onChange={setOrderTypesFilter} />
                 </TableTh>
                 <TableTh className="w-[15%]">
                   <Trans>SIZE</Trans>
                 </TableTh>
-                <TableTh className="w-[18%]">
+                <TableTh className="w-[20%]">
                   <Trans>TRIGGER PRICE</Trans>
                 </TableTh>
-                <TableTh className="w-[18%]">
+                <TableTh className="w-[17%]">
                   <Trans>MARK PRICE</Trans>
                 </TableTh>
 

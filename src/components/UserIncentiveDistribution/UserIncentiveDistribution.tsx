@@ -121,15 +121,15 @@ export default function UserIncentiveDistribution() {
                       <Trans>DATE</Trans>
                     </TableTh>
                     {!isMobile && (
-                      <TableTh>
+                      <TableTh className="w-[25%]">
                         <Trans>TYPE</Trans>
                       </TableTh>
                     )}
-                    <TableTh className="max-xl:text-right">
+                    <TableTh className="w-[25%] max-xl:text-right">
                       <Trans>AMOUNT</Trans>
                     </TableTh>
                     {!isMobile && (
-                      <TableTh className="text-right">
+                      <TableTh className="w-[25%] text-right">
                         <Trans>TRANSACTION</Trans>
                       </TableTh>
                     )}
@@ -253,7 +253,7 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
         </TableTdActionable>
       </TableTrActionable>
       {isExpanded && (
-        <tr>
+        <tr className="TableTr">
           <td colSpan={isMobile ? 4 : 1} className="px-4 py-10 pl-20">
             <div className="flex flex-col gap-2">
               <div

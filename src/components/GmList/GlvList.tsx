@@ -115,27 +115,27 @@ export function GlvList({
           {isLoading && <Loader />}
         </div>
       ) : (
-        <div className="overflow-hidden rounded-4 p-8 pt-0">
+        <div className="overflow-hidden rounded-4 pb-8">
           <TableScrollFadeContainer>
             <table className="w-[max(100%,1000px)]">
               <thead>
                 <TableTheadTr>
-                  <TableTh className="!pl-12">
+                  <TableTh className="w-[28%] min-w-[340px]">
                     <Trans>VAULT</Trans>
                   </TableTh>
-                  <TableTh>
+                  <TableTh className="w-[12%]">
                     <Trans>TVL (SUPPLY)</Trans>
                   </TableTh>
-                  <TableTh>
+                  <TableTh className="w-[10%]">
                     <Trans>BALANCE</Trans>
                   </TableTh>
-                  <TableTh>
+                  <TableTh className="w-[10%]">
                     <FeeApyLabel upperCase variant="iconStroke" />
                   </TableTh>
-                  <TableTh>
+                  <TableTh className="w-[19%]">
                     <PerformanceLabel upperCase variant="iconStroke" />
                   </TableTh>
-                  <TableTh>
+                  <TableTh className="w-[12%]">
                     <StandardTooltip
                       handle={t`SNAPSHOT`}
                       className="normal-case"
@@ -144,7 +144,7 @@ export function GlvList({
                       variant="iconStroke"
                     />
                   </TableTh>
-                  <TableTh className="pr-16" />
+                  <TableTh className="w-[9%] pr-16" />
                 </TableTheadTr>
               </thead>
               <tbody>

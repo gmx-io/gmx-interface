@@ -23,7 +23,8 @@ export function NumericValue({ parts, className, affixClassName = "numeric-affix
   return (
     <span className={cx("whitespace-nowrap", className)}>
       {parts.map((part, index) =>
-        part.kind === "text" ? (
+        // $ takes the color of its number; only other units (the x of leverage) are muted
+        part.kind === "text" || part.kind === "currency" ? (
           <Fragment key={index}>{part.text}</Fragment>
         ) : (
           <span key={index} className={affixClassName}>
