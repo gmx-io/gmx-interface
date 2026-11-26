@@ -23,7 +23,7 @@ import type { MarketInfo } from "sdk/utils/markets/types";
 import { getContractMarketPrices } from "sdk/utils/markets/utils";
 import { expandDecimals } from "sdk/utils/numbers";
 import { SwapPricingType } from "sdk/utils/orders/types";
-import { getIsMaxPnlFactorExceededAfterSwap, getSwapPathStats } from "sdk/utils/swap/swapStats";
+import { getIsMaxPnlFactorExceededForSwap, getSwapPathStats } from "sdk/utils/swap/swapStats";
 import { getSwapAmountsByFromValue } from "sdk/utils/swap/swapValues";
 
 type SwapAmountsCase = SwapCase & { uiFeeFactor: bigint };
@@ -103,7 +103,7 @@ function isRoundingDifference(input: SwapAmountsInput, app: bigint, contract: bi
 
 const isRefusedPastMaxPnl = (input: SwapAmountsInput, amountOut: bigint) =>
   amountOut === 0n &&
-  getIsMaxPnlFactorExceededAfterSwap({
+  getIsMaxPnlFactorExceededForSwap({
     marketInfo: input.market,
     isLong: input.testCase.isLongIn,
     usdIn: getSwapUsdIn(input),
