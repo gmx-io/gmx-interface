@@ -16,11 +16,11 @@ import {
 import { DecreasePositionSwapType, OrderType, SwapPricingType } from "utils/orders/types";
 import {
   getCollateralPriceAtIndexPrice,
+  getExecutionPriceForDecrease,
   getLeverage,
   getLiquidationPrice,
   getMinCollateralFactorForPosition,
   getMinCollateralUsdForLiquidationPrice,
-  getNetPriceImpactDeltaUsdForDecrease,
   getPositionPnlUsd,
 } from "utils/positions";
 import { PositionInfo, PositionInfoLoaded } from "utils/positions/types";
@@ -1227,9 +1227,8 @@ function applyAcceptablePrice(p: {
     isSetAcceptablePriceImpactEnabled,
   } = p;
 
-  const acceptablePriceInfo = getAcceptablePriceInfo({
+  const { acceptablePriceInfo, netPriceImpactValues } = getExecutionPriceForDecrease({
     marketInfo,
-    isIncrease: false,
     isLimit: marketInfo.tradeMath === "gmsol" && isTrigger,
     isLong,
     indexPrice: values.indexPrice,
@@ -1237,24 +1236,17 @@ function applyAcceptablePrice(p: {
     sizeDeltaInTokens: values.sizeDeltaInTokens,
     positionSizeInUsd: position?.sizeInUsd,
     positionSizeInTokens: position?.sizeInTokens,
+    pendingImpactAmount: position?.pendingImpactAmount ?? 0n,
   });
 
   values.acceptablePrice = acceptablePriceInfo.acceptablePrice;
   values.acceptablePriceDeltaBps = acceptablePriceInfo.acceptablePriceDeltaBps;
   values.balanceWasImproved = acceptablePriceInfo.balanceWasImproved;
 
-  const totalImpactValues = getNetPriceImpactDeltaUsdForDecrease({
-    marketInfo,
-    sizeInUsd: position?.sizeInUsd ?? 0n,
-    pendingImpactAmount: position?.pendingImpactAmount ?? 0n,
-    sizeDeltaUsd: values.sizeDeltaUsd,
-    priceImpactDeltaUsd: acceptablePriceInfo.priceImpactDeltaUsd,
-  });
-
   values.closePriceImpactDeltaUsd = acceptablePriceInfo.priceImpactDeltaUsd;
-  values.totalPendingImpactDeltaUsd = totalImpactValues.totalImpactDeltaUsd;
-  values.proportionalPendingImpactDeltaUsd = totalImpactValues.proportionalPendingImpactDeltaUsd;
-  values.priceImpactDiffUsd = totalImpactValues.priceImpactDiffUsd;
+  values.totalPendingImpactDeltaUsd = netPriceImpactValues.totalImpactDeltaUsd;
+  values.proportionalPendingImpactDeltaUsd = netPriceImpactValues.proportionalPendingImpactDeltaUsd;
+  values.priceImpactDiffUsd = netPriceImpactValues.priceImpactDiffUsd;
 
   if (isTrigger) {
     if (!isSetAcceptablePriceImpactEnabled || values.triggerOrderType === OrderType.StopLossDecrease) {

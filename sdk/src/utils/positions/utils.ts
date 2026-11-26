@@ -23,7 +23,13 @@ import { Market, MarketInfo } from "utils/markets/types";
 import { applyFactor, expandDecimals, FLOAT_PRECISION_SQRT, getBasisPoints, PRECISION } from "utils/numbers";
 import { getAcceptablePriceInfo, getMarkPrice } from "utils/prices";
 import { UserReferralInfo } from "utils/referrals/types";
-import { convertToTokenAmount, convertToUsd, getIsEquivalentTokens, getIsTokenTrackingPrice } from "utils/tokens";
+import {
+  convertToTokenAmount,
+  convertToTokenAmountForIncrease,
+  convertToUsd,
+  getIsEquivalentTokens,
+  getIsTokenTrackingPrice,
+} from "utils/tokens";
 import { Token, TokenData } from "utils/tokens/types";
 
 import { Position, PositionInfo, PositionInfoLoaded } from "./types";
@@ -642,6 +648,81 @@ export function getNetPriceImpactDeltaUsdForDecrease({
   };
 }
 
+export function getExecutionPriceForIncrease(p: {
+  marketInfo: MarketInfo;
+  isLimit: boolean;
+  isLong: boolean;
+  indexPrice: bigint;
+  sizeDeltaUsd: bigint;
+}) {
+  const { marketInfo, isLimit, isLong, indexPrice, sizeDeltaUsd } = p;
+
+  const sizeDeltaInTokens = convertToTokenAmountForIncrease(
+    sizeDeltaUsd,
+    marketInfo.indexToken.decimals,
+    indexPrice,
+    isLong
+  )!;
+
+  const acceptablePriceInfo = getAcceptablePriceInfo({
+    marketInfo,
+    isIncrease: true,
+    isLimit,
+    isLong,
+    indexPrice,
+    sizeDeltaUsd,
+    sizeDeltaInTokens,
+  });
+
+  return { sizeDeltaInTokens, acceptablePriceInfo };
+}
+
+export function getExecutionPriceForDecrease(p: {
+  marketInfo: MarketInfo;
+  isLimit: boolean;
+  isLong: boolean;
+  indexPrice: bigint;
+  sizeDeltaUsd: bigint;
+  sizeDeltaInTokens: bigint;
+  positionSizeInUsd: bigint | undefined;
+  positionSizeInTokens: bigint | undefined;
+  pendingImpactAmount: bigint;
+}) {
+  const {
+    marketInfo,
+    isLimit,
+    isLong,
+    indexPrice,
+    sizeDeltaUsd,
+    sizeDeltaInTokens,
+    positionSizeInUsd,
+    positionSizeInTokens,
+    pendingImpactAmount,
+  } = p;
+
+  const acceptablePriceInfo = getAcceptablePriceInfo({
+    marketInfo,
+    isIncrease: false,
+    isLimit,
+    isLong,
+    indexPrice,
+    sizeDeltaUsd,
+    sizeDeltaInTokens,
+    positionSizeInUsd,
+    positionSizeInTokens,
+  });
+
+  const netPriceImpactValues = getNetPriceImpactDeltaUsdForDecrease({
+    marketInfo,
+    sizeInUsd: positionSizeInUsd ?? 0n,
+    pendingImpactAmount,
+    sizeDeltaUsd,
+    priceImpactDeltaUsd: acceptablePriceInfo.priceImpactDeltaUsd,
+  });
+
+  return { acceptablePriceInfo, netPriceImpactValues };
+}
+
 export function getPriceImpactDiffUsd({
   totalImpactDeltaUsd,
   marketInfo,
@@ -880,9 +961,8 @@ export function getPositionInfo(p: {
 
   const pnlPercentage = collateralUsd !== 0n ? getBasisPoints(pnl, collateralUsd) : 0n;
 
-  const closeAcceptablePriceInfo = getAcceptablePriceInfo({
+  const { acceptablePriceInfo: closeAcceptablePriceInfo, netPriceImpactValues } = getExecutionPriceForDecrease({
     marketInfo,
-    isIncrease: false,
     isLimit: false,
     isLong: position.isLong,
     indexPrice: markPrice,
@@ -890,6 +970,7 @@ export function getPositionInfo(p: {
     sizeDeltaInTokens: position.sizeInTokens,
     positionSizeInUsd: position.sizeInUsd,
     positionSizeInTokens: position.sizeInTokens,
+    pendingImpactAmount: position.pendingImpactAmount,
   });
 
   const positionFeeInfo = getPositionFee(
@@ -904,14 +985,6 @@ export function getPositionInfo(p: {
 
   const closingFeeUsd = positionFeeInfo.positionFeeUsd;
   const uiFeeUsd = positionFeeInfo.uiFeeUsd ?? 0n;
-
-  const netPriceImpactValues = getNetPriceImpactDeltaUsdForDecrease({
-    marketInfo,
-    sizeInUsd: position.sizeInUsd,
-    pendingImpactAmount: position.pendingImpactAmount,
-    sizeDeltaUsd: position.sizeInUsd,
-    priceImpactDeltaUsd: closeAcceptablePriceInfo.priceImpactDeltaUsd,
-  });
 
   // gmsol withholds the impact beyond the cap from the close output
   const closeCostImpactDeltaUsd =

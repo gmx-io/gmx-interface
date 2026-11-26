@@ -1,4 +1,7 @@
+import type { ContractFunctionReturnType } from "viem";
+
 import { PendingPositionUpdate } from "context/SyntheticsEvents";
+import type SyntheticsReaderV2_2_1 from "sdk/abis/SyntheticsReaderV2_2_1";
 import { Position as BasePosition, PositionInfo as BasePositionInfo } from "sdk/utils/positions/types";
 
 export * from "sdk/utils/positions/types";
@@ -15,3 +18,5 @@ export type PositionInfo = BasePositionInfo & {
 export type PositionsInfoData = {
   [positionKey: string]: PositionInfo;
 };
+
+export type ContractPositionInfo = ContractFunctionReturnType<typeof SyntheticsReaderV2_2_1, "view", "getPositionInfo">;
