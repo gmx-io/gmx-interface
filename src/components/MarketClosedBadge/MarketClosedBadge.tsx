@@ -22,7 +22,8 @@ export function MarketClosedBadge({ poolName, label = "closed", isTruncatable = 
       contentClassName={cx("gap-4", { "min-w-0": isTruncatable })}
       variant="iconStroke"
       iconClassName="!size-12"
-      shouldStopPropagation
+      shouldStopPropagation="touch"
+      shouldPreventDefault={false}
       content={
         <TooltipContent>
           <TooltipTitle>
