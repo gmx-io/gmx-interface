@@ -76,7 +76,8 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
                 const isLong = claimAction.isLongOrders[index];
                 return (
                   <TooltipText key={`${market.name}/${isLong}`}>
-                    {isLong ? t`Long` : t`Short`} {indexName} <span className="subtext leading-1">[{poolName}]</span>
+                    {isLong ? t`Long` : t`Short`} {indexName}
+                    <span className="subtext">[{poolName}]</span>
                   </TooltipText>
                 );
               })}
@@ -105,7 +106,8 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
                 const isLong = claimAction.isLongOrders[index];
                 return (
                   <TooltipText key={`${market.name}/${isLong}`}>
-                    {isLong ? t`Long` : t`Short`} {indexName} <span className="subtext leading-1">[{poolName}]</span>
+                    {isLong ? t`Long` : t`Short`} {indexName}
+                    <span className="subtext">[{poolName}]</span>
                   </TooltipText>
                 );
               })}

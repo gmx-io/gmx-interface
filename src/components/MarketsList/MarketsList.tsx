@@ -237,9 +237,9 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
                 <TooltipRow
                   key={marketInfo.marketTokenAddress}
                   label={
-                    <div className="inline-flex items-start">
+                    <div className="inline-flex flex-wrap items-baseline gap-x-4">
                       <span>{getMarketIndexName(marketInfo)}</span>
-                      <span className="subtext leading-1">[{getMarketPoolName(marketInfo)}]</span>
+                      <span className="subtext !ml-0">[{getMarketPoolName(marketInfo)}]</span>
                     </div>
                   }
                   value={
@@ -263,9 +263,9 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
                 <TooltipRow
                   key={marketInfo.marketTokenAddress}
                   label={
-                    <div className="inline-flex items-start">
+                    <div className="inline-flex flex-wrap items-baseline gap-x-4">
                       <span>{getMarketIndexName(marketInfo)}</span>
-                      <span className="subtext leading-1">[{getMarketPoolName(marketInfo)}]</span>
+                      <span className="subtext !ml-0">[{getMarketPoolName(marketInfo)}]</span>
                     </div>
                   }
                   value={

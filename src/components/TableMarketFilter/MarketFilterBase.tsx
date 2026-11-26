@@ -80,7 +80,7 @@ export function MarketFilterBase({
       return (
         <>
           <TokenIcon symbol={iconName} displaySize={16} className="mr-5" />
-          <div className="inline-flex items-center">
+          <div className="inline-flex items-baseline">
             <span>{indexName}</span>
             <span className="subtext">[{poolName}]</span>
           </div>

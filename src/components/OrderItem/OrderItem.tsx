@@ -728,7 +728,7 @@ function OrderItemLarge({
                   <span key={market.indexName}>
                     {index > 0 && " → "}
                     <span>{market.indexName}</span>
-                    <span className="subtext leading-1">[{market.poolName}]</span>
+                    <span className="subtext">[{market.poolName}]</span>
                   </span>
                 ))}
               </>
@@ -741,9 +741,9 @@ function OrderItemLarge({
               <TooltipRow
                 label={t`Market`}
                 value={
-                  <div className="flex items-center">
+                  <div className="flex items-baseline">
                     <span>{indexName && indexName}</span>
-                    <span className="subtext leading-1">{poolName && `[${poolName}]`}</span>
+                    <span className="subtext">{poolName && `[${poolName}]`}</span>
                   </div>
                 }
               />

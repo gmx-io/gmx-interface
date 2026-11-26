@@ -97,7 +97,7 @@ export function TooltipTable({ columns, rows }: { columns: TooltipTableColumn[];
   const alignClass = (index: number) => (columns[index]?.align === "right" ? "text-right" : "text-left");
 
   return (
-    <div className={cx("grid gap-x-24 gap-y-8", GRID_COLUMNS[columns.length] ?? GRID_COLUMNS[3])}>
+    <div className={cx("grid gap-x-12 gap-y-8 md:gap-x-24", GRID_COLUMNS[columns.length] ?? GRID_COLUMNS[3])}>
       {columns.map((column, index) => (
         <div key={index} className={cx("text-body-small uppercase text-typography-secondary", alignClass(index))}>
           {column.label}

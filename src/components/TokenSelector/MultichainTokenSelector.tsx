@@ -473,8 +473,8 @@ export function AvailableToTradeTokenList({
                       {getMarketIndexName({
                         indexToken: getMarketIndexToken(chainId, token.address)!,
                         isSpotOnly: false,
-                      })}{" "}
-                      <span className="text-accent">
+                      })}
+                      <span className="subtext">
                         [
                         {getMarketPoolName({
                           longToken: getToken(chainId, MARKETS[chainId]?.[token.address]?.longTokenAddress),

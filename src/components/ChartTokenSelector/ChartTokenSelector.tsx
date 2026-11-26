@@ -148,7 +148,7 @@ export default function ChartTokenSelector(props: Props) {
                   <span
                     className={cx("flex justify-start leading-base", {
                       "flex-col items-baseline gap-2": !oneRowLabels,
-                      "flex-row items-center": oneRowLabels,
+                      "flex-row items-baseline": oneRowLabels,
                     })}
                   >
                     <span className="text-start text-[13px] font-medium text-typography-primary">
@@ -158,8 +158,9 @@ export default function ChartTokenSelector(props: Props) {
                     </span>
                     {poolName && (
                       <span
-                        className={cx("text-12 font-normal text-typography-secondary", {
+                        className={cx("font-normal text-typography-secondary", {
                           "ml-4": oneRowLabels,
+                          "text-12": !oneRowLabels,
                         })}
                       >
                         <span>[{poolName}]</span>

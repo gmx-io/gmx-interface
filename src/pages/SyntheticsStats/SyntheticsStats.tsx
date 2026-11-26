@@ -315,7 +315,7 @@ export function SyntheticsStats() {
                           )}
                         />
                       </div>
-                      <div className="subtext">[{getMarketPoolName(market)}]</div>
+                      <div className="text-12 text-slate-100">[{getMarketPoolName(market)}]</div>
                     </div>
                   );
                 }

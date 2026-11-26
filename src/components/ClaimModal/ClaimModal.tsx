@@ -560,7 +560,7 @@ function ClaimModalComponent(p: {
     }
 
     const labelContent = (
-      <div className="ClaimSettleModal-row-text flex items-start">
+      <div className="ClaimSettleModal-row-text flex items-baseline">
         <span>{indexName}</span>
         {poolName ? <span className="subtext">[{poolName}]</span> : null}
       </div>
