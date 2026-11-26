@@ -26,6 +26,8 @@ export type Position = {
   pendingImpactAmount: bigint;
   positionValueInUsd: bigint;
   data: string;
+  tradeId?: bigint;
+  updatedAtSlot?: bigint;
 };
 
 export type PositionInfo = Position & {

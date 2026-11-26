@@ -5,10 +5,11 @@ import { getMarketInfoWithOpenInterestDelta, getOpenInterestUsd, getPriceForPnl 
 import { MarketInfo } from "utils/markets/types";
 import { applyFactor } from "utils/numbers";
 import { getPositionPnlUsd } from "utils/positions";
+import type { PositionInfoLoaded } from "utils/positions/types";
 import { UserReferralInfo } from "utils/referrals/types";
 import { convertToUsd } from "utils/tokens";
 import { TokenData } from "utils/tokens/types";
-import { getCollateralDeltaAmountAfterPriceImpactDiff } from "utils/trade/decrease";
+import { getCollateralDeltaAmountAfterPriceImpactDiff, getDecreasePositionAmounts } from "utils/trade/decrease";
 
 import {
   getMarketInfoAtIndexPrice,
@@ -20,6 +21,7 @@ import { DecreasePositionAmounts } from "./types";
 
 export type DecreasePositionMarginState = PositionMarginState & {
   isCollateralWithdrawalCancelled: boolean;
+  collateralDeltaAmount: bigint;
 };
 
 export type DecreaseResultingPositionMarginStateParams = {
@@ -167,6 +169,7 @@ export function getDecreaseResultingPositionMarginState(
         minCollateralUsd,
         minCollateralUsdForLeverage: minCollateralUsdForOpenInterest,
         isCollateralWithdrawalCancelled: false,
+        collateralDeltaAmount: 0n,
       };
     }
 
@@ -229,7 +232,7 @@ export function getDecreaseResultingPositionMarginState(
     shouldValidateMinCollateralUsd: false,
   });
 
-  return { ...marginState, isCollateralWithdrawalCancelled };
+  return { ...marginState, isCollateralWithdrawalCancelled, collateralDeltaAmount };
 }
 
 export type TriggerDecreaseRemainingPositionMarginStateParams = {
@@ -277,4 +280,59 @@ export function getTriggerDecreaseRemainingPositionMarginState(
     feeDiscountFactor: p.feeDiscountFactor,
     indexPriceForEvaluation: triggerPrice,
   });
+}
+
+export function getStoredTriggerDecreaseQuote(
+  p: Omit<
+    Parameters<typeof getDecreasePositionAmounts>[0],
+    "validatedCollateralWithdrawalAmount" | "storedCollateralDeltaAmount" | "keepLeverage"
+  > & {
+    position: PositionInfoLoaded;
+    triggerPrice: bigint;
+    storedCollateralDeltaAmount: bigint;
+  }
+): { decreaseAmounts: DecreasePositionAmounts; marginState?: DecreasePositionMarginState } {
+  // getDecreasePositionAmounts settles a storedCollateralDeltaAmount itself, these quotes take the validated one
+  const { storedCollateralDeltaAmount, ...quoteParams } = p;
+  const { marketInfo, collateralToken } = getMarketInfoAtIndexPrice({
+    marketInfo: p.marketInfo,
+    collateralToken: p.collateralToken,
+    indexPrice: p.triggerPrice,
+    isLong: p.isLong,
+  });
+  const params = {
+    ...quoteParams,
+    marketInfo,
+    collateralToken,
+    keepLeverage: false,
+    validatedCollateralWithdrawalAmount: 0n,
+  };
+  const decreaseAmounts = getDecreasePositionAmounts(params);
+  if (decreaseAmounts.isFullClose || decreaseAmounts.sizeDeltaUsd <= 0n) {
+    return { decreaseAmounts };
+  }
+
+  const marginState = getDecreaseResultingPositionMarginState({
+    ...params,
+    sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
+    sizeDeltaInTokens: decreaseAmounts.sizeDeltaInTokens,
+    collateralDeltaAmount: storedCollateralDeltaAmount,
+    payedRemainingCollateralAmount: decreaseAmounts.payedRemainingCollateralAmount,
+    priceImpactDiffUsd: decreaseAmounts.priceImpactDiffUsd,
+  });
+
+  if (!marginState) {
+    return { decreaseAmounts: getDecreasePositionAmounts({ ...params, closeSizeUsd: p.position.sizeInUsd }) };
+  }
+
+  return {
+    decreaseAmounts:
+      marginState.collateralDeltaAmount > 0n
+        ? getDecreasePositionAmounts({
+            ...params,
+            validatedCollateralWithdrawalAmount: marginState.collateralDeltaAmount,
+          })
+        : decreaseAmounts,
+    marginState,
+  };
 }

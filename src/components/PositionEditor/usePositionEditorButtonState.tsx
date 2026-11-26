@@ -32,6 +32,7 @@ import {
   selectPositionEditorIsDepositSwapUnfillable,
   selectPositionEditorMaxWithdrawAmount,
   selectPositionEditorRawMaxWithdrawAmount,
+  selectPositionEditorReplacingOrder,
   selectPositionEditorReplacingOrderKey,
   selectPositionEditorSelectedCollateralAddress,
   selectPositionEditorSelectedCollateralToken,
@@ -152,6 +153,7 @@ export function usePositionEditorButtonState(
   const depositMode = useSelector(selectPositionEditorDepositMode);
   const triggerPrice = useSelector(selectPositionEditorTriggerPrice);
   const replacingOrderKey = useSelector(selectPositionEditorReplacingOrderKey);
+  const replacingOrder = useSelector(selectPositionEditorReplacingOrder);
   const positionOrders = useSelector(makeSelectOrdersByPositionKey(editingPositionKey));
   const maxAutoCancelOrders = useSelector(selectMaxAutoCancelOrders);
   const depositSwapAmounts = useSelector(selectPositionEditorDepositSwapAmounts);
@@ -212,6 +214,7 @@ export function usePositionEditorButtonState(
         indexTokenAddress: position.indexToken.address,
         allowedSlippage,
         replacingOrderKey,
+        replacingOrder,
       });
     }
 
@@ -313,6 +316,7 @@ export function usePositionEditorButtonState(
     marketsInfoData,
     position,
     receiveUsd,
+    replacingOrder,
     replacingOrderKey,
     selectedCollateralAddress,
     selectedCollateralToken,

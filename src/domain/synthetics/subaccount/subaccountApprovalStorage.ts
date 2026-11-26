@@ -124,22 +124,33 @@ export function migrateLegacySubaccountApprovalSlot(chainId: ContractsChainId, a
   }
 }
 
+export function findStoredSubaccountApprovals(
+  chainId: ContractsChainId,
+  account: string,
+  subaccountAddress: string
+): SignedSubaccountApproval[] {
+  const contextSrcChainIds: (SourceChainId | undefined)[] = [undefined, ...getRelatedSourceChainIds(chainId)];
+  const approvals: SignedSubaccountApproval[] = [];
+
+  for (const srcChainId of contextSrcChainIds) {
+    const candidate = readStoredSubaccountApproval(chainId, account, srcChainId);
+
+    if (candidate?.subaccount === subaccountAddress) {
+      approvals.push(candidate);
+    }
+  }
+
+  return approvals;
+}
+
 export function findFallbackSubaccountApproval(
   chainId: ContractsChainId,
   account: string,
   subaccountAddress: string
 ): SignedSubaccountApproval | undefined {
-  const contextSrcChainIds: (SourceChainId | undefined)[] = [undefined, ...getRelatedSourceChainIds(chainId)];
-
   let latestApproval: SignedSubaccountApproval | undefined;
 
-  for (const srcChainId of contextSrcChainIds) {
-    const candidate = readStoredSubaccountApproval(chainId, account, srcChainId);
-
-    if (!candidate || candidate.subaccount !== subaccountAddress) {
-      continue;
-    }
-
+  for (const candidate of findStoredSubaccountApprovals(chainId, account, subaccountAddress)) {
     if (!latestApproval || candidate.signedAt > latestApproval.signedAt) {
       latestApproval = candidate;
     }

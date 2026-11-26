@@ -17,6 +17,9 @@ export function getIsV2JitLiquidityInfoEnabled(uiFlags: UiFlags | undefined): bo
   return uiFlags?.[IS_V2_JIT_LIQUIDITY_INFO_ENABLED_UI_FLAG]?.enabled !== false;
 }
 
+// Enable per chain once /v1/orders reflects receive-mode changes from OrderUpdated.
+export const ORDER_EDITOR_RECEIVE_MODE_FLAG = "isOrderEditorReceiveModeEnabled";
+
 export const IS_EXPRESS_AVAILABLE_UI_FLAG = "isExpressAvailable";
 
 /** Fail-open: only an explicit `false` disables express — an unreachable keeper or an unpublished flag must not. */

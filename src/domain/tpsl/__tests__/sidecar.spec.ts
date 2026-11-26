@@ -1,3 +1,4 @@
+// @vitest-shared-worker
 import { describe, expect, it } from "vitest";
 
 import { DecreasePositionSwapType, OrderType, PositionOrderInfo } from "domain/synthetics/orders";
@@ -39,6 +40,7 @@ function makeExistingOrder(overrides: Partial<PositionOrderInfo> = {}): Position
     indexToken: WETH,
     decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
     executionFee: 0n,
+    srcChainId: 0n,
     ...overrides,
   } as unknown as PositionOrderInfo;
 }
@@ -51,6 +53,9 @@ const baseParams = {
   indexTokenAddress: WETH.address,
   collateralTokenAddress: USDC.address,
   isLong: true,
+  isGmxAccount: false,
+  isGmxAccountPosition: false,
+  isOrdersLoading: false,
   userReferralCode: undefined,
 };
 
@@ -173,6 +178,68 @@ describe("buildTpSlBatchPayloads", () => {
     expect(result.createOrderParams).toHaveLength(1);
     expect(result.createOrderParams[0].orderPayload.decreasePositionSwapType).toBe(DecreasePositionSwapType.NoSwap);
   });
+
+  const GMX_ACCOUNT_ORDER = BigInt(ARBITRUM);
+
+  it.each([
+    { orderSrcChainId: 0n, isGmxAccountPosition: false, isGmxAccount: false, recreates: false },
+    { orderSrcChainId: 0n, isGmxAccountPosition: false, isGmxAccount: true, recreates: false },
+    { orderSrcChainId: 0n, isGmxAccountPosition: true, isGmxAccount: false, recreates: false },
+    { orderSrcChainId: 0n, isGmxAccountPosition: true, isGmxAccount: true, recreates: true },
+    { orderSrcChainId: GMX_ACCOUNT_ORDER, isGmxAccountPosition: false, isGmxAccount: false, recreates: true },
+    { orderSrcChainId: GMX_ACCOUNT_ORDER, isGmxAccountPosition: false, isGmxAccount: true, recreates: false },
+    { orderSrcChainId: GMX_ACCOUNT_ORDER, isGmxAccountPosition: true, isGmxAccount: false, recreates: false },
+    { orderSrcChainId: GMX_ACCOUNT_ORDER, isGmxAccountPosition: true, isGmxAccount: true, recreates: false },
+  ])(
+    "full-close order srcChainId $orderSrcChainId, GMX Account position $isGmxAccountPosition, window pays from the GMX Account $isGmxAccount: recreates $recreates TRD-44",
+    ({ orderSrcChainId, isGmxAccountPosition, isGmxAccount, recreates }) => {
+      const result = buildTpSlBatchPayloads({
+        ...baseParams,
+        isGmxAccount,
+        isGmxAccountPosition,
+        entries: [
+          {
+            amounts: makeAmounts({ isFullClose: true, decreaseSwapType: DecreasePositionSwapType.NoSwap }),
+            executionFeeAmount: 0n,
+            executionGasLimit: 0n,
+            existingFullCloseOrder: makeExistingOrder({ key: "0xtpkey", srcChainId: orderSrcChainId }),
+          },
+        ],
+      });
+
+      expect(result.cancelOrderParams.map((cancel) => cancel.orderKey)).toEqual(recreates ? ["0xtpkey"] : []);
+      expect(result.updateOrderParams).toHaveLength(recreates ? 0 : 1);
+      expect(result.createOrderParams).toHaveLength(recreates ? 1 : 0);
+    }
+  );
+
+  it.each([
+    {
+      isGmxAccountPosition: undefined,
+      isOrdersLoading: false,
+      existingFullCloseOrder: makeExistingOrder({ key: "0xtpkey", srcChainId: GMX_ACCOUNT_ORDER }),
+    },
+    { isGmxAccountPosition: true, isOrdersLoading: true, existingFullCloseOrder: undefined },
+  ])(
+    "builds no orders until the position balance and the orders are loaded: GMX Account position $isGmxAccountPosition, orders loading $isOrdersLoading TRD-44",
+    ({ isGmxAccountPosition, isOrdersLoading, existingFullCloseOrder }) => {
+      const result = buildTpSlBatchPayloads({
+        ...baseParams,
+        isGmxAccountPosition,
+        isOrdersLoading,
+        entries: [
+          {
+            amounts: makeAmounts({ isFullClose: true }),
+            executionFeeAmount: 0n,
+            executionGasLimit: 0n,
+            existingFullCloseOrder,
+          },
+        ],
+      });
+
+      expect(result).toEqual({ createOrderParams: [], updateOrderParams: [], cancelOrderParams: [] });
+    }
+  );
 
   it("updates in place when the swap type matches the existing full-close order", () => {
     const result = buildTpSlBatchPayloads({

@@ -4,6 +4,7 @@ import arbitrumTokens from "test/fixtures/arbitrumTokens.json";
 
 const keeperResponsesByPathname: Record<string, unknown> = {
   "/markets": arbitrumMarkets,
+  "/markets/state": { markets: [] },
   "/tokens": arbitrumTokens,
   "/prices/tickers": arbitrumTickers,
 };

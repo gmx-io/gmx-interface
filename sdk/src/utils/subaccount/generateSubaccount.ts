@@ -1,34 +1,27 @@
 import cryptoJs from "crypto-js";
-import { keccak256, type Hash } from "viem";
-import { privateKeyToAccount } from "viem/accounts";
+import { generatePrivateKey } from "viem/accounts";
 
-import { SUBACCOUNT_MESSAGE } from "configs/express";
-import type { IAbstractSigner } from "utils/signer";
 import { PrivateKeySigner } from "utils/signer";
 
 export type GeneratedSubaccount = {
   address: string;
   signer: PrivateKeySigner;
-  /** AES-encrypted private key (encrypted with main account address) */
-  privateKey: string;
+  privateKey: `0x${string}`;
 };
 
-export async function generateSubaccount(mainSigner: IAbstractSigner): Promise<GeneratedSubaccount> {
-  const signature = await mainSigner.signMessage(SUBACCOUNT_MESSAGE);
+export function getSubaccountFromPrivateKey(privateKey: `0x${string}`): GeneratedSubaccount {
+  const signer = new PrivateKeySigner(privateKey);
 
-  const pk = keccak256(signature as Hash) as `0x${string}`;
-  const account = privateKeyToAccount(pk);
-  const signer = new PrivateKeySigner(pk);
-
-  const encryptedPrivateKey = cryptoJs.AES.encrypt(pk, mainSigner.address).toString();
-
-  return {
-    address: account.address,
-    signer,
-    privateKey: encryptedPrivateKey,
-  };
+  return { address: signer.address, signer, privateKey };
 }
 
+export function generateSubaccount(): GeneratedSubaccount {
+  return getSubaccountFromPrivateKey(generatePrivateKey() as `0x${string}`);
+}
+
+/**
+ * @deprecated Only reads configs stored by SDK versions below 3.0.0.
+ */
 export function decryptSubaccountPrivateKey(encryptedPrivateKey: string, mainAccountAddress: string): `0x${string}` {
   const decrypted = cryptoJs.AES.decrypt(encryptedPrivateKey, mainAccountAddress).toString(cryptoJs.enc.Utf8);
   if (!decrypted) {
@@ -37,6 +30,9 @@ export function decryptSubaccountPrivateKey(encryptedPrivateKey: string, mainAcc
   return decrypted as `0x${string}`;
 }
 
+/**
+ * @deprecated Only reads configs stored by SDK versions below 3.0.0.
+ */
 export function createSubaccountSignerFromConfig(
   encryptedPrivateKey: string,
   mainAccountAddress: string
