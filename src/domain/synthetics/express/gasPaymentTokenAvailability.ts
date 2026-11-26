@@ -10,6 +10,7 @@ import { getByKey } from "lib/objects";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 import type { ContractsChainId } from "sdk/configs/chains";
+import { atomicSwapFeatureDisabledKey } from "sdk/configs/dataStore";
 import { getGasPaymentTokens, getRelayerFeeToken } from "sdk/configs/express";
 import { getOracleParamsForRelayParams } from "sdk/utils/express";
 import type { FindSwapPath } from "sdk/utils/trade/types";
@@ -20,6 +21,7 @@ export type GasPaymentTokensOnchainState = {
   // the relay fee swap reverts when it can't read one of these prices, e.g. a Chainlink feed past its heartbeat
   unpricedTokenAddresses: string[];
   pausedTokenAddresses: string[];
+  isFeeSwapDisabled: boolean;
 };
 
 // tokens that pay for now when the token covering an unavailable saved one is short; never saved
@@ -40,15 +42,23 @@ export async function fetchGasPaymentTokensOnchainState(
   // a revert is the answer here, and useMulticall throws on any reverted call
   const results = await getPublicClientWithRpc(chainId).multicall({
     allowFailure: true,
-    contracts: tokenAddresses.flatMap((tokenAddress) => [
+    contracts: [
+      ...tokenAddresses.flatMap((tokenAddress) => [
+        {
+          address: priceFeedProvider,
+          abi: abis.ChainlinkPriceFeedProvider,
+          functionName: "getOraclePrice",
+          args: [tokenAddress, "0x"],
+        } as const,
+        { address: tokenAddress, abi: abis.Pausable, functionName: "paused" } as const,
+      ]),
       {
-        address: priceFeedProvider,
-        abi: abis.ChainlinkPriceFeedProvider,
-        functionName: "getOraclePrice",
-        args: [tokenAddress, "0x"],
+        address: getContract(chainId, "DataStore"),
+        abi: abis.DataStore,
+        functionName: "getBool",
+        args: [atomicSwapFeatureDisabledKey(getContract(chainId, "SwapHandler"))],
       } as const,
-      { address: tokenAddress, abi: abis.Pausable, functionName: "paused" } as const,
-    ]),
+    ],
   });
 
   const priceResults = tokenAddresses.map((_, index) => results[index * 2]);
@@ -63,6 +73,7 @@ export async function fetchGasPaymentTokensOnchainState(
     unpricedTokenAddresses: tokenAddresses.filter((_, index) => priceResults[index].status === "failure"),
     // tokens without paused() can't be paused
     pausedTokenAddresses: tokenAddresses.filter((_, index) => results[index * 2 + 1].result === true),
+    isFeeSwapDisabled: results[tokenAddresses.length * 2].result === true,
   };
 }
 
@@ -81,6 +92,10 @@ export function getGasPaymentTokenUnavailableReason({
   let feeSwapPath: string[] = [];
 
   if (tokenAddress !== relayerFeeTokenAddress) {
+    if (onchainState?.isFeeSwapDisabled) {
+      return "feeSwap";
+    }
+
     const feeSwapPathStats = findFeeSwapPath(FEE_SWAP_CHECK_USD, { order: ["length"] });
 
     if (feeSwapPathStats === undefined || !getIsSwapPathFillable(feeSwapPathStats)) {
