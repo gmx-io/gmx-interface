@@ -8067,6 +8067,10 @@ msgstr "Одобрение…"
 msgid "This position has a negative margin after pending borrow and funding fees, so settlement is likely to fail: positive funding only becomes claimable after a successful settlement. Add margin, or close enough of the position for the realized profit to cover the shortfall."
 msgstr "После вычета ожидающих комиссий за заимствование и фондирование маржа этой позиции отрицательна, поэтому расчёт, скорее всего, не удастся: положительное фондирование становится доступным для получения только после успешного расчёта. Добавьте маржу либо закройте достаточную часть позиции, чтобы реализованная прибыль покрыла дефицит."
 
+#: src/components/TradeBox/FreshPositionIncreaseWarningCard.tsx
+msgid "TP/SL can't be added to this order. Set them after the new position opens."
+msgstr "К этому ордеру нельзя добавить TP/SL. Установите их после открытия новой позиции."
+
 #: src/components/MarketsList/MarketsList.tsx
 msgid "UTILIZATION"
 msgstr "ИСПОЛЬЗОВАНИЕ"

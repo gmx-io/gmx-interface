@@ -732,12 +732,16 @@ export const selectTradeboxFormState = createSelector((q) => {
   };
 });
 
-export const selectTradeboxIsTPSLEnabled = createSelector((q) => {
+export const selectTradeboxIsTPSLToggledOn = createSelector((q) => {
   const { limitOrTPSL } = q(selectTradeboxAdvancedOptions);
   const { isSwap, isTrigger, isTwap } = q(selectTradeboxTradeFlags);
 
   return limitOrTPSL && !isSwap && !isTrigger && !isTwap;
 });
+
+export const selectTradeboxIsTPSLEnabled = createSelector(
+  (q) => q(selectTradeboxIsTPSLToggledOn) && !q(selectTradeboxIsPositionLiquidatedBeforeTrigger)
+);
 
 export const selectTradeboxIsWrapOrUnwrap = createSelector((q) => {
   const fromToken = q(selectTradeboxFromToken);
