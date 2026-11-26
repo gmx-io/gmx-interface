@@ -3148,6 +3148,7 @@ msgid "A standard approval transaction is required to continue"
 msgstr "需要標準授權交易才能繼續"
 
 #: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
 msgid "Not enough SOL for network fees, keeper fees and account rent"
 msgstr ""
 
@@ -3228,6 +3229,11 @@ msgstr "的平倉手續費"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "FUNDING APR"
 msgstr "資金費率 APR"
+
+#: src/components/TradeBox/components/SideOrderEntry.tsx
+#: src/domain/gmsol/tradebox/tradeboxErrorMessages.ts
+msgid "Edit existing TP/SL orders in the positions list"
+msgstr ""
 
 #: src/components/Claims/filters/ActionFilter.tsx
 #: src/components/TradeHistory/filters/ActionFilter.tsx

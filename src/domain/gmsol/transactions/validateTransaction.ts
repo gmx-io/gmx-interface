@@ -27,6 +27,8 @@ import { GmsolInstructionReader, decodeGmsolInstruction, readCreateOrderParams }
 import { toGmsolOrderParams, toGmsolUpdateParams } from "./orderInputs";
 import {
   GMSOL_EXECUTION_LAMPORTS,
+  GMSOL_MAX_COMPUTE_UNIT_PRICE,
+  GMSOL_MAX_COMPUTE_UNITS,
   getGmsolPositionPreparationCost,
   getNoGmsolCreatedAccounts,
   type GmsolCreatedAccounts,
@@ -262,10 +264,13 @@ export async function validateGmsolTransactionPlan(plan: GmsolTransactionPlan) {
         const kind = reader.uint(1);
         if (kind === 2n) {
           const units = reader.uint(4);
-          requireGmsol(!computeLimitSeen && units > 0n && units <= 1_400_000n, "Invalid compute limit");
+          requireGmsol(!computeLimitSeen && units > 0n && units <= GMSOL_MAX_COMPUTE_UNITS, "Invalid compute limit");
           computeLimitSeen = true;
         } else {
-          requireGmsol(kind === 3n && !computePriceSeen && reader.uint(8) <= 1_000_000n, "Invalid compute price");
+          requireGmsol(
+            kind === 3n && !computePriceSeen && reader.uint(8) <= GMSOL_MAX_COMPUTE_UNIT_PRICE,
+            "Invalid compute price"
+          );
           computePriceSeen = true;
         }
       } else if (ix.programAddress === ASSOCIATED_TOKEN_PROGRAM) {

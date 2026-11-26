@@ -5,4 +5,7 @@ export type SolanaTradeboxState = {
   disabled: boolean;
   isSubmitting: boolean;
   onSubmit: () => Promise<boolean>;
+  // Lamports Max keeps back from a native SOL payment for keeper fees, rent and network fees.
+  solHoldback: bigint | undefined;
+  isSolHoldbackUnavailable: boolean;
 };

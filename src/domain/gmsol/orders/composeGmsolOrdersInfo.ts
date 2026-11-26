@@ -28,13 +28,13 @@ export function composeGmsolOrdersInfo(
 ) {
   const wrappedNativeToken = getGmsolWrappedToken();
   const ordersInfoData: OrdersInfoData = {};
-  const keys: string[] = [];
+  const activeOrders: ApiOrderInfo[] = [];
 
   for (const apiOrder of apiOrders) {
     if (apiOrder.actionState === "completed" || apiOrder.actionState === "cancelled") {
       continue;
     }
-    keys.push(apiOrder.key);
+    activeOrders.push(apiOrder);
 
     const order = convertApiOrderToOrder(toApiOrder(apiOrder));
     const orderInfo = getOrderInfo({ marketsInfoData, tokensData, wrappedNativeToken, order });
@@ -59,5 +59,5 @@ export function composeGmsolOrdersInfo(
     ordersInfoData[orderInfo.key] = orderInfo;
   }
 
-  return resolveGmsolAccountSnapshot({ keys, data: ordersInfoData, previousData });
+  return resolveGmsolAccountSnapshot({ items: activeOrders, data: ordersInfoData, previousData });
 }

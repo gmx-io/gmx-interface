@@ -1,6 +1,11 @@
 import { TOKEN_ACCOUNT_SIZE } from "lib/solana/balances";
 
 export const GMSOL_EXECUTION_LAMPORTS = 300_000n;
+// The validator rejects a higher compute limit or price (in micro-lamports per unit).
+export const GMSOL_MAX_COMPUTE_UNITS = 1_400_000n;
+export const GMSOL_MAX_COMPUTE_UNIT_PRICE = 1_000_000n;
+const SIGNATURE_LAMPORTS = 5_000n;
+const MAX_NETWORK_FEE = SIGNATURE_LAMPORTS + (GMSOL_MAX_COMPUTE_UNITS * GMSOL_MAX_COMPUTE_UNIT_PRICE) / 1_000_000n;
 
 // Data sizes at the pinned store commit, discriminator included; the wallet itself must stay rent exempt.
 export const GMSOL_RENT_ACCOUNT_SIZES = {
@@ -33,6 +38,44 @@ export function getGmsolPositionPreparationCost(isPureMarket: boolean) {
     keeperLamports: GMSOL_EXECUTION_LAMPORTS,
     createdAccounts: { tokenAccount: isPureMarket ? 1 : 2, user: 0, position: 1, order: 1 },
   };
+}
+
+/** Before a plan exists: every account an increase with TP/SL can create, at the highest fee the validator allows. */
+export function getGmsolIncreaseSolCosts({
+  orderCount,
+  isPureMarket,
+  hasPosition,
+}: {
+  orderCount: number;
+  isPureMarket: boolean;
+  hasPosition: boolean;
+}): GmsolTransactionSolCost[] {
+  const preparation = getGmsolPositionPreparationCost(isPureMarket);
+  const prepared = hasPosition ? getNoGmsolCreatedAccounts() : { ...preparation.createdAccounts, user: 1 };
+  const costs: GmsolTransactionSolCost = {
+    networkFee: MAX_NETWORK_FEE,
+    keeperLamports: BigInt(orderCount) * GMSOL_EXECUTION_LAMPORTS + (hasPosition ? 0n : preparation.keeperLamports),
+    wrapLamports: 0n,
+    createdAccounts: {
+      // The wallet's pool token accounts, then per order its pay or output escrow and both pool token escrows.
+      tokenAccount: (isPureMarket ? 1 : 2) + 3 * orderCount + prepared.tokenAccount,
+      user: prepared.user,
+      position: prepared.position,
+      order: orderCount + prepared.order,
+    },
+  };
+  // TP/SL can move the wallet preparation into a transaction of its own.
+  return orderCount > 1
+    ? [
+        costs,
+        {
+          networkFee: MAX_NETWORK_FEE,
+          keeperLamports: 0n,
+          wrapLamports: 0n,
+          createdAccounts: getNoGmsolCreatedAccounts(),
+        },
+      ]
+    : [costs];
 }
 
 export function getGmsolSolReserve(costs: readonly GmsolTransactionSolCost[], rent: GmsolRentExemptMinimums) {
