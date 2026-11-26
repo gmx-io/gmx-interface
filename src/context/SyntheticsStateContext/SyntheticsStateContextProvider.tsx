@@ -41,6 +41,7 @@ import {
   useMarketsInfoRequest,
   useMarketTokensDataRequest,
 } from "domain/synthetics/markets";
+import { useClosedMarketsWithDebug } from "domain/synthetics/markets/debugClosedMarkets";
 import { isGlvEnabled } from "domain/synthetics/markets/glv";
 import type { ClosedMarkets } from "domain/synthetics/markets/types";
 import { useClosedMarketsRequest } from "domain/synthetics/markets/useClosedMarketsRequest";
@@ -293,9 +294,10 @@ export function SyntheticsStateContextProvider({
 
   const oracleSettings = useOracleSettingsData();
   const jitLiquidityData = useJitLiquidityRequest(chainId, { enabled: isTradePage || isAccountPage });
-  const closedMarkets = useClosedMarketsRequest(chainId, {
-    enabled: !isSolanaNetwork(networkId),
-  });
+  const closedMarkets = useClosedMarketsWithDebug(
+    useClosedMarketsRequest(chainId, { enabled: !isSolanaNetwork(networkId) }),
+    marketsInfo.marketsInfoData
+  );
 
   const [missedCoinsModalPlace, setMissedCoinsModalPlace] = useState<MissedCoinsPlace>();
 

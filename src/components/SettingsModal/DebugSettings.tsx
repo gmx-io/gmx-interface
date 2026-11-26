@@ -54,6 +54,21 @@ export function DebugSettings({ isSettingsVisible }: DebugSettingsProps) {
           <Trans>Enable token permits regardless of UI flags</Trans>
         </ToggleSwitch>
 
+        <div>
+          <div className="mb-8">
+            <Trans>Force markets closed</Trans>
+          </div>
+          <input
+            value={settings.debugClosedMarkets ?? ""}
+            onChange={(e) => settings.setDebugClosedMarkets(e.target.value)}
+            placeholder="GOLD, SILVER"
+            className="w-full rounded-4 border border-slate-600 px-11 py-8 text-14"
+          />
+          <div className="mt-8 text-12 text-typography-secondary">
+            <Trans>Index token symbols, comma-separated. These markets show as closed.</Trans>
+          </div>
+        </div>
+
         <AbFlagSettings />
 
         <DebugSwapsSettings />

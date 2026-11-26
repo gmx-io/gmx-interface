@@ -183,6 +183,14 @@ msgid "See <0>Tenderly docs</0>"
 msgstr "Siehe <0>Tenderly-Dokumentation</0>"
 
 #: src/components/SettingsModal/DebugSettings.tsx
+msgid "Force markets closed"
+msgstr "Märkte als geschlossen festlegen"
+
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Index token symbols, comma-separated. These markets show as closed."
+msgstr "Index-Token-Symbole, durch Kommas getrennt. Diese Märkte werden als geschlossen angezeigt."
+
+#: src/components/SettingsModal/DebugSettings.tsx
 msgid "Show debug values"
 msgstr "Debugwerte anzeigen"
 
