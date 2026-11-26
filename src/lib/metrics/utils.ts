@@ -54,7 +54,13 @@ import {
   SwapMetricData,
 } from "./types";
 
-const NEVER_CREATED_ERROR_CONTEXTS: OrderErrorContext[] = ["simulation", "gasLimit", "gasPrice", "minting"];
+const NEVER_CREATED_ERROR_CONTEXTS: OrderErrorContext[] = [
+  "simulation",
+  "gasLimit",
+  "gasPrice",
+  "minting",
+  "pendingWalletBatch",
+];
 
 export function initSwapMetricData({
   fromToken,

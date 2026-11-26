@@ -54,6 +54,13 @@ export function DebugSettings({ isSettingsVisible }: DebugSettingsProps) {
           <Trans>Enable token permits regardless of UI flags</Trans>
         </ToggleSwitch>
 
+        <ToggleSwitch
+          isChecked={settings.isWalletBatchingQaOverrideEnabled}
+          setIsChecked={settings.setIsWalletBatchingQaOverrideEnabled}
+        >
+          <Trans>Enable wallet batching regardless of UI flags</Trans>
+        </ToggleSwitch>
+
         <AbFlagSettings />
 
         <DebugSwapsSettings />
