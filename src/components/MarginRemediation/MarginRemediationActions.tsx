@@ -32,7 +32,7 @@ function useRemediablePositionKey(positionKey: string | undefined): string | und
   return isRemediable ? positionKey : undefined;
 }
 
-export function DepositMarginNowAction({
+export function DepositMarginAction({
   positionKey,
   isTooltipLine,
   children,
@@ -109,8 +109,7 @@ export function LiquidatableIncreaseMessage({ positionKey }: { positionKey: stri
   return (
     <Trans>
       Order may not execute: the resulting position would be liquidatable at the trigger price.{" "}
-      <DepositMarginNowAction positionKey={positionKey}>Deposit margin</DepositMarginNowAction> or reduce the order
-      size.
+      <DepositMarginAction positionKey={positionKey}>Deposit margin</DepositMarginAction> or reduce the order size.
     </Trans>
   );
 }

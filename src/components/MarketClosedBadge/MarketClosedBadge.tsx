@@ -35,7 +35,7 @@ export function MarketClosedBadge({ poolName, label = "closed", isTruncatable = 
             </Trans>
           </TooltipText>
           <TooltipText>
-            <Trans>Market orders, TWAP, Close and Edit margin are unavailable until then.</Trans>
+            <Trans>Market orders, TWAP, Close, withdrawals and "Now" deposits are unavailable until then.</Trans>
           </TooltipText>
           {poolName && <TooltipRow label={t`Pool`} value={poolName} />}
         </TooltipContent>

@@ -27,7 +27,7 @@ msgid "Limit, Stop Market and TP/SL orders can still be created, but execute onl
 msgstr ""
 
 #: src/components/MarketClosedBadge/MarketClosedBadge.tsx
-msgid "Market orders, TWAP, Close and Edit margin are unavailable until then."
+msgid "Market orders, TWAP, Close, withdrawals and \"Now\" deposits are unavailable until then."
 msgstr ""
 
 #: src/components/MarketClosedBanner/MarketClosedBanner.tsx

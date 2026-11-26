@@ -27,8 +27,8 @@ msgid "Limit, Stop Market and TP/SL orders can still be created, but execute onl
 msgstr "Лимитные, стоп-маркет и TP/SL ордера по-прежнему можно создать, но они исполнятся только после открытия рынка."
 
 #: src/components/MarketClosedBadge/MarketClosedBadge.tsx
-msgid "Market orders, TWAP, Close and Edit margin are unavailable until then."
-msgstr "Рыночные ордера, TWAP, закрытие позиции и изменение маржи до тех пор недоступны."
+msgid "Market orders, TWAP, Close, withdrawals and \"Now\" deposits are unavailable until then."
+msgstr "Рыночные ордера, TWAP, закрытие позиции, вывод и пополнение «Сейчас» до тех пор недоступны."
 
 #: src/components/MarketClosedBanner/MarketClosedBanner.tsx
 msgid "Market orders and TWAP are unavailable while the market is closed. Limit, Stop Market and TP/SL orders can still be created, but execute only after the market reopens."
