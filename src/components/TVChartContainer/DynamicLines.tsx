@@ -7,34 +7,17 @@ import {
   useEditingOrderState,
   useOrderEditorIsSubmittingState,
 } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
-import {
-  selectExpressGlobalParams,
-  selectUnavailableExpressFeeToken,
-} from "context/SyntheticsStateContext/selectors/expressSelectors";
-import {
-  selectChainId,
-  selectOrdersInfoData,
-  selectSrcChainId,
-  selectSubaccountForChainAction,
-} from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectOrdersInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   makeSelectOrderEditorPositionOrderError,
   selectOrderEditorSetTriggerPriceInputValue,
 } from "context/SyntheticsStateContext/selectors/orderEditorSelectors";
 import { useCalcSelector, useSelector } from "context/SyntheticsStateContext/utils";
-import { useEstimateBatchExpressParamsWithApprovedGasToken } from "domain/synthetics/express/useGasPaymentTokenFallback";
-import {
-  getExpressParamsForSubmit,
-  reportMultichainExpressSubmitError,
-} from "domain/synthetics/express/validateMultichainExpressSubmit";
-import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
-import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
+import { useSendCancelOrdersTxn } from "domain/synthetics/orders/useSendCancelOrdersTxn";
 import { helperToast } from "lib/helperToast";
 import { calculateDisplayDecimals, formatAmount, numberToBigint } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import { useJsonRpcProvider } from "lib/rpc";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
-import useWallet from "lib/wallets/useWallet";
 import { getOrderKeys } from "sdk/utils/orders";
 import { PositionOrderInfo } from "sdk/utils/orders/types";
 
@@ -53,27 +36,17 @@ export function DynamicLines({
   lines: Array<DynamicChartLine & { lineLength: number }>;
   bodyFontSizePt: number;
 }) {
-  const { signer } = useWallet();
-  const chainId = useSelector(selectChainId);
-  const srcChainId = useSelector(selectSrcChainId);
-  const { provider } = useJsonRpcProvider(chainId);
   const [, setCancellingOrdersKeys] = useCancellingOrdersKeysState();
-  const { makeOrderTxnCallback } = useOrderTxnCallbacks();
+  const sendCancelOrdersTxn = useSendCancelOrdersTxn();
   const [isSubmitting] = useOrderEditorIsSubmittingState();
   const [editingOrderState, setEditingOrderState] = useEditingOrderState();
   const setTriggerPriceInputValue = useSelector(selectOrderEditorSetTriggerPriceInputValue);
   const ordersInfoData = useSelector(selectOrdersInfoData);
   const { pendingOrdersUpdates } = useSyntheticsEvents();
-  const globalExpressParams = useSelector(selectExpressGlobalParams);
-  const unavailableGasPaymentToken = useSelector(selectUnavailableExpressFeeToken);
-  const estimateExpressParams = useEstimateBatchExpressParamsWithApprovedGasToken();
-  const subaccount = useSelector(selectSubaccountForChainAction);
   const hasOutdatedUi = useHasOutdatedUi();
 
   const onCancelOrder = useCallback(
     async (key: string) => {
-      if (!signer || !provider) return;
-
       if (hasOutdatedUi) {
         helperToast.error(getPageOutdatedError());
         return;
@@ -86,69 +59,13 @@ export function DynamicLines({
       const orderKeys = getOrderKeys(order);
       setCancellingOrdersKeys((prev) => [...prev, ...orderKeys]);
 
-      const batchParams = {
-        createOrderParams: [],
-        updateOrderParams: [],
-        cancelOrderParams: orderKeys.map((k) => ({ orderKey: k })),
-      };
-
       try {
-        const expressParams = await estimateExpressParams({
-          signer,
-          chainId,
-          batchParams,
-          globalExpressParams,
-          requireValidations: false,
-          estimationMethod: "approximate",
-          provider,
-          isGmxAccount: srcChainId !== undefined,
-          subaccount,
-        });
-
-        if (
-          reportMultichainExpressSubmitError({
-            isGmxAccount: srcChainId !== undefined,
-            expressParams,
-            tokensData: undefined,
-            unavailableGasPaymentToken,
-            actionName: "Cancel Order",
-            collateral: order.initialCollateralToken.symbol,
-          })
-        ) {
-          return;
-        }
-
-        await sendBatchOrderTxn({
-          chainId,
-          signer,
-          batchParams,
-          expressParams: getExpressParamsForSubmit(expressParams),
-          simulationParams: undefined,
-          callback: makeOrderTxnCallback({
-            actionName: "Cancel Order",
-            collateralSymbol: order.initialCollateralToken.symbol,
-          }),
-          provider,
-          isGmxAccount: srcChainId !== undefined,
-        });
+        await sendCancelOrdersTxn({ orders: [order], collateralSymbol: order.initialCollateralToken.symbol });
       } finally {
         setCancellingOrdersKeys((prev) => prev.filter((k) => k !== key));
       }
     },
-    [
-      chainId,
-      estimateExpressParams,
-      globalExpressParams,
-      unavailableGasPaymentToken,
-      hasOutdatedUi,
-      makeOrderTxnCallback,
-      ordersInfoData,
-      provider,
-      setCancellingOrdersKeys,
-      signer,
-      srcChainId,
-      subaccount,
-    ]
+    [hasOutdatedUi, ordersInfoData, sendCancelOrdersTxn, setCancellingOrdersKeys]
   );
 
   const calcSelector = useCalcSelector();

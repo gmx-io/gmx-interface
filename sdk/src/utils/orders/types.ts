@@ -55,6 +55,8 @@ export type Order = {
   marketAddress: string;
   decreasePositionSwapType: DecreasePositionSwapType;
   receiver: string;
+  // undefined when the data source doesn't provide it
+  cancellationReceiver?: string;
   swapPath: string[];
   contractAcceptablePrice: bigint;
   contractTriggerPrice: bigint;
@@ -68,13 +70,13 @@ export type Order = {
   isLong: boolean;
   orderType: OrderType;
   shouldUnwrapNativeToken: boolean;
-  srcChainId?: bigint;
   autoCancel: boolean;
   data: string[];
   uiFeeReceiver: string;
   // snapshotted at order creation since v2.2c (0n for pre-upgrade orders); undefined when the data source doesn't provide it
   uiFeeFactor: bigint | undefined;
   validFromTime: bigint;
+  srcChainId: bigint;
   title?: string;
 };
 

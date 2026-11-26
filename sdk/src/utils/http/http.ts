@@ -1,5 +1,6 @@
 import fetch from "cross-fetch";
 
+import { combineAbortSignals } from "utils/abort";
 import { buildUrl } from "utils/buildUrl";
 
 import { FetchJsonOptions, IHttp, ServedResult } from "./types";
@@ -54,34 +55,30 @@ export class HttpClient implements IHttp {
 
     const url = buildUrl(this.url, path, query);
 
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), this.timeoutMs);
+    const timeoutSignal = AbortSignal.timeout(this.timeoutMs);
+    const signal = opts?.signal ? combineAbortSignals(timeoutSignal, opts.signal).signal : timeoutSignal;
 
-    try {
-      const response = await fetch(url, {
-        headers: {
-          Accept: "application/json",
-        },
-        signal: controller.signal as any,
-      });
+    const response = await fetch(url, {
+      headers: {
+        Accept: "application/json",
+      },
+      signal: signal as any,
+    });
 
-      if (!response.ok) {
-        let errorBody: Record<string, any> | undefined;
-        try {
-          errorBody = await response.json();
-        } catch {
-          // ignore parse errors
-        }
-        throwHttpError(response.status, response.statusText, errorBody);
+    if (!response.ok) {
+      let errorBody: Record<string, any> | undefined;
+      try {
+        errorBody = await response.json();
+      } catch {
+        // ignore parse errors
       }
-
-      const json = await response.json();
-      const result = opts?.transform ? opts.transform(json) : (json as TResult);
-      opts?.onResponse?.({ headers: response.headers });
-      return result;
-    } finally {
-      clearTimeout(timeoutId);
+      throwHttpError(response.status, response.statusText, errorBody);
     }
+
+    const json = await response.json();
+    const result = opts?.transform ? opts.transform(json) : (json as TResult);
+    opts?.onResponse?.({ headers: response.headers });
+    return result;
   }
 
   async postJson<TResult>(

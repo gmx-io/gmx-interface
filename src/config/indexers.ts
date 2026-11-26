@@ -67,3 +67,5 @@ export function getIndexerUrl(chainId: number, indexer: IndexerKey): string | un
 
   return getConfiguredIndexerUrl(chainId, indexer);
 }
+
+export const GMSOL_GRAPHQL_URL = "https://gmx-solana-sqd.squids.live/gmx-solana-base:prod/api/graphql";

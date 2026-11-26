@@ -178,8 +178,8 @@ export type LoadingFailedEvent = {
 export type ApiDataFallbackCounter = {
   event: "apiData.fallback";
   data: {
-    domain: "markets" | "positions" | "orders" | "wsPrices";
-    reason: "stale" | "error" | "initial";
+    domain: "markets" | "positions" | "orders" | "wsPrices" | "restPrices";
+    reason: "stale" | "error" | "initial" | "timeout" | "empty" | "partial";
     chainId: number;
   };
 };
@@ -423,6 +423,7 @@ export type ExpressOrderMetricData = {
   isSubaccountValid: boolean | undefined;
   isSubbaccountExpired: boolean | undefined;
   isSubaccountActionsExceeded: boolean | undefined;
+  isSubaccountNonceExpired: boolean | undefined;
   approximateGasLimit: number;
   approximateL1GasLimit: number;
   gasPrice: number;

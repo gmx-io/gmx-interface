@@ -44,6 +44,10 @@ msgstr "Возвраты за влияние на цену получены"
 msgid "Or update your wallet's RPC via <0>chainlist.org</0>"
 msgstr "Или обновите RPC вашего кошелька через <0>chainlist.org</0>"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "This browser"
+msgstr "Этот браузер"
+
 #: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "Monthly"
 msgstr "Ежемесячно"
@@ -180,6 +184,10 @@ msgstr "Вы можете открывать изолированные пози
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Do I need to create codes on each network?"
 msgstr "Нужно ли создавать коды в каждой сети?"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "{0, plural, one {Your wallet will ask for # signature, and the removal pays a network fee from your GMX Account.} other {Your wallet will ask for # signatures, one per session. Each removal pays a network fee from your GMX Account.}}"
+msgstr "{0, plural, one {Кошелёк запросит # подпись. За удаление спишется комиссия сети с вашего GMX Account.} few {Кошелёк запросит # подписи, по одной на сессию. За каждое удаление спишется комиссия сети с вашего GMX Account.} many {Кошелёк запросит # подписей, по одной на сессию. За каждое удаление спишется комиссия сети с вашего GMX Account.} other {Кошелёк запросит # подписи, по одной на сессию. За каждое удаление спишется комиссия сети с вашего GMX Account.}}"
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Your {token} long is in the {poolName} pool, which is closed to new size. This order opens a separate position."
@@ -441,6 +449,10 @@ msgstr "Ожидание (осталось {0, plural, one {# день} few {# �
 msgid "Roadmap"
 msgstr "Дорожная карта"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Active until {expiryDate}, unlimited actions"
+msgstr "Активна до {expiryDate}, без ограничения действий"
+
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "To"
 msgstr "Куда"
@@ -549,7 +561,7 @@ msgstr "размера позиции"
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Use the \"Close\" button to reduce your position via market orders."
-msgstr ""
+msgstr "Используйте кнопку «Закрыть», чтобы уменьшить позицию рыночными ордерами."
 
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/filters/ActionFilter.tsx
@@ -672,6 +684,10 @@ msgstr "Вклад нереализованных комиссий"
 msgid "{0} a short position when the price is above the trigger price."
 msgstr "{0} шорт-позицию, когда цена выше цены активации."
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Old session removed"
+msgstr "Старая сессия удалена"
+
 #: src/components/MarketsList/NetFeeHeaderTooltipContent.tsx
 #: src/components/NetRateChart/NetRateChart.tsx
 #: src/components/NetRateChart/NetRateChart.tsx
@@ -789,6 +805,10 @@ msgstr "Значение:"
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Projects developed by the GMX community. <0/>Exercise caution when interacting with any app, as apps are fully maintained by community developers."
 msgstr "Проекты, разработанные сообществом GMX. <0/>Проявляйте осторожность при использовании любого приложения, так как все приложения полностью поддерживаются разработчиками сообщества."
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Active, no expiry, unlimited actions, pending next trade"
+msgstr "Активна, без срока, без ограничения действий, ожидает следующей сделки"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -1064,6 +1084,10 @@ msgstr "Можно ли создать несколько реферальных
 msgid "Unknown error"
 msgstr "Неизвестная ошибка"
 
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set long Take-Profit @ {formattedPrice}"
+msgstr "Установить тейк-профит для лонга @ {formattedPrice}"
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Market Swap"
 msgstr "Market Swap"
@@ -1260,7 +1284,7 @@ msgstr "GMX в сети Solana"
 
 #: src/components/PositionList/PositionList.tsx
 msgid "Could not refresh open positions. This list may be out of date."
-msgstr ""
+msgstr "Не удалось обновить открытые позиции. Данные в этом списке могут быть устаревшими."
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Volume traded by your referred traders"
@@ -1387,7 +1411,7 @@ msgstr "Изменить тейк-профит: {suffix}"
 
 #: src/components/PositionList/PositionList.tsx
 msgid "Could not load open positions"
-msgstr ""
+msgstr "Не удалось загрузить открытые позиции"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Yak Swap"
@@ -1480,6 +1504,10 @@ msgstr "Вы активировали реферальный код {activatedRe
 msgid "Swap fee factor (negative PI)"
 msgstr "Фактор комиссии за обмен (отрицательный PI)"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "No actions left"
+msgstr "Действий не осталось"
+
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Claimable balance"
 msgstr "Баланс к получению"
@@ -1535,8 +1563,14 @@ msgid "GMX staked rewards"
 msgstr "Вознаграждения за стейкинг GMX"
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
 msgid "Receive amount below minimum"
 msgstr "Сумма к получению ниже минимума"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Remove all other sessions"
+msgstr "Удалить все другие сессии"
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Invalid slippage value"
@@ -1948,7 +1982,7 @@ msgstr "Доля силы стейкинга"
 
 #: src/components/TradeFeesRow/FundingPayoutRow.tsx
 msgid "Received separately when this order executes, not added to position margin."
-msgstr ""
+msgstr "Выплачивается отдельно при исполнении этого ордера и не добавляется к марже позиции."
 
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "I'm an affiliate"
@@ -2040,10 +2074,6 @@ msgstr "CSV"
 #: src/components/Referrals/traders/faq.tsx
 msgid "How is my fee discount applied?"
 msgstr "Как применяется моя скидка на комиссию?"
-
-#: src/context/SubaccountContext/SubaccountContextProvider.tsx
-msgid "Session generation failed"
-msgstr "Не удалось сгенерировать сессию"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Onchain quests and rewards"
@@ -2151,6 +2181,7 @@ msgstr "Рынки"
 msgid "Whitelist only"
 msgstr "Только для белого списка"
 
+#: src/components/PositionList/PositionList.tsx
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "Retry"
 msgstr "Повторить"
@@ -2324,6 +2355,10 @@ msgstr "более чем 100 криптотокенами"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Optimal usage factor short"
 msgstr "Оптимальный коэффициент использования шорт"
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set long Stop Market @ {formattedPrice}"
+msgstr "Установить стоп-маркет для лонга по цене {formattedPrice}"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "{0} per {1}"
@@ -2937,10 +2972,6 @@ msgstr "Темп в годовом выражении"
 msgid "No swap path found"
 msgstr "Путь обмена не найден"
 
-#: src/components/TVChartContainer/useChartContextMenu.ts
-msgid "Set long Stop Market @ {0}"
-msgstr "Установить стоп-маркет для лонга по цене {0}"
-
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Your discounts"
 msgstr "Ваши скидки"
@@ -3050,7 +3081,7 @@ msgstr "Перевод инициирован"
 
 #: src/components/TVChart/Chart.tsx
 msgid "Simulated orderbook view of Solana liquidity, including price impact when opening positions."
-msgstr ""
+msgstr "Смоделированный стакан ликвидности Solana с учётом влияния на цену при открытии позиций."
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Amount is below the withdrawal limit. Try an amount larger than <0>{lowerLimitFormatted}</0>."
@@ -3148,7 +3179,7 @@ msgstr "{typeString} стоп-маркет для лонга"
 
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Price impact is included in the entry price."
-msgstr ""
+msgstr "Влияние на цену включено в цену входа."
 
 #: src/components/PositionEditor/PositionEditor.tsx
 msgid "\"At price\" margin deposits use {positionCollateralSymbol} only. To pay with USDC, <0>use Now</0>."
@@ -3293,7 +3324,7 @@ msgstr "Выберите:"
 
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Could not refresh your fee discount. Fees are estimated without it."
-msgstr ""
+msgstr "Не удалось обновить вашу скидку на комиссии. Комиссии рассчитаны без учёта скидки."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake GMX and esGMX"
@@ -3328,6 +3359,10 @@ msgstr "{0, plural, one {Отменить ордер} other {Отменить о
 msgid "GM:"
 msgstr "GM:"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "One-Click sessions ({0})"
+msgstr "Сессии One-Click ({0})"
+
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Confirm settle"
 msgstr "Подтвердить расчёт"
@@ -3347,7 +3382,7 @@ msgstr "{txnTypeText} ордер {0} для"
 
 #: src/components/OrderList/OrderList.tsx
 msgid "Could not refresh open orders. This list may be out of date."
-msgstr ""
+msgstr "Не удалось обновить открытые ордера. Данные в этом списке могут быть устаревшими."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
 #: src/components/MaxActions/MaxActions.tsx
@@ -3625,6 +3660,10 @@ msgstr "Текущая цена"
 msgid "Mark:"
 msgstr "Маркировочная цена:"
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Confirm order signatures"
+msgstr "Подтверждать подписи ордеров"
+
 #: src/pages/DebugOracleKeeper/DebugOracleKeeper.tsx
 #: src/pages/RpcDebug/RpcDebug.tsx
 msgid "CURRENT"
@@ -3690,7 +3729,7 @@ msgstr "Актуальность данных"
 #: src/context/SyntheticsStateContext/selectors/positionSellerSelectors.ts
 #: src/context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxTradeErrors.ts
 msgid "Unable to calculate this order"
-msgstr ""
+msgstr "Не удалось рассчитать этот ордер"
 
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 msgid "Done!"
@@ -3953,6 +3992,10 @@ msgstr "Тип ордера"
 msgid "Insufficient {symbol} in your GMX Account for this transaction. <0>Deposit {symbol}</0>"
 msgstr "Недостаточно {symbol} в вашем GMX Account для этой транзакции. <0>Пополнить {symbol}</0>"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Removing old session..."
+msgstr "Удаление старой сессии..."
+
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Double exposure: long {indexSymbol} from position + long {collateralSymbol} from collateral. Liquidation price varies with {collateralSymbol} price."
 msgstr "Двойная экспозиция: лонг по {indexSymbol} от позиции + лонг по {collateralSymbol} от обеспечения. Цена ликвидации зависит от цены {collateralSymbol}."
@@ -4058,6 +4101,10 @@ msgstr "Лояльность"
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "Up to 25% earnings"
 msgstr "Доход до 25%"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "{count, plural, one {Active until {expiryDate}, # action left, pending next trade} other {Active until {expiryDate}, # actions left, pending next trade}}"
+msgstr "{count, plural, one {Активна до {expiryDate}, осталось # действие, ожидает следующей сделки} few {Активна до {expiryDate}, осталось # действия, ожидает следующей сделки} many {Активна до {expiryDate}, осталось # действий, ожидает следующей сделки} other {Активна до {expiryDate}, осталось # действия, ожидает следующей сделки}}"
 
 #: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
 msgid "No assets yet"
@@ -4406,6 +4453,10 @@ msgstr "Какие сети поддерживаются?"
 msgid "Dark theme"
 msgstr "Тёмная тема"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Each browser has its own session. A session from another browser appears here after its first trade. Bots and apps that trade for you are listed too."
+msgstr "У каждого браузера своя сессия. Сессия из другого браузера появляется здесь после её первой сделки. Боты и приложения, которые торгуют за вас, тоже показаны здесь."
+
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "The program"
 msgstr "Программа"
@@ -4419,10 +4470,6 @@ msgstr "Шаг 2: Добавление маржи"
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "UI fee"
 msgstr "Комиссия интерфейса"
-
-#: src/components/TVChartContainer/useChartContextMenu.ts
-msgid "Set long Take-Profit @ {0}"
-msgstr "Установить тейк-профит для лонга @ {0}"
 
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 msgid "Uploading..."
@@ -4716,7 +4763,7 @@ msgstr "Прочие реализованные комиссии"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Additional collateral withheld: <0/>. This amount becomes claimable after execution and is excluded from the fee total. Immediate cost: <1/>."
-msgstr ""
+msgstr "Дополнительно удерживаемое обеспечение: <0/>. Эту сумму можно получить после исполнения ордера; она не включена в общую сумму комиссий. Непосредственные затраты: <1/>."
 
 #: src/config/bridging.tsx
 msgid "Mint tBTC using BTC with <0>Threshold</0>"
@@ -4871,6 +4918,10 @@ msgstr "Конвертация USDC в USDG..."
 msgid "Copin"
 msgstr "Copin"
 
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set short Stop Market @ {formattedPrice}"
+msgstr "Установить рыночный стоп-ордер для шорта @ {formattedPrice}"
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -4898,6 +4949,10 @@ msgstr "Накопительно"
 msgid "Enter amount"
 msgstr "Введите сумму"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "{count, plural, one {Active until {expiryDate}, # action left} other {Active until {expiryDate}, # actions left}}"
+msgstr "{count, plural, one {Активна до {expiryDate}, осталось # действие} few {Активна до {expiryDate}, осталось # действия} many {Активна до {expiryDate}, осталось # действий} other {Активна до {expiryDate}, осталось # действия}}"
+
 #: src/domain/multichain/useWithdrawBlockedError.tsx
 msgid "Add {0} to your wallet"
 msgstr "Добавьте {0} в кошелёк"
@@ -4905,6 +4960,10 @@ msgstr "Добавьте {0} в кошелёк"
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Incorrect account"
 msgstr "Неверный аккаунт"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Old session is still listed. Remove it in One-Click sessions"
+msgstr "Старая сессия ещё в списке. Удалите её в разделе «Сессии One-Click»"
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Express Trading is unavailable with the network's native token {0}. Consider using {1} instead."
@@ -5570,10 +5629,19 @@ msgstr "Безопасный лимит вывода из стейкинга: {0
 msgid "Swap submitted"
 msgstr "Своп отправлен"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Expired"
+msgstr "Истекла"
+
 #: src/components/ChainDataImage.tsx
 #: src/components/ChainDataImage.tsx
 msgid "{chainName} data"
 msgstr "Данные {chainName}"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Removing..."
+msgstr "Удаление..."
 
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "No net rate history for this market"
@@ -6117,6 +6185,10 @@ msgstr "Вывести"
 msgid "GMX | Perpetual DEX for Crypto, Metals, Stocks & Energy"
 msgstr "GMX | DEX бессрочных контрактов на криптовалюты, металлы, акции и энергоносители"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Removal cancelled"
+msgstr "Удаление отменено"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Update Stop Market"
 msgstr "Обновление стоп-маркет ордера"
@@ -6227,10 +6299,6 @@ msgstr "Открытие..."
 msgid "DeFi margin protocol"
 msgstr "Маржинальный DeFi-протокол"
 
-#: src/components/TVChartContainer/useChartContextMenu.ts
-msgid "Set short Stop-Loss @ {0}"
-msgstr "Установить стоп-лосс для шорта @ {0}"
-
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Fee"
 msgstr "Комиссия"
@@ -6273,6 +6341,10 @@ msgstr "Открытый интерес {directionLabel}"
 #: src/domain/tokens/approveTokens.tsx
 msgid "Approval failed"
 msgstr "Одобрение не удалось"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Old session"
+msgstr "Старая сессия"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Updating settings..."
@@ -7147,6 +7219,10 @@ msgstr "Вакансии"
 msgid "Failed Stop Market"
 msgstr "Неудачный Стоп-Маркет"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "{count, plural, one {Pending first trade, # action left} other {Pending first trade, # actions left}}"
+msgstr "{count, plural, one {Ожидает первой сделки, осталось # действие} few {Ожидает первой сделки, осталось # действия} many {Ожидает первой сделки, осталось # действий} other {Ожидает первой сделки, осталось # действия}}"
+
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/SettingsModal/SettingsModal.tsx
 #: src/components/SideNav/SettingsNavItem.tsx
@@ -7460,6 +7536,10 @@ msgstr "Выберите позиции"
 msgid "GMX on Solana (GMTrade) is served from a separate domain"
 msgstr "GMX на Solana (GMTrade) доступен на отдельном домене"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Active, no expiry, unlimited actions"
+msgstr "Активна, без срока, без ограничения действий"
+
 #: src/components/AppHeader/AppHeaderUser.tsx
 #: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OldVaultPanel.tsx
@@ -7553,6 +7633,10 @@ msgstr "Используйте кнопку «Закрыть», чтобы ум�
 msgid "GMX Substack"
 msgstr "GMX Substack"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Remove all"
+msgstr "Удалить все"
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Fewer details"
 msgstr "Меньше деталей"
@@ -7611,6 +7695,10 @@ msgstr "Обновление части TWAP Swap"
 #: landing/src/pages/Builders/SupportSection/SupportSection.tsx
 msgid "Good fit"
 msgstr "Подходит"
+
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "One-Click Trading was approved again in another browser or app. Re-sign to use it here."
+msgstr "One-Click Trading снова подтвердили в другом браузере или приложении. Подпишите повторно, чтобы использовать его здесь."
 
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "No trades match the selected filters"
@@ -7923,7 +8011,7 @@ msgstr "Этот кошелёк ещё не развёрнут в сети {0}. 
 
 #: src/components/TradeFeesRow/FundingPayoutRow.tsx
 msgid "Funding received"
-msgstr ""
+msgstr "Полученное финансирование"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Swap impact exponent"
@@ -8314,10 +8402,6 @@ msgstr "Готовы работать с атрибуцией Builder / Referral
 #: src/components/EarningValue/EarningValue.tsx
 msgid "Earned fees are only tracked for GM and GLV held in your wallet on {chainName}. GM and GLV in a GMX Account or on another chain still earn fees, but they can't be attributed per account yet."
 msgstr "Заработанные комиссии учитываются только для GM и GLV в вашем кошельке в сети {chainName}. GM и GLV в GMX Account или в другой сети по-прежнему приносят комиссии, но пока не могут быть отнесены к конкретному аккаунту."
-
-#: src/components/TVChartContainer/useChartContextMenu.ts
-msgid "Set long Limit @ {0}"
-msgstr "Установить лимитный ордер в лонг @ {0}"
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "The receiving account has staked or vested before. Choose a new account."
@@ -8989,10 +9073,6 @@ msgstr "<0>Группы рынков</0><1>Чистый открытый инт�
 msgid "Use debit/credit card, Apple Pay, or Google Pay where supported"
 msgstr "Используйте дебетовую/кредитную карту, Apple Pay или Google Pay, где это поддерживается"
 
-#: src/components/TVChartContainer/useChartContextMenu.ts
-msgid "Set long Stop-Loss @ {0}"
-msgstr "Установить стоп-лосс для лонга по цене {0}"
-
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "For newer markets, the history may not yet be indexed. Refer to Net rate / 1h above the chart."
 msgstr "Для новых рынков история может быть ещё не проиндексирована. См. показатель «Чистая ставка / 1 ч» над графиком."
@@ -9106,6 +9186,10 @@ msgstr "Solv Finance"
 msgid "Claim submitted"
 msgstr "Запрос на получение отправлен"
 
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set short Take-Profit @ {formattedPrice}"
+msgstr "Установить тейк-профит для шорта @ {formattedPrice}"
+
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Created"
 msgstr "Создано"
@@ -9182,6 +9266,7 @@ msgstr "Оставляйте себе больше с каждой сделки"
 
 #: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
 #: src/components/HistoryExport/HistoryExportModal.tsx
+#: src/components/OneClickSessions/OneClickSessions.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
@@ -9583,6 +9668,10 @@ msgstr "GM успешно куплен, но перевод через мост 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Disable One-Click Trading"
 msgstr "Отключить One-Click Trading"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Removed"
+msgstr "Удалено"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Increase"
@@ -10189,6 +10278,10 @@ msgstr "Оплачивается из вашего GMX Account, потому ч�
 msgid "Copy"
 msgstr "Копировать"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "This also removes sessions of bots and apps that trade for you. They stop working until you approve them again."
+msgstr "Это также удалит сессии ботов и приложений, которые торгуют за вас. Они перестанут работать, пока вы снова их не одобрите."
+
 #: src/components/Earn/Portfolio/AssetsList/GtAssetCard.tsx
 #: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
@@ -10301,6 +10394,10 @@ msgstr "Общая доходность APY"
 #: src/components/GmxAccountModal/SelectAssetToDepositView.tsx
 msgid "No tokens on {0} for deposit"
 msgstr "Нет токенов на {0} для депозита"
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set long Limit @ {formattedPrice}"
+msgstr "Установить лимитный ордер в лонг @ {formattedPrice}"
 
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "Total to claim"
@@ -10550,10 +10647,6 @@ msgstr "Загрузка комиссий..."
 msgid "Jones DAO"
 msgstr "Jones DAO"
 
-#: src/components/TVChartContainer/useChartContextMenu.ts
-msgid "Set short Stop Market @ {0}"
-msgstr "Установить рыночный стоп-ордер для шорта @ {0}"
-
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/OrdersModal/OrdersModal.tsx
@@ -10572,6 +10665,10 @@ msgstr "Сбросить масштаб"
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Some of your staked tokens are still reserved in the GMX vault. Withdraw from the GMX vault or stake more GMX first."
 msgstr "Часть ваших застейканных токенов всё ещё зарезервирована в хранилище GMX. Сначала выведите средства из хранилища GMX или застейкайте больше GMX."
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set short Limit @ {formattedPrice}"
+msgstr "Установить лимитный ордер на шорт @ {formattedPrice}"
 
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 msgid "So far, my referrals have saved {totalDiscountsFormatted} total in discounts with my code: {referralCode}"
@@ -10605,6 +10702,10 @@ msgstr "Показать позиции на графике"
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Best return after fees, or instant when Paxos saves less than {minSaving}"
 msgstr "Больше всего после комиссий или мгновенно, если Paxos экономит меньше {minSaving}"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "{0, plural, one {{removedCount} of # session removed} other {{removedCount} of # sessions removed}}"
+msgstr "{0, plural, one {Удалено {removedCount} из # сессии} few {Удалено {removedCount} из # сессий} many {Удалено {removedCount} из # сессий} other {Удалено {removedCount} из # сессий}}"
 
 #: src/components/MetricsDebugSettings/MetricsDebugSettings.tsx
 msgid "Metrics debug"
@@ -11342,6 +11443,10 @@ msgstr "Ограничивает пул USDC-USDG в обе стороны. По
 msgid "Wallet trading only on these networks"
 msgstr "Торговля только через кошелёк в этих сетях"
 
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Show the confirmation window when signing Express orders, including edits, cancellations and collateral changes. Other signatures, such as approvals, pool deposits and One-Click activation, always ask for confirmation."
+msgstr "Показывать окно подтверждения при подписи Express-ордеров, включая их редактирование, отмену и изменение обеспечения. Другие подписи, например одобрения, пополнения пулов и активация One-Click, всегда запрашивают подтверждение."
+
 #: src/pages/Earn/EarnPageLayout.tsx
 msgid "Stake GMX and buy GLV or GM to earn rewards"
 msgstr "Стейкайте GMX и покупайте GLV или GM для получения вознаграждений"
@@ -11372,7 +11477,7 @@ msgstr "Комиссия за перемещение"
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Positive funding fees are claimed automatically with the next order on this position."
-msgstr ""
+msgstr "Положительные комиссии за финансирование автоматически выплачиваются при исполнении следующего ордера по этой позиции."
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Up"
@@ -11498,6 +11603,10 @@ msgstr "Коротко о главном"
 #: src/context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxClosingPool.ts
 msgid "Closed to new stop market orders"
 msgstr "Закрыт для новых стоп-маркет ордеров"
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set long Stop-Loss @ {formattedPrice}"
+msgstr "Установить стоп-лосс для лонга по цене {formattedPrice}"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -11664,6 +11773,10 @@ msgstr "Поиск типа"
 msgid "Converted to {marginTokenSymbol} in the same order"
 msgstr "Конвертируется в {marginTokenSymbol} в том же ордере"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Old session wasn't removed"
+msgstr "Старая сессия не удалена"
+
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Withdrawal fee"
 msgstr "Комиссия за вывод"
@@ -11736,6 +11849,10 @@ msgstr "Получите {tokensList} на ваш кошелёк в сети {ne
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Express + One-Click"
 msgstr "Express + One-Click"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Pending first trade, unlimited actions"
+msgstr "Ожидает первой сделки, без ограничения действий"
 
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Receive supported assets into your wallet on {networkName}, or choose another network"
@@ -11865,6 +11982,10 @@ msgstr "Что такое GMX?"
 msgid "Deposit submitted"
 msgstr "Депозит отправлен"
 
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Removal failed"
+msgstr "Ошибка удаления"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -11925,7 +12046,7 @@ msgstr "Оценка в USD"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Fee discount"
-msgstr ""
+msgstr "Скидка на комиссии"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "POOL BALANCE"
@@ -12073,7 +12194,7 @@ msgstr "GM получает комиссии с одного рынка. GLV с�
 
 #: src/components/OrderList/OrderList.tsx
 msgid "Could not load open orders"
-msgstr ""
+msgstr "Не удалось загрузить открытые ордера"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Position impact amount"
@@ -12313,10 +12434,6 @@ msgstr "Пропустить создание реферального кода?
 msgid "Settlement network changed to {0}, but {1} remains in your {2} GMX Account"
 msgstr "Сеть расчёта изменена на {0}, но {1} остаётся в вашем GMX Account на {2}"
 
-#: src/components/TVChartContainer/useChartContextMenu.ts
-msgid "Set short Limit @ {0}"
-msgstr "Установить лимитный ордер на шорт @ {0}"
-
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Deposit ETH"
 msgstr "Пополнить ETH"
@@ -12357,6 +12474,10 @@ msgstr "Ошибка деактивации"
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Share your GMX trade on X"
 msgstr "Поделитесь своей сделкой GMX на X"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Active until {expiryDate}, unlimited actions, pending next trade"
+msgstr "Активна до {expiryDate}, без ограничения действий, ожидает следующей сделки"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -12638,6 +12759,10 @@ msgstr "Подходим ли мы друг другу?"
 msgid "Gained"
 msgstr "Привлечённые"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Expired on {expiryDate}"
+msgstr "Истекла {expiryDate}"
+
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Updating order..."
 msgstr "Обновление ордера…"
@@ -12683,7 +12808,7 @@ msgstr "Введите цену активации"
 
 #: src/components/DepthChart/DepthChart.tsx
 msgid "Unable to calculate market depth"
-msgstr ""
+msgstr "Не удалось рассчитать глубину рынка"
 
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Total stats"
@@ -12749,6 +12874,10 @@ msgstr "PnL шорт"
 #: landing/src/components/TraderAffiliateWidget/TraderAffiliateWidget.tsx
 msgid "A dedicated account manager"
 msgstr "Персональный менеджер"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Remove"
+msgstr "Удалить"
 
 #: src/components/UserIncentiveDistribution/ClaimableDistribution.tsx
 msgid "Hide breakdown"
@@ -13007,6 +13136,7 @@ msgstr "Оценить свою экономию"
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Re-sign"
 msgstr "Переподписать"
 
@@ -13017,6 +13147,10 @@ msgstr "Депозит на GMX Account..."
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 msgid "Address copied"
 msgstr "Адрес скопирован"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "Re-sign needed"
+msgstr "Нужно переподписать"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstaking this amount will bring you close to the 20% reset threshold"
@@ -13477,10 +13611,6 @@ msgstr "Комиссии сети высоки из-за повышенной а
 msgid "Existing position is in WETH-USDC pool. Using the selected pool will create a separate position. <0>Switch to WETH-USDC pool</0>"
 msgstr "Существующая позиция находится в пуле WETH-USDC. При использовании выбранного пула будет создана отдельная позиция. <0>Переключиться на пул WETH-USDC</0>"
 
-#: src/components/TVChartContainer/useChartContextMenu.ts
-msgid "Set short Take-Profit @ {0}"
-msgstr "Установить тейк-профит для шорта @ {0}"
-
 #: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "Share PnL"
 msgstr "Поделиться PnL"
@@ -13587,6 +13717,10 @@ msgstr "Начать зарабатывать"
 msgid "{orderText} cancellation failed"
 msgstr "{orderText}: не удалось отменить"
 
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "{count, plural, one {Active, no expiry, # action left, pending next trade} other {Active, no expiry, # actions left, pending next trade}}"
+msgstr "{count, plural, one {Активна, без срока, осталось # действие, ожидает следующей сделки} few {Активна, без срока, осталось # действия, ожидает следующей сделки} many {Активна, без срока, осталось # действий, ожидает следующей сделки} other {Активна, без срока, осталось # действия, ожидает следующей сделки}}"
+
 #: landing/src/pages/TraderAffiliateProgram/FaqSection.tsx
 msgid "How and when do I get paid or credited?"
 msgstr "Как и когда я получу выплату или начисление?"
@@ -13651,6 +13785,14 @@ msgstr "Во вкладке обмена · поступит отдельно"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
 msgid "Direct with Paxos"
 msgstr "Напрямую с Paxos"
+
+#: src/components/OneClickSessions/OneClickSessions.tsx
+msgid "{count, plural, one {Active, no expiry, # action left} other {Active, no expiry, # actions left}}"
+msgstr "{count, plural, one {Активна, без срока, осталось # действие} few {Активна, без срока, осталось # действия} many {Активна, без срока, осталось # действий} other {Активна, без срока, осталось # действия}}"
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set short Stop-Loss @ {formattedPrice}"
+msgstr "Установить стоп-лосс для шорта @ {formattedPrice}"
 
 #: src/components/Errors/errorToasts.tsx
 #: src/components/Errors/errorToasts.tsx
@@ -14138,6 +14280,12 @@ msgstr "Включите <0>Express Trading</0> в настройках для �
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Enter a ratio"
 msgstr "Введите соотношение"
+
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+#: src/context/SubaccountContext/SubaccountContextProvider.tsx
+msgid "Remove 1CT sessions"
+msgstr "Удаление сессий 1CT"
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "OK"

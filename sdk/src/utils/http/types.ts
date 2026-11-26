@@ -11,6 +11,7 @@ export type FetchJsonOptions<TResult> = {
   query?: Record<string, any>;
   transform?: (result: any) => TResult;
   onResponse?: (response: HttpResponseMetadata) => void;
+  signal?: AbortSignal;
 };
 
 export type IHttp = {

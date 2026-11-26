@@ -16,6 +16,7 @@ export type SubaccountSerializedConfig = {
   privateKey: string;
   address: string;
   isNew?: boolean;
+  version?: number;
 };
 
 export type SubaccountApproval = {
@@ -72,6 +73,7 @@ export type Subaccount = {
 export type SubaccountValidations = {
   isExpired: boolean;
   isActionsExceeded: boolean;
+  isNonceExpired: boolean;
   isApprovalInvalid: boolean;
   isValid: boolean;
 };

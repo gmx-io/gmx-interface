@@ -78,6 +78,7 @@ import {
 } from "domain/synthetics/whitelists/useAccountWhitelistsRequest";
 import { ProgressiveTokensData } from "domain/tokens";
 import type { CandlesFetcher } from "domain/tradingview/DataFeed";
+import type { ChartTradesFetcher } from "domain/tradingview/types";
 import { useChainId } from "lib/chains";
 import { getTimePeriodsInSeconds } from "lib/dates";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
@@ -109,6 +110,7 @@ export type SyntheticsPageType =
   | "rpcDebug";
 
 export type ChartDataProvider = {
+  tradesFetcher?: ChartTradesFetcher;
   candlesFetcher: CandlesFetcher;
   getChartSymbol?: (tokenAddress: string) => string;
   fetch24hPriceDeltas: () => Promise<Partial<Record<string, PriceDelta>>>;

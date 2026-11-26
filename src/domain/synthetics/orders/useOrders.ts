@@ -160,7 +160,6 @@ export function useOrders(
 export function convertApiOrderToOrder({
   triggerPrice,
   acceptablePrice,
-  cancellationReceiver: _cancellationReceiver,
   dataList,
   ...rest
 }: ApiOrderInfo): Order {
@@ -232,7 +231,7 @@ function parseResponse(res: MulticallResult<ReturnType<typeof buildUseOrdersMult
         key,
         account: orderData.addresses.account,
         receiver: orderData.addresses.receiver,
-        // cancellationReceiver: orderData.addresses.cancellationReceiver as Address,
+        cancellationReceiver: orderData.addresses.cancellationReceiver,
         callbackContract: orderData.addresses.callbackContract,
         uiFeeReceiver: orderData.addresses.uiFeeReceiver,
         marketAddress: orderData.addresses.market,
@@ -248,9 +247,9 @@ function parseResponse(res: MulticallResult<ReturnType<typeof buildUseOrdersMult
         uiFeeFactor: BigInt(orderData.numbers.uiFeeFactor),
         updatedAtTime: orderData.numbers.updatedAtTime,
         validFromTime: orderData.numbers.validFromTime,
+        srcChainId: orderData.numbers.srcChainId,
         isLong: orderData.flags.isLong,
         shouldUnwrapNativeToken: orderData.flags.shouldUnwrapNativeToken,
-        srcChainId: orderData.numbers.srcChainId,
         isFrozen: orderData.flags.isFrozen,
         orderType: orderData.numbers.orderType as OrderType,
         decreasePositionSwapType: orderData.numbers.decreasePositionSwapType as DecreasePositionSwapType,

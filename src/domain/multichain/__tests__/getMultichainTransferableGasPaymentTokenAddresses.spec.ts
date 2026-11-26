@@ -1,3 +1,4 @@
+// @vitest-shared-worker
 import { describe, expect, it } from "vitest";
 
 import { getChainName, SettlementChainId, SourceChainId } from "config/chains";
