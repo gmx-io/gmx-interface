@@ -56,14 +56,16 @@ function createLegacyCaches(entries: CacheEntries = {}) {
 type WindowClientMock = {
   focused: boolean;
   visibilityState: "visible" | "hidden";
+  frameType: "top-level" | "nested";
   focus: ReturnType<typeof vi.fn>;
   postMessage: ReturnType<typeof vi.fn>;
 };
 
-function createWindowClient(state: Partial<Pick<WindowClientMock, "focused" | "visibilityState">> = {}) {
+function createWindowClient(state: Partial<Pick<WindowClientMock, "focused" | "visibilityState" | "frameType">> = {}) {
   return {
     focused: false,
     visibilityState: "hidden" as const,
+    frameType: "top-level" as const,
     ...state,
     focus: vi.fn().mockResolvedValue(undefined),
     postMessage: vi.fn(),
@@ -529,10 +531,11 @@ describe("PWA service worker notifications", () => {
     });
   });
 
-  it("sends the trade route to an open app window and focuses it", async () => {
+  it("sends the trade route to an open app window and focuses it, not to the focused chart iframe", async () => {
     const hidden = createWindowClient();
     const visible = createWindowClient({ visibilityState: "visible" });
-    const worker = loadServiceWorker(vi.fn(), undefined, undefined, [hidden, visible]);
+    const chart = createWindowClient({ focused: true, visibilityState: "visible", frameType: "nested" });
+    const worker = loadServiceWorker(vi.fn(), undefined, undefined, [chart, hidden, visible]);
     const event = clickEvent(EXECUTION_URL, "order.executed");
 
     await worker.dispatchExtendable("notificationclick", event);
@@ -546,6 +549,7 @@ describe("PWA service worker notifications", () => {
       notificationType: "order.executed",
     });
     expect(hidden.postMessage).not.toHaveBeenCalled();
+    expect(chart.postMessage).not.toHaveBeenCalled();
     expect(worker.openWindow).not.toHaveBeenCalled();
   });
 

@@ -10,7 +10,6 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSmartWalletSubaccountWarning } from "context/SubaccountContext/useSmartWalletSubaccountWarning";
 import { useTheme } from "context/ThemeContext/ThemeContext";
 import { useMultichainFundingToast } from "domain/multichain/useMultichainFundingToast";
-import { useNotificationTaps } from "domain/notifications/useNotificationTaps";
 import { isReferralCodeQueryParam } from "domain/referrals/utils/referralCode";
 import { SupportChatEvmAttributes, useSupportChat } from "domain/supportChat/useSupportChat";
 import { useSilentEmbeddedWalletOrderSigning } from "domain/synthetics/express/useSilentEmbeddedWalletOrderSigning";
@@ -70,7 +69,6 @@ export function AppRoutes() {
   useAccountInitedMetric();
   useSupportChat();
   useFreshnessMetricsControl();
-  useNotificationTaps();
 
   const query = useRouteQuery();
 

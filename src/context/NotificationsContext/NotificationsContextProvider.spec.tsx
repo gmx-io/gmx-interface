@@ -298,6 +298,7 @@ describe("NotificationsContextProvider", () => {
     fireEvent(document, new Event("visibilitychange"));
     mocks.account = OTHER_ACCOUNT;
     rerender();
+    await act(async () => undefined);
     mocks.registerThisDevice.mockRejectedValueOnce(new NotificationsApiError("unavailable", 503));
     mocks.permission = "granted";
     fireEvent(document, new Event("visibilitychange"));
@@ -363,6 +364,86 @@ describe("NotificationsContextProvider", () => {
 
     await waitFor(() => expect(result.current.receivingAccount).toBe("0x0000000000000000000000000000000000000003"));
     expect(mocks.registerThisDevice).toHaveBeenCalledTimes(2);
+  });
+
+  it.each([
+    ["succeeds", 3],
+    ["fails", 2],
+  ])("stays on the first wallet when it is connected again before the switch away %s", async (outcome, calls) => {
+    mocks.permission = "granted";
+    storeDevice({ enabled: true, account: ACCOUNT, endpoint: ENDPOINT });
+    const { result, rerender } = renderNotifications();
+    await waitFor(() => expect(mocks.registerThisDevice).toHaveBeenCalledOnce());
+
+    let settleSwitch: () => void = () => undefined;
+    mocks.registerThisDevice.mockImplementationOnce(
+      () =>
+        new Promise((resolve, reject) => {
+          settleSwitch = () =>
+            outcome === "succeeds"
+              ? resolve({ endpoint: ENDPOINT })
+              : reject(new NotificationsApiError("unavailable", 503));
+        })
+    );
+    mocks.account = OTHER_ACCOUNT;
+    rerender();
+    await waitFor(() => expect(mocks.registerThisDevice).toHaveBeenCalledTimes(2));
+    mocks.account = ACCOUNT;
+    rerender();
+    await act(async () => settleSwitch());
+
+    await waitFor(() => expect(mocks.registerThisDevice).toHaveBeenCalledTimes(calls));
+    await act(async () => undefined);
+    expect(mocks.registerThisDevice).toHaveBeenLastCalledWith(
+      expect.objectContaining({ account: outcome === "succeeds" ? ACCOUNT : OTHER_ACCOUNT })
+    );
+    expect(result.current.status).toBe("on");
+    expect(result.current.receivingAccount).toBe(ACCOUNT);
+    expect(mocks.toastError).not.toHaveBeenCalled();
+  });
+
+  it("moves a turn-on to the wallet connected while it ran", async () => {
+    mocks.permission = "granted";
+    let finishTurnOn: () => void = () => undefined;
+    mocks.registerThisDevice.mockImplementationOnce(
+      () => new Promise((resolve) => (finishTurnOn = () => resolve({ endpoint: ENDPOINT })))
+    );
+    const { result, rerender } = renderNotifications();
+
+    act(() => result.current.turnOn());
+    await waitFor(() => expect(mocks.registerThisDevice).toHaveBeenCalledOnce());
+    mocks.account = OTHER_ACCOUNT;
+    rerender();
+    await act(async () => finishTurnOn());
+
+    await waitFor(() => expect(result.current.receivingAccount).toBe(OTHER_ACCOUNT));
+    expect(mocks.registerThisDevice).toHaveBeenLastCalledWith(expect.objectContaining({ account: OTHER_ACCOUNT }));
+    expect(result.current.status).toBe("on");
+  });
+
+  it("ends off when turned off during a wallet switch that hits the device limit", async () => {
+    mocks.permission = "granted";
+    storeDevice({ enabled: true, account: ACCOUNT, endpoint: ENDPOINT });
+    const { result, rerender } = renderNotifications();
+    await waitFor(() => expect(mocks.registerThisDevice).toHaveBeenCalledOnce());
+
+    let failSwitch: () => void = () => undefined;
+    mocks.registerThisDevice.mockImplementationOnce(
+      () =>
+        new Promise((_resolve, reject) => {
+          failSwitch = () => reject(new NotificationsApiError("limit", 409, REGISTRATION_LIMIT_REACHED));
+        })
+    );
+    mocks.account = OTHER_ACCOUNT;
+    rerender();
+    await waitFor(() => expect(mocks.registerThisDevice).toHaveBeenCalledTimes(2));
+    act(() => result.current.turnOff());
+    await act(async () => failSwitch());
+
+    await waitFor(() => expect(result.current.status).toBe("off"));
+    expect(result.current.pendingAccount).toBeUndefined();
+    expect(mocks.toastError).not.toHaveBeenCalled();
+    expect(mocks.unregisterNotificationsDevice).toHaveBeenCalledExactlyOnceWith(ENDPOINT);
   });
 
   it("turns off without a signature and stays off after a wallet switch and a reopen", async () => {

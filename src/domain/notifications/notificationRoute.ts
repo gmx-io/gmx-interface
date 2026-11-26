@@ -1,3 +1,6 @@
+import { isContractsChain } from "config/chains";
+import { isDevelopment } from "config/env";
+
 export type NotificationTap = {
   /** The route as the service worker sent it, with its chain. */
   route: string;
@@ -25,6 +28,7 @@ export function parseNotificationRoute(route: string, origin = window.location.o
   return {
     route,
     path: `${url.pathname}${url.search}`,
-    chainId: Number.isSafeInteger(chainId) && chainId > 0 ? chainId : undefined,
+    // The app never lands on another chain, so a tap for one would switch, and without a wallet reload, forever.
+    chainId: isContractsChain(chainId, isDevelopment()) ? chainId : undefined,
   };
 }

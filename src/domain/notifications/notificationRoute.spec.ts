@@ -17,8 +17,8 @@ describe("parseNotificationRoute", () => {
     expect(parseNotificationRoute("/trade", ORIGIN)).toEqual({ route: "/trade", path: "/trade", chainId: undefined });
   });
 
-  it.each(["/trade?chainId=abc", "/trade?chainId=-1", "/trade?chainId=1.5"])(
-    "ignores an invalid chain in %s",
+  it.each(["/trade?chainId=abc", "/trade?chainId=-1", "/trade?chainId=1.5", "/trade?chainId=1"])(
+    "ignores an invalid or unsupported chain in %s",
     (route) => {
       expect(parseNotificationRoute(route, ORIGIN)?.chainId).toBeUndefined();
     }

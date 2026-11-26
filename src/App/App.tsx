@@ -29,6 +29,7 @@ import { DisabledSyntheticsEventsProvider, SyntheticsEventsProvider } from "cont
 import { TokenPermitsContextProvider } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import { TokensBalancesContextProvider } from "context/TokensBalancesContext/TokensBalancesContextProvider";
 import { TokensFavoritesContextProvider } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
+import { useNotificationTaps } from "domain/notifications/useNotificationTaps";
 import { completeAppStartup } from "lib/appStartup";
 import { useChainId } from "lib/chains";
 
@@ -74,6 +75,11 @@ function EvmProviders({ children }: { children: React.ReactNode }) {
   );
 }
 
+function NotificationTaps({ children }: { children: React.ReactNode }) {
+  useNotificationTaps();
+  return <>{children}</>;
+}
+
 function App() {
   useEffect(completeAppStartup, []);
 
@@ -95,6 +101,8 @@ function App() {
   // The networkId key remounts this subtree. Pending txns live above it so the poller can pause on
   // Solana and resume on EVM without dropping receipt or replacement tracking.
   app = <SWRConfigWithKey>{app}</SWRConfigWithKey>;
+  // Above the networkId key, so a tap that switches the network still has its route after the remount.
+  app = <NotificationTaps>{app}</NotificationTaps>;
   app = <PendingTxnsContextProvider>{app}</PendingTxnsContextProvider>;
   app = <NotificationsContextProvider>{app}</NotificationsContextProvider>;
   app = <SettingsContextProvider>{app}</SettingsContextProvider>;

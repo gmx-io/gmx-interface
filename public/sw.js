@@ -189,7 +189,10 @@ function getNotificationRoute(url) {
 }
 
 async function openNotificationRoute(route, notificationType) {
-  const windows = await self.clients.matchAll({ type: "window", includeUncontrolled: true });
+  // Same-origin iframes, like the TradingView chart, are window clients too and can be the focused one.
+  const windows = (await self.clients.matchAll({ type: "window", includeUncontrolled: true })).filter(
+    (client) => client.frameType !== "nested"
+  );
   const appWindow =
     windows.find((client) => client.focused) ??
     windows.find((client) => client.visibilityState === "visible") ??

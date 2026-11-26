@@ -280,9 +280,11 @@ export function NotificationsContextProvider({ children }: PropsWithChildren) {
       sign?: (message: string) => Promise<string>
     ): Promise<NotificationsTurnOnResult | undefined> => {
       let isSigning = false;
+      // A newer wallet switch replaces this one; it runs next in the queue.
+      const getIsReplaced = () =>
+        (kind === "walletSwitch" || kind === "retry") && !!accountRef.current && accountRef.current !== targetAccount;
 
-      // A newer wallet switch already replaced this one.
-      if ((kind === "walletSwitch" || kind === "retry") && accountRef.current && accountRef.current !== targetAccount) {
+      if (getIsReplaced()) {
         return undefined;
       }
 
@@ -315,14 +317,19 @@ export function NotificationsContextProvider({ children }: PropsWithChildren) {
 
         return "on";
       } catch (error) {
+        if (getIsInvalidSignatureError(error)) {
+          updateStored({ signature: undefined });
+        }
+
+        // A turn-off queued behind this registration decides the state.
+        if (getIsReplaced() || operationRef.current === "turningOff") {
+          return undefined;
+        }
+
         const message = getErrorMessage(error);
 
         if (kind === "walletSwitch") {
           helperToast.error(t`Notifications didn't move to your new wallet`);
-        }
-
-        if (getIsInvalidSignatureError(error)) {
-          updateStored({ signature: undefined });
         }
 
         const isStillReceiving =
@@ -526,10 +533,20 @@ export function NotificationsContextProvider({ children }: PropsWithChildren) {
         return;
       }
 
-      // A disconnect keeps the last wallet, and a device that is off stays off.
-      if (canRegister && account && account !== current.account) {
-        enqueue(() => register(account, "walletSwitch"));
-      } else if (account && account === current.account) {
+      // A disconnect keeps the last wallet.
+      if (!account) {
+        return;
+      }
+
+      // Checked in the queue: a registration still in flight may change the wallet that gets notifications, e.g. a
+      // switch to another wallet when this one is connected again. A device that is off stays off.
+      enqueue(async () => {
+        if (account !== storedRef.current.account && getIsReceiving(storedRef.current, getNotificationPermission())) {
+          await register(account, "walletSwitch");
+        }
+      });
+
+      if (account === current.account) {
         // Back on the wallet that gets notifications: a failed move to another one no longer matters. Another wallet's
         // device limit stays while this wallet gets nothing here either, so "Try again" can turn the device back on.
         setIssue((prev) =>

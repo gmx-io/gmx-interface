@@ -135,6 +135,8 @@ export function useNotificationTaps() {
         }
       }
       window.history.replaceState(window.history.state, "", `/trade?${searchParams}`);
+      // The reload takes the tap from the URL. Kept here, it would also open on the page that is about to reload.
+      setTap(undefined);
     }
 
     switchNetwork(chainId, isConnected).catch((error) => {
