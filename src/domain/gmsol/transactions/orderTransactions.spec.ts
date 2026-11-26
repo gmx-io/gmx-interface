@@ -953,6 +953,141 @@ it("keeps polling for 90 s through failed polls and drops a send only once its b
   }
 });
 
+it("resends the same signed bytes every 2 s without preflight until a status arrives TRD-72", async () => {
+  const preflightRejection = getSolanaErrorFromJsonRpcError({
+    code: -32002,
+    message: "Transaction simulation failed",
+    data: { err: "AlreadyProcessed", logs: [] },
+  });
+  const confirmed = { err: null, confirmationStatus: "confirmed", slot: 2n };
+  const processed = { ...confirmed, confirmationStatus: "processed" };
+  const rows = [
+    ["accepted", [null, null, null, confirmed], [0, 2_000]],
+    ["rejected", [null, null, null, confirmed], [0, 2_000]],
+    ["preflight", [null, null, null, confirmed], [0, 2_000]],
+    ["preflight", [null, null, null, null, null, confirmed], [0, 2_000, 4_000]],
+    ["accepted", [null, processed, processed, processed, processed, confirmed], [0]],
+  ] as const;
+  vi.useFakeTimers({ toFake: ["setTimeout", "Date"] });
+  try {
+    for (const [resend, polls, offsets] of rows) {
+      localStorage.removeItem("gmsol-pending-submissions");
+      const { plan, sign } = await sendFixture();
+      const sends: { at: number; wire: string; config: object }[] = [];
+      transport.rpc.sendTransaction.mockImplementation((wire: string, config: object) => ({
+        send: async () => {
+          sends.push({ at: Date.now(), wire, config });
+          if (sends.length > 1 && resend === "rejected") throw new Error("429 Too Many Requests");
+          if (sends.length > 1 && resend === "preflight") throw preflightRejection;
+          return getSignatureFromTransaction(
+            getTransactionDecoder().decode(copySolanaBytes(getBase64Encoder().encode(wire)))
+          );
+        },
+      }));
+      const statuses: unknown[] = [...polls];
+      const pendingAtPolls: (string | undefined)[] = [];
+      let polled!: () => void;
+      const firstPoll = new Promise<void>((resolve) => (polled = resolve));
+      transport.rpc.getSignatureStatuses.mockImplementation(() => ({
+        send: async () => {
+          polled();
+          pendingAtPolls.push(getPendingGmsolSubmission(owner)?.signature);
+          return { context: { slot: 3n }, value: [statuses.shift() ?? null] };
+        },
+      }));
+      const sending = sendGmsolOrderTransactions({
+        plan,
+        getWalletAddress: () => owner,
+        signTransaction: sign,
+        onConfirmed: async () => undefined,
+      });
+      await firstPoll;
+      await vi.advanceTimersByTimeAsync((polls.length - 1) * 1_000);
+      const { signatures } = await sending;
+      // Nothing more goes out once the flow has ended.
+      await vi.advanceTimersByTimeAsync(10_000);
+      expect(
+        sends.map(({ at }) => at - sends[0].at),
+        resend
+      ).toEqual(offsets);
+      expect(new Set(sends.map(({ wire }) => wire)).size).toBe(1);
+      expect(sends.map(({ config }) => config)).toEqual([
+        { encoding: "base64", skipPreflight: false, preflightCommitment: "confirmed", maxRetries: 0n },
+        ...offsets.slice(1).map(() => ({ encoding: "base64", skipPreflight: true, maxRetries: 0n })),
+      ]);
+      expect(pendingAtPolls, resend).toEqual(Array(polls.length).fill(signatures[0]));
+    }
+  } finally {
+    vi.useRealTimers();
+  }
+});
+
+it("asks the wallet once more with a fresh blockhash when the signature expires before broadcast TRD-72", async () => {
+  const fresh = { recentBlockhash: other, lastValidBlockHeight: 3n };
+  for (const secondExpired of [false, true]) {
+    localStorage.removeItem("gmsol-pending-submissions");
+    const { plan, sign } = await sendFixture();
+    transport.rpc.simulateTransaction.mockClear();
+    transport.rpc.sendTransaction.mockClear();
+    transport.rpc.getLatestBlockhash.mockReturnValue({
+      send: async () => ({
+        value: { blockhash: fresh.recentBlockhash, lastValidBlockHeight: fresh.lastValidBlockHeight },
+      }),
+    });
+    // Before and after each prompt; the first signature arrives past its lastValidBlockHeight.
+    const heights = [1n, 2n, 2n, secondExpired ? 4n : 3n];
+    transport.rpc.getBlockHeight.mockImplementation(() => ({ send: async () => heights.shift() }));
+    const atPrompts: unknown[] = [];
+    sign.mockImplementation(async (bytes: Uint8Array) => {
+      atPrompts.push([
+        transport.rpc.simulateTransaction.mock.calls.length,
+        transport.rpc.sendTransaction.mock.calls.length,
+        getPendingGmsolSubmission(owner),
+      ]);
+      return signTransactionBytes(bytes);
+    });
+    const storedHeights: (string | undefined)[] = [];
+    transport.rpc.getSignatureStatuses.mockImplementation(() => ({
+      send: async () => {
+        storedHeights.push(getPendingGmsolSubmission(owner)?.lastValidBlockHeight);
+        return { context: { slot: 2n }, value: [{ err: null, confirmationStatus: "confirmed", slot: 2n }] };
+      },
+    }));
+    const result = await sendGmsolOrderTransactions({
+      plan,
+      getWalletAddress: () => owner,
+      signTransaction: sign,
+      onConfirmed: async () => undefined,
+    }).catch((error: unknown) => error);
+    // The second prompt follows a second pre-signature simulation, and nothing was broadcast or recorded before it.
+    expect(atPrompts, String(secondExpired)).toEqual([
+      [1, 0, undefined],
+      [2, 0, undefined],
+    ]);
+    const [first, second] = sign.mock.calls.map(
+      ([bytes], prompt) => decodeGmsolTransaction(bytes, prompt ? { ...plan, ...fresh } : plan).compiled
+    );
+    expect(second).toEqual({ ...first, lifetimeToken: fresh.recentBlockhash });
+    const simulated = copySolanaBytes(getBase64Encoder().encode(transport.rpc.simulateTransaction.mock.calls[1][0]));
+    expect(decodeGmsolTransaction(simulated, { ...plan, ...fresh }).compiled).toEqual(second);
+    if (secondExpired) {
+      expect(result).toBeInstanceOf(GmsolTransactionError);
+      expect(result).toMatchObject({
+        message: "Signed transaction expired; rebuild and sign again",
+        pendingSignature: undefined,
+        submittedSignatures: [],
+      });
+      expect(transport.rpc.sendTransaction).not.toHaveBeenCalled();
+      expect(getPendingGmsolSubmission(owner)).toBeUndefined();
+    } else {
+      const signed = getTransactionDecoder().decode(await sign.mock.results[1].value);
+      expect(result).toMatchObject({ signatures: [getSignatureFromTransaction(signed)] });
+      expect(transport.rpc.sendTransaction).toHaveBeenCalledTimes(1);
+      expect(storedHeights).toEqual(["3"]);
+    }
+  }
+});
+
 it("preserves confirmed preparation when the later order signature is rejected FESOL-56", async () => {
   const { plan, sign } = await sendFixture();
   const isCreate = (ix: Instruction) => ix.programAddress === GMSOL_STORE_PROGRAM_ID && ix.data?.[0] === 200;
