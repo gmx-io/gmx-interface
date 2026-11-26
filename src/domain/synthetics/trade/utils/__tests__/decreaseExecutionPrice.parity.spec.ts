@@ -1,7 +1,7 @@
 import { getUncappedTotalImpactUsd, ParityContext, readExecutionPrice } from "domain/testUtils/parity/context";
 import { parity, ParityInput } from "domain/testUtils/parity/parity";
 import { loadPositions, ParityPosition } from "domain/testUtils/parity/positions";
-import { marketConfigs } from "domain/testUtils/parity/scenarios";
+import { marketConfigs, MID_PRICES_SCENARIO } from "domain/testUtils/parity/scenarios";
 import { maxPositionImpactFactorKey } from "sdk/configs/dataStore";
 import type { MarketInfo } from "sdk/utils/markets/types";
 import { PRECISION } from "sdk/utils/numbers";
@@ -66,12 +66,13 @@ const bpsOfSizeDelta = { bpsOf: ({ testCase }: DecreaseInput) => testCase.sizeDe
 const mulDivRoundingIssue = {
   reason:
     "bigMath.mulDiv ignores roundUpMagnitude for negative values, the proportional pending impact is one index token unit short",
+  appliesTo: isPartialCloseWithNegativePendingImpact,
 };
 
 parity("getExecutionPriceForDecrease <-> Reader.getExecutionPrice, decrease", {
   markets: (market) => !market.isSpotOnly,
   cases: decreaseCases,
-  scenarios: [SMALL_NEGATIVE_IMPACT_CAP_SCENARIO],
+  scenarios: [SMALL_NEGATIVE_IMPACT_CAP_SCENARIO, MID_PRICES_SCENARIO],
   app: (input) => {
     const { acceptablePriceInfo, netPriceImpactValues } = getAppDecrease(input);
 
@@ -111,6 +112,7 @@ parity("getExecutionPriceForDecrease <-> Reader.getExecutionPrice, decrease", {
         {
           reason:
             "we shift the index price by impact / size of itself, the contract by impact / size of the position's entry price",
+          appliesTo: (_input, app) => app.totalImpactUsd !== 0n,
         },
       ],
     },

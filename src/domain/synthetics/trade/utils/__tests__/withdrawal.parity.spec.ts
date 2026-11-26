@@ -7,7 +7,13 @@ import {
   readReader,
 } from "domain/testUtils/parity/context";
 import { parity, ParityInput, usd } from "domain/testUtils/parity/parity";
-import { loadUiFeeFactor, UI_FEE_RECEIVER, UI_FEE_SCENARIO } from "domain/testUtils/parity/scenarios";
+import {
+  loadUiFeeFactor,
+  MID_PRICES_SCENARIO,
+  UI_FEE_RECEIVER,
+  UI_FEE_SCENARIO,
+} from "domain/testUtils/parity/scenarios";
+import { bigMath } from "sdk/utils/bigmath";
 import type { MarketInfo } from "sdk/utils/markets/types";
 import { getContractMarketPrices } from "sdk/utils/markets/utils";
 import { SwapPricingType } from "sdk/utils/orders/types";
@@ -59,18 +65,21 @@ function getAppWithdrawalAmounts({ market, testCase }: WithdrawalInput) {
   return { longTokenAmount, shortTokenAmount };
 }
 
-const knownIssues = [
-  { reason: "marketTokenAmountToUsd prices GM at poolValueMax, the contract at the minimized pool value" },
-  {
-    reason:
-      "we take the fees on the USD output and round once, the contract floors the output and each fee to token units",
-  },
-];
+const gmPriceIssue = {
+  reason: "marketTokenAmountToUsd prices GM at poolValueMax, the contract at the minimized pool value",
+  appliesTo: ({ market }: WithdrawalInput) => market.poolValueMax !== market.poolValueMin,
+};
+
+const feeRoundingReason =
+  "we take the fees on the USD output and round once, the contract floors the output and each fee to token units";
+
+// the output, the withdrawal fee and the ui fee are each off by less than one token unit
+const isFeeRounding = (app: bigint, contract: bigint) => bigMath.abs(app - contract) <= 3n;
 
 parity("getWithdrawalAmounts <-> Reader.getWithdrawalAmountOut", {
   markets: (market) => !market.isDisabled && market.poolValueMax > usd(10_000),
   cases: withdrawalCases,
-  scenarios: [UI_FEE_SCENARIO],
+  scenarios: [UI_FEE_SCENARIO, MID_PRICES_SCENARIO],
   app: getAppWithdrawalAmounts,
   contract: async ({ ctx, market, testCase }) => {
     const marketProps = getMarketProps(market);
@@ -86,15 +95,30 @@ parity("getWithdrawalAmounts <-> Reader.getWithdrawalAmountOut", {
   fields: {
     longTokenAmount: {
       knownIssues: [
-        ...knownIssues,
+        gmPriceIssue,
+        {
+          reason: feeRoundingReason,
+          occasional: true,
+          appliesTo: (_input, app, contract) => isFeeRounding(app.longTokenAmount, contract.longTokenAmount),
+        },
         {
           reason:
             "getWithdrawalAmounts takes the long token ui fee from marketTokenUsd instead of longTokenUsd, so the long side also pays the short side's ui fee",
           scenario: UI_FEE_SCENARIO,
+          appliesTo: ({ testCase }) => testCase.uiFeeFactor > 0n,
         },
       ],
     },
-    shortTokenAmount: { knownIssues },
+    shortTokenAmount: {
+      knownIssues: [
+        gmPriceIssue,
+        {
+          reason: feeRoundingReason,
+          occasional: true,
+          appliesTo: (_input, app, contract) => isFeeRounding(app.shortTokenAmount, contract.shortTokenAmount),
+        },
+      ],
+    },
   },
   requiredCases: [
     {

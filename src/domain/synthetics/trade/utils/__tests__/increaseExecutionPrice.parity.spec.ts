@@ -1,5 +1,6 @@
 import { readExecutionPrice } from "domain/testUtils/parity/context";
 import { parity, usd } from "domain/testUtils/parity/parity";
+import { MID_PRICES_SCENARIO } from "domain/testUtils/parity/scenarios";
 import type { MarketInfo } from "sdk/utils/markets/types";
 import { getExecutionPriceForIncrease } from "sdk/utils/positions";
 import { getMarkPrice } from "sdk/utils/prices";
@@ -52,6 +53,7 @@ function increaseCases(market: MarketInfo): IncreaseCase[] {
 parity("getExecutionPriceForIncrease <-> Reader.getExecutionPrice, increase", {
   markets: (market) => !market.isDisabled && !market.isSpotOnly && market.poolValueMax > usd(100_000),
   cases: increaseCases,
+  scenarios: [MID_PRICES_SCENARIO],
   app: ({ market, testCase }) => {
     const { priceImpactDeltaUsd, acceptablePrice } = getAppIncrease(market, testCase).acceptablePriceInfo;
 
@@ -75,6 +77,7 @@ parity("getExecutionPriceForIncrease <-> Reader.getExecutionPrice, increase", {
         {
           reason:
             "we shift the index price linearly by impact / size, the contract divides the size by the tokens after impact and converts a negative impact at the min price",
+          appliesTo: (_input, app) => app.priceImpactUsd !== 0n,
         },
       ],
     },

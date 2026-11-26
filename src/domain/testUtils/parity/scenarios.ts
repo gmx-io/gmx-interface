@@ -38,6 +38,17 @@ const PNL_CAP_KEYS = [
   MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY,
 ];
 
+// every token at its mid price, so a known issue about the min or max price can't apply
+export const MID_PRICES_SCENARIO: Scenario = {
+  name: "mid prices",
+  tickers: (tickers) =>
+    tickers.map((ticker) => {
+      const midPrice = String((BigInt(ticker.minPrice) + BigInt(ticker.maxPrice)) / 2n);
+
+      return { ...ticker, minPrice: midPrice, maxPrice: midPrice };
+    }),
+};
+
 export const TRADER_PNL_CAP_SCENARIO: Scenario = {
   name: "trader pnl capped at 1% of the pool",
   overrides: {

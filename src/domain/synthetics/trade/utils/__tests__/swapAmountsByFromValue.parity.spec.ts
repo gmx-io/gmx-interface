@@ -1,6 +1,12 @@
 import { chainId, dataStoreAddress, getMarketProps, ParityContext, readReader } from "domain/testUtils/parity/context";
 import { parity, ParityInput } from "domain/testUtils/parity/parity";
-import { loadUiFeeFactor, marketConfigs, UI_FEE_RECEIVER, UI_FEE_SCENARIO } from "domain/testUtils/parity/scenarios";
+import {
+  loadUiFeeFactor,
+  marketConfigs,
+  MID_PRICES_SCENARIO,
+  UI_FEE_RECEIVER,
+  UI_FEE_SCENARIO,
+} from "domain/testUtils/parity/scenarios";
 import {
   getAppSwapPriceImpact,
   getSwapTokens,
@@ -11,11 +17,13 @@ import {
 } from "domain/testUtils/parity/swapPricing";
 import { swapImpactPoolAmountKey } from "sdk/configs/dataStore";
 import { getWrappedToken } from "sdk/configs/tokens";
+import { bigMath } from "sdk/utils/bigmath";
 import { applySwapImpactWithCap } from "sdk/utils/fees/priceImpact";
 import type { MarketInfo } from "sdk/utils/markets/types";
 import { getContractMarketPrices } from "sdk/utils/markets/utils";
+import { expandDecimals } from "sdk/utils/numbers";
 import { SwapPricingType } from "sdk/utils/orders/types";
-import { getSwapPathStats } from "sdk/utils/swap/swapStats";
+import { getIsMaxPnlFactorExceededAfterSwap, getSwapPathStats } from "sdk/utils/swap/swapStats";
 import { getSwapAmountsByFromValue } from "sdk/utils/swap/swapValues";
 
 type SwapAmountsCase = SwapCase & { uiFeeFactor: bigint };
@@ -79,10 +87,32 @@ function isPositiveImpactCapped(input: SwapAmountsInput) {
   );
 }
 
+const hasSpread = (input: SwapAmountsInput) =>
+  getSwapTokens(input).some(({ prices }) => prices.minPrice !== prices.maxPrice);
+
+// the fee and the impact are each off by less than one token in unit, the output by less than one token out unit
+function isRoundingDifference(input: SwapAmountsInput, app: bigint, contract: bigint) {
+  const [tokenIn, tokenOut] = getSwapTokens(input);
+  const tokenInUnitInTokenOut = bigMath.divRoundUp(
+    tokenIn.prices.maxPrice * expandDecimals(1, tokenOut.decimals),
+    tokenOut.prices.minPrice * expandDecimals(1, tokenIn.decimals)
+  );
+
+  return bigMath.abs(app - contract) <= 2n * tokenInUnitInTokenOut + 1n;
+}
+
+const isRefusedPastMaxPnl = (input: SwapAmountsInput, amountOut: bigint) =>
+  amountOut === 0n &&
+  getIsMaxPnlFactorExceededAfterSwap({
+    marketInfo: input.market,
+    isLong: input.testCase.isLongIn,
+    usdIn: getSwapUsdIn(input),
+  });
+
 parity("getSwapAmountsByFromValue <-> Reader.getSwapAmountOut, one market", {
   markets: isSwapMarket,
   cases: swapAmountsCases,
-  scenarios: [UI_FEE_SCENARIO, EMPTY_LONG_TOKEN_SWAP_IMPACT_POOLS_SCENARIO],
+  scenarios: [UI_FEE_SCENARIO, EMPTY_LONG_TOKEN_SWAP_IMPACT_POOLS_SCENARIO, MID_PRICES_SCENARIO],
   app: (input) => ({ amountOut: getAppSwapAmounts(input).amountOut }),
   contract: async (input) => {
     const { ctx, market, testCase } = input;
@@ -106,10 +136,17 @@ parity("getSwapAmountsByFromValue <-> Reader.getSwapAmountOut, one market", {
         {
           reason:
             "getSwapStats measures the impact on usdIn at the min price, the contract on amountIn at the mid price",
+          appliesTo: hasSpread,
         },
         {
           reason:
             "getSwapStats works in USD and rounds once, the contract rounds the fee and the impact to token-in units and the output to token-out units",
+          appliesTo: (input, app, contract) => isRoundingDifference(input, app.amountOut, contract.amountOut),
+        },
+        {
+          reason:
+            "the app refuses a swap past the max pnl factor, Reader.getSwapAmountOut quotes it without the check the swap itself makes",
+          appliesTo: (input, app) => isRefusedPastMaxPnl(input, app.amountOut),
         },
       ],
     },

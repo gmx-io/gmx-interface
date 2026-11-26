@@ -10,7 +10,7 @@ import {
   PRO_TIER_SCENARIO,
   referralStorageAddress,
 } from "domain/testUtils/parity/positions";
-import { TRADER_PNL_CAP_SCENARIO } from "domain/testUtils/parity/scenarios";
+import { MID_PRICES_SCENARIO, TRADER_PNL_CAP_SCENARIO } from "domain/testUtils/parity/scenarios";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "sdk/configs/factors";
 import { bigMath } from "sdk/utils/bigmath";
 import type { ContractMarketPrices, MarketInfo } from "sdk/utils/markets/types";
@@ -149,7 +149,7 @@ async function findReaderLiquidationPrice({ ctx, market, testCase }: Liquidation
 parity("getLiquidationPrice <-> Reader.isPositionLiquidatable flip price", {
   markets: (market) => !market.isSpotOnly,
   cases: liquidationCases,
-  scenarios: [PRO_TIER_SCENARIO, TRADER_PNL_CAP_SCENARIO],
+  scenarios: [PRO_TIER_SCENARIO, TRADER_PNL_CAP_SCENARIO, MID_PRICES_SCENARIO],
   app: ({ testCase }) => ({ liquidationPrice: testCase.liquidationPrice }),
   contract: async (input) => ({ liquidationPrice: await findReaderLiquidationPrice(input) }),
   fields: {

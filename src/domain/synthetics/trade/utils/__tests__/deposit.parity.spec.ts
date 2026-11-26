@@ -7,7 +7,12 @@ import {
   readReader,
 } from "domain/testUtils/parity/context";
 import { parity, ParityInput, usd } from "domain/testUtils/parity/parity";
-import { loadUiFeeFactor, UI_FEE_RECEIVER, UI_FEE_SCENARIO } from "domain/testUtils/parity/scenarios";
+import {
+  loadUiFeeFactor,
+  MID_PRICES_SCENARIO,
+  UI_FEE_RECEIVER,
+  UI_FEE_SCENARIO,
+} from "domain/testUtils/parity/scenarios";
 import { bigMath } from "sdk/utils/bigmath";
 import type { MarketInfo } from "sdk/utils/markets/types";
 import { getContractMarketPrices } from "sdk/utils/markets/utils";
@@ -97,7 +102,7 @@ const hasPositiveImpact = (input: DepositInput) => getAppDepositAmounts(input).s
 parity("getDepositAmounts <-> Reader.getDepositAmountOut", {
   markets: (market) => !market.isDisabled && market.poolValueMax > usd(10_000),
   cases: loadDepositCases,
-  scenarios: [UI_FEE_SCENARIO],
+  scenarios: [UI_FEE_SCENARIO, MID_PRICES_SCENARIO],
   app: (input) => ({ marketTokenAmount: getAppDepositAmounts(input).marketTokenAmount }),
   contract: async ({ ctx, market, testCase }) => {
     const marketProps = getMarketProps(market);

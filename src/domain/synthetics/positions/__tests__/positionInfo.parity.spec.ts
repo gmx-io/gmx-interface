@@ -1,33 +1,37 @@
 import { getUncappedTotalImpactUsd } from "domain/testUtils/parity/context";
-import { parity } from "domain/testUtils/parity/parity";
+import { parity, ParityInput } from "domain/testUtils/parity/parity";
 import {
   bpsOfSize,
   isProDiscountLarger,
   loadMinCollateralUsd,
   loadPositions,
+  ParityPosition,
   PRO_TIER_SCENARIO,
 } from "domain/testUtils/parity/positions";
-import { TRADER_PNL_CAP_SCENARIO } from "domain/testUtils/parity/scenarios";
+import { MID_PRICES_SCENARIO, TRADER_PNL_CAP_SCENARIO } from "domain/testUtils/parity/scenarios";
+import { bigMath } from "sdk/utils/bigmath";
 import { getPositionInfo } from "sdk/utils/positions/utils";
 import { convertToUsd } from "sdk/utils/tokens/utils";
 
-const knownIssues = [
-  {
-    reason:
-      "we keep the closing, referral and borrowing fees in USD, the contract floors them to collateral token units",
-  },
-  {
-    reason:
-      "getPositionInfo does not apply the pro tier discount to the closing fee, the contract takes the larger of the pro and referral discounts",
-    scenario: PRO_TIER_SCENARIO,
-  },
-];
+// each of the three fees is off by less than one collateral token unit
+const isFeeRounding = ({ testCase: { info } }: ParityInput<ParityPosition>, app: bigint, contract: bigint) =>
+  bigMath.abs(app - contract) <= 3n * info.fees.collateralTokenPrice.max;
+
+const feeRoundingReason =
+  "we keep the closing, referral and borrowing fees in USD, the contract floors them to collateral token units";
+
+const proTierIssue = {
+  reason:
+    "getPositionInfo does not apply the pro tier discount to the closing fee, the contract takes the larger of the pro and referral discounts",
+  scenario: PRO_TIER_SCENARIO,
+  appliesTo: isProDiscountLarger,
+};
 
 // The RPC path of usePositionsInfoRequest: Reader position + fees, everything else computed by getPositionInfo
 parity("getPositionInfo <-> Reader.getPositionInfo", {
   markets: (market) => !market.isSpotOnly,
   cases: loadPositions,
-  scenarios: [PRO_TIER_SCENARIO, TRADER_PNL_CAP_SCENARIO],
+  scenarios: [PRO_TIER_SCENARIO, TRADER_PNL_CAP_SCENARIO, MID_PRICES_SCENARIO],
   app: async ({ ctx, market, testCase }) => {
     const minCollateralUsd = await loadMinCollateralUsd(ctx);
     const info = getPositionInfo({
@@ -78,8 +82,27 @@ parity("getPositionInfo <-> Reader.getPositionInfo", {
     pnl: bpsOfSize,
     closePriceImpactUsd: bpsOfSize,
     closeTotalImpactUsd: bpsOfSize,
-    closingFeeUsd: { ...bpsOfSize, knownIssues },
-    netValueAfterAllFees: { ...bpsOfSize, knownIssues },
+    closingFeeUsd: {
+      ...bpsOfSize,
+      knownIssues: [
+        {
+          reason: feeRoundingReason,
+          appliesTo: (input, app, contract) => isFeeRounding(input, app.closingFeeUsd, contract.closingFeeUsd),
+        },
+        proTierIssue,
+      ],
+    },
+    netValueAfterAllFees: {
+      ...bpsOfSize,
+      knownIssues: [
+        {
+          reason: feeRoundingReason,
+          appliesTo: (input, app, contract) =>
+            isFeeRounding(input, app.netValueAfterAllFees, contract.netValueAfterAllFees),
+        },
+        proTierIssue,
+      ],
+    },
   },
   requiredCases: [
     { name: "the pro tier scenario applies", when: isProDiscountLarger, scenario: PRO_TIER_SCENARIO },
