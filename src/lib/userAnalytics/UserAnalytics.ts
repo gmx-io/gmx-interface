@@ -228,9 +228,11 @@ class UserAnalytics {
       return sleep(PROCESS_QUEUE_INTERVAL_MS).then(this.processQueue);
     }
 
-    const items = this.earlyEventsQueue.map(this.fillCommonParams);
+    // Each early event starts its own wait, so the first to finish takes them all.
+    const items = this.earlyEventsQueue.splice(0).map(this.fillCommonParams);
 
-    await metrics.sendBatchItems(items);
+    // Nothing awaits this queue: a blocked analytics request would surface as an unhandled rejection.
+    await metrics.sendBatchItems(items).catch(() => undefined);
   };
 
   fillCommonParams = (item: UserAnalyticsEventItem): UserAnalyticsEventItem => {

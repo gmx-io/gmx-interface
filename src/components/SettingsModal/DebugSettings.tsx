@@ -6,6 +6,7 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { AbFlagSettings } from "components/AbFlagsSettings/AbFlagsSettings";
 import { DebugSwapsSettings } from "components/DebugSwapsSettings/DebugSwapsSettings";
 import { MetricsDebugSettings } from "components/MetricsDebugSettings/MetricsDebugSettings";
+import { NotificationsDebugSettings } from "components/NotificationsDebugSettings/NotificationsDebugSettings";
 import TenderlySettings from "components/TenderlySettings/TenderlySettings";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 
@@ -70,6 +71,8 @@ export function DebugSettings({ isSettingsVisible }: DebugSettingsProps) {
         <RpcDebugSettings />
 
         <TenderlySettings isSettingsVisible={isSettingsVisible} />
+
+        <NotificationsDebugSettings />
       </SettingsSection>
       <SettingsSection className="mt-16 gap-16">
         <div className="text-14 font-medium text-typography-primary">

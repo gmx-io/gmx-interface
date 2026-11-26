@@ -83,6 +83,10 @@ vi.mock("./DisplaySettings", () => ({
   DisplaySettings: () => null,
 }));
 
+vi.mock("./NotificationsSettings", () => ({
+  NotificationsSettings: () => null,
+}));
+
 vi.mock("./TradingSettings", () => ({
   TradingSettings: (props: CapturedTradingSettingsProps) => {
     capturedProps.current = props;
