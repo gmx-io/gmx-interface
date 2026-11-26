@@ -53,10 +53,37 @@ function createLegacyCaches(entries: CacheEntries = {}) {
   return caches;
 }
 
-function loadServiceWorker(fetch: FetchMock, caches = createLegacyCaches(), scriptUrl = "/sw.js?build=2") {
+type WindowClientMock = {
+  focused: boolean;
+  visibilityState: "visible" | "hidden";
+  frameType: "top-level" | "nested";
+  focus: ReturnType<typeof vi.fn>;
+  postMessage: ReturnType<typeof vi.fn>;
+};
+
+function createWindowClient(state: Partial<Pick<WindowClientMock, "focused" | "visibilityState" | "frameType">> = {}) {
+  return {
+    focused: false,
+    visibilityState: "hidden" as const,
+    frameType: "top-level" as const,
+    ...state,
+    focus: vi.fn().mockResolvedValue(undefined),
+    postMessage: vi.fn(),
+  };
+}
+
+function loadServiceWorker(
+  fetch: FetchMock,
+  caches = createLegacyCaches(),
+  scriptUrl = "/sw.js?build=2",
+  windowClients: WindowClientMock[] = []
+) {
   const listeners = new Map<string, Listener>();
   const skipWaiting = vi.fn().mockResolvedValue(undefined);
   const claim = vi.fn().mockResolvedValue(undefined);
+  const showNotification = vi.fn().mockResolvedValue(undefined);
+  const matchAll = vi.fn().mockResolvedValue(windowClients);
+  const openWindow = vi.fn().mockResolvedValue(null);
   vm.runInNewContext(SERVICE_WORKER_SOURCE, {
     AbortController,
     DOMException,
@@ -64,14 +91,16 @@ function loadServiceWorker(fetch: FetchMock, caches = createLegacyCaches(), scri
     Promise,
     Response,
     URL,
+    URLSearchParams,
     caches,
     clearTimeout,
     fetch,
     setTimeout,
     self: {
       addEventListener: (type: string, listener: Listener) => listeners.set(type, listener),
-      clients: { claim },
+      clients: { claim, matchAll, openWindow },
       location: { href: `${ORIGIN}${scriptUrl}`, origin: ORIGIN },
+      registration: { showNotification },
       skipWaiting,
     },
   });
@@ -80,6 +109,17 @@ function loadServiceWorker(fetch: FetchMock, caches = createLegacyCaches(), scri
     caches,
     claim,
     skipWaiting,
+    showNotification,
+    matchAll,
+    openWindow,
+    async dispatchExtendable(type: "push" | "notificationclick", event: Record<string, unknown>) {
+      const promises: Promise<unknown>[] = [];
+      (listeners.get(type) as ((event: unknown) => void) | undefined)?.({
+        ...event,
+        waitUntil: (promise: Promise<unknown>) => promises.push(promise),
+      });
+      await Promise.all(promises);
+    },
     dispatchFetch(request: FetchEvent["request"]) {
       const respondWith = vi.fn<(response: Promise<Response>) => void>();
       listeners.get("fetch")?.({ request, respondWith, waitUntil: vi.fn() });
@@ -435,5 +475,117 @@ describe("PWA service worker request boundaries", () => {
     expect(worker.dispatchFetch(request)).toBeUndefined();
     expect(fetch).not.toHaveBeenCalled();
     expect(worker.caches.keys).not.toHaveBeenCalled();
+  });
+});
+
+describe("PWA service worker notifications", () => {
+  const EXECUTION_URL = "https://app.gmx.io/#/trade/long?chainId=42161&market=ETH&pool=ETH-USDC";
+
+  function pushData(payload: unknown) {
+    return {
+      json: () => {
+        if (typeof payload === "string") {
+          return JSON.parse(payload);
+        }
+        return payload;
+      },
+    };
+  }
+
+  function clickEvent(url: unknown, type?: string) {
+    return { notification: { close: vi.fn(), data: { url, type } } };
+  }
+
+  it("shows the pushed notification with its tag and click data", async () => {
+    const worker = loadServiceWorker(vi.fn());
+    const data = { type: "order.executed", eventId: "1", url: EXECUTION_URL };
+
+    await worker.dispatchExtendable("push", {
+      data: pushData({ title: "Order executed", body: "ETH/USD Long: $1,000 at $3,000.", tag: "abc", data }),
+    });
+
+    expect(worker.showNotification).toHaveBeenCalledExactlyOnceWith("Order executed", {
+      body: "ETH/USD Long: $1,000 at $3,000.",
+      icon: "/android-chrome-192x192.png",
+      tag: "abc",
+      renotify: true,
+      data,
+    });
+  });
+
+  it.each([
+    ["no data", undefined],
+    ["invalid JSON", pushData("not json")],
+    ["a non-object payload", pushData(42)],
+  ])("still shows a notification for %s", async (_name, data) => {
+    const worker = loadServiceWorker(vi.fn());
+
+    await worker.dispatchExtendable("push", { data });
+
+    expect(worker.showNotification).toHaveBeenCalledExactlyOnceWith("GMX", {
+      body: "",
+      icon: "/android-chrome-192x192.png",
+      tag: undefined,
+      renotify: false,
+      data: {},
+    });
+  });
+
+  it("sends the trade route to an open app window and focuses it, not to the focused chart iframe", async () => {
+    const hidden = createWindowClient();
+    const visible = createWindowClient({ visibilityState: "visible" });
+    const chart = createWindowClient({ focused: true, visibilityState: "visible", frameType: "nested" });
+    const worker = loadServiceWorker(vi.fn(), undefined, undefined, [chart, hidden, visible]);
+    const event = clickEvent(EXECUTION_URL, "order.executed");
+
+    await worker.dispatchExtendable("notificationclick", event);
+
+    expect(event.notification.close).toHaveBeenCalledOnce();
+    expect(worker.matchAll).toHaveBeenCalledWith({ type: "window", includeUncontrolled: true });
+    expect(visible.focus).toHaveBeenCalledOnce();
+    expect(visible.postMessage).toHaveBeenCalledExactlyOnceWith({
+      type: "gmx-notification-click",
+      route: "/trade/long?chainId=42161&market=ETH&pool=ETH-USDC",
+      notificationType: "order.executed",
+    });
+    expect(hidden.postMessage).not.toHaveBeenCalled();
+    expect(chart.postMessage).not.toHaveBeenCalled();
+    expect(worker.openWindow).not.toHaveBeenCalled();
+  });
+
+  it("opens the app with the route in its URL when no window is open", async () => {
+    const worker = loadServiceWorker(vi.fn());
+
+    await worker.dispatchExtendable("notificationclick", clickEvent(EXECUTION_URL, "position.liquidated"));
+
+    expect(worker.openWindow).toHaveBeenCalledExactlyOnceWith(
+      `/trade?notification=${encodeURIComponent("/trade/long?chainId=42161&market=ETH&pool=ETH-USDC")}` +
+        "&notificationType=position.liquidated"
+    );
+  });
+
+  it.each([
+    [
+      "a path link",
+      "https://app.gmx.io/trade/short?chainId=42161&market=BTC&pool=BTC-USDC",
+      "/trade/short?chainId=42161&market=BTC&pool=BTC-USDC",
+    ],
+    ["the summary link", "https://app.gmx.io/#/trade?chainId=42161", "/trade?chainId=42161"],
+    ["the canary link", "https://app.gmx.io", "/trade"],
+    ["another page", "https://app.gmx.io/#/earn", "/trade"],
+    ["another origin in the hash", "https://app.gmx.io/#//evil.example/trade", "/trade"],
+    ["an invalid link", "not a url", "/trade"],
+    ["no link", undefined, "/trade"],
+  ])("opens only trade pages of its own origin for %s", async (_name, url, route) => {
+    const appWindow = createWindowClient({ focused: true });
+    const worker = loadServiceWorker(vi.fn(), undefined, undefined, [appWindow]);
+
+    await worker.dispatchExtendable("notificationclick", clickEvent(url));
+
+    expect(appWindow.postMessage).toHaveBeenCalledExactlyOnceWith({
+      type: "gmx-notification-click",
+      route,
+      notificationType: "",
+    });
   });
 });

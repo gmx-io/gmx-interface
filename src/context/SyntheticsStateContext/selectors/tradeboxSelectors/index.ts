@@ -119,6 +119,7 @@ import {
   makeSelectMaxLiquidityPath,
   makeSelectNextPositionValuesForDecrease,
   makeSelectNextPositionValuesForIncrease,
+  selectDisabledSwapMarkets,
   selectExternalSwapQuoteParams,
 } from "../tradeSelectors";
 import { selectTradeboxGetMaxLongShortLiquidityPool } from "./selectTradeboxGetMaxLongShortLiquidityPool";
@@ -746,12 +747,16 @@ export const selectTradeboxFormState = createSelector((q) => {
   };
 });
 
-export const selectTradeboxIsTPSLEnabled = createSelector((q) => {
+export const selectTradeboxIsTPSLToggledOn = createSelector((q) => {
   const { limitOrTPSL } = q(selectTradeboxAdvancedOptions);
   const { isSwap, isTrigger, isTwap } = q(selectTradeboxTradeFlags);
 
   return limitOrTPSL && !isSwap && !isTrigger && !isTwap;
 });
+
+export const selectTradeboxIsTPSLEnabled = createSelector(
+  (q) => q(selectTradeboxIsTPSLToggledOn) && !q(selectTradeboxIsPositionLiquidatedBeforeTrigger)
+);
 
 export const selectTradeboxIsWrapOrUnwrap = createSelector((q) => {
   const fromToken = q(selectTradeboxFromToken);
@@ -999,6 +1004,7 @@ export const selectTradeboxRawInternalSwapAmounts = createSelector((q) => {
     : undefined;
 
   const debugSwapMarketsConfig = IS_DEVELOPMENT ? q(selectDebugSwapMarketsConfig) : undefined;
+  const disabledMarkets = q(selectDisabledSwapMarkets);
 
   const { markRatio, triggerRatio } = q(selectTradeboxTradeRatios);
 
@@ -1022,7 +1028,7 @@ export const selectTradeboxRawInternalSwapAmounts = createSelector((q) => {
       chainId,
       externalSwapQuoteParams,
       allowSameTokenSwap: tradeFlags.isSwap,
-      disabledMarkets: debugSwapMarketsConfig?.disabledSwapMarkets,
+      disabledMarkets,
       manualPath: debugSwapMarketsConfig?.manualPath,
     });
   } else {
@@ -1040,7 +1046,7 @@ export const selectTradeboxRawInternalSwapAmounts = createSelector((q) => {
       chainId,
       externalSwapQuoteParams,
       allowSameTokenSwap: tradeFlags.isSwap,
-      disabledMarkets: debugSwapMarketsConfig?.disabledSwapMarkets,
+      disabledMarkets,
       manualPath: debugSwapMarketsConfig?.manualPath,
     });
 

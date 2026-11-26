@@ -7,7 +7,11 @@ import { useIntersection } from "react-use";
 import { getNetworkFeatures } from "config/features";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { usePositionsConstants } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { selectChainId, selectUserReferralInfo } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import {
+  selectChainId,
+  selectClosedMarkets,
+  selectUserReferralInfo,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectBreakdownNetPriceImpactEnabled,
   selectShowPnlAfterFees,
@@ -17,6 +21,7 @@ import { selectTradeboxSelectedPositionKey } from "context/SyntheticsStateContex
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getBorrowingFeeRateUsd, getFundingFeeRateUsd } from "domain/synthetics/fees";
 import { OFF_HOURS_DOCS_URL } from "domain/synthetics/markets";
+import { getIsMarketClosed } from "domain/synthetics/markets/utils";
 import {
   PositionInfo,
   formatEstimatedLiquidationTime,
@@ -36,6 +41,7 @@ import { getCollateralAmountInIndexTokens } from "sdk/utils/positions";
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import { AppCard, AppCardSection } from "components/AppCard/AppCard";
 import Button from "components/Button/Button";
+import { MarketClosedBadge } from "components/MarketClosedBadge/MarketClosedBadge";
 import { DeltaUsdValue } from "components/NumericValue/DeltaUsdValue";
 import { LeverageValue } from "components/NumericValue/LeverageValue";
 import { LiquidationPriceValue } from "components/NumericValue/LiquidationPriceValue";
@@ -100,6 +106,8 @@ export function PositionItem(p: Props) {
   const isCurrentMarket = tradeboxSelectedPositionKey === p.position.key;
   const chainId = useSelector(selectChainId);
   const userReferralInfo = useSelector(selectUserReferralInfo);
+  const closedMarkets = useSelector(selectClosedMarkets);
+  const isMarketClosed = getIsMarketClosed(closedMarkets, p.position.marketAddress);
   const [showSizeInTokens, setShowSizeInTokens] = useState(false);
   const [isTPSLModalVisible, setIsTPSLModalVisible] = useState(false);
   const [tpslInitialView, setTpslInitialView] = useState<"list" | "add">("list");
@@ -485,10 +493,17 @@ export function PositionItem(p: Props) {
           <>
             {(liqPriceWarning || estimatedLiquidationHours) && <TooltipDivider />}
             <TooltipText>
-              <Trans>
-                This position is above liquidation risk, but it may become close to liquidation when the market switches
-                to off-hours risk parameters. Add margin or reduce leverage to increase your buffer.
-              </Trans>
+              {isMarketClosed ? (
+                <Trans>
+                  This position is above liquidation risk, but it may become close to liquidation when the market
+                  switches to off-hours risk parameters.
+                </Trans>
+              ) : (
+                <Trans>
+                  This position is above liquidation risk, but it may become close to liquidation when the market
+                  switches to off-hours risk parameters. Add margin or reduce leverage to increase your buffer.
+                </Trans>
+              )}
             </TooltipText>
             <TooltipText>
               <Trans>Off-hours: daily 17:00–18:15 New York time (weekends Fri 17:00 → Sun 18:15 New York time).</Trans>
@@ -622,6 +637,11 @@ export function PositionItem(p: Props) {
                 {p.position.isLong ? t`Long` : t`Short`}
               </span>
             </div>
+            {isMarketClosed && (
+              <div className="mt-4 flex">
+                <MarketClosedBadge label="marketClosed" isTruncatable />
+              </div>
+            )}
           </div>
         </TableTd>
         <TableTd>
@@ -750,7 +770,7 @@ export function PositionItem(p: Props) {
     return (
       <AppCard dataQa="position-item">
         <AppCardSection onClick={() => p.onSelectPositionClick?.()}>
-          <div className="text-body-medium flex items-center gap-8">
+          <div className="text-body-medium flex flex-wrap items-center gap-x-8 gap-y-4">
             <span
               className={cx("text-body-medium relative flex items-center gap-4 font-medium", {
                 "after:absolute after:-left-10 after:top-[50%] after:h-16 after:w-2 after:-translate-y-[50%] after:bg-blue-300":
@@ -771,6 +791,7 @@ export function PositionItem(p: Props) {
                 {p.position.isLong ? t`Long` : t`Short`}
               </span>
             </div>
+            {isMarketClosed && <MarketClosedBadge label="marketClosed" />}
             {p.position.pendingUpdate && <SpinnerIcon className="spin position-loading-icon" />}
           </div>
         </AppCardSection>

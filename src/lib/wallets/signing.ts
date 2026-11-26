@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
 import { getAccount, getChainId, getWalletClient } from "@wagmi/core";
 import { AbstractSigner, type Wallet } from "ethers";
-import { hashTypedData, isAddressEqual, withRetry, type Hex } from "viem";
+import { hashTypedData, isAddressEqual, UserRejectedRequestError, withRetry, type Hex } from "viem";
 
 import { getChainName } from "config/chains";
 import { extendError, parseError, type ErrorLike } from "lib/errors";
@@ -20,6 +20,7 @@ import type { IAbstractSigner } from "sdk/utils/signer";
 
 import { switchNetwork, type WalletSigner } from ".";
 import { analyzeSignatureShape, getSignatureKind, reportSignatureProduced } from "./signatureDiagnostics";
+import { silentEmbeddedWalletSigner } from "./silentEmbeddedWalletSigner";
 import { AccountType } from "./useAccountType";
 import { clientToSigner } from "./useEthersSigner";
 import { getConnectedWalletName, isAccountMissingOnChain } from "./useWalletSessionChains";
@@ -50,6 +51,8 @@ export type SignTypedDataParams = {
   shouldUseSignerMethod?: boolean;
   minified?: boolean;
   verificationChainId: number;
+  /** Signs without the Privy confirmation window when the embedded wallet has registered a silent signer */
+  canSkipEmbeddedWalletConfirmation?: boolean;
   relayParams?: RelayParamsPayload;
   validateBeforeSign?: () => void;
 };
@@ -80,6 +83,15 @@ async function probeChainBoundSigning({
   const accountTypes = await probeAccountTypes(address, [currentChainId, targetChainId], "signing.accountTypeProbe");
 
   return accountTypes.some(mustSignOnVerificationChain);
+}
+
+// Privy rejects with these when the user closes its MFA or password recovery screen
+const PRIVY_USER_CANCEL_MESSAGES = ["MFA canceled", "User exited before their wallet could be recovered"];
+
+function isSilentSigningCancelledByUser(error: ErrorLike): boolean {
+  const errorData = parseError(error);
+
+  return errorData?.isUserRejectedError === true || PRIVY_USER_CANCEL_MESSAGES.includes(errorData?.errorMessage ?? "");
 }
 
 function isUnsupportedChainError(error: ErrorLike): boolean {
@@ -144,14 +156,12 @@ async function withSmartWalletChainSwap<T, S extends AnySigner>(
     address,
     targetChainId,
     forceVerificationChain = false,
-    shouldUseLearnedChainBinding = true,
     validateBeforeSign,
   }: {
     signer: S;
     address: string;
     targetChainId: number | undefined;
     forceVerificationChain?: boolean;
-    shouldUseLearnedChainBinding?: boolean;
     validateBeforeSign?: () => void;
   },
   action: (signer: S | WalletSigner, signingChainId: number) => Promise<T>
@@ -163,8 +173,7 @@ async function withSmartWalletChainSwap<T, S extends AnySigner>(
     return action(signer, startingChainId);
   }
 
-  const hasLearnedChainBinding =
-    shouldUseLearnedChainBinding && getChainBindingState(address, targetChainId) === "needsVerificationChain";
+  const hasLearnedChainBinding = getChainBindingState(address, targetChainId) === "needsVerificationChain";
 
   const needsSwap =
     forceVerificationChain ||
@@ -278,10 +287,8 @@ export async function signMessage({
   const from = await signer.getAddress();
   const startingChainId = getChainId(getWagmiConfig());
 
-  // `generateSubaccount` derives a private key from this signature, so it has to stay stable for a given
-  // wallet — it is never checked on chain, and learning chain binding later would change the subaccount.
   return withSmartWalletChainSwap(
-    { signer, address: from, targetChainId: verificationChainId, shouldUseLearnedChainBinding: false },
+    { signer, address: from, targetChainId: verificationChainId },
     async (signWith, signingChainId) => {
       const signature = await signWith.signMessage(message);
 
@@ -329,6 +336,7 @@ async function signTypedDataOnce({
   shouldUseSignerMethod = false,
   minified = true,
   verificationChainId,
+  canSkipEmbeddedWalletConfirmation = false,
   validateBeforeSign,
 }: SignTypedDataParams) {
   // filter inputs
@@ -382,7 +390,26 @@ async function signTypedDataOnce({
     message: messageToSign,
   };
 
-  const requestSignature = (signWith: AnySigner) => {
+  const requestSignature = async (signWith: AnySigner) => {
+    // looked up per attempt: the setting or the session can change while the chain checks await
+    const silentSigner = canSkipEmbeddedWalletConfirmation ? silentEmbeddedWalletSigner.get(from) : undefined;
+
+    if (silentSigner) {
+      validateBeforeSign?.();
+
+      try {
+        return await silentSigner.signTypedData(eip712);
+      } catch (error) {
+        // the user already answered Privy's MFA or recovery screen, the prompted flow would only ask again
+        if (isSilentSigningCancelledByUser(error)) {
+          throw new UserRejectedRequestError(error);
+        }
+
+        // the prompted flow can still succeed, so a failure here must not fail the order
+        metrics.pushError(error, "signing.silentEmbeddedWallet");
+      }
+    }
+
     if (shouldUseSignerMethod && signWith.signTypedData) {
       validateBeforeSign?.();
       return signWith.signTypedData(domain, typesToSign, messageToSign).catch((e) => {

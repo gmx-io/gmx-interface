@@ -45,7 +45,7 @@ export function getUiFlagEventDismissCooldown(event: UiFlagEventData): number {
   return event.dismissCooldownMs ?? DEFAULT_DISMISS_COOLDOWN_MS;
 }
 
-// Solana events need the solanaNetwork AB flag (Settings > Debug settings > AB flags) on top of the Solana network.
+// Solana events need the solanaNetwork AB flag (Settings > Debug > AB flags) on top of the Solana network.
 export function getIsUiFlagEventOnNetwork(event: UiFlagEventData, networkId: NetworkId): boolean {
   if (event.network === "solana" && !getIsSolanaNetworkEnabled()) {
     return false;

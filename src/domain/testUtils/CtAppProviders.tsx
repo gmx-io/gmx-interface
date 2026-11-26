@@ -9,7 +9,6 @@ import "react-toastify/dist/ReactToastify.css";
 
 import { ChainContextProvider } from "context/ChainContext/ChainContext";
 import { ConnectModalProvider } from "context/ConnectModalContext/ConnectModalContext";
-import { GlobalStateProvider } from "context/GlobalContext/GlobalContextProvider";
 import { GmxAccountContextProvider } from "context/GmxAccountContext/GmxAccountContext";
 import { GmxSdkProvider } from "context/GmxSdkContext/GmxSdkContext";
 import { PendingTxnsContextProvider } from "context/PendingTxnsContext/PendingTxnsContext";
@@ -85,25 +84,23 @@ export function CtAppProviders({ wagmiConfig, autoConnect = true, connectChainId
             <GmxSdkProvider>
               <GmxAccountContextProvider>
                 <ChainContextProvider>
-                  <GlobalStateProvider>
-                    <SettingsContextProvider>
-                      <PendingTxnsContextProvider>
-                        <I18nProvider i18n={i18n}>
-                          <ConnectModalProvider>
-                            <TokensBalancesContextProvider>
-                              <TokenPermitsContextProvider>
-                                <SubaccountContextProvider>
-                                  <TokensFavoritesContextProvider>
-                                    <SorterContextProvider>{content}</SorterContextProvider>
-                                  </TokensFavoritesContextProvider>
-                                </SubaccountContextProvider>
-                              </TokenPermitsContextProvider>
-                            </TokensBalancesContextProvider>
-                          </ConnectModalProvider>
-                        </I18nProvider>
-                      </PendingTxnsContextProvider>
-                    </SettingsContextProvider>
-                  </GlobalStateProvider>
+                  <SettingsContextProvider>
+                    <PendingTxnsContextProvider>
+                      <I18nProvider i18n={i18n}>
+                        <ConnectModalProvider>
+                          <TokensBalancesContextProvider>
+                            <TokenPermitsContextProvider>
+                              <SubaccountContextProvider>
+                                <TokensFavoritesContextProvider>
+                                  <SorterContextProvider>{content}</SorterContextProvider>
+                                </TokensFavoritesContextProvider>
+                              </SubaccountContextProvider>
+                            </TokenPermitsContextProvider>
+                          </TokensBalancesContextProvider>
+                        </ConnectModalProvider>
+                      </I18nProvider>
+                    </PendingTxnsContextProvider>
+                  </SettingsContextProvider>
                 </ChainContextProvider>
               </GmxAccountContextProvider>
             </GmxSdkProvider>

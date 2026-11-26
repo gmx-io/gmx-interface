@@ -49,19 +49,28 @@ export function getSettlementBlockReason(
   return undefined;
 }
 
-export function getIsPositionSettleable(position: PositionInfo, minCollateralUsd: bigint | undefined) {
-  return !position.marketInfo?.isDisabled && getSettlementBlockReason(position, minCollateralUsd) === undefined;
+export function getIsPositionSettleable(
+  position: PositionInfo,
+  minCollateralUsd: bigint | undefined,
+  isMarketClosed: boolean
+) {
+  return (
+    !position.marketInfo?.isDisabled &&
+    !isMarketClosed &&
+    getSettlementBlockReason(position, minCollateralUsd) === undefined
+  );
 }
 
 export function shouldPreSelectPosition(
   position: PositionInfo,
   networkFee: bigint,
-  minCollateralUsd: bigint | undefined
+  minCollateralUsd: bigint | undefined,
+  isMarketClosed: boolean
 ) {
   const { pendingClaimableFundingFeesUsd } = position;
 
   return (
-    getIsPositionSettleable(position, minCollateralUsd) &&
+    getIsPositionSettleable(position, minCollateralUsd, isMarketClosed) &&
     pendingClaimableFundingFeesUsd > PENDING_FUNDING_FEE_THRESHOLD &&
     pendingClaimableFundingFeesUsd > networkFee * SETTLE_FEE_RATIO_THRESHOLD
   );

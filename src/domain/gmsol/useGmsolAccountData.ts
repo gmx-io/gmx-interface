@@ -35,6 +35,7 @@ export type GmsolAccountDataResult<T> = {
   isLoading: boolean;
   isSyncing: boolean;
   error: Error | undefined;
+  refetch: () => Promise<T | undefined>;
 };
 
 function useGmsolAccountRequest<T>(
@@ -50,7 +51,7 @@ function useGmsolAccountRequest<T>(
   const isPendingConfirmation = useSyncExternalStore(subscribeToAccountSlots, () => accountSlots.isPending(slotKey));
   const refreshError = useSyncExternalStore(subscribeToAccountSlots, () => accountSlots.getError(slotKey));
 
-  const { data, error, isLoading, freshness } = useSWRWithFreshness<T>(
+  const { data, error, isLoading, freshness, refetch } = useSWRWithFreshness<T>(
     key,
     ([, , keyApiCacheKey, keyOwner]: NonNullable<typeof key>) => fetcher(sdk!, keyOwner, keyApiCacheKey),
     { refreshInterval, maxAgeMs: refreshInterval + API_STALE_MS }
@@ -66,6 +67,7 @@ function useGmsolAccountRequest<T>(
     isLoading: key ? isLoading : false,
     isSyncing: Boolean(key && isPendingConfirmation),
     error: key ? error ?? refreshError ?? overdueError : undefined,
+    refetch,
   };
 }
 

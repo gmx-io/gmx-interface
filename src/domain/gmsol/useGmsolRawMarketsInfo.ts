@@ -1,4 +1,4 @@
-import { useMemo, useRef } from "react";
+import { useCallback, useMemo, useRef } from "react";
 
 import { getUiApiCacheKey } from "config/api";
 import { ARBITRUM, SOLANA_NETWORK_ID } from "config/chains";
@@ -25,6 +25,7 @@ export type GmsolRawMarketsInfoResult = {
   unavailableReason: Exclude<GmsolMarketsUnavailableReason, "coverage"> | undefined;
   missingMarketAddresses: string[];
   error: Error | undefined;
+  refetch: () => Promise<unknown>;
 };
 
 // Values can omit a market the cached config still lists; only that market is unavailable unless values cover none.
@@ -105,6 +106,10 @@ export function useGmsolRawMarketsInfo({ enabled }: { enabled: boolean }): Gmsol
     isSnapshotPastGrace(config.freshness.asOf, CONFIG_UPDATE_INTERVAL) ||
     isSnapshotPastGrace(values.freshness.asOf, FREQUENT_UPDATE_INTERVAL);
 
+  const refetchConfig = config.refetch;
+  const refetchValues = values.refetch;
+  const refetch = useCallback(() => Promise.all([refetchConfig(), refetchValues()]), [refetchConfig, refetchValues]);
+
   if (!enabled) {
     return {
       rawMarketsInfoData: undefined,
@@ -112,6 +117,7 @@ export function useGmsolRawMarketsInfo({ enabled }: { enabled: boolean }): Gmsol
       unavailableReason: undefined,
       missingMarketAddresses: EMPTY_ARRAY,
       error: undefined,
+      refetch,
     };
   }
 
@@ -124,5 +130,6 @@ export function useGmsolRawMarketsInfo({ enabled }: { enabled: boolean }): Gmsol
     unavailableReason: !sdk || error ? "request" : isStale || isExpired ? "stale" : undefined,
     missingMarketAddresses: keepSnapshot ? valuesGaps.missingMarketAddresses : EMPTY_ARRAY,
     error,
+    refetch,
   };
 }

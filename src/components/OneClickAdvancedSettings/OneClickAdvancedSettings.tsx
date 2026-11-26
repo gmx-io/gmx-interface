@@ -10,7 +10,7 @@ import {
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { useBigNumberInput } from "domain/synthetics/common/useBigNumberInput";
 import { getRemainingSubaccountActions, getRemainingSubaccountSeconds } from "domain/synthetics/subaccount";
-import type { SubaccountLimits } from "domain/synthetics/subaccount/utils";
+import { getCanReuseSubaccount, type SubaccountLimits } from "domain/synthetics/subaccount/utils";
 import { periodToSeconds } from "sdk/utils/time";
 
 import Button from "components/Button/Button";
@@ -41,7 +41,8 @@ function secondsToDays(seconds: bigint) {
 }
 
 export function OneClickAdvancedSettings() {
-  const { subaccount, updateSubaccountSettings, initialSettings, setInitialSettings } = useSubaccountContext();
+  const { subaccount, subaccountConfig, updateSubaccountSettings, initialSettings, setInitialSettings } =
+    useSubaccountContext();
   const [isExpanded, setIsExpanded] = useState(false);
 
   const { displayValue: remainingActionsString, setDisplayValue: setRemainingActionsString } = useBigNumberInput(
@@ -88,10 +89,11 @@ export function OneClickAdvancedSettings() {
       currentLimits.remainingActions === remainingActions &&
       secondsToDays(currentLimits.remainingSeconds) === secondsToDays(remainingSeconds);
     const isTooLarge = remainingActions > MAX_ACTIONS || remainingSeconds > MAX_SECONDS;
-    const isInvalid = !subaccount && (remainingActions === 0n || remainingSeconds === 0n);
+    const isInvalid =
+      (remainingActions === 0n || remainingSeconds === 0n) && !getCanReuseSubaccount(subaccount, subaccountConfig);
 
     return notChanged || isTooLarge || isInvalid;
-  }, [subaccount, currentLimits, nextLimits]);
+  }, [subaccount, subaccountConfig, currentLimits, nextLimits]);
 
   const handleSave = useCallback(() => {
     if (!subaccount) {
@@ -121,7 +123,7 @@ export function OneClickAdvancedSettings() {
         title={<Trans>One-Click settings</Trans>}
         className="mb-4"
       >
-        <div className="mt-12 flex flex-col gap-14">
+        <div className="flex flex-col gap-14">
           <SyntheticsInfoRow
             label={
               <StandardTooltip variant="iconStroke" content={t`Maximum actions before reauthorization required`}>

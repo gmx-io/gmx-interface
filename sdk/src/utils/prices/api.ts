@@ -20,8 +20,11 @@ export function parseApiTokenPrices(raw: unknown): TokenPricesData {
   return deserializeBigIntsInObject(raw as Record<string, unknown>, { handleInts: true }) as TokenPricesData;
 }
 
-export async function fetchApiTokenPrices(ctx: { api: IHttp }): Promise<{ prices: TokenPricesData; originTs: number }> {
-  const raw = await ctx.api.fetchJson<unknown>("/v1/prices/tickers");
+export async function fetchApiTokenPrices(
+  ctx: { api: IHttp },
+  opts?: { signal?: AbortSignal }
+): Promise<{ prices: TokenPricesData; originTs: number }> {
+  const raw = await ctx.api.fetchJson<unknown>("/v1/prices/tickers", { signal: opts?.signal });
   if (!isRecord(raw) || !isRecord(raw.prices) || typeof raw.originTs !== "number") {
     throw new Error("Invalid /v1/prices/tickers response");
   }

@@ -27,6 +27,7 @@ export function useGmsolTokensData({
 }): TokensDataResult & {
   unavailableReason: GmsolMarketsUnavailableReason | undefined;
   unpricedMarketAddresses: string[];
+  refetch: () => Promise<unknown>;
 } {
   const oracleFetcher = useOracleKeeperFetcher(ARBITRUM);
   const key = enabled
@@ -36,6 +37,7 @@ export function useGmsolTokensData({
     data: pricesData,
     error,
     freshness,
+    refetch,
   } = useSWRWithFreshness<GmsolTokenPricesData | undefined>(key, () => fetchGmsolPrices(oracleFetcher), {
     refreshInterval: FREQUENT_UPDATE_INTERVAL,
     maxAgeMs: FREQUENT_UPDATE_INTERVAL + API_STALE_MS,
@@ -98,5 +100,6 @@ export function useGmsolTokensData({
           ? "coverage"
           : undefined,
     unpricedMarketAddresses,
+    refetch,
   };
 }

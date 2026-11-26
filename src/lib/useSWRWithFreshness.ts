@@ -1,5 +1,5 @@
-import { useEffect, useReducer } from "react";
-import useSWR, { mutate, type Key, type SWRConfiguration } from "swr";
+import { useCallback, useEffect, useReducer } from "react";
+import useSWR, { mutate as globalMutate, type Key, type SWRConfiguration } from "swr";
 
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 
@@ -9,6 +9,7 @@ export type Freshness = {
 };
 
 export type SWRWithFreshnessResult<Data> = {
+  refetch: () => Promise<Data | undefined>;
   data: Data | undefined;
   isLoading: boolean;
   error: Error | undefined;
@@ -61,6 +62,7 @@ export function useSWRWithFreshness<Data, Arg = any>(
     data,
     error: swrError,
     isLoading,
+    mutate,
   } = useSWR<Fetched<Data>>(key, async (arg: Arg) => ({ value: await fetcher(arg), fetchedAt: Date.now() }), {
     onErrorRetry: retryAtRefreshCadence,
     ...swrConfig,
@@ -77,7 +79,10 @@ export function useSWRWithFreshness<Data, Arg = any>(
     return () => clearTimeout(timeout);
   }, [asOf, maxAgeMs, isExpired]);
 
+  const refetch = useCallback(async () => (await mutate())?.value, [mutate]);
+
   return {
+    refetch,
     data: data?.value,
     isLoading,
     error,
@@ -87,7 +92,7 @@ export function useSWRWithFreshness<Data, Arg = any>(
 
 // Unlike a plain mutate, it does not revalidate: the value is already what the hook's fetcher would return.
 export async function mutateSWRWithFreshness<Data>(key: Key, promise: Promise<Data>): Promise<void> {
-  await mutate<Fetched<Data>>(
+  await globalMutate<Fetched<Data>>(
     key,
     promise.then((value) => ({ value, fetchedAt: Date.now() })),
     { revalidate: false }

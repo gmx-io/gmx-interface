@@ -47,6 +47,7 @@ vi.mock("domain/synthetics/subaccount", async (importOriginal) => ({
   getIsSubaccountActionsExceeded: vi.fn(() => false),
   getIsSubaccountApprovalInvalid: vi.fn(() => false),
   getIsSubaccountExpired: vi.fn(() => false),
+  getIsSubaccountNonceExpired: vi.fn(() => false),
 }));
 
 vi.mock("lib/chains", () => ({
@@ -80,6 +81,10 @@ vi.mock("./DebugSettings", () => ({
 
 vi.mock("./DisplaySettings", () => ({
   DisplaySettings: () => null,
+}));
+
+vi.mock("./NotificationsSettings", () => ({
+  NotificationsSettings: () => null,
 }));
 
 vi.mock("./TradingSettings", () => ({

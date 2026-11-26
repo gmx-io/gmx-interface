@@ -165,9 +165,10 @@ describe("getIsPositionSettleable", () => {
       remainingCollateralUsd: expandDecimals(900, 30),
     });
 
-    expect(getIsPositionSettleable(createPosition(), MIN_COLLATERAL_USD)).toBe(true);
-    expect(getIsPositionSettleable(disabledMarketPosition, MIN_COLLATERAL_USD)).toBe(false);
-    expect(getIsPositionSettleable(blockedPosition, MIN_COLLATERAL_USD)).toBe(false);
+    expect(getIsPositionSettleable(createPosition(), MIN_COLLATERAL_USD, false)).toBe(true);
+    expect(getIsPositionSettleable(createPosition(), MIN_COLLATERAL_USD, true)).toBe(false);
+    expect(getIsPositionSettleable(disabledMarketPosition, MIN_COLLATERAL_USD, false)).toBe(false);
+    expect(getIsPositionSettleable(blockedPosition, MIN_COLLATERAL_USD, false)).toBe(false);
   });
 });
 
@@ -177,7 +178,7 @@ describe("shouldPreSelectPosition", () => {
   it("pre-selects a healthy position whose accrued funding covers the network fee", () => {
     const position = createPosition({ pendingClaimableFundingFeesUsd: expandDecimals(20, 30) });
 
-    expect(shouldPreSelectPosition(position, networkFee, MIN_COLLATERAL_USD)).toBe(true);
+    expect(shouldPreSelectPosition(position, networkFee, MIN_COLLATERAL_USD, false)).toBe(true);
   });
 
   it("does not pre-select a blocked position however large its accrued funding", () => {
@@ -190,8 +191,8 @@ describe("shouldPreSelectPosition", () => {
       remainingCollateralUsd: -expandDecimals(10, 30),
     });
 
-    expect(shouldPreSelectPosition(belowMinCollateral, networkFee, MIN_COLLATERAL_USD)).toBe(false);
-    expect(shouldPreSelectPosition(negativeMargin, networkFee, MIN_COLLATERAL_USD)).toBe(false);
+    expect(shouldPreSelectPosition(belowMinCollateral, networkFee, MIN_COLLATERAL_USD, false)).toBe(false);
+    expect(shouldPreSelectPosition(negativeMargin, networkFee, MIN_COLLATERAL_USD, false)).toBe(false);
   });
 });
 
