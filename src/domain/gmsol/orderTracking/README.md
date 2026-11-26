@@ -62,7 +62,9 @@ cancel reads as updated or canceled. `failed` reports every error to metrics.
 Known chain failures, wallet rejections and ambiguous broadcasts are distinct;
 a rejection, an expired transaction, a timed-out wallet prompt, insufficient SOL
 and a confirmed preparation whose order transaction did not land get localized
-messages, and the raw error text is shown only on request.
+messages, and the raw error text is shown only on request. The TradeBox passes
+`failed(error, true)` once it has set Pay to the WSOL such a preparation wrapped,
+and the message then says so.
 The keeper closes an order with the label
 `executed` whatever happened, so a keeper cancel reads as an order that could not
 be executed and an owner cancel as canceled by the user. Notifications reuse the

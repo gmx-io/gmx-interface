@@ -431,11 +431,12 @@ it("signs native wrapping only against an unchanged wallet WSOL snapshot TRD-72"
       transport.balances.mockResolvedValueOnce(wsol(2_000_000n)).mockResolvedValue(wsol(5_000_000n));
     }
     if (failure === "unavailable") transport.balances.mockRejectedValue(new Error("RPC unavailable"));
-    const storedHeights: (string | undefined)[] = [];
+    const stored: unknown[][] = [];
     transport.rpc.getSignatureStatuses.mockImplementation(() => ({
       send: async () => {
-        storedHeights.push(getPendingGmsolSubmission(owner)?.lastValidBlockHeight);
-        const status = storedHeights.length === 2 ? null : { err: null, confirmationStatus: "confirmed", slot: 2n };
+        const record = getPendingGmsolSubmission(owner);
+        stored.push([record?.lastValidBlockHeight, record?.confirmedSignatures, record?.wrappedLamports]);
+        const status = stored.length === 2 ? null : { err: null, confirmationStatus: "confirmed", slot: 2n };
         return { context: { slot: 2n }, value: [status] };
       },
     }));
@@ -459,7 +460,13 @@ it("signs native wrapping only against an unchanged wallet WSOL snapshot TRD-72"
     );
     expect(transport.rpc.sendTransaction.mock.calls.length, String(failure)).toBe(failure === undefined ? 2 : 0);
     if (failure === undefined) {
-      expect(storedHeights).toEqual(["1", "3", "3"]);
+      // The orders transaction's record keeps the confirmed setup and the shortfall it wrapped.
+      const setup = [(result as { signatures: string[] }).signatures[0]];
+      expect(stored).toEqual([
+        ["1", undefined, undefined],
+        ["3", setup, "3000000"],
+        ["3", setup, "3000000"],
+      ]);
       const signedOrders = decodeGmsolTransaction(sign.mock.calls[1][0], { ...plan, ...fresh });
       expect(signedOrders.compiled.lifetimeToken).toBe(fresh.recentBlockhash);
       expect([...signedOrders.message.instructions]).toEqual([

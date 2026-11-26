@@ -13,6 +13,9 @@ export type PendingGmsolSubmission = {
   operation: "create" | "update" | "cancel" | "prepare";
   // A decimal string, because the record is JSON; records written before it was stored lack it.
   lastValidBlockHeight?: string;
+  // Only after the plan's earlier transactions prepared accounts: their signatures and the lamports they wrapped.
+  confirmedSignatures?: string[];
+  wrappedLamports?: string;
 };
 
 const storage = () => new Storage<Record<string, PendingGmsolSubmission | undefined>>("gmsol-pending-submissions");
@@ -44,12 +47,24 @@ export class GmsolSubmissionExpiredError extends Error {
   }
 }
 
+function parsePreparation({ confirmedSignatures, wrappedLamports }: PendingGmsolSubmission) {
+  if (confirmedSignatures === undefined && wrappedLamports === undefined) return undefined;
+  if (!Array.isArray(confirmedSignatures) || !confirmedSignatures.length || typeof wrappedLamports !== "string") {
+    throw new Error("Malformed pending submission");
+  }
+  return {
+    signatures: confirmedSignatures.map((value) => solanaSignature(value)),
+    wrappedLamports: BigInt(wrappedLamports),
+  };
+}
+
 /** An RPC failure or a missing status proves nothing until the blockhash has expired at a finalized block. */
 export async function reconcileGmsolSubmission(owner: string) {
   const pending = getPendingGmsolSubmission(owner);
   if (!pending) return undefined;
   if (!getIsSolanaNetworkEnabled()) throw new GmsolPendingSubmissionError(pending.signature);
   let status;
+  let preparation;
   try {
     const { value } = await getSolanaRpc()
       .getSignatureStatuses([solanaSignature(pending.signature)], { searchTransactionHistory: true })
@@ -57,8 +72,9 @@ export async function reconcileGmsolSubmission(owner: string) {
     status = value[0];
     const lastValidBlockHeight =
       pending.lastValidBlockHeight === undefined ? undefined : BigInt(pending.lastValidBlockHeight);
+    preparation = parsePreparation(pending);
     if (!status && (await isSolanaTransactionExpired(pending.signature, lastValidBlockHeight))) {
-      return { ...pending, expired: true as const };
+      return { ...pending, preparation, expired: true as const };
     }
   } catch {
     throw new GmsolPendingSubmissionError(pending.signature);
@@ -66,5 +82,5 @@ export async function reconcileGmsolSubmission(owner: string) {
   if (!status || (status.confirmationStatus !== "confirmed" && status.confirmationStatus !== "finalized")) {
     throw new GmsolPendingSubmissionError(pending.signature);
   }
-  return { ...pending, expired: false as const, failed: status.err !== null, slot: status.slot };
+  return { ...pending, preparation, expired: false as const, failed: status.err !== null, slot: status.slot };
 }

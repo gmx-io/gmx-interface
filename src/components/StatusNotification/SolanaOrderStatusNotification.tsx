@@ -23,7 +23,7 @@ export type SolanaOrderNotificationState = {
   execution: "unresolved" | "executed" | "cancelled";
   cancelledBy: "owner" | undefined;
   executionSignature: string | undefined;
-  failure: "rejected" | "expired" | "walletTimeout" | "insufficientSol" | "prepared" | undefined;
+  failure: "rejected" | "expired" | "walletTimeout" | "insufficientSol" | "prepared" | "paySetToWsol" | undefined;
   debug: string | undefined;
 };
 
@@ -82,7 +82,12 @@ export function SolanaOrderStatusNotification({
           ? "loading"
           : "muted";
   const detail =
-    state.failure === "prepared" ? (
+    state.failure === "paySetToWsol" ? (
+      <Trans>
+        Your accounts are prepared and the SOL for this order is now WSOL in your wallet. Pay is set to WSOL. Submit
+        again to place the order.
+      </Trans>
+    ) : state.failure === "prepared" ? (
       <Trans>
         Your accounts are prepared and any wrapped SOL is now WSOL in your wallet. Submit again to place the order.
       </Trans>

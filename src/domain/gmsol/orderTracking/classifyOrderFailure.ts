@@ -11,7 +11,7 @@ import {
 
 type OrderFailureState = Pick<SolanaOrderNotificationState, "submission" | "signatures" | "failure" | "debug">;
 
-export function classifyOrderFailure(error: unknown): OrderFailureState {
+export function classifyOrderFailure(error: unknown, isPaySetToWsol = false): OrderFailureState {
   const sendError = error instanceof GmsolTransactionError ? error : undefined;
   const cause = sendError ? sendError.originalError : error;
   const signatures = sendError?.submittedSignatures ?? [];
@@ -24,18 +24,28 @@ export function classifyOrderFailure(error: unknown): OrderFailureState {
   return {
     submission: ambiguous ? "unknown" : "failed",
     signatures: failed ? [failed] : pending ? [...signatures, pending] : signatures,
-    failure: ambiguous ? undefined : getFailure(sendError, cause, parsed?.isUserRejectedError),
+    failure: ambiguous ? undefined : getFailure(sendError, cause, parsed?.isUserRejectedError, isPaySetToWsol),
     debug: parsed?.errorMessage,
   };
+}
+
+/** Lamports a confirmed preparation wrapped while its orders provably did not land, so they stay WSOL. */
+export function getPreparedWrappedLamports(error: unknown) {
+  return error instanceof GmsolTransactionError && classifyOrderFailure(error).failure === "prepared"
+    ? error.wrappedLamports
+    : 0n;
 }
 
 function getFailure(
   sendError: GmsolTransactionError | undefined,
   cause: unknown,
-  isUserRejected: boolean | undefined
+  isUserRejected: boolean | undefined,
+  isPaySetToWsol: boolean
 ): OrderFailureState["failure"] {
   // Only the last transaction of a plan places orders, so an earlier confirmed one prepared the accounts.
-  if (sendError?.confirmedSignatures.length && !sendError.trackingRequests.length) return "prepared";
+  if (sendError?.confirmedSignatures.length && !sendError.trackingRequests.length) {
+    return isPaySetToWsol && sendError.wrappedLamports > 0n ? "paySetToWsol" : "prepared";
+  }
   if (cause instanceof GmsolSubmissionExpiredError) return "expired";
   if (cause instanceof GmsolWalletPromptTimeoutError) return "walletTimeout";
   if (cause instanceof GmsolInsufficientSolError) return "insufficientSol";

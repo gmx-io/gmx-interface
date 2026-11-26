@@ -7772,6 +7772,10 @@ msgstr "그랜트 프로그램입니까? 토큰을 받을 수 있습니까?"
 msgid "Set SL price above mark price"
 msgstr "손절매 가격은 기준가보다 높게 설정해야 합니다"
 
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+msgid "Your accounts are prepared and the SOL for this order is now WSOL in your wallet. Pay is set to WSOL. Submit again to place the order."
+msgstr ""
+
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/Referrals/distributions/table/RebatesDistributionTable.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx

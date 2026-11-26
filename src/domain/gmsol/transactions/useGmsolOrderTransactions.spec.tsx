@@ -1,4 +1,5 @@
 import { i18n } from "@lingui/core";
+import { getBase58Decoder } from "@solana/kit";
 import { act, cleanup, render, waitFor } from "@testing-library/react";
 import { useContext } from "react";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
@@ -10,12 +11,20 @@ import { SolanaOrderActionsContext, type SolanaOrderActions } from "domain/solan
 import { publishSolanaWalletSession } from "lib/solana/activeSession";
 import type { OrderInfo } from "sdk/utils/orders/types";
 
+import { setPendingGmsolSubmission, type PendingGmsolSubmission } from "./pendingSubmission";
 import { GmsolTransactionError, GmsolWalletPromptTimeoutError, type GmsolSendResult } from "./sendOrderTransactions";
 import type { GmsolOrderAction } from "./types";
 import { getIsGmsolOrderSubmitting, useGmsolOrderTransactions } from "./useGmsolOrderTransactions";
 import { GmsolOrderActionsProvider } from "../orderActions/GmsolOrderActionsProvider";
+import { classifyOrderFailure, getPreparedWrappedLamports } from "../orderTracking/classifyOrderFailure";
 
-const mocks = vi.hoisted(() => ({ prepare: vi.fn(), send: vi.fn(), sign: vi.fn(), toast: vi.fn() }));
+const mocks = vi.hoisted(() => ({ prepare: vi.fn(), send: vi.fn(), sign: vi.fn(), toast: vi.fn(), status: vi.fn() }));
+vi.mock("lib/solana/rpc", () => ({
+  getSolanaRpc: () => ({
+    getSignatureStatuses: () => ({ send: async () => ({ context: { slot: 3n }, value: [mocks.status()] }) }),
+    getEpochInfo: () => ({ send: async () => ({ blockHeight: 2n, absoluteSlot: 3n }) }),
+  }),
+}));
 vi.mock("lib/wallets/solanaWalletSession", () => ({
   useSolanaWalletSession: () => ({ address: "owner", signTransaction: mocks.sign }),
 }));
@@ -175,4 +184,35 @@ it("frees the shared submitter when the wallet prompt times out TRD-72", async (
   const next = state.acquire("owner");
   expect(next).toBeDefined();
   act(() => next!.release());
+});
+
+it("reports an order transaction that expired or failed after a confirmed setup as that setup TRD-72", async () => {
+  render(
+    <GmxSdkProvider>
+      <Probe />
+    </GmxSdkProvider>
+  );
+  const [setup, orders] = [1, 2].map((byte) => getBase58Decoder().decode(new Uint8Array(64).fill(byte)));
+  const prepared = { confirmedSignatures: [setup], wrappedLamports: "5" };
+  const failed = { err: { InstructionError: [0, { Custom: 1 }] }, confirmationStatus: "confirmed", slot: 3n };
+  const rows: [Partial<PendingGmsolSubmission>, unknown, unknown[]][] = [
+    [{}, null, ["failed", "expired", [], 0n]],
+    [prepared, null, ["failed", "prepared", [setup], 5n]],
+    [prepared, failed, ["failed", "prepared", [orders], 5n]],
+    // A malformed record is never trusted and stays unresolved.
+    [{ ...prepared, confirmedSignatures: ["setup"] }, null, ["unknown", undefined, [orders], 0n]],
+    [{ ...prepared, wrappedLamports: "5.0" }, null, ["unknown", undefined, [orders], 0n]],
+    [{ confirmedSignatures: [setup] }, null, ["unknown", undefined, [orders], 0n]],
+  ];
+  for (const [fields, status, expected] of rows) {
+    const record = { signature: orders, orderAddresses: ["order"], lastValidBlockHeight: "1", ...fields };
+    setPendingGmsolSubmission("owner", { ...record, operation: "create" });
+    mocks.status.mockReturnValue(status);
+    const submission = state.acquire("owner")!;
+    const error = await submission.submit(undefined).catch((caught: unknown) => caught);
+    act(() => submission.release());
+    const { submission: outcome, failure, signatures } = classifyOrderFailure(error);
+    expect([outcome, failure, signatures, getPreparedWrappedLamports(error)], JSON.stringify(fields)).toEqual(expected);
+  }
+  setPendingGmsolSubmission("owner", undefined);
 });

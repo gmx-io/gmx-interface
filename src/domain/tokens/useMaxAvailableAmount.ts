@@ -76,6 +76,7 @@ export function getMaxAvailableTokenAmount({
   fallbackFeeTokenAmount,
   reserveToken,
   isFeeEstimationFailed = false,
+  isFeeUpperBound = false,
 }: {
   chainId: ContractsChainId;
   fromTokenAddress: string | undefined;
@@ -85,6 +86,7 @@ export function getMaxAvailableTokenAmount({
   fallbackFeeTokenAmount: bigint | undefined;
   reserveToken: TokenData | undefined;
   isFeeEstimationFailed?: boolean;
+  isFeeUpperBound?: boolean;
 }): MaxAvailableTokenAmountDetails {
   if (fromTokenBalance === undefined) {
     return EMPTY_DETAILS;
@@ -100,7 +102,11 @@ export function getMaxAvailableTokenAmount({
       : { ...EMPTY_DETAILS, isFeeLoading: true };
   }
 
-  const feeHoldbackAmount = sameSourceFee ? applyValidMinimalBuffer(effectiveFee!) : 0n;
+  const feeHoldbackAmount = sameSourceFee
+    ? isFeeUpperBound
+      ? effectiveFee!
+      : applyValidMinimalBuffer(effectiveFee!)
+    : 0n;
   const isInsufficientForFee = sameSourceFee && fromTokenBalance <= feeHoldbackAmount;
   const maxAvailableAmount = isInsufficientForFee ? 0n : fromTokenBalance - feeHoldbackAmount;
 
@@ -334,6 +340,7 @@ export function useMaxAvailableAmount({
   fallbackFeeTokenAmount,
   reserveToken,
   isFeeEstimationFailed = false,
+  isFeeUpperBound = false,
   isGmxAccount = false,
 }: {
   fromToken: TokenData | undefined;
@@ -346,6 +353,7 @@ export function useMaxAvailableAmount({
   fallbackFeeTokenAmount?: bigint;
   reserveToken?: TokenData;
   isFeeEstimationFailed?: boolean;
+  isFeeUpperBound?: boolean;
   isGmxAccount?: boolean;
 }): {
   formattedBalance: string;
@@ -366,6 +374,7 @@ export function useMaxAvailableAmount({
     fallbackFeeTokenAmount,
     reserveToken,
     isFeeEstimationFailed,
+    isFeeUpperBound,
   });
 
   if (fromToken === undefined || fromTokenBalance === undefined) {

@@ -10,6 +10,7 @@ import {
   isSolanaError,
   SOLANA_ERROR__JSON_RPC__SERVER_ERROR_SEND_TRANSACTION_PREFLIGHT_FAILURE,
   verifySignature,
+  type TransactionError as SolanaTransactionError,
   type TransactionMessageBytes,
   type TransactionMessageBytesBase64,
 } from "@solana/kit";
@@ -104,6 +105,19 @@ export class GmsolInsufficientSolError extends Error {
   }
 }
 
+// The runtime refuses a fee or rent the wallet cannot pay, and the System program logs a transfer it cannot fund.
+function requireGmsolSimulationSuccess({ err, logs }: { err: SolanaTransactionError | null; logs: string[] | null }) {
+  if (err === null) return;
+  if (
+    err === "InsufficientFundsForFee" ||
+    (typeof err === "object" && "InsufficientFundsForRent" in err) ||
+    logs?.some((line) => line.includes("Transfer: insufficient lamports"))
+  ) {
+    throw new GmsolInsufficientSolError();
+  }
+  throw new Error(`Solana simulation failed: ${JSON.stringify(err)}`);
+}
+
 // A blockhash lives 150 blocks, so a signature given after this could no longer land.
 const WALLET_PROMPT_TIMEOUT_MS = 120_000;
 
@@ -179,7 +193,7 @@ export async function checkGmsolTransactionBeforeSignature({
     "Cannot estimate network fees for this blockhash"
   );
   // The simulated balance is after this transaction's fee, rent and transfers; later ones can only be estimated.
-  requireGmsol(simulation.value.err === null, `Solana simulation failed: ${JSON.stringify(simulation.value.err)}`);
+  requireGmsolSimulationSuccess(simulation.value);
   const postWallet = simulation.value.accounts?.[0];
   requireGmsol(postWallet, "Simulation did not return the wallet balance");
   const reserve = getGmsolSolReserve(
@@ -239,7 +253,8 @@ export class GmsolTransactionError extends Error {
     readonly orders: readonly TrackedOrderAction[] = [],
     readonly trackingRequests: readonly GmsolOrderTrackingRequest[] = [],
     readonly failedSignature: string | undefined = undefined,
-    readonly confirmedSignatures: readonly string[] = []
+    readonly confirmedSignatures: readonly string[] = [],
+    readonly wrappedLamports = 0n
   ) {
     const detail = originalError instanceof Error ? originalError.message : String(originalError);
     super(pendingSignature ? `${detail}; check signature ${pendingSignature} before retrying` : detail);
@@ -285,6 +300,7 @@ export async function sendGmsolOrderTransactions({
   const trackingErrors: unknown[] = [];
   const trackingRequests: GmsolOrderTrackingRequest[] = [];
   let slot = 0n;
+  let wrappedLamports = 0n;
   let pendingSignature: string | undefined;
   try {
     const pending = getPendingGmsolSubmission(plan.owner);
@@ -346,10 +362,7 @@ export async function sendGmsolOrderTransactions({
             replaceRecentBlockhash: false,
           })
           .send(rpcOptions());
-        requireGmsol(
-          simulation.value.err === null,
-          `Solana simulation failed: ${JSON.stringify(simulation.value.err)}`
-        );
+        requireGmsolSimulationSuccess(simulation.value);
       }
       // Read immediately before EVERY send, including after a slow wallet prompt.
       requireGmsol(await fetchSolanaTradingEnabled(), "Solana trading is disabled");
@@ -381,6 +394,9 @@ export async function sendGmsolOrderTransactions({
           plan.action.orders.some((order) => order.kind === "MarketIncrease" || order.kind === "MarketDecrease"),
         operation: plan.action.type === "create" && !orderAddresses.length ? "prepare" : plan.action.type,
         lastValidBlockHeight: groupPlan.lastValidBlockHeight.toString(),
+        ...(confirmedSignatures.length > 0 && !trackingRequests.length
+          ? { confirmedSignatures: [...confirmedSignatures], wrappedLamports: wrappedLamports.toString() }
+          : {}),
       });
       requireGmsol(
         getPendingGmsolSubmission(plan.owner)?.signature === expectedSignature,
@@ -427,6 +443,7 @@ export async function sendGmsolOrderTransactions({
             slot = status.slot;
             plan.confirmedSlot = slot;
             confirmedSignatures.push(sent);
+            wrappedLamports += wrapLamports;
             pendingSignature = undefined;
             setPendingGmsolSubmission(plan.owner, undefined);
             if (plan.action.type === "create") {
@@ -492,7 +509,8 @@ export async function sendGmsolOrderTransactions({
       orders,
       trackingRequests,
       failedSignature,
-      confirmedSignatures
+      confirmedSignatures,
+      wrappedLamports
     );
   }
 }

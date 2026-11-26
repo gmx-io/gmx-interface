@@ -100,17 +100,32 @@ async function submitGmsolOrder(
   const previous = await reconcileGmsolSubmission(owner);
   requireGmsol(isActive(), "Solana order session changed");
   requireGmsol(previous, "No valid order to submit");
+  const { preparation } = previous;
+  // Shaped like the sender's error when a preparation lands but its orders do not: the toast says accounts are ready.
+  const prepared = (error: Error, confirmed: string[], failed?: string) =>
+    new GmsolTransactionError(
+      error,
+      failed ? [...confirmed, failed] : confirmed,
+      undefined,
+      [],
+      [],
+      failed,
+      confirmed,
+      preparation?.wrappedLamports
+    );
   if (previous.expired) {
     clearPendingGmsolSubmission(owner, previous.signature);
-    throw new GmsolSubmissionExpiredError(previous.signature);
+    const expired = new GmsolSubmissionExpiredError(previous.signature);
+    throw preparation ? prepared(expired, preparation.signatures) : expired;
   }
   if (previous.failed || previous.operation === "prepare") setPendingGmsolSubmission(owner, undefined);
-  requireGmsol(!previous.failed, "The previous transaction failed. Review the order before submitting again.");
+  if (previous.failed) {
+    const failed = new Error("The previous transaction failed. Review the order before submitting again.");
+    throw preparation ? prepared(failed, preparation.signatures, previous.signature) : failed;
+  }
   if (previous.operation === "prepare") {
-    // Shaped like the sender's error when a preparation lands but its orders do not: the toast says accounts are ready.
-    const prepared = [previous.signature];
     const error = new Error("Previous account preparation confirmed. Submit the order again.");
-    throw new GmsolTransactionError(error, prepared, undefined, [], [], undefined, prepared);
+    throw prepared(error, [...(preparation?.signatures ?? []), previous.signature]);
   }
   requireGmsol(previous.slot <= BigInt(Number.MAX_SAFE_INTEGER), "Confirmation slot exceeds API precision");
   const refreshErrors: unknown[] = [];

@@ -666,6 +666,7 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
     fallbackFeeTokenAmount: isPaxosRouteActive ? undefined : fallbackFeeTokenAmountForMax,
     reserveToken: isPaxosRouteActive ? undefined : reserveTokenForMax,
     isFeeEstimationFailed: isSolana && solanaState?.isSolHoldbackUnavailable === true,
+    isFeeUpperBound: isSolana,
     isGmxAccount: isFromTokenGmxAccount,
   });
 

@@ -43,6 +43,7 @@ import { useSolanaWalletSession } from "lib/wallets/solanaWalletSession";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
 import { GmsolMarketsUnavailableError } from "../markets/gmsolMarketsUnavailable";
+import { getPreparedWrappedLamports } from "../orderTracking/classifyOrderFailure";
 import { getGmsolCreateOrderTitles } from "../orderTracking/orderStatusTitles";
 import { useSolanaOrderNotifications } from "../orderTracking/useSolanaOrderNotifications";
 import { getPendingGmsolSubmission } from "../transactions/pendingSubmission";
@@ -108,6 +109,11 @@ export default function GmsolTradeboxAdapter({
   }, [fromTokenAddress, isIncrease, marketInfo?.tradeMath, payTokens, setFromTokenAddress, setFromTokenInputValue]);
 
   const payWithNativeSol = fromToken?.isNative === true && fromToken.address === NATIVE_TOKEN_ADDRESS;
+  // A native SOL payment is checked against lamports only, so it cannot spend WSOL that a preparation wrapped.
+  const wrappedCollateralAddress =
+    isIncrease && payWithNativeSol && collateralToken && collateralToken.address === fromToken.wrappedAddress
+      ? collateralToken.address
+      : undefined;
   const rent = useSWR(
     wallet.address && payWithNativeSol ? ["gmsolRentExemptMinimums"] : null,
     () => fetchSolanaRentExemptMinimums(GMSOL_RENT_ACCOUNT_SIZES),
@@ -221,8 +227,8 @@ export default function GmsolTradeboxAdapter({
       intent.error ??
       (isShortOfSol ? t`Not enough SOL for network fees, keeper fees and account rent` : undefined);
 
-  const current = useRef({ error, intent, owner: wallet.address, hasPendingSubmission });
-  current.current = { error, intent, owner: wallet.address, hasPendingSubmission };
+  const current = useRef({ error, intent, owner: wallet.address, hasPendingSubmission, wrappedCollateralAddress });
+  current.current = { error, intent, owner: wallet.address, hasPendingSubmission, wrappedCollateralAddress };
   const onSubmit = useCallback(async () => {
     const { error, intent, owner, hasPendingSubmission } = current.current;
     if (!owner) return false;
@@ -245,13 +251,18 @@ export default function GmsolTradeboxAdapter({
         notification.submitted(result);
         return true;
       } catch (error) {
-        notification.failed(error);
+        // Read after the wallet prompt, so a Pay changed meanwhile is kept; WSOL is a listed Pay, so the amount stays.
+        const { wrappedCollateralAddress } = current.current;
+        const isPaySetToWsol =
+          wrappedCollateralAddress !== undefined && submission.isActive() && getPreparedWrappedLamports(error) > 0n;
+        if (isPaySetToWsol) setFromTokenAddress(wrappedCollateralAddress);
+        notification.failed(error, isPaySetToWsol);
         return false;
       }
     } finally {
       submission.release();
     }
-  }, [acquire, begin, isMarket]);
+  }, [acquire, begin, isMarket, setFromTokenAddress]);
 
   const text = isSubmitting
     ? hasPendingSubmission

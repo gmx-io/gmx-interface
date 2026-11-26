@@ -7772,6 +7772,10 @@ msgstr "¿Es un programa de subvenciones? ¿Recibo tokens?"
 msgid "Set SL price above mark price"
 msgstr "Establezca el precio de SL por encima del precio de referencia"
 
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+msgid "Your accounts are prepared and the SOL for this order is now WSOL in your wallet. Pay is set to WSOL. Submit again to place the order."
+msgstr ""
+
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/Referrals/distributions/table/RebatesDistributionTable.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx

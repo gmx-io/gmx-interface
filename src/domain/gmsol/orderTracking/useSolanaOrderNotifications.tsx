@@ -178,7 +178,7 @@ function beginNotification({
   };
   return {
     submitted: onSubmitted,
-    failed: (error: unknown) => {
+    failed: (error: unknown, isPaySetToWsol = false) => {
       reportHandledRejection("solana.order")(error);
       if (!isActive()) return;
       const sendError = error instanceof GmsolTransactionError ? error : undefined;
@@ -186,7 +186,7 @@ function beginNotification({
       if (sendError && signatures.length && (sendError.orders.length || sendError.trackingRequests.length)) {
         onSubmitted({ signatures, orders: sendError.orders, trackingRequests: sendError.trackingRequests });
       }
-      update(classifyOrderFailure(error));
+      update(classifyOrderFailure(error, isPaySetToWsol));
     },
   };
 }

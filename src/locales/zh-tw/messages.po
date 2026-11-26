@@ -7772,6 +7772,10 @@ msgstr "這是補助計畫嗎？我會獲得代幣嗎？"
 msgid "Set SL price above mark price"
 msgstr "將 SL 價格設為高於標記價格"
 
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+msgid "Your accounts are prepared and the SOL for this order is now WSOL in your wallet. Pay is set to WSOL. Submit again to place the order."
+msgstr ""
+
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/Referrals/distributions/table/RebatesDistributionTable.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
