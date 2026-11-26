@@ -1,12 +1,11 @@
 // @vitest-shared-worker
 /**
- * Replays contract verdicts captured on an Arbitrum fork (rig: .claude/tasks/increase-margin-check-fedev-4131/rig,
- * `dump-fixture.ts`) through the same helpers the trade box uses: `getIncreasePositionAmounts` builds the
- * increase from the deposit, route and trigger, `getIncreaseResultingPositionMarginState` judges the
- * resulting position. Each fixture pins one position state against the gmx-synthetics build deployed on
- * Arbitrum (release_2.2.1 @ 23c9d160: PositionUtils 0x0778…, IncreasePositionUtils 0x00F3…): the largest
- * size the contract executed must pass the check, the first size it rejected must fail it with the same
- * reason. No network — everything the formula reads is inside the JSON (bigints as { "$bigint": "…" }).
+ * Replays contract verdicts captured on an Arbitrum fork (captureMarginFixtures.parity.spec.ts) through the same
+ * helpers the trade box uses: `getIncreasePositionAmounts` builds the increase from the deposit, route and trigger,
+ * `getIncreaseResultingPositionMarginState` judges the resulting position. Each fixture pins one position state
+ * against the PositionUtils and IncreasePositionUtils the fork runs: the largest size the contract executed must
+ * pass the check, the first size it rejected must fail it with the same reason. No network — everything the
+ * formula reads is inside the JSON (bigints as { "$bigint": "…" }).
  */
 import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
@@ -30,11 +29,11 @@ import {
 
 const CHAIN_ID = 42161;
 const FIXTURES_DIR = path.join(__dirname, "fixtures/margin");
-const DEPLOYED_POSITION_UTILS = "0x077887985985eBF1B406263aa175bdB17BF1FEd0";
-const DEPLOYED_INCREASE_POSITION_UTILS = "0x00F39bbbBAB35bA47Daa17A18D833350EC398Ff6";
+const DEPLOYED_POSITION_UTILS = "0x3bacf30e1f71c3711FA0508BCDFFcBDCde6120C7";
+const DEPLOYED_INCREASE_POSITION_UTILS = "0x3173404B80bd6fE8C8a9583608247046de3D0621";
 const DEPLOYED_BYTECODE_HASHES = {
-  positionUtils: "0x3d8c6f65072f928f3110d47adf94c72bbf08377fda3f1b5298bf363d70642fb8",
-  increasePositionUtils: "0x5f9779393cfa31d27a37c400b1710c3e9fa526ce991b3e4daddefb1a47b13460",
+  positionUtils: "0x687f4cb9b526bbb64b9e140aea2bdf41fa0cada38413a686fba07d4da17c07fc",
+  increasePositionUtils: "0x0bbbce677c9a3a6028a7496fb16bf9fae145b6a3366ccb2f8088e9eb63b68445",
 };
 
 type FixturePosition = Pick<

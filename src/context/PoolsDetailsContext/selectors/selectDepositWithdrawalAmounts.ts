@@ -183,7 +183,7 @@ export const selectPoolsDetailsCollateralSwapTotalFeesDeltaUsd = createSelector(
     findSwapPath = q(makeSelectFindSwapPath(token.address, collateralToken.address, SwapPricingType.Swap));
   } else {
     usdIn = amounts.longTokenUsd + amounts.shortTokenUsd;
-    findSwapPath = q(makeSelectFindSwapPath(collateralToken.address, token.address, SwapPricingType.Withdrawal));
+    findSwapPath = q(makeSelectFindSwapPath(collateralToken.address, token.address, SwapPricingType.Swap));
   }
 
   if (usdIn <= 0n) {

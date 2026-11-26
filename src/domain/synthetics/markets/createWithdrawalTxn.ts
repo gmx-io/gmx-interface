@@ -20,35 +20,11 @@ import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
 import type { TokensData } from "../tokens";
 import type { CreateWithdrawalParams } from "./types";
 
-export async function createWithdrawalTxn({
-  chainId,
-  signer,
-  marketTokenAmount,
-  executionGasLimit,
-  skipSimulation,
-  tokensData,
-  metricId,
-  blockTimestampData,
-  params,
-  setPendingTxns,
-  setPendingWithdrawal,
-}: {
-  chainId: ContractsChainId;
-  signer: Signer;
-  marketTokenAmount: bigint;
-  executionGasLimit: bigint;
-  skipSimulation?: boolean;
-  tokensData: TokensData;
-  metricId?: OrderMetricId;
-  blockTimestampData: BlockTimestampData | undefined;
-  params: CreateWithdrawalParams;
-  setPendingTxns: (txns: any) => void;
-  setPendingWithdrawal?: SetPendingWithdrawal;
-}): Promise<Pick<WalletTxnResult, "transactionHash">> {
-  const contract = new ethers.Contract(getContract(chainId, "ExchangeRouter"), abis.ExchangeRouter, signer);
+export function getCreateWithdrawalMulticallPayload(
+  chainId: ContractsChainId,
+  { params, marketTokenAmount }: { params: CreateWithdrawalParams; marketTokenAmount: bigint }
+) {
   const withdrawalVaultAddress = getContract(chainId, "WithdrawalVault");
-
-  await validateSignerAddress(signer, params.addresses.receiver);
 
   const multicall = [
     { method: "sendWnt", params: [withdrawalVaultAddress, params.executionFee] },
@@ -76,13 +52,44 @@ export async function createWithdrawalTxn({
     },
   ];
 
-  const encodedPayload = multicall.filter(Boolean).map((call) =>
+  return multicall.filter(Boolean).map((call) =>
     encodeFunctionData({
       abi: abis.ExchangeRouter as Abi,
       functionName: call!.method,
       args: call!.params,
     })
   );
+}
+
+export async function createWithdrawalTxn({
+  chainId,
+  signer,
+  marketTokenAmount,
+  executionGasLimit,
+  skipSimulation,
+  tokensData,
+  metricId,
+  blockTimestampData,
+  params,
+  setPendingTxns,
+  setPendingWithdrawal,
+}: {
+  chainId: ContractsChainId;
+  signer: Signer;
+  marketTokenAmount: bigint;
+  executionGasLimit: bigint;
+  skipSimulation?: boolean;
+  tokensData: TokensData;
+  metricId?: OrderMetricId;
+  blockTimestampData: BlockTimestampData | undefined;
+  params: CreateWithdrawalParams;
+  setPendingTxns: (txns: any) => void;
+  setPendingWithdrawal?: SetPendingWithdrawal;
+}): Promise<Pick<WalletTxnResult, "transactionHash">> {
+  const contract = new ethers.Contract(getContract(chainId, "ExchangeRouter"), abis.ExchangeRouter, signer);
+  await validateSignerAddress(signer, params.addresses.receiver);
+
+  const encodedPayload = getCreateWithdrawalMulticallPayload(chainId, { params, marketTokenAmount });
 
   const simulationPromise = !skipSimulation
     ? simulateExecuteTxn(chainId, {

@@ -802,16 +802,16 @@ export const selectPoolsDetailsWithdrawalFindSwapPath = createSelector((q) => {
 
   // if we want long token in the end, we need to swap short to long
   if (longTokenAddress === receiveTokenAddress) {
-    return q(makeSelectFindSwapPath(shortTokenAddress, receiveTokenAddress, SwapPricingType.Withdrawal));
+    return q(makeSelectFindSwapPath(shortTokenAddress, receiveTokenAddress, SwapPricingType.Swap));
   }
 
   // if we want short token in the end, we need to swap long to short
   if (shortTokenAddress === receiveTokenAddress) {
-    return q(makeSelectFindSwapPath(longTokenAddress, receiveTokenAddress, SwapPricingType.Withdrawal));
+    return q(makeSelectFindSwapPath(longTokenAddress, receiveTokenAddress, SwapPricingType.Swap));
   }
 
   if (longTokenAddress === shortTokenAddress) {
-    return q(makeSelectFindSwapPath(longTokenAddress, receiveTokenAddress, SwapPricingType.Withdrawal));
+    return q(makeSelectFindSwapPath(longTokenAddress, receiveTokenAddress, SwapPricingType.Swap));
   }
 
   // Invariant that useEffect must fix.
