@@ -71,6 +71,7 @@ export function useQuoteSendNativeFeeWithGasLimit({
   toChainId,
   fromTokenAddress,
   composeGas,
+  isBaseQuote = false,
 }: {
   sendParams: SendParam | undefined;
   fromStargateAddress: string | undefined;
@@ -78,6 +79,8 @@ export function useQuoteSendNativeFeeWithGasLimit({
   toChainId: AnyChainId | undefined;
   fromTokenAddress: string | undefined;
   composeGas?: bigint;
+  /** A sample amount that follows the price; keyed without it so price ticks don't refetch */
+  isBaseQuote?: boolean;
 }): {
   data: QuoteSendResult | undefined;
   isLoading: boolean;
@@ -91,9 +94,19 @@ export function useQuoteSendNativeFeeWithGasLimit({
     fromChainId !== undefined &&
     fromChainId !== toChainId;
 
+  // The estimate reverts above the path's credit, so the entered amount gets its own key: on a key shared with the
+  // base quote, swr kept the base quote's error and retried with the base quote's fetcher
   const quoteSendQuery = useSWR<QuoteSendResult | undefined>(
     quoteSendCondition
-      ? ["quoteSend", sendParams.dstEid, sendParams.to, fromStargateAddress, fromTokenAddress, composeGas]
+      ? [
+          "quoteSend",
+          sendParams.dstEid,
+          sendParams.to,
+          isBaseQuote ? "base" : sendParams.amountLD,
+          fromStargateAddress,
+          fromTokenAddress,
+          composeGas,
+        ]
       : null,
     {
       fetcher: async () => {

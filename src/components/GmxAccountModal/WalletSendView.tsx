@@ -287,6 +287,7 @@ export function WalletSendView() {
     fromChainId: chainId,
     toChainId: destinationChainId,
     fromTokenAddress: selectedToken?.address,
+    isBaseQuote: true,
   });
 
   const quoteSendNativeFee = quoteSendData?.nativeFee;
@@ -701,6 +702,8 @@ export function WalletSendView() {
       buttonState = { text: t`Send`, disabled: true };
     } else if (isApproving) {
       buttonState = { text: t`Approving...`, disabled: true };
+    } else if (needsApproval && (isQuoteOftLoading || isQuoteSendLoading)) {
+      buttonState = { text: t`Approve ${selectedToken.symbol}`, disabled: true };
     } else if (needsApproval) {
       buttonState = { text: t`Approve ${selectedToken.symbol}`, onClick: handleApprove };
     } else if (!isAllowanceLoaded || sendParamsWithSlippage === undefined || quoteSendNativeFee === undefined) {

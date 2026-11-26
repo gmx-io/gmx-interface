@@ -61,6 +61,7 @@ import { toastCustomOrStargateError } from "domain/multichain/toastCustomOrStarg
 import { toastEnableExpress } from "domain/multichain/toastEnableExpress";
 import { BridgeOutParams, SendParam } from "domain/multichain/types";
 import { useGmxAccountFundingHistory } from "domain/multichain/useGmxAccountFundingHistory";
+import { useIsStargatePoolPaused } from "domain/multichain/useIsStargatePoolPaused";
 import { useMultichainQuoteFeeUsd } from "domain/multichain/useMultichainQuoteFeeUsd";
 import { useQuoteOft, useQuoteOftProbe } from "domain/multichain/useQuoteOft";
 import { useQuoteOftLimits } from "domain/multichain/useQuoteOftLimits";
@@ -750,11 +751,17 @@ export const WithdrawalView = () => {
     decimals: selectedTokenSettlementChainTokenId?.decimals,
   });
 
+  const isStargatePoolPaused = useIsStargatePoolPaused({
+    chainId,
+    stargateAddress: isSameChain ? undefined : selectedTokenSettlementChainTokenId?.stargate,
+  });
+
   const isRouteUnavailable = useMemo(
     () =>
       [quoteOftError, probeQuoteOftError, baseNativeFeeError].some(getIsStargateRouteUnavailableError) ||
-      probeQuoteOft?.limit.maxAmountLD === 0n,
-    [quoteOftError, probeQuoteOftError, baseNativeFeeError, probeQuoteOft]
+      probeQuoteOft?.limit.maxAmountLD === 0n ||
+      isStargatePoolPaused,
+    [quoteOftError, probeQuoteOftError, baseNativeFeeError, probeQuoteOft, isStargatePoolPaused]
   );
 
   const {

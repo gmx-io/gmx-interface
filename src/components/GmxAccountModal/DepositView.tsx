@@ -463,6 +463,7 @@ export const DepositView = () => {
     toChainId: settlementChainId,
     fromTokenAddress: selectedTokenSourceChainTokenId?.address,
     composeGas,
+    isBaseQuote: true,
   });
 
   const quoteSendNativeFee = quoteSendData?.nativeFee;
@@ -1262,6 +1263,12 @@ export const DepositView = () => {
         feeSource: WALLET_NETWORK_FEE_SOURCE,
       }),
       bannerErrorName: ValidationBannerErrorName.insufficientNativeTokenBalance,
+      disabled: true,
+    };
+  } else if (needTokenApprove && depositViewChain !== settlementChainId && areMultichainFeesLoading) {
+    // The approval is unlimited, so it waits for the quotes that report a paused route
+    buttonState = {
+      text: t`Approve ${selectedToken?.symbol}`,
       disabled: true,
     };
   } else if (needTokenApprove) {
