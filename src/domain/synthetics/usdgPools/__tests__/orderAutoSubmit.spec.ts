@@ -1,3 +1,4 @@
+// @vitest-shared-worker
 import { zeroAddress } from "viem";
 import { describe, expect, it } from "vitest";
 
@@ -153,6 +154,7 @@ describe("getIsOrderStepGasCovered", () => {
 describe("getConvertedOrderStatus", () => {
   const typedSize: ConfirmedUsdgOrder = { setupKey: "setup", sizeDeltaUsd: usd(11_000), sizeInputValue: "4.88888888" };
   const typedPay: ConfirmedUsdgOrder = { ...typedSize, sizeInputValue: undefined };
+  const stalePair = { sizeInputValue: "4.4", sizeDeltaUsd: usd(11_008) };
   const confirmed = {
     setupKey: "setup",
     sizeDeltaUsd: usd(11_000),
@@ -164,7 +166,10 @@ describe("getConvertedOrderStatus", () => {
   it.each([
     ["sends the typed size the converted USDG pays for", typedSize, {}, "confirmed"],
     ["fits a typed size that needs more USDG than converted", typedSize, { payAmount: usdc(1_137.31) }, "marginShort"],
-    ["holds a changed size input", typedSize, { sizeInputValue: "4.8853" }, "changed"],
+    ["holds a changed size input", typedSize, { sizeInputValue: "4.8", sizeDeltaUsd: usd(10_800) }, "changed"],
+    // 4.4 ETH re-derived at a $2,500 mark, priced at the next $2,502 tick a commit before it re-derives again
+    ["sends a typed USD size whose tokens follow the mark (TRD-17)", typedSize, stalePair, "confirmed"],
+    ["holds a typed size 0.11% smaller", typedSize, { sizeInputValue: "4.4", sizeDeltaUsd: usd(10_988) }, "changed"],
     ["sends a size from the pay amount when it isn't larger", typedPay, { sizeDeltaUsd: usd(10_999) }, "confirmed"],
     ["sends a size from the pay amount a better fill moved up", typedPay, { sizeDeltaUsd: usd(11_010) }, "confirmed"],
     ["holds a size more than 0.1% above the confirmed one", typedPay, { sizeDeltaUsd: usd(11_012) }, "changed"],

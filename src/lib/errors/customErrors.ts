@@ -19,6 +19,8 @@ import {
 
 export const INVALID_PERMIT_SIGNATURE_ERROR = "Invalid permit signature";
 export const PERMIT_WALLET_CHANGED_ERROR = "Account or network changed while signing a permit";
+export const WALLET_BATCH_PENDING_ERROR = "The wallet hasn't reported the result of a sent batch yet";
+export const WALLET_BATCH_CONFIRMED_LATE_ERROR = "A batch the wallet hadn't reported went through";
 export const EXPIRED_PERMIT_DEADLINE_ERROR = "Expired permit deadline";
 export const FAST_EXPRESS_PARAMS_TIMEOUT_ERROR = "fastExpressParams timeout";
 export const EXPRESS_EXTERNAL_CALLS_MISMATCH_ERROR = "Express relay external calls differ from the batch";
@@ -109,18 +111,32 @@ export function getIsOutdatedSubaccountApprovalError(error: ErrorLike) {
   );
 }
 
-export function getIsPermitSignatureErrorOnSimulation(error: ErrorLike) {
-  return isPermitExternalCallFailedOnSimulation(error, "invalid signature");
+/**
+ * `isAnyContext`: for a multicall where only the permit's external call can fail with a permit reason, and a pre-send
+ * revert can come without the simulation context
+ */
+type PermitErrorOptions = { isAnyContext?: boolean };
+
+export function getIsPermitSignatureErrorOnSimulation(error: ErrorLike, options?: PermitErrorOptions) {
+  return isPermitExternalCallFailedOnSimulation(error, "invalid signature", options);
 }
 
-export function getIsPermitExpiredDeadlineOnSimulation(error: ErrorLike) {
-  return isPermitExternalCallFailedOnSimulation(error, "expired deadline");
+export function getIsPermitExpiredDeadlineOnSimulation(error: ErrorLike, options?: PermitErrorOptions) {
+  return isPermitExternalCallFailedOnSimulation(error, "expired deadline", options);
 }
 
-function isPermitExternalCallFailedOnSimulation(error: ErrorLike, errorSubstring: string) {
+function isPermitExternalCallFailedOnSimulation(
+  error: ErrorLike,
+  errorSubstring: string,
+  { isAnyContext = false }: PermitErrorOptions = {}
+) {
   const parsedError = parseError(error);
 
-  if (!parsedError || parsedError.errorContext !== "simulation" || parsedError.contractError !== "ExternalCallFailed") {
+  if (
+    !parsedError ||
+    (!isAnyContext && parsedError.errorContext !== "simulation") ||
+    parsedError.contractError !== "ExternalCallFailed"
+  ) {
     return false;
   }
 

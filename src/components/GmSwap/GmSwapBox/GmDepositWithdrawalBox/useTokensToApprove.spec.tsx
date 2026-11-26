@@ -60,6 +60,9 @@ vi.mock("domain/synthetics/tokens", async (importOriginal) => ({
 }));
 
 vi.mock("domain/tokens/approveTokens", () => ({ approveTokens: mocks.approveTokens }));
+vi.mock("domain/tokens/useWalletBatching", () => ({
+  useWalletBatching: () => ({ isAvailable: false, atomicStatus: undefined }),
+}));
 
 vi.mock("domain/tokens/insufficientApproval", () => ({ getInsufficientApprovalToastContent: vi.fn() }));
 

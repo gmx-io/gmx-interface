@@ -5,12 +5,12 @@ import { Link } from "react-router-dom";
 import { useCopyToClipboard } from "react-use";
 import { Address } from "viem";
 
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useDisconnectAndClose } from "domain/multichain/useDisconnectAndClose";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { getAccountUrl, useENS } from "lib/legacy";
 import { useBreakpoints } from "lib/useBreakpoints";
-import { useNotifyModalState } from "lib/useNotifyModalState";
 import { shortenAddressOrEns } from "lib/wallets";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 
@@ -29,7 +29,7 @@ import "./AddressDropdownWithoutMultichain.scss";
 
 export function AddressDropdownWithoutMultichain({ account }: { account: string }) {
   const [, copyToClipboard] = useCopyToClipboard();
-  const { openNotifyModal } = useNotifyModalState();
+  const { openSettingsTab } = useSettings();
   const { ensName } = useENS(account);
   const { isMobile } = useBreakpoints();
   const displayAddressLength = isMobile ? 9 : 13;
@@ -86,7 +86,7 @@ export function AddressDropdownWithoutMultichain({ account }: { account: string 
               </ExternalLink>
             </Menu.Item>
             <Menu.Item>
-              <div className="menu-item" onClick={openNotifyModal}>
+              <div className="menu-item" onClick={() => openSettingsTab("notifications", "walletMenu")}>
                 <BellIcon className="ml-2 size-20 pt-2" />
                 <p>
                   <Trans>Alerts</Trans>

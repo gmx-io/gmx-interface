@@ -7,6 +7,7 @@ import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import type { SetPendingShift } from "context/SyntheticsEvents";
 import { callContract } from "lib/contracts";
 import { OrderMetricId } from "lib/metrics/types";
+import type { WalletCallsBatch } from "lib/transactions/sendWalletCalls";
 import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import { abis } from "sdk/abis";
 import type { ContractsChainId } from "sdk/configs/chains";
@@ -33,6 +34,7 @@ type Params = {
   blockTimestampData: BlockTimestampData | undefined;
   setPendingTxns: (txns: any) => void;
   setPendingShift: SetPendingShift;
+  walletCallsBatch?: WalletCallsBatch;
 };
 
 export async function createShiftTxn(chainId: ContractsChainId, signer: Signer, p: Params) {
@@ -87,6 +89,7 @@ export async function createShiftTxn(chainId: ContractsChainId, signer: Signer, 
         value: p.executionFee,
         metricId: p.metricId,
         blockTimestampData: p.blockTimestampData,
+        preCalls: p.walletCallsBatch?.calls,
       })
     : undefined;
 
@@ -97,7 +100,9 @@ export async function createShiftTxn(chainId: ContractsChainId, signer: Signer, 
     [encodedPayload],
     p.executionFee,
     simulationPromise,
-    p.metricId
+    p.metricId,
+    undefined,
+    p.walletCallsBatch !== undefined
   );
 
   return callContract(chainId, contract, "multicall", [encodedPayload], {
@@ -108,6 +113,8 @@ export async function createShiftTxn(chainId: ContractsChainId, signer: Signer, 
     gasLimit,
     gasPriceData,
     setPendingTxns: p.setPendingTxns,
+    walletCallsBatch: p.walletCallsBatch,
+    batchFlow: "gmShift",
     pendingTransactionData: {
       estimatedExecutionFee: p.executionFee,
       estimatedExecutionGasLimit: p.executionGasLimit,

@@ -1,3 +1,4 @@
+// @vitest-shared-worker
 import type { ReactElement } from "react";
 import { describe, expect, it } from "vitest";
 
@@ -16,10 +17,7 @@ import {
   PositionMarginState,
 } from "sdk/utils/trade/increaseMarginCheck";
 
-import {
-  DepositMarginNowAction,
-  ReplaceMarginDepositAction,
-} from "components/MarginRemediation/MarginRemediationActions";
+import { DepositMarginAction, ReplaceMarginDepositAction } from "components/MarginRemediation/MarginRemediationActions";
 
 import { getAvailableUsdLiquidityForPosition } from "../../markets/utils";
 import { NextPositionValues } from "../../trade";
@@ -108,7 +106,7 @@ describe("getOrderErrors — resulting position liquidatable at trigger price", 
     expect(hasLiquidatableError(result)).toBe(true);
 
     const action = getAction(result.errors.find((error) => error.key === "resultingLiquidatable"));
-    expect(action.type).toBe(DepositMarginNowAction);
+    expect(action.type).toBe(DepositMarginAction);
     expect(action.props.positionKey).toBeUndefined();
     expect(result.level).toBe("error");
   });
@@ -803,7 +801,7 @@ describe("getOrderErrors — resulting position margin, end-to-end from order + 
     expect(result.errors.filter((e) => e.level === "error")).toHaveLength(1);
 
     const action = getAction(liquidatableErrors(result)[0]);
-    expect(action.type).toBe(DepositMarginNowAction);
+    expect(action.type).toBe(DepositMarginAction);
     expect(action.props.positionKey).toBe(positionKeyFor(restingBelowMarket));
   });
 
@@ -826,7 +824,7 @@ describe("getOrderErrors — resulting position margin, end-to-end from order + 
       "This order may fail to execute because the resulting position would exceed the maximum allowed leverage. Increase the position's margin or reduce the order size before it triggers."
     );
     const action = getAction(maxLeverageErrors(result)[0]);
-    expect(action.type).toBe(DepositMarginNowAction);
+    expect(action.type).toBe(DepositMarginAction);
     expect(action.props.positionKey).toBe(positionKeyFor(order));
   });
 

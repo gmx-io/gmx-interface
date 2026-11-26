@@ -9,6 +9,8 @@ export const SWAP_IMPACT_EXPONENT_FACTOR_KEY = hashString("SWAP_IMPACT_EXPONENT_
 export const SWAP_FEE_FACTOR_KEY = hashString("SWAP_FEE_FACTOR");
 export const ATOMIC_SWAP_FEE_FACTOR_KEY = hashString("ATOMIC_SWAP_FEE_FACTOR");
 export const WITHDRAWAL_FEE_FACTOR_KEY = hashString("WITHDRAWAL_FEE_FACTOR");
+export const DEPOSIT_FEE_FACTOR_KEY = hashString("DEPOSIT_FEE_FACTOR");
+export const SWAP_FEE_RECEIVER_FACTOR_KEY = hashString("SWAP_FEE_RECEIVER_FACTOR");
 export const FEE_RECEIVER_DEPOSIT_FACTOR_KEY = hashString("FEE_RECEIVER_DEPOSIT_FACTOR");
 export const BORROWING_FEE_RECEIVER_FACTOR_KEY = hashString("BORROWING_FEE_RECEIVER_FACTOR");
 export const FEE_RECEIVER_WITHDRAWAL_FACTOR_KEY = hashString("FEE_RECEIVER_WITHDRAWAL_FACTOR");
@@ -112,6 +114,7 @@ export const BASE_BORROWING_FACTOR = hashString("BASE_BORROWING_FACTOR");
 export const ABOVE_OPTIMAL_USAGE_BORROWING_FACTOR = hashString("ABOVE_OPTIMAL_USAGE_BORROWING_FACTOR");
 export const SUBACCOUNT_EXPIRES_AT = hashString("SUBACCOUNT_EXPIRES_AT");
 export const MULTICHAIN_BALANCE = hashString("MULTICHAIN_BALANCE");
+export const POSITION_LAST_SRC_CHAIN_ID = hashString("POSITION_LAST_SRC_CHAIN_ID");
 export const PRICE_FEED_KEY = hashString("PRICE_FEED");
 export const GASLESS_FEATURE_DISABLED_KEY = hashString("GASLESS_FEATURE_DISABLED");
 export const SIGNAL_UNSTAKE_FEATURE_DISABLED_KEY = hashString("SIGNAL_UNSTAKE_FEATURE_DISABLED");
@@ -445,6 +448,10 @@ export function subaccountAutoTopUpAmountKey(account: string, subaccount: string
 
 export function multichainBalanceKey(account: string, token: string) {
   return hashData(["bytes32", "address", "address"], [MULTICHAIN_BALANCE, account, token]);
+}
+
+export function positionLastSrcChainIdKey(positionKey: string) {
+  return hashData(["bytes32", "bytes32"], [POSITION_LAST_SRC_CHAIN_ID, positionKey]);
 }
 
 export function priceFeedKey(token: string) {

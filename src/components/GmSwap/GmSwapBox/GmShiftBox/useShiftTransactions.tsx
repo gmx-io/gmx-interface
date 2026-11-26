@@ -18,6 +18,7 @@ import {
   sendOrderSubmittedMetric,
   sendTxnValidationErrorMetric,
 } from "lib/metrics/utils";
+import type { WalletCallsBatch } from "lib/transactions/sendWalletCalls";
 import useWallet from "lib/wallets/useWallet";
 
 interface Props {
@@ -30,6 +31,7 @@ interface Props {
   executionFee: ExecutionFee | undefined;
   shouldDisableValidation: boolean;
   tokensData: TokensData | undefined;
+  onSent: () => void;
 }
 
 export function useShiftTransactions({
@@ -40,6 +42,7 @@ export function useShiftTransactions({
   executionFee,
   shouldDisableValidation,
   tokensData,
+  onSent,
 }: Props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const chainId = useSelector(selectChainId);
@@ -49,7 +52,7 @@ export function useShiftTransactions({
   const blockTimestampData = useSelector(selectBlockTimestampData);
 
   const onCreateShift = useCallback(
-    function onCreateShift() {
+    function onCreateShift(walletCallsBatch?: WalletCallsBatch) {
       const metricData = initShiftGmMetricData({
         chainId,
         isExpress: false,
@@ -94,8 +97,10 @@ export function useShiftTransactions({
         blockTimestampData,
         setPendingTxns,
         setPendingShift,
+        walletCallsBatch,
       })
         .then(makeTxnSentMetricsHandler(metricData.metricId))
+        .then(onSent)
         .catch(makeTxnErrorMetricsHandler(metricData.metricId));
     },
     [
@@ -112,20 +117,24 @@ export function useShiftTransactions({
       blockTimestampData,
       setPendingTxns,
       setPendingShift,
+      onSent,
     ]
   );
 
-  const onSubmit = useCallback(() => {
-    setIsSubmitting(true);
+  const onSubmit = useCallback(
+    (walletCallsBatch?: WalletCallsBatch) => {
+      setIsSubmitting(true);
 
-    onCreateShift()
-      .catch((error) => {
-        throw error;
-      })
-      .finally(() => {
-        setIsSubmitting(false);
-      });
-  }, [onCreateShift]);
+      onCreateShift(walletCallsBatch)
+        .catch((error) => {
+          throw error;
+        })
+        .finally(() => {
+          setIsSubmitting(false);
+        });
+    },
+    [onCreateShift]
+  );
 
   return {
     onSubmit,

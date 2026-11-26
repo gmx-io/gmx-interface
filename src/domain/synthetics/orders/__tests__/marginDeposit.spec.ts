@@ -1,3 +1,4 @@
+// @vitest-shared-worker
 import { maxUint256 } from "viem";
 import { describe, expect, it } from "vitest";
 

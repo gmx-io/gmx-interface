@@ -10,6 +10,7 @@ import { selectPositionsInfoData } from "context/SyntheticsStateContext/selector
 import { selectOrdersCount } from "context/SyntheticsStateContext/selectors/orderSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { OrderTypeFilterValue } from "domain/synthetics/orders/ordersFilters";
+import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import useWallet from "lib/wallets/useWallet";
 import type { ContractsChainId } from "sdk/configs/chains";
@@ -105,7 +106,8 @@ export function HistoricalLists({ chainId, account, dateRange, onDateRangeChange
 
   const [marketsDirectionsFilter, setMarketsDirectionsFilter] = useState<MarketFilterLongShortItemData[]>([]);
   const [orderTypesFilter, setOrderTypesFilter] = useState<OrderTypeFilterValue[]>([]);
-  const hideOrderActions = !walletAccount || walletAccount !== account;
+  const { chainId: tradingChainId } = useChainId();
+  const hideOrderActions = !walletAccount || walletAccount !== account || tradingChainId !== chainId;
 
   const handleOrdersClick = useCallback(() => {
     setTabKey(TabKey.Orders);

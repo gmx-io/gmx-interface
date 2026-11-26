@@ -50,6 +50,7 @@ import {
   getBatchTotalExecutionFee,
   getBatchTotalPayCollateralAmount,
   getExpressBatchOrderParams,
+  getIsBatchPayoutOnlyToAccount,
   getIsEmptyBatch,
 } from "sdk/utils/orderTransactions";
 import type { IRpc, StateOverrideEntry } from "sdk/utils/rpc";
@@ -327,6 +328,7 @@ export async function buildAndSignExpressBatchOrderTxn({
       domain: typedData.domain,
       shouldUseSignerMethod: subaccount !== undefined,
       verificationChainId: chainId,
+      canSkipEmbeddedWalletConfirmation: getIsBatchPayoutOnlyToAccount(expressBatchParams, signer.address),
       relayParams: relayPayload,
     };
 

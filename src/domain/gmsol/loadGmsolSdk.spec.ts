@@ -8,7 +8,7 @@ const { sdk, initialize, entryFactory } = vi.hoisted(() => {
 
 vi.mock("config/ab", () => ({ getIsSolanaNetworkEnabled: vi.fn() }));
 
-const entryUrl = new URL("/gmsol-sdk/0.9.0-test.2-v2/entry.js", window.location.origin).href;
+const entryUrl = new URL("/gmsol-sdk/0.11.0-beta.1-gmx.1/entry.js", window.location.origin).href;
 
 beforeEach(() => {
   vi.resetModules();

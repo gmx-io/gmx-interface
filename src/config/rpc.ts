@@ -5,6 +5,7 @@ import { RpcTrackerConfig } from "lib/rpc/RpcTracker";
 import { RpcConfig } from "lib/rpc/types";
 import {
   AnyChainId,
+  SOLANA_NETWORK_ID,
   ARBITRUM,
   ARBITRUM_SEPOLIA,
   AVALANCHE,
@@ -62,6 +63,7 @@ export const RPC_TRACKER_CONFIG_FOR_SOURCE_CHAINS: RpcTrackerConfig = {
 };
 
 const RPC_CONFIGS: Record<number, RpcConfig[]> = {
+  [SOLANA_NETWORK_ID]: [{ ...getProxyProvider(SOLANA_NETWORK_ID, "fallback"), purpose: "default" }],
   [ARBITRUM]: [
     ...[
       "https://arb1.arbitrum.io/rpc",
@@ -316,6 +318,14 @@ export function getRpcProviders(chainId: number, purpose: RpcPurpose): RpcConfig
   return config.filter((rpc) => rpc.purpose === purpose);
 }
 
+export function getSolanaRpcUrl(): string {
+  const provider = getRpcProviders(SOLANA_NETWORK_ID, "default")[0];
+  if (!provider) {
+    throw new Error("No default Solana RPC provider configured");
+  }
+  return provider.url;
+}
+
 export function getWsRpcProviders(chainId: number, purpose: RpcPurpose): RpcConfig[] | [undefined] {
   const config = WS_RPC_CONFIGS[chainId];
 
@@ -338,16 +348,17 @@ export function getExpressRpcUrl(chainId: number): string | undefined {
 export type RpcPurpose = "fallback" | "largeAccount" | "express" | "default";
 
 function getProxyProvider(
-  chainId: Exclude<AnyChainId, typeof AVALANCHE_FUJI>,
+  chainId: Exclude<AnyChainId, typeof AVALANCHE_FUJI> | typeof SOLANA_NETWORK_ID,
   purpose: Exclude<RpcPurpose, "default">,
   type: "http" | "ws" = "http"
 ): RpcConfig {
   const routePurpose =
     isDevelopment() && !_debugRpcTracker?.getFlag(RpcDebugFlags.UseProductionRpcRoutes) ? "dev" : purpose;
+  const routeChain = chainId === SOLANA_NETWORK_ID ? "solana" : chainId;
   const protocol = type === "ws" ? "wss" : "https";
 
   return {
-    url: `${protocol}://rpc.gmx.io/${chainId}/${routePurpose}`,
+    url: `${protocol}://rpc.gmx.io/${routeChain}/${routePurpose}`,
     purpose,
     isPublic: false,
   };
