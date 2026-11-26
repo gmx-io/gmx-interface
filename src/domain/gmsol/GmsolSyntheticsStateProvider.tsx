@@ -1,4 +1,4 @@
-import { ReactNode, useMemo, useRef, useState } from "react";
+import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
 
 import { ARBITRUM, SOLANA_NETWORK_ID } from "config/chains";
 import { getKeepLeverageKey } from "config/localStorage";
@@ -30,6 +30,7 @@ import type { ApiPositionInfo, PositionsInfoData } from "sdk/utils/positions/typ
 
 import { createGmsolCandlesFetcher } from "./createGmsolCandlesFetcher";
 import { getGmsolOracleSymbol } from "./gmsolOracleUtils";
+import { preloadGmsolSdk } from "./loadGmsolSdk";
 import { composeGmsolMarkets } from "./markets/composeGmsolMarkets";
 import { fetchGmsol24hVolumes } from "./markets/fetchGmsol24hVolumes";
 import { GmsolMarketsUnavailableError } from "./markets/gmsolMarketsUnavailable";
@@ -89,6 +90,10 @@ function composePositions({
 export default function GmsolSyntheticsStateProvider({ children }: { children: ReactNode }) {
   const { chainId, networkId } = useChainId();
   const { address: owner } = useSolanaWalletSession();
+
+  useEffect(() => {
+    if (owner) preloadGmsolSdk();
+  }, [owner]);
 
   const settings = useSettings();
   const subaccountState = useSubaccountContext();

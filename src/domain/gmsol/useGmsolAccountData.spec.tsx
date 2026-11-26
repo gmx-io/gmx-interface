@@ -5,6 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { getUiApiCacheKey } from "config/api";
 import { SOLANA_NETWORK_ID } from "config/chains";
 import { GmxSdkProvider, useGmxSdk } from "context/GmxSdkContext/GmxSdkContext";
+import { HttpError } from "sdk/utils/http/http";
 
 import {
   getGmsolAccountDataKey,
@@ -100,7 +101,18 @@ async function mountAccount() {
 
 describe("confirmed transaction account refresh", () => {
   it("keeps cached data without a failure warning while syncing, but reports actual failures TRD-72", async () => {
-    for (const failure of [undefined, new Error("Snapshot service unavailable")]) {
+    const indexBehind = [
+      new HttpError(503, "not reached", { code: "SLOT_NOT_REACHED" }),
+      new HttpError(429, "busy", { code: "BUSY" }),
+    ];
+    const failures = [
+      undefined,
+      new Error("Snapshot service unavailable"),
+      new HttpError(503, "stale", { code: "BACKEND_UNAVAILABLE" }),
+      ...indexBehind,
+    ];
+    for (const failure of failures) {
+      const expectedError = indexBehind.includes(failure as HttpError) ? undefined : failure;
       source.slot = 1;
       const { owner, result } = await mountAccount();
       let release!: () => void;
@@ -124,11 +136,35 @@ describe("confirmed transaction account refresh", () => {
       });
       for (const account of [result.current.orders, result.current.positions]) {
         expect(account.isSyncing).toBe(Boolean(failure));
-        expect(account.error).toBe(failure);
+        expect(account.error).toBe(expectedError);
+        expect(account.data).toBeDefined();
       }
+      const outcome = await refresh;
+      expect(outcome instanceof Error ? outcome : undefined).toBe(expectedError);
       source.wait = undefined;
       source.error = undefined;
       cleanup();
+    }
+  });
+
+  it("reports an index that is still behind the floor a minute after the confirmation TRD-72", async () => {
+    const { owner, result } = await mountAccount();
+    source.error = new HttpError(503, "not reached", { code: "SLOT_NOT_REACHED" });
+    await act(async () => {
+      await refreshGmsolAccountDataAfterTransaction(result.current.sdk, owner, 2);
+    });
+    expect(result.current.positions.error).toBeUndefined();
+
+    const realNow = Date.now.bind(Date);
+    const clock = vi.spyOn(Date, "now").mockImplementation(() => realNow() + 60_001);
+    try {
+      await act(async () => {
+        await mutate(getGmsolAccountDataKey("gmsolPositions", getUiApiCacheKey(SOLANA_NETWORK_ID), owner));
+      });
+      expect(result.current.positions.error).toBe(source.error);
+      expect(result.current.positions.data).toEqual([{ key: "position-before" }]);
+    } finally {
+      clock.mockRestore();
     }
   });
 

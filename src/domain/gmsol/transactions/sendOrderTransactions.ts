@@ -51,6 +51,7 @@ import type { TrackedOrderAction } from "../orderTracking/reduceOrderLifecycle";
 
 const RPC_TIMEOUT_MS = 20_000;
 const CONFIRM_TIMEOUT_MS = 90_000;
+const RESEND_INTERVAL_MS = 2_000;
 const rpcOptions = () => ({ abortSignal: AbortSignal.timeout(RPC_TIMEOUT_MS) });
 const WRAPPED_SOL_TOKENS = GMSOL_TOKENS.filter((token) => token.address === WRAPPED_SOL_MINT);
 
@@ -244,6 +245,66 @@ async function refreshGmsolGroupLifetimes(plan: GmsolTransactionPlan, fromGroup:
   }
 }
 
+async function signGmsolPlanTransaction({
+  plan,
+  groupIndex,
+  index,
+  getWalletAddress,
+  signTransaction,
+}: {
+  plan: GmsolTransactionPlan;
+  groupIndex: number;
+  index: number;
+  getWalletAddress: () => string | undefined;
+  signTransaction: (bytes: Uint8Array) => Promise<Uint8Array>;
+}) {
+  const bytes = plan.groups[groupIndex][index];
+  const groupPlan = { ...plan, ...getGmsolGroupLifetime(plan, groupIndex) };
+  requireGmsol(getWalletAddress() === plan.owner, "Connected Solana wallet changed");
+  const { wrapLamports } = await checkGmsolTransactionBeforeSignature({ plan, bytes });
+  requireGmsol(await fetchSolanaTradingEnabled(), "Solana trading is disabled");
+  requireGmsol(
+    getIsSolanaNetworkEnabled() && getWalletAddress() === plan.owner,
+    "Solana session changed before signing"
+  );
+  const signedBytes = await withWalletPromptTimeout(signTransaction(bytes.slice()));
+  const { transaction: signed, hasAssertions } = validateGmsolWalletTransaction({
+    originalBytes: bytes,
+    signedBytes,
+    plan: groupPlan,
+  });
+  const signature = signed.signatures[address(plan.owner)];
+  requireGmsol(
+    signature &&
+      (await verifySignature(await getPublicKeyFromAddress(address(plan.owner)), signature, signed.messageBytes)),
+    "Invalid wallet signature"
+  );
+  const blockHeight = await getSolanaRpc().getBlockHeight({ commitment: "confirmed" }).send(rpcOptions());
+  return {
+    bytes,
+    groupPlan,
+    wrapLamports,
+    signed,
+    hasAssertions,
+    expired: blockHeight > groupPlan.lastValidBlockHeight,
+  };
+}
+
+// Same bytes keep one signature, so at most one copy lands; a rejected copy says nothing about an earlier one.
+async function resendSignedTransaction(
+  rpc: ReturnType<typeof getSolanaRpc>,
+  wire: ReturnType<typeof getBase64EncodedWireTransaction>,
+  isPending: () => boolean
+) {
+  const resend = async () =>
+    rpc.sendTransaction(wire, { encoding: "base64", skipPreflight: true, maxRetries: 0n }).send(rpcOptions());
+  for (;;) {
+    await new Promise((resolve) => setTimeout(resolve, RESEND_INTERVAL_MS));
+    if (!isPending()) return;
+    void resend().catch(() => undefined);
+  }
+}
+
 /** A broadcast timeout is ambiguous. Reconcile these signatures before constructing a new order. */
 export class GmsolTransactionError extends Error {
   constructor(
@@ -302,6 +363,7 @@ export async function sendGmsolOrderTransactions({
   let slot = 0n;
   let wrappedLamports = 0n;
   let pendingSignature: string | undefined;
+  let resendingSignature: string | undefined;
   try {
     const pending = getPendingGmsolSubmission(plan.owner);
     if (pending) {
@@ -326,36 +388,21 @@ export async function sendGmsolOrderTransactions({
     for (const { groupIndex, index } of positions) {
       // A later group's prompt starts after an earlier prompt and confirmation, so it gets a blockhash of its own.
       if (groupIndex > 0 && index === 0) await refreshGmsolGroupLifetimes(plan, groupIndex);
-      const bytes = plan.groups[groupIndex][index];
-      const groupPlan = { ...plan, ...getGmsolGroupLifetime(plan, groupIndex) };
-      requireGmsol(getWalletAddress() === plan.owner, "Connected Solana wallet changed");
-      const { wrapLamports } = await checkGmsolTransactionBeforeSignature({ plan, bytes });
-      requireGmsol(await fetchSolanaTradingEnabled(), "Solana trading is disabled");
-      requireGmsol(
-        getIsSolanaNetworkEnabled() && getWalletAddress() === plan.owner,
-        "Solana session changed before signing"
-      );
-      const signedBytes = await withWalletPromptTimeout(signTransaction(bytes.slice()));
-      const { transaction: signed, hasAssertions } = validateGmsolWalletTransaction({
-        originalBytes: bytes,
-        signedBytes,
-        plan: groupPlan,
-      });
-      const signature = signed.signatures[address(plan.owner)];
-      requireGmsol(
-        signature &&
-          (await verifySignature(await getPublicKeyFromAddress(address(plan.owner)), signature, signed.messageBytes)),
-        "Invalid wallet signature"
-      );
+      const signing = { plan, groupIndex, index, getWalletAddress, signTransaction };
+      let attempt = await signGmsolPlanTransaction(signing);
+      if (attempt.expired) {
+        // Not broadcast or recorded yet, so a fresh blockhash and one more signature cannot duplicate it.
+        await refreshGmsolGroupLifetimes(plan, groupIndex);
+        attempt = await signGmsolPlanTransaction(signing);
+      }
+      requireGmsol(!attempt.expired, "Signed transaction expired; rebuild and sign again");
+      const { bytes, groupPlan, wrapLamports, signed, hasAssertions } = attempt;
       const rpc = getSolanaRpc();
-      requireGmsol(
-        (await rpc.getBlockHeight({ commitment: "confirmed" }).send(rpcOptions())) <= groupPlan.lastValidBlockHeight,
-        "Signed transaction expired; rebuild and sign again"
-      );
+      const wire = getBase64EncodedWireTransaction(signed);
       if (wrapLamports > 0n && plan.wrappedSolBalance !== undefined) await assertWrappedSolUnchanged(plan);
       if (hasAssertions) {
         const simulation = await rpc
-          .simulateTransaction(getBase64EncodedWireTransaction(signed), {
+          .simulateTransaction(wire, {
             encoding: "base64",
             commitment: "confirmed",
             sigVerify: true,
@@ -364,7 +411,7 @@ export async function sendGmsolOrderTransactions({
           .send(rpcOptions());
         requireGmsolSimulationSuccess(simulation.value);
       }
-      // Read immediately before EVERY send, including after a slow wallet prompt.
+      // Read immediately before EVERY first broadcast, including after a slow wallet prompt.
       requireGmsol(await fetchSolanaTradingEnabled(), "Solana trading is disabled");
       requireGmsol(
         getIsSolanaNetworkEnabled() && getWalletAddress() === plan.owner,
@@ -403,7 +450,7 @@ export async function sendGmsolOrderTransactions({
         "Unable to retain the transaction signature before sending"
       );
       const sent = await rpc
-        .sendTransaction(getBase64EncodedWireTransaction(signed), {
+        .sendTransaction(wire, {
           encoding: "base64",
           skipPreflight: false,
           preflightCommitment: "confirmed",
@@ -420,6 +467,8 @@ export async function sendGmsolOrderTransactions({
       requireGmsol(sent === expectedSignature, "RPC returned an unexpected transaction signature");
       signatures.push(sent);
       const deadline = Date.now() + CONFIRM_TIMEOUT_MS;
+      resendingSignature = sent;
+      void resendSignedTransaction(rpc, wire, () => resendingSignature === sent && Date.now() < deadline);
       for (;;) {
         // A failed poll proves nothing about the transaction, so it counts as no status until the deadline.
         const status = await rpc
@@ -430,6 +479,7 @@ export async function sendGmsolOrderTransactions({
             () => null
           );
         if (status) {
+          resendingSignature = undefined;
           if (
             status.err !== null &&
             (status.confirmationStatus === "confirmed" || status.confirmationStatus === "finalized")
@@ -512,5 +562,7 @@ export async function sendGmsolOrderTransactions({
       confirmedSignatures,
       wrappedLamports
     );
+  } finally {
+    resendingSignature = undefined;
   }
 }
