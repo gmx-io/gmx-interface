@@ -138,7 +138,7 @@ export function getPositionOrderError({
       if (!existingPosition) return;
     }
 
-    if (sizeDeltaUsd === 0n && positionOrder.sizeDeltaUsd > 0n) {
+    if (sizeDeltaUsd === 0n && orderSizeDeltaUsdForCompare > 0n) {
       return t`Enter an amount`;
     }
 
