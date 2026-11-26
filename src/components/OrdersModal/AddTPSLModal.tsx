@@ -181,6 +181,7 @@ export function AddTPSLModal({
   const account = useSelector(selectAccount);
   const { signer } = useWallet();
   const solanaOrderActions = useSolanaOrderActions();
+  const isSolana = Boolean(solanaOrderActions);
   const { provider } = useJsonRpcProvider(chainId);
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
   const userReferralInfo = useUserReferralInfo();
@@ -786,7 +787,7 @@ export function AddTPSLModal({
   );
 
   const positionOrders = useSelector(makeSelectOrdersByPositionKey(position.key));
-  const isOrdersLoading = useSelector(selectIsOrdersLoading) && !solanaOrderActions;
+  const isOrdersLoading = useSelector(selectIsOrdersLoading);
 
   const existingFullCloseTp = useMemo(() => {
     return positionOrders.find(
@@ -1130,7 +1131,7 @@ export function AddTPSLModal({
       isExpressLoading ||
       isMultichainSubmitDisabled ||
       isPositionBalanceLoading ||
-      isOrdersLoading ||
+      (isOrdersLoading && !isSolana) ||
       isGmxAccountBalanceLoading
     ) {
       return {
@@ -1157,6 +1158,10 @@ export function AddTPSLModal({
 
     if (solanaOrderActions?.hasPendingSubmission) {
       return { text: t`Check transaction status`, disabled: false };
+    }
+
+    if (isSolana && isOrdersLoading) {
+      return { text: t`Loading...`, disabled: true };
     }
 
     if (submitError) {
@@ -1192,6 +1197,7 @@ export function AddTPSLModal({
     isMultichainSubmitDisabled,
     isPositionBalanceLoading,
     isOrdersLoading,
+    isSolana,
     isGmxAccountBalanceLoading,
     isGmxAccountExpressUnavailable,
     isSubmitting,
