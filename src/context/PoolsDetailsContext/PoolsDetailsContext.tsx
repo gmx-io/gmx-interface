@@ -104,6 +104,8 @@ export function usePoolsDetailsState({
   withGlv,
   multichainMarketTokensBalancesResult,
   isExpressAvailable,
+  isWithdrawalSwapEnabled,
+  isGlvWithdrawalSwapEnabled,
 }: {
   enabled: boolean;
   marketsInfoData: MarketsInfoData | undefined;
@@ -112,6 +114,8 @@ export function usePoolsDetailsState({
   withGlv: boolean;
   multichainMarketTokensBalancesResult: ReturnType<typeof useMultichainMarketTokensBalancesRequest>;
   isExpressAvailable: boolean;
+  isWithdrawalSwapEnabled: boolean;
+  isGlvWithdrawalSwapEnabled: boolean;
 }): PoolsDetailsState | undefined {
   const searchParams = useRouteQuery();
   const { chainId, srcChainId } = useChainId();
@@ -284,18 +288,31 @@ export function usePoolsDetailsState({
         return;
       }
 
+      const isGlv = getByKey(glvData, glvOrMarketAddress) !== undefined;
       const newAvailableModes = getGmSwapBoxAvailableModes({
         operation,
         market: getByKey(marketsInfoData, glvOrMarketAddress),
         paySource,
         areBothCollateralsCrossChain,
+        isWithdrawalSwapEnabled: isGlv ? isGlvWithdrawalSwapEnabled : isWithdrawalSwapEnabled,
       });
 
       if (!newAvailableModes.includes(mode)) {
         setMode(newAvailableModes[0]);
       }
     },
-    [areBothCollateralsCrossChain, enabled, glvOrMarketAddress, marketsInfoData, mode, operation, paySource]
+    [
+      areBothCollateralsCrossChain,
+      enabled,
+      glvData,
+      glvOrMarketAddress,
+      isGlvWithdrawalSwapEnabled,
+      isWithdrawalSwapEnabled,
+      marketsInfoData,
+      mode,
+      operation,
+      paySource,
+    ]
   );
 
   const value = useMemo((): PoolsDetailsState | undefined => {

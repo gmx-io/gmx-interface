@@ -51,7 +51,12 @@ import { PositionSeller } from "components/PositionSeller/PositionSeller";
 import { SettleAccruedFundingFeeModal } from "components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal";
 import { TradeBox } from "components/TradeBox/TradeBox";
 
-const EXPRESS_FEATURES = { relayRouterEnabled: true, subaccountRelayRouterEnabled: true };
+const EXPRESS_FEATURES = {
+  relayRouterEnabled: true,
+  subaccountRelayRouterEnabled: true,
+  withdrawalSwapEnabled: true,
+  glvWithdrawalSwapEnabled: true,
+};
 const SURFACES_WITHOUT_APPROVE_STEP: NetworkFeeSurface[] = ["addTpsl", "orderEditor"];
 
 function getGasPaymentTokenAllowance(getAmount: (address: string) => bigint) {

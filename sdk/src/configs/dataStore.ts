@@ -118,6 +118,7 @@ export const POSITION_LAST_SRC_CHAIN_ID = hashString("POSITION_LAST_SRC_CHAIN_ID
 export const PRICE_FEED_KEY = hashString("PRICE_FEED");
 export const GASLESS_FEATURE_DISABLED_KEY = hashString("GASLESS_FEATURE_DISABLED");
 export const ATOMIC_SWAP_FEATURE_DISABLED_KEY = hashString("ATOMIC_SWAP_FEATURE_DISABLED");
+export const WITHDRAWAL_SWAP_FEATURE_DISABLED_KEY = hashString("WITHDRAWAL_SWAP_FEATURE_DISABLED");
 export const SIGNAL_UNSTAKE_FEATURE_DISABLED_KEY = hashString("SIGNAL_UNSTAKE_FEATURE_DISABLED");
 export const INCENTIVE_VESTER_DEPOSIT_FEATURE_DISABLED_KEY = hashString("INCENTIVE_VESTER_DEPOSIT_FEATURE_DISABLED");
 export const INCENTIVE_VESTER_CLAIM_FEATURE_DISABLED_KEY = hashString("INCENTIVE_VESTER_CLAIM_FEATURE_DISABLED");
@@ -465,6 +466,10 @@ export function gaslessFeatureDisabledKey(module: string) {
 
 export function atomicSwapFeatureDisabledKey(module: string) {
   return hashData(["bytes32", "address"], [ATOMIC_SWAP_FEATURE_DISABLED_KEY, module]);
+}
+
+export function withdrawalSwapFeatureDisabledKey(module: string) {
+  return hashData(["bytes32", "address"], [WITHDRAWAL_SWAP_FEATURE_DISABLED_KEY, module]);
 }
 
 export function signalUnstakeFeatureDisabledKey(rewardRouter: string) {

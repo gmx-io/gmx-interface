@@ -8,6 +8,8 @@ import {
   selectDepositMarketTokensData,
   selectGlvAndMarketsInfoData,
   selectGlvInfo,
+  selectIsGlvWithdrawalSwapEnabled,
+  selectIsWithdrawalSwapEnabled,
   selectMarketsInfoData,
   selectMultichainMarketTokensBalancesResult,
   selectSrcChainId,
@@ -115,8 +117,17 @@ export const selectPoolsDetailsAvailableModes = createSelector((q): Mode[] => {
   const paySource = q(selectPoolsDetailsPaySource);
 
   const areBothCollateralsCrossChain = q(selectPoolsDetailsAreBothCollateralsCrossChain);
+  const glvInfo = q(selectPoolsDetailsGlvInfo);
+  const isGmWithdrawalSwapEnabled = q(selectIsWithdrawalSwapEnabled);
+  const isGlvWithdrawalSwapEnabled = q(selectIsGlvWithdrawalSwapEnabled);
 
-  return getGmSwapBoxAvailableModes({ operation, market: marketInfo, paySource, areBothCollateralsCrossChain });
+  return getGmSwapBoxAvailableModes({
+    operation,
+    market: marketInfo,
+    paySource,
+    areBothCollateralsCrossChain,
+    isWithdrawalSwapEnabled: glvInfo ? isGlvWithdrawalSwapEnabled : isGmWithdrawalSwapEnabled,
+  });
 });
 
 export const selectPoolsDetailsAvailableOperations = createSelector((q): Operation[] => {
