@@ -510,23 +510,32 @@ describe("getPriceImpactForDeposit", () => {
       longUsd: 0n,
       shortUsd: 89_303_706_029n * 10n ** 24n,
       expected: 30295834035264610872343888839400n,
+      balanceWasImproved: true,
     },
     {
       name: "re-prices a positive impact that flips the pool to the other side",
       longUsd: 0n,
       shortUsd: 1_339_555_590_447n * 10n ** 24n,
       expected: 99716103800429893412909032511600n,
+      balanceWasImproved: true,
     },
     {
       name: "keeps a negative impact",
       longUsd: 893_037_060_298n * 10n ** 24n,
       shortUsd: 0n,
       expected: -717763671959376778427532591564600n,
+      balanceWasImproved: false,
     },
-  ])("$name like the contract TRD-21", ({ longUsd, shortUsd, expected }) => {
+    {
+      name: "takes the fee tier from the virtual pool when it sets the impact",
+      longUsd: 0n,
+      shortUsd: 1_699_798_681_236_129_440n * 10n ** 18n,
+      expected: -127253359863946285154770016211800n,
+      balanceWasImproved: false,
+    },
+  ])("$name like the contract TRD-21", ({ longUsd, shortUsd, expected, balanceWasImproved }) => {
     expect(
       getPriceImpactForDeposit(marketInfo, marketInfo.longToken, marketInfo.shortToken, longUsd, shortUsd)
-        .priceImpactDeltaUsd
-    ).toBe(expected);
+    ).toEqual({ priceImpactDeltaUsd: expected, balanceWasImproved });
   });
 });

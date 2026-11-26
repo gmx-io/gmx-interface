@@ -379,7 +379,7 @@ export function getPriceImpactForSwap(
     tradeMath: marketInfo.tradeMath,
   });
 
-  if (priceImpactDeltaUsd > 0) {
+  if (priceImpactDeltaUsd >= 0) {
     return {
       priceImpactDeltaUsd,
       balanceWasImproved,
@@ -406,24 +406,29 @@ export function getPriceImpactForSwap(
     tradeMath: marketInfo.tradeMath,
   });
 
-  const { priceImpactDeltaUsd: priceImpactUsdForVirtualInventory } = getPriceImpactUsd({
-    currentLongUsd: virtualInventoryParams.longPoolUsd,
-    currentShortUsd: virtualInventoryParams.shortPoolUsd,
-    nextLongUsd: virtualInventoryParams.nextLongPoolUsd,
-    nextShortUsd: virtualInventoryParams.nextShortPoolUsd,
-    factorPositive: marketInfo.swapImpactFactorPositive,
-    factorNegative: marketInfo.swapImpactFactorNegative,
-    exponentFactorPositive: marketInfo.swapImpactExponentFactor,
-    exponentFactorNegative: marketInfo.swapImpactExponentFactor,
-    fallbackToZero: opts.fallbackToZero,
-    tradeMath: marketInfo.tradeMath,
-  });
+  const { priceImpactDeltaUsd: priceImpactUsdForVirtualInventory, balanceWasImproved: virtualBalanceWasImproved } =
+    getPriceImpactUsd({
+      currentLongUsd: virtualInventoryParams.longPoolUsd,
+      currentShortUsd: virtualInventoryParams.shortPoolUsd,
+      nextLongUsd: virtualInventoryParams.nextLongPoolUsd,
+      nextShortUsd: virtualInventoryParams.nextShortPoolUsd,
+      factorPositive: marketInfo.swapImpactFactorPositive,
+      factorNegative: marketInfo.swapImpactFactorNegative,
+      exponentFactorPositive: marketInfo.swapImpactExponentFactor,
+      exponentFactorNegative: marketInfo.swapImpactExponentFactor,
+      fallbackToZero: opts.fallbackToZero,
+      tradeMath: marketInfo.tradeMath,
+    });
+
+  if (priceImpactUsdForVirtualInventory < priceImpactDeltaUsd!) {
+    return {
+      priceImpactDeltaUsd: priceImpactUsdForVirtualInventory,
+      balanceWasImproved: virtualBalanceWasImproved,
+    };
+  }
 
   return {
-    priceImpactDeltaUsd:
-      priceImpactUsdForVirtualInventory < priceImpactDeltaUsd!
-        ? priceImpactUsdForVirtualInventory
-        : priceImpactDeltaUsd!,
+    priceImpactDeltaUsd,
     balanceWasImproved,
   };
 }
