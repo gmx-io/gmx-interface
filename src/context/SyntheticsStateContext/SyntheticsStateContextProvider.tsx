@@ -4,6 +4,7 @@ import { getAddress, isAddress } from "viem";
 
 import { isUiApiSupported } from "config/api";
 import type { ContractsChainId, SourceChainId } from "config/chains";
+import { isSolanaNetwork } from "config/chains";
 import { getKeepLeverageKey } from "config/localStorage";
 import { PoolsDetailsState, usePoolsDetailsState } from "context/PoolsDetailsContext/PoolsDetailsContext";
 import { SettingsContextType, useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -42,6 +43,8 @@ import {
   useMarketTokensDataRequest,
 } from "domain/synthetics/markets";
 import { isGlvEnabled } from "domain/synthetics/markets/glv";
+import type { ClosedMarkets } from "domain/synthetics/markets/types";
+import { useClosedMarketsRequest } from "domain/synthetics/markets/useClosedMarketsRequest";
 import { useGlvMarketsInfo } from "domain/synthetics/markets/useGlvMarkets";
 import { OrderEditorState, useOrderEditorState } from "domain/synthetics/orders/useOrderEditorState";
 import { AggregatedOrdersDataResult, useOrdersInfoRequest } from "domain/synthetics/orders/useOrdersInfo";
@@ -168,6 +171,7 @@ export type SyntheticsState = {
     oracleSettings: OracleSettingsData | undefined;
 
     jitLiquidityData: JitLiquidityData;
+    closedMarkets: ClosedMarkets | undefined;
 
     accountWhitelistsResult: AccountWhitelistsResult;
     usdgBoostAprResult: UsdgBoostAprResult;
@@ -294,6 +298,9 @@ export function SyntheticsStateContextProvider({
 
   const oracleSettings = useOracleSettingsData();
   const jitLiquidityData = useJitLiquidityRequest(chainId, { enabled: isTradePage || isAccountPage });
+  const closedMarkets = useClosedMarketsRequest(chainId, {
+    enabled: !isSolanaNetwork(networkId),
+  });
 
   const [missedCoinsModalPlace, setMissedCoinsModalPlace] = useState<MissedCoinsPlace>();
 
@@ -481,6 +488,7 @@ export function SyntheticsStateContextProvider({
         oracleSettings,
 
         jitLiquidityData,
+        closedMarkets,
 
         accountWhitelistsResult,
         usdgBoostAprResult,
@@ -527,6 +535,7 @@ export function SyntheticsStateContextProvider({
     isCandlesLoaded,
     isFirstOrder,
     jitLiquidityData,
+    closedMarkets,
     accountWhitelistsResult,
     usdgBoostAprResult,
     isLargeAccount,

@@ -63,7 +63,10 @@ import {
   selectTradeboxHasExistingPosition,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { selectTradeboxTradeTypeError } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxTradeErrors";
-import { selectExternalSwapQuoteParams } from "context/SyntheticsStateContext/selectors/tradeSelectors";
+import {
+  selectDisabledSwapMarkets,
+  selectExternalSwapQuoteParams,
+} from "context/SyntheticsStateContext/selectors/tradeSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useGmxAccountShowDepositButton } from "domain/multichain/useGmxAccountShowDepositButton";
 import { ExpressTxnParams } from "domain/synthetics/express";
@@ -966,6 +969,7 @@ export function useDetectAndSetAvailableMaxLeverage({
   const acceptablePriceImpactBuffer = useSelector(selectSavedAcceptablePriceImpactBuffer);
   const externalSwapQuote = useSelector(selectExternalSwapQuote);
   const externalSwapQuoteParams = useSelector(selectExternalSwapQuoteParams);
+  const disabledMarkets = useSelector(selectDisabledSwapMarkets);
   const chainId = useSelector(selectChainId);
   const marketsInfoData = useSelector(selectMarketsInfoData);
   const twap = useSelector(selectTradeboxTwapIncreaseSequenceParams);
@@ -998,6 +1002,7 @@ export function useDetectAndSetAvailableMaxLeverage({
       marketsInfoData,
       chainId,
       externalSwapQuoteParams,
+      disabledMarkets,
       isSetAcceptablePriceImpactEnabled,
       maxAllowedLeverage,
       minCollateralUsd,
@@ -1010,6 +1015,7 @@ export function useDetectAndSetAvailableMaxLeverage({
     fromToken,
     externalSwapQuote,
     externalSwapQuoteParams,
+    disabledMarkets,
     chainId,
     marketsInfoData,
     fromTokenAmount,
