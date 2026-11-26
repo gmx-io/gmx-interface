@@ -24,6 +24,7 @@ export function getMultichainTransferSendParams({
   amountLD: bigint;
   composeGas?: bigint;
   isToGmx: boolean;
+  /** Needed whenever `action` is set: Stargate's default lzReceive gas can't store a ~3 KB compose message */
   isManualGas?: boolean;
   action?: MultichainAction;
   nativeDropAmount?: bigint;

@@ -284,7 +284,7 @@ async function estimateSourceChainGlvDepositInitialTxFees({
     amountLD,
     composeGas: initialComposeGas,
     isToGmx: true,
-    isManualGas: params.isMarketTokenDeposit ? true : false,
+    isManualGas: true,
     action,
     nativeDropAmount: fullWntFee,
   });
