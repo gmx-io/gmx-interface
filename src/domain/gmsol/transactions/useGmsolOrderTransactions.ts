@@ -111,7 +111,7 @@ async function submitGmsolOrder(
       [],
       failed,
       confirmed,
-      preparation?.wrappedLamports
+      { wrappedLamports: preparation?.wrappedLamports }
     );
   if (previous.expired) {
     clearPendingGmsolSubmission(owner, previous.signature);

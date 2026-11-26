@@ -307,6 +307,8 @@ async function resendSignedTransaction(
 
 /** A broadcast timeout is ambiguous. Reconcile these signatures before constructing a new order. */
 export class GmsolTransactionError extends Error {
+  readonly wrappedLamports: bigint;
+
   constructor(
     readonly originalError: unknown,
     readonly submittedSignatures: readonly string[],
@@ -315,11 +317,12 @@ export class GmsolTransactionError extends Error {
     readonly trackingRequests: readonly GmsolOrderTrackingRequest[] = [],
     readonly failedSignature: string | undefined = undefined,
     readonly confirmedSignatures: readonly string[] = [],
-    readonly wrappedLamports = 0n
+    { wrappedLamports = 0n }: { wrappedLamports?: bigint } = {}
   ) {
     const detail = originalError instanceof Error ? originalError.message : String(originalError);
     super(pendingSignature ? `${detail}; check signature ${pendingSignature} before retrying` : detail);
     this.name = "GmsolTransactionError";
+    this.wrappedLamports = wrappedLamports;
   }
 }
 
@@ -560,7 +563,7 @@ export async function sendGmsolOrderTransactions({
       trackingRequests,
       failedSignature,
       confirmedSignatures,
-      wrappedLamports
+      { wrappedLamports }
     );
   } finally {
     resendingSignature = undefined;
