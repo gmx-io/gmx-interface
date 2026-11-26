@@ -10,6 +10,7 @@ import {
   selectPoolsDetailsDirectDepositAccess,
   selectPoolsDetailsFirstTokenAmount,
   selectPoolsDetailsFlags,
+  selectPoolsDetailsFocusedInput,
   selectPoolsDetailsGlvInfo,
   selectPoolsDetailsIsDirectDepositBlocked,
   selectPoolsDetailsIsMarketTokenDeposit,
@@ -129,6 +130,7 @@ export const useGmSwapSubmitState = ({
   const collateralSwapTokens = useSelector(selectPoolsDetailsCollateralSwapTokens);
   const firstTokenAmount = useSelector(selectPoolsDetailsFirstTokenAmount);
   const marketOrGlvTokenAmount = useSelector(selectPoolsDetailsMarketOrGlvTokenAmount);
+  const focusedInput = useSelector(selectPoolsDetailsFocusedInput);
   const isTransitRoute = useSelector(selectPoolsDetailsIsTransitRoute);
   const payLongToken = useSelector(selectPoolsDetailsPayLongToken);
   const payShortToken = useSelector(selectPoolsDetailsPayShortToken);
@@ -217,6 +219,7 @@ export const useGmSwapSubmitState = ({
     srcChainId,
     marketToken,
     directDepositAccess,
+    typedReceiveAmount: focusedInput === "market" ? marketOrGlvTokenAmount : undefined,
   });
 
   const depositMinOutputError = getGmDepositMinOutputError({

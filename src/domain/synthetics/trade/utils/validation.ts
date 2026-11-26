@@ -49,7 +49,15 @@ import { formatMaxInstantAmount } from "domain/synthetics/usdgPools/usdcConversi
 import type { DirectDepositAccess } from "domain/synthetics/whitelists/utils";
 import { TokenBalanceType } from "domain/tokens";
 import { DUST_USD, isAddressZero } from "lib/legacy";
-import { PRECISION, adjustForDecimals, expandDecimals, formatAmount, formatUsd, roundWithDecimals } from "lib/numbers";
+import {
+  PRECISION,
+  adjustForDecimals,
+  expandDecimals,
+  formatAmount,
+  formatBalanceAmount,
+  formatUsd,
+  roundWithDecimals,
+} from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getPageOutdatedError } from "lib/useHasOutdatedUi";
 import { getNativeToken, getWrappedToken } from "sdk/configs/tokens";
@@ -1055,6 +1063,8 @@ export function getGmSwapError(p: {
   chainId: ContractsChainId;
   srcChainId?: SourceChainId | undefined;
   directDepositAccess?: DirectDepositAccess;
+  /** Receive amount typed in when the deposit is quoted from Receive */
+  typedReceiveAmount?: bigint;
 }): ValidationResult {
   const {
     isDeposit,
@@ -1083,6 +1093,7 @@ export function getGmSwapError(p: {
     chainId,
     srcChainId,
     directDepositAccess,
+    typedReceiveAmount,
   } = p;
 
   if (!marketInfo || !marketToken) {
@@ -1209,6 +1220,18 @@ export function getGmSwapError(p: {
     (marketTokenAmount === 0n && longTokenAmount === 0n && shortTokenAmount === 0n)
   ) {
     return { buttonErrorMessage: t`Enter an amount` };
+  }
+
+  if (isDeposit && typedReceiveAmount !== undefined) {
+    // The quote reports what the pay mints when no pay amount reaches the typed Receive amount
+    const receiveToken = glvInfo ? glvToken : marketToken;
+    const quotedReceiveAmount = (glvInfo ? glvTokenAmount : marketTokenAmount) ?? 0n;
+
+    if (receiveToken && quotedReceiveAmount < typedReceiveAmount) {
+      const maxReceiveText = formatBalanceAmount(quotedReceiveAmount, receiveToken.decimals, receiveToken.symbol);
+
+      return { buttonErrorMessage: t`Max receivable ≈ ${maxReceiveText}` };
+    }
   }
 
   const marketTokenBalance = getTokenBalanceByPaySource(marketToken, paySource, chainId, srcChainId);

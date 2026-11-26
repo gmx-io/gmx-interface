@@ -6694,6 +6694,10 @@ msgstr "ステップ1: 売却"
 msgid "Auto"
 msgstr "自動"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Max receivable ≈ {maxReceiveText}"
+msgstr "受取上限 ≈ {maxReceiveText}"
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "The amount is more than your eligible amount left in the Legacy vault"
 msgstr "数量がLegacy ボールトの残りの対象数量を超えています"
