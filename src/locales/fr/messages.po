@@ -5336,6 +5336,10 @@ msgstr "L'ordre peut ne pas être exécuté : liquidité insuffisante pour exéc
 msgid "Leverage"
 msgstr "Effet de levier"
 
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+msgid "The wallet request timed out. Nothing was sent."
+msgstr ""
+
 #: src/components/AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal.tsx
 msgid "Accrued price impact rebates"
 msgstr "Remises accumulées sur l'impact sur le prix"

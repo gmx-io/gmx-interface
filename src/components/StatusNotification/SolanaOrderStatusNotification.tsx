@@ -23,7 +23,7 @@ export type SolanaOrderNotificationState = {
   execution: "unresolved" | "executed" | "cancelled";
   cancelledBy: "owner" | undefined;
   executionSignature: string | undefined;
-  failure: "rejected" | "expired" | "insufficientSol" | "prepared" | undefined;
+  failure: "rejected" | "expired" | "walletTimeout" | "insufficientSol" | "prepared" | undefined;
   debug: string | undefined;
 };
 
@@ -88,6 +88,8 @@ export function SolanaOrderStatusNotification({
       </Trans>
     ) : state.failure === "expired" ? (
       <Trans>The transaction expired before it landed. Nothing was executed.</Trans>
+    ) : state.failure === "walletTimeout" ? (
+      <Trans>The wallet request timed out. Nothing was sent.</Trans>
     ) : state.failure === "rejected" ? (
       <Trans>Transaction canceled</Trans>
     ) : state.failure === "insufficientSol" ? (

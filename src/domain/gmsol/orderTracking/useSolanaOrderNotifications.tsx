@@ -11,16 +11,15 @@ import {
   type ActiveSolanaSession,
 } from "lib/solana/activeSession";
 import type { GmxApiSdk } from "sdk/clients/v2";
-import { parseError, type ErrorLike } from "sdk/utils/errors";
 
 import {
   SolanaOrderStatusNotification,
   type SolanaOrderNotificationState,
 } from "components/StatusNotification/SolanaOrderStatusNotification";
 
-import { GmsolPendingSubmissionError, GmsolSubmissionExpiredError } from "../transactions/pendingSubmission";
-import { GmsolInsufficientSolError, GmsolTransactionError } from "../transactions/sendOrderTransactions";
+import { GmsolTransactionError } from "../transactions/sendOrderTransactions";
 import { refreshGmsolAccountDataAfterTransaction } from "../useGmsolAccountData";
+import { classifyOrderFailure } from "./classifyOrderFailure";
 import type { TrackedOrderAction } from "./reduceOrderLifecycle";
 import { watchSubmittedOrders, type OrderTrackingRequest } from "./watchSubmittedOrders";
 
@@ -183,35 +182,11 @@ function beginNotification({
       reportHandledRejection("solana.order")(error);
       if (!isActive()) return;
       const sendError = error instanceof GmsolTransactionError ? error : undefined;
-      const cause = sendError ? sendError.originalError : error;
       const signatures = sendError?.submittedSignatures ?? [];
-      const pending =
-        error instanceof GmsolPendingSubmissionError ? error.pendingSignature : sendError?.pendingSignature;
-      const failed = sendError?.failedSignature;
-      const confirmed = sendError?.confirmedSignatures ?? [];
-      const ambiguous =
-        failed === undefined && (pending !== undefined || signatures.some((value) => !confirmed.includes(value)));
       if (sendError && signatures.length && (sendError.orders.length || sendError.trackingRequests.length)) {
         onSubmitted({ signatures, orders: sendError.orders, trackingRequests: sendError.trackingRequests });
       }
-      const parsed = parseError(cause as ErrorLike);
-      update({
-        submission: ambiguous ? "unknown" : "failed",
-        signatures: failed ? [failed] : pending ? [...signatures, pending] : signatures,
-        // Only the last transaction of a plan places orders, so an earlier confirmed one prepared the accounts.
-        failure: ambiguous
-          ? undefined
-          : confirmed.length && !sendError?.trackingRequests.length
-            ? "prepared"
-            : cause instanceof GmsolSubmissionExpiredError
-              ? "expired"
-              : cause instanceof GmsolInsufficientSolError
-                ? "insufficientSol"
-                : parsed?.isUserRejectedError
-                  ? "rejected"
-                  : undefined,
-        debug: parsed?.errorMessage,
-      });
+      update(classifyOrderFailure(error));
     },
   };
 }

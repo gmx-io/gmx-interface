@@ -10,9 +10,9 @@ import { SolanaOrderActionsContext, type SolanaOrderActions } from "domain/solan
 import { publishSolanaWalletSession } from "lib/solana/activeSession";
 import type { OrderInfo } from "sdk/utils/orders/types";
 
-import type { GmsolSendResult } from "./sendOrderTransactions";
+import { GmsolTransactionError, GmsolWalletPromptTimeoutError, type GmsolSendResult } from "./sendOrderTransactions";
 import type { GmsolOrderAction } from "./types";
-import { useGmsolOrderTransactions } from "./useGmsolOrderTransactions";
+import { getIsGmsolOrderSubmitting, useGmsolOrderTransactions } from "./useGmsolOrderTransactions";
 import { GmsolOrderActionsProvider } from "../orderActions/GmsolOrderActionsProvider";
 
 const mocks = vi.hoisted(() => ({ prepare: vi.fn(), send: vi.fn(), sign: vi.fn(), toast: vi.fn() }));
@@ -22,7 +22,8 @@ vi.mock("lib/wallets/solanaWalletSession", () => ({
 vi.mock("react-toastify", () => ({
   toast: Object.assign(mocks.toast, { dismiss: mocks.toast, error: mocks.toast, update: mocks.toast }),
 }));
-vi.mock("./sendOrderTransactions", () => ({
+vi.mock("./sendOrderTransactions", async (importOriginal) => ({
+  ...(await importOriginal<object>()),
   prepareGmsolOrderTransactions: (...args: unknown[]) => mocks.prepare(...args),
   sendGmsolOrderTransactions: (...args: unknown[]) => mocks.send(...args),
 }));
@@ -145,4 +146,33 @@ it("drops a signed order after the wallet or the network switches away and back 
     cleanup();
     vi.clearAllMocks();
   }
+});
+
+it("frees the shared submitter when the wallet prompt times out TRD-72", async () => {
+  let isHeldDuringSend: boolean | undefined;
+  mocks.prepare.mockResolvedValue({});
+  mocks.send.mockImplementationOnce(async () => {
+    isHeldDuringSend = getIsGmsolOrderSubmitting();
+    throw new GmsolTransactionError(new GmsolWalletPromptTimeoutError(), [], undefined);
+  });
+  render(
+    <GmxSdkProvider>
+      <GmsolOrderActionsProvider>
+        <Probe />
+      </GmsolOrderActionsProvider>
+    </GmxSdkProvider>
+  );
+  const order = {
+    solana: { actionState: "pending", orderAccount: "order", rentReceiver: "owner", escrowTokens: {} },
+  } as unknown as OrderInfo;
+  let isCancelled: boolean | undefined;
+  await act(async () => {
+    isCancelled = await actions!.cancelOrders([order]);
+  });
+  expect(isCancelled).toBe(false);
+  expect(isHeldDuringSend).toBe(true);
+  expect(state.isSubmitting).toBe(false);
+  const next = state.acquire("owner");
+  expect(next).toBeDefined();
+  act(() => next!.release());
 });

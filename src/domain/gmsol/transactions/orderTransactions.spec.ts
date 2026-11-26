@@ -54,6 +54,7 @@ import {
 } from "./pendingSubmission";
 import {
   GmsolTransactionError,
+  GmsolWalletPromptTimeoutError,
   prepareGmsolOrderTransactions,
   sendGmsolOrderTransactions,
 } from "./sendOrderTransactions";
@@ -411,6 +412,7 @@ it("signs native wrapping only against an unchanged wallet WSOL snapshot TRD-72"
   const fresh = { recentBlockhash: other, lastValidBlockHeight: 3n };
   transport.rpc.getLatestBlockhash.mockReturnValue({
     send: async () => ({
+      context: { slot: 2n },
       value: { blockhash: fresh.recentBlockhash, lastValidBlockHeight: fresh.lastValidBlockHeight },
     }),
   });
@@ -622,7 +624,10 @@ beforeEach(() => {
     simulateTransaction: respond({ context: { slot: 1n }, value: { err: null, accounts: [{ lamports: 990000000n }] } }),
     getBlockHeight: respond(1n),
     getEpochInfo: respond({ blockHeight: 1n, absoluteSlot: 2n }),
-    getLatestBlockhash: respond({ value: { blockhash: lifetime.recentBlockhash, lastValidBlockHeight: 1n } }),
+    getLatestBlockhash: respond({
+      context: { slot: 1n },
+      value: { blockhash: lifetime.recentBlockhash, lastValidBlockHeight: 1n },
+    }),
     getSignatureStatuses: respond({
       context: { slot: 2n },
       value: [{ err: null, confirmationStatus: "confirmed", slot: 2n }],
@@ -862,7 +867,7 @@ it("snapshots order intent before asynchronous RPC preparation FESOL-56", async 
     action: { type: "create", orders: [input], atomic: false },
   });
   input.sizeDeltaUsd = 20n * 10n ** 30n;
-  resolveBlockhash({ value: { blockhash: lifetime.recentBlockhash, lastValidBlockHeight: 1n } });
+  resolveBlockhash({ context: { slot: 1n }, value: { blockhash: lifetime.recentBlockhash, lastValidBlockHeight: 1n } });
   const plan = await preparing;
   expect(plan.action).toMatchObject({ type: "create", orders: [{ sizeDeltaUsd: 10n ** 31n }] });
   await expect(validateGmsolTransactionPlan(plan)).resolves.toBeDefined();
@@ -905,6 +910,52 @@ async function signTransactionBytes(bytes: Uint8Array) {
     getTransactionEncoder().encode(await signTransaction([signingKey], getTransactionDecoder().decode(bytes)))
   );
 }
+
+it("ends an unanswered wallet prompt at 120 s and never sends a later signature TRD-72", async () => {
+  const { plan, sign } = await sendFixture();
+  let open!: () => void;
+  const prompted = new Promise<void>((resolve) => (open = resolve));
+  let answer!: () => void;
+  const answered = new Promise<void>((resolve) => (answer = resolve));
+  sign.mockImplementationOnce(async (bytes) => {
+    open();
+    await answered;
+    return signTransactionBytes(bytes);
+  });
+  vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
+  try {
+    let settled = false;
+    const sending = sendGmsolOrderTransactions({
+      plan,
+      getWalletAddress: () => owner,
+      signTransaction: sign,
+      onConfirmed: async () => undefined,
+    });
+    void sending
+      .catch(() => undefined)
+      .finally(() => {
+        settled = true;
+      });
+    await prompted;
+    await vi.advanceTimersByTimeAsync(119_999);
+    expect(settled).toBe(false);
+    await vi.advanceTimersByTimeAsync(1);
+    await expect(sending).rejects.toMatchObject({
+      originalError: expect.any(GmsolWalletPromptTimeoutError),
+      submittedSignatures: [],
+      pendingSignature: undefined,
+    });
+  } finally {
+    vi.useRealTimers();
+  }
+  answer();
+  await sign.mock.results[0].value;
+  // A send after the late signature would first need real signature verification and RPC reads.
+  await new Promise((resolve) => setTimeout(resolve, 50));
+  expect(sign).toHaveBeenCalledTimes(1);
+  expect(transport.rpc.sendTransaction).not.toHaveBeenCalled();
+  expect(getPendingGmsolSubmission(owner)).toBeUndefined();
+});
 
 it("keeps polling for 90 s through failed polls and drops a send only once its blockhash provably expired TRD-72", async () => {
   const confirmed = { err: null, confirmationStatus: "confirmed", slot: 2n };
@@ -1053,6 +1104,7 @@ it("asks the wallet once more with a fresh blockhash when the signature expires 
     transport.rpc.sendTransaction.mockClear();
     transport.rpc.getLatestBlockhash.mockReturnValue({
       send: async () => ({
+        context: { slot: 2n },
         value: { blockhash: fresh.recentBlockhash, lastValidBlockHeight: fresh.lastValidBlockHeight },
       }),
     });
