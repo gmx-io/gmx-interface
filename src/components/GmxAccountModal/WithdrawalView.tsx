@@ -751,7 +751,7 @@ export const WithdrawalView = () => {
     decimals: selectedTokenSettlementChainTokenId?.decimals,
   });
 
-  const { isPaused: isSourcePoolPaused } = useIsStargatePoolPaused({
+  const { isPaused: isSourcePoolPaused, isLoading: isSourcePoolStatusLoading } = useIsStargatePoolPaused({
     chainId,
     stargateAddress: isSameChain ? undefined : selectedTokenSettlementChainTokenId?.stargate,
   });
@@ -1322,6 +1322,7 @@ export const WithdrawalView = () => {
       ? sameChainNetworkFeeAsyncResult.isLoading
       : !isRouteUnavailable &&
         (areMultichainFeesLoading ||
+          isSourcePoolStatusLoading ||
           isDestinationPoolStatusLoading ||
           (!expressTxnParamsAsyncResult.data && !expressTxnParamsAsyncResult.error)));
 

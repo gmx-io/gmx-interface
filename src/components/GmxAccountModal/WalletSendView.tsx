@@ -714,7 +714,10 @@ export function WalletSendView() {
       buttonState = { text: t`Send`, disabled: true };
     } else if (isApproving) {
       buttonState = { text: t`Approving...`, disabled: true };
-    } else if (needsApproval && (isQuoteOftLoading || isQuoteSendLoading || isDestinationPoolStatusLoading)) {
+    } else if (
+      needsApproval &&
+      (sendParamsWithSlippage === undefined || quoteSendNativeFee === undefined || isDestinationPoolStatusLoading)
+    ) {
       buttonState = { text: t`Approve ${selectedToken.symbol}`, disabled: true };
     } else if (needsApproval) {
       buttonState = { text: t`Approve ${selectedToken.symbol}`, onClick: handleApprove };

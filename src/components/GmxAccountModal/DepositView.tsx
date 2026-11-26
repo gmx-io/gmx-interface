@@ -45,6 +45,7 @@ import { useMultichainApprovalsActiveListener } from "context/SyntheticsEvents/u
 import { useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import { resolveSettlementChainDepositToken } from "domain/multichain/depositTokenSelection";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
+import { getPendingDepositAction } from "domain/multichain/pendingDeposit";
 import { isStringEqualInsensitive, matchLogRequest } from "domain/multichain/progress/LongCrossChainTask";
 import { sendCrossChainDepositTxn } from "domain/multichain/sendCrossChainDepositTxn";
 import {
@@ -989,14 +990,18 @@ export const DepositView = () => {
     settlementChainId,
   ]);
 
+  const crossChainDepositKey = `${depositViewChain}:${depositViewTokenAddress}:${amountLD}`;
+  const submittedCrossChainDepositKey = useRef<string | undefined>(undefined);
+
   const handleDeposit = useCallback(async () => {
     if (depositViewChain === settlementChainId) {
       await handleSameChainDeposit();
     } else {
+      submittedCrossChainDepositKey.current = crossChainDepositKey;
       setIsSubmitting(true);
       setShouldSendCrossChainDepositWhenLoaded(true);
     }
-  }, [depositViewChain, settlementChainId, handleSameChainDeposit]);
+  }, [depositViewChain, settlementChainId, handleSameChainDeposit, crossChainDepositKey]);
 
   const isCrossChainDepositLoading = useRef(false);
   useEffect(() => {
@@ -1004,14 +1009,20 @@ export const DepositView = () => {
       return;
     }
 
-    // Otherwise the waiting deposit would open the wallet by itself once Stargate reopens the route
-    if (isRouteUnavailable) {
+    const action = getPendingDepositAction({
+      submittedKey: submittedCrossChainDepositKey.current,
+      currentKey: crossChainDepositKey,
+      isRouteUnavailable,
+      canSend: Boolean(canSendCrossChainDeposit),
+    });
+
+    if (action === "drop") {
       setShouldSendCrossChainDepositWhenLoaded(false);
       setIsSubmitting(false);
       return;
     }
 
-    if (!canSendCrossChainDeposit) {
+    if (action === "wait") {
       return;
     }
 
@@ -1020,7 +1031,13 @@ export const DepositView = () => {
     handleCrossChainDeposit().finally(() => {
       isCrossChainDepositLoading.current = false;
     });
-  }, [canSendCrossChainDeposit, handleCrossChainDeposit, isRouteUnavailable, shouldSendCrossChainDepositWhenLoaded]);
+  }, [
+    canSendCrossChainDeposit,
+    crossChainDepositKey,
+    handleCrossChainDeposit,
+    isRouteUnavailable,
+    shouldSendCrossChainDepositWhenLoaded,
+  ]);
 
   useEffect(
     function fallbackDepositViewChain() {
@@ -1331,9 +1348,9 @@ export const DepositView = () => {
     needTokenApprove &&
     approvalBatch === undefined &&
     depositViewChain !== settlementChainId &&
-    (areMultichainFeesLoading || isDestinationPoolStatusLoading)
+    !canSendCrossChainDeposit
   ) {
-    // The approval is unlimited, so it waits for the quotes that report a paused route
+    // The approval is unlimited, so it waits for a successful estimate of this amount, which reports a paused route
     buttonState = {
       text: t`Approve ${selectedToken?.symbol}`,
       disabled: true,
@@ -1343,7 +1360,7 @@ export const DepositView = () => {
       text: t`Approve ${selectedToken?.symbol}`,
       onClick: handleApproveClick,
     };
-  } else if (isNetworkFeeLoading) {
+  } else if (isNetworkFeeLoading || (depositViewChain !== settlementChainId && !canSendCrossChainDeposit)) {
     buttonState = {
       text: (
         <>
