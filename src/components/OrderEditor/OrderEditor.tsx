@@ -327,6 +327,13 @@ export function OrderEditor(p: Props) {
   const isFullCloseWithoutPosition =
     isTriggerDecrease && !existingPosition && p.order.sizeDeltaUsd === FULL_POSITION_CLOSE_SIZE_DELTA_USD;
 
+  // The close input shows a full-close stored size as the position size, so an unedited size keeps the stored one
+  const solanaSizeDeltaUsd =
+    isTriggerDecrease &&
+    sizeDeltaUsd === getPositionCloseSizeDeltaUsdForDisplay(p.order.sizeDeltaUsd, existingPosition?.sizeInUsd)
+      ? p.order.sizeDeltaUsd
+      : sizeDeltaUsd;
+
   const closeSize = useCloseSizeInput({
     forceUsd: !existingPosition,
     positionSizeInUsd: existingPosition?.sizeInUsd,
@@ -714,7 +721,7 @@ export function OrderEditor(p: Props) {
       try {
         const isSent = await solanaOrderActions.updateOrder({
           order: p.order as PositionOrderInfo,
-          changes: { sizeDeltaUsd, triggerPrice, acceptablePrice },
+          changes: { sizeDeltaUsd: solanaSizeDeltaUsd, triggerPrice, acceptablePrice },
         });
         if (isSent) {
           p.onClose();
@@ -798,7 +805,7 @@ export function OrderEditor(p: Props) {
     p,
     market,
     solanaOrderActions,
-    sizeDeltaUsd,
+    solanaSizeDeltaUsd,
     triggerPrice,
     acceptablePrice,
   ]);
@@ -811,9 +818,9 @@ export function OrderEditor(p: Props) {
     if (!solanaOrderActions || solanaOrderError || isSwapOrderType(p.order.orderType)) return undefined;
     return solanaOrderActions.getUpdateError({
       order: p.order as PositionOrderInfo,
-      changes: { sizeDeltaUsd, triggerPrice, acceptablePrice },
+      changes: { sizeDeltaUsd: solanaSizeDeltaUsd, triggerPrice, acceptablePrice },
     });
-  }, [solanaOrderActions, solanaOrderError, p.order, sizeDeltaUsd, triggerPrice, acceptablePrice]);
+  }, [solanaOrderActions, solanaOrderError, p.order, solanaSizeDeltaUsd, triggerPrice, acceptablePrice]);
 
   const submitButtonState = useMemo(() => {
     const setMaxLeverageAction = hasAvailableMaxLeverage ? (
