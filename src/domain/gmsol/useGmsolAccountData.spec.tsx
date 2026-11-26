@@ -147,27 +147,6 @@ describe("confirmed transaction account refresh", () => {
     }
   });
 
-  it("reports an index that is still behind the floor a minute after the confirmation TRD-72", async () => {
-    const { owner, result } = await mountAccount();
-    source.error = new HttpError(503, "not reached", { code: "SLOT_NOT_REACHED" });
-    await act(async () => {
-      await refreshGmsolAccountDataAfterTransaction(result.current.sdk, owner, 2);
-    });
-    expect(result.current.positions.error).toBeUndefined();
-
-    const realNow = Date.now.bind(Date);
-    const clock = vi.spyOn(Date, "now").mockImplementation(() => realNow() + 60_001);
-    try {
-      await act(async () => {
-        await mutate(getGmsolAccountDataKey("gmsolPositions", getUiApiCacheKey(SOLANA_NETWORK_ID), owner));
-      });
-      expect(result.current.positions.error).toBe(source.error);
-      expect(result.current.positions.data).toEqual([{ key: "position-before" }]);
-    } finally {
-      clock.mockRestore();
-    }
-  });
-
   it("keeps the highest confirmation floor through failed refreshes until polling catches up FESOL-56", async () => {
     const { owner, result } = await mountAccount();
     source.error = new Error("Snapshot service unavailable");

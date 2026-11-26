@@ -1033,7 +1033,7 @@ it("keeps polling for 90 s through failed polls and drops a send only once its b
   }
 });
 
-it("resends the same signed bytes every 2 s without preflight until a status arrives TRD-72", async () => {
+it("resends the same signed bytes every 2 s without preflight until a confirmed status arrives TRD-72", async () => {
   const preflightRejection = getSolanaErrorFromJsonRpcError({
     code: -32002,
     message: "Transaction simulation failed",
@@ -1046,7 +1046,7 @@ it("resends the same signed bytes every 2 s without preflight until a status arr
     ["rejected", [null, null, null, confirmed], [0, 2_000]],
     ["preflight", [null, null, null, confirmed], [0, 2_000]],
     ["preflight", [null, null, null, null, null, confirmed], [0, 2_000, 4_000]],
-    ["accepted", [null, processed, processed, processed, processed, confirmed], [0]],
+    ["accepted", [null, processed, processed, processed, processed, confirmed], [0, 2_000, 4_000]],
   ] as const;
   vi.useFakeTimers({ toFake: ["setTimeout", "Date"] });
   try {

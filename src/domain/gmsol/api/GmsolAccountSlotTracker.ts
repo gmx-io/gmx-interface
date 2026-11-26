@@ -24,6 +24,7 @@ function isIndexBehindFloor(error: unknown) {
 export class GmsolAccountSlotTracker {
   slots = new Map<string, AccountSlots>();
   listeners = new Set<() => void>();
+  readsInFlight = new Map<string, Set<Promise<unknown>>>();
 
   subscribe(listener: () => void) {
     this.listeners.add(listener);
@@ -68,8 +69,21 @@ export class GmsolAccountSlotTracker {
     return this.isPending(key) && requiredAt !== undefined && Date.now() - requiredAt <= INDEX_CATCH_UP_MS;
   }
 
+  async acceptsNewerSlotInFlight(key: string) {
+    const acceptedSlot = this.slots.get(key)?.acceptedSlot;
+    await Promise.allSettled(this.readsInFlight.get(key) ?? []);
+    return this.slots.get(key)?.acceptedSlot !== acceptedSlot;
+  }
+
+  read<T>(key: string, read: (minContextSlot: number | undefined) => Promise<GmsolSlotted<T>>): Promise<T> {
+    const reading = this.commitRead(key, read);
+    const reads = this.readsInFlight.get(key) ?? new Set<Promise<unknown>>();
+    this.readsInFlight.set(key, reads.add(reading));
+    return reading.finally(() => reads.delete(reading));
+  }
+
   // A read the floor overtook in flight keeps the last accepted data, unless it answered below its own requested slot.
-  async read<T>(key: string, read: (minContextSlot: number | undefined) => Promise<GmsolSlotted<T>>): Promise<T> {
+  async commitRead<T>(key: string, read: (minContextSlot: number | undefined) => Promise<GmsolSlotted<T>>): Promise<T> {
     const requestedSlot = this.getMinContextSlot(key);
     const settled = await read(requestedSlot).then(
       (response) => ({ response }),

@@ -1,4 +1,5 @@
 import { useMemo, useSyncExternalStore } from "react";
+import { mutate } from "swr";
 
 import { getUiApiCacheKey } from "config/api";
 import { SOLANA_NETWORK_ID } from "config/chains";
@@ -55,7 +56,7 @@ function useGmsolAccountRequest<T>(
     ([, , keyApiCacheKey, keyOwner]: NonNullable<typeof key>) => fetcher(sdk!, keyOwner, keyApiCacheKey),
     { refreshInterval, maxAgeMs: refreshInterval + API_STALE_MS }
   );
-  const isOverdue = freshness.isStale && !error;
+  const isOverdue = freshness.isStale && !error && !isPendingConfirmation;
   const overdueError = useMemo(
     () => (isOverdue ? new Error(`${request} has not refreshed within its grace period`) : undefined),
     [isOverdue, request]
@@ -86,15 +87,21 @@ export async function refreshGmsolAccountDataAfterTransaction(sdk: GmxApiSdk, ow
   for (const request of ["gmsolPositions", "gmsolOrders"] as const) {
     accountSlots.requireSlot(getAccountSlotKey(request, apiCacheKey, owner), slot);
   }
+  // SWR drops a poll that started before the refresh mutation ended, even when the tracker accepted its newer slot.
+  const revalidateAfterOverlappingReads = (request: GmsolAccountRequest) => {
+    void accountSlots
+      .acceptsNewerSlotInFlight(getAccountSlotKey(request, apiCacheKey, owner))
+      .then((accepted) => accepted && mutate(getGmsolAccountDataKey(request, apiCacheKey, owner)));
+  };
   await Promise.all([
     mutateSWRWithFreshness(
       getGmsolAccountDataKey("gmsolPositions", apiCacheKey, owner),
       fetchPositions(sdk, owner, apiCacheKey)
-    ),
+    ).finally(() => revalidateAfterOverlappingReads("gmsolPositions")),
     mutateSWRWithFreshness(
       getGmsolAccountDataKey("gmsolOrders", apiCacheKey, owner),
       fetchOrders(sdk, owner, apiCacheKey)
-    ),
+    ).finally(() => revalidateAfterOverlappingReads("gmsolOrders")),
   ]);
 }
 

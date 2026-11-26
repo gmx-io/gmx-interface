@@ -471,7 +471,15 @@ export async function sendGmsolOrderTransactions({
       signatures.push(sent);
       const deadline = Date.now() + CONFIRM_TIMEOUT_MS;
       resendingSignature = sent;
-      void resendSignedTransaction(rpc, wire, () => resendingSignature === sent && Date.now() < deadline);
+      void resendSignedTransaction(
+        rpc,
+        wire,
+        () =>
+          resendingSignature === sent &&
+          Date.now() < deadline &&
+          getIsSolanaNetworkEnabled() &&
+          getWalletAddress() === plan.owner
+      );
       for (;;) {
         // A failed poll proves nothing about the transaction, so it counts as no status until the deadline.
         const status = await rpc
@@ -482,23 +490,24 @@ export async function sendGmsolOrderTransactions({
             () => null
           );
         if (status) {
-          resendingSignature = undefined;
           if (
             status.err !== null &&
             (status.confirmationStatus === "confirmed" || status.confirmationStatus === "finalized")
           ) {
+            resendingSignature = undefined;
             failedSignature = sent;
             pendingSignature = undefined;
-            setPendingGmsolSubmission(plan.owner, undefined);
+            clearPendingGmsolSubmission(plan.owner, sent);
             throw new Error(`Solana transaction failed: ${sent}`);
           }
           if (status.confirmationStatus === "confirmed" || status.confirmationStatus === "finalized") {
+            resendingSignature = undefined;
             slot = status.slot;
             plan.confirmedSlot = slot;
             confirmedSignatures.push(sent);
             wrappedLamports += wrapLamports;
             pendingSignature = undefined;
-            setPendingGmsolSubmission(plan.owner, undefined);
+            clearPendingGmsolSubmission(plan.owner, sent);
             if (plan.action.type === "create") {
               // Only track accounts from this confirmed transaction, never another group in the plan.
               const { message } = decodeGmsolTransaction(bytes, groupPlan);
