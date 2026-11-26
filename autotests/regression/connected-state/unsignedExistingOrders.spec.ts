@@ -1,5 +1,5 @@
 import { expect } from "@playwright/test";
-import { maxUint256, zeroAddress } from "viem";
+import { zeroAddress } from "viem";
 
 import { test } from "../fixtures/accountState";
 import { configureClassicTrading } from "../fixtures/tradingForms";
@@ -43,7 +43,8 @@ for (const type of [3, 8, 5, 6]) {
       } else {
         if (mutation.functionName !== "updateOrder") throw new Error("Expected order update");
         expect(mutation.args[0]).toBe(order.key);
-        expect(mutation.args[1]).toBe(type === 5 || type === 6 ? maxUint256 : order.sizeDeltaUsd);
+        // The editor keeps a stored fixed TP/SL size instead of turning it into a full close (TRD-51).
+        expect(mutation.args[1]).toBe(order.sizeDeltaUsd);
         expect(mutation.args[3]).toBe(BigInt(type === 8 || type === 5 ? 4100 : 1100) * 10n ** 12n);
         await expect(page.getByTestId("trigger-price-input-input")).toBeVisible();
         await page.keyboard.press("Escape");
