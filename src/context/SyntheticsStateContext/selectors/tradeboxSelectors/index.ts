@@ -118,6 +118,7 @@ import {
   makeSelectMaxLiquidityPath,
   makeSelectNextPositionValuesForDecrease,
   makeSelectNextPositionValuesForIncrease,
+  selectDisabledSwapMarkets,
   selectExternalSwapQuoteParams,
 } from "../tradeSelectors";
 import { selectTradeboxGetMaxLongShortLiquidityPool } from "./selectTradeboxGetMaxLongShortLiquidityPool";
@@ -985,6 +986,7 @@ export const selectTradeboxRawInternalSwapAmounts = createSelector((q) => {
     : undefined;
 
   const debugSwapMarketsConfig = IS_DEVELOPMENT ? q(selectDebugSwapMarketsConfig) : undefined;
+  const disabledMarkets = q(selectDisabledSwapMarkets);
 
   const { markRatio, triggerRatio } = q(selectTradeboxTradeRatios);
 
@@ -1008,7 +1010,7 @@ export const selectTradeboxRawInternalSwapAmounts = createSelector((q) => {
       chainId,
       externalSwapQuoteParams,
       allowSameTokenSwap: tradeFlags.isSwap,
-      disabledMarkets: debugSwapMarketsConfig?.disabledSwapMarkets,
+      disabledMarkets,
       manualPath: debugSwapMarketsConfig?.manualPath,
     });
   } else {
@@ -1026,7 +1028,7 @@ export const selectTradeboxRawInternalSwapAmounts = createSelector((q) => {
       chainId,
       externalSwapQuoteParams,
       allowSameTokenSwap: tradeFlags.isSwap,
-      disabledMarkets: debugSwapMarketsConfig?.disabledSwapMarkets,
+      disabledMarkets,
       manualPath: debugSwapMarketsConfig?.manualPath,
     });
 

@@ -41,7 +41,6 @@ const PANEL_INSET = 12 + PANEL_BORDER;
 const TEXT_GAP = 4;
 const BRACKET_WIDTH = 4;
 const FIRST_LINE_MIDDLE = 9;
-const FOOTNOTE_FIRST_LINE_MIDDLE = 8;
 const POINTER_MARKER_GAP = 32;
 
 const ANATOMY_LOOK: TooltipLook = {
@@ -182,7 +181,7 @@ const CONTENT = (
         <TooltipRow label="Total" value="$4.33" isTotal />
       </LeftCallout>
     </TooltipRows>
-    <LeftCallout id="footnote" firstLineMiddle={FOOTNOTE_FIRST_LINE_MIDDLE}>
+    <LeftCallout id="footnote">
       <TooltipFootnote>Unused network fees are refunded after execution.</TooltipFootnote>
     </LeftCallout>
   </TooltipContent>

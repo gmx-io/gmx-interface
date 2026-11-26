@@ -4936,6 +4936,10 @@ msgstr "Configurar orden stop a mercado en corto @ {formattedPrice}"
 msgid "Funding fee"
 msgstr "Comisión de financiación"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Your previous transaction went through. Check your positions, orders and balances before sending it again."
+msgstr "Tu transacción anterior se completó. Revisa tus posiciones, órdenes y saldos antes de enviarla de nuevo."
+
 #: src/components/TVChartContainer/constants.ts
 msgid "Partial TP"
 msgstr "TP parcial"
@@ -5704,6 +5708,10 @@ msgstr "Factor positivo"
 msgid "Full position close"
 msgstr "Cierre total de posición"
 
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Enable wallet batching regardless of UI flags"
+msgstr "Activar el batching de wallet independientemente de los flags de UI"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "All projected rewards and estimated distributions are best-effort estimations only. Actual distribution is subject to DAO governance."
 msgstr "Todas las recompensas proyectadas y las distribuciones estimadas son únicamente estimaciones realizadas según el mejor criterio posible. La distribución efectiva está sujeta a la gobernanza de la DAO."
@@ -5970,8 +5978,8 @@ msgid "Max open interest exceeded. Current: {openInterestText}, max: {maxOpenInt
 msgstr "Interés abierto máximo superado. Actual: {openInterestText}, máx.: {maxOpenInterestText}"
 
 #: src/components/PositionSeller/SplitReceiveSwapProfitFeeWarning.tsx
-msgid "Receiving as {receiveTokenSymbol} will swap your profit and cost {swapProfitFeePercentage} (<0>{swapProfitFeeUsd}</0>). Receive {profitTokenSymbol} and {collateralTokenSymbol} separately to skip the swap. <1>Read more</1>."
-msgstr "Al recibir en {receiveTokenSymbol}, se intercambiará su beneficio con un coste de {swapProfitFeePercentage} (<0>{swapProfitFeeUsd}</0>). Reciba {profitTokenSymbol} y {collateralTokenSymbol} por separado para evitar el intercambio. <1>Leer más</1>."
+msgid "Receiving as {receiveTokenSymbol} will cost {swapProfitFeePercentage} (<0>{swapProfitFeeUsd}</0>). Receive {profitTokenSymbol} and {collateralTokenSymbol} separately to skip the swap. <1>Read more</1>."
+msgstr "Al recibir en {receiveTokenSymbol}, el coste será de {swapProfitFeePercentage} (<0>{swapProfitFeeUsd}</0>). Reciba {profitTokenSymbol} y {collateralTokenSymbol} por separado para evitar el intercambio. <1>Leer más</1>."
 
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 msgid "Anonymous by default — connect with just your wallet.<0/>Share an email only if you want updates."
@@ -6711,6 +6719,10 @@ msgstr "Paso 1: Vender"
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Auto"
 msgstr "Auto"
+
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Max receivable ≈ {maxReceiveText}"
+msgstr "Máx. a recibir ≈ {maxReceiveText}"
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "The amount is more than your eligible amount left in the Legacy vault"
@@ -11740,6 +11752,10 @@ msgstr "Buscar mercado"
 msgid "Negative funding fee"
 msgstr "Comisión de financiación negativa"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Your wallet hasn't confirmed the transaction yet. Check its status in your wallet before trying again, so it isn't sent twice."
+msgstr "Tu wallet aún no ha confirmado la transacción. Revisa su estado en tu wallet antes de volver a intentarlo, para que no se envíe dos veces."
+
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
 msgid "FAILURES"
@@ -13201,8 +13217,8 @@ msgid "No — the API, SDK, and docs are open to everyone. Joining the program a
 msgstr "No: la API, el SDK y la documentación están abiertos a todos. Unirse al programa añade soporte directo y distribución."
 
 #: src/components/Errors/errorToasts.tsx
-msgid "Increase the max network fee buffer to {0} in {settingsLink}"
-msgstr "Aumente el margen máximo de comisión de red a {0} en {settingsLink}"
+msgid "Increase the max network fee buffer {bufferText} in {settingsLink}"
+msgstr "Aumente el margen máximo de comisión de red {bufferText} en {settingsLink}"
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "GLP to GM airdrop"

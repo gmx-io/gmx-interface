@@ -136,6 +136,8 @@ export type MarketInfo = GmsolMarketConfig &
     swapImpactExponentFactor: bigint;
     withdrawalFeeFactorBalanceWasImproved?: bigint;
     withdrawalFeeFactorBalanceWasNotImproved?: bigint;
+    depositFeeFactorBalanceWasImproved?: bigint;
+    depositFeeFactorBalanceWasNotImproved?: bigint;
 
     borrowingFactorPerSecondForLongs: bigint;
     borrowingFactorPerSecondForShorts: bigint;
@@ -270,6 +272,8 @@ export type MarketConfig = Pick<
   | "atomicSwapFeeFactor"
   | "withdrawalFeeFactorBalanceWasImproved"
   | "withdrawalFeeFactorBalanceWasNotImproved"
+  | "depositFeeFactorBalanceWasImproved"
+  | "depositFeeFactorBalanceWasNotImproved"
   | "virtualMarketId"
   | "virtualIndexTokenId"
   | "virtualLongTokenId"

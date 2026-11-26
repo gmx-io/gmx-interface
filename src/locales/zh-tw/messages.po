@@ -4936,6 +4936,10 @@ msgstr "在 {formattedPrice} 設定做空觸發市價單"
 msgid "Funding fee"
 msgstr "資金費用"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Your previous transaction went through. Check your positions, orders and balances before sending it again."
+msgstr "您先前的交易已完成。再次送出前，請檢查您的倉位、訂單和餘額。"
+
 #: src/components/TVChartContainer/constants.ts
 msgid "Partial TP"
 msgstr "部分停利 (TP)"
@@ -5704,6 +5708,10 @@ msgstr "正向因子"
 msgid "Full position close"
 msgstr "完全平倉"
 
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Enable wallet batching regardless of UI flags"
+msgstr "忽略 UI 旗標啟用錢包批次交易"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "All projected rewards and estimated distributions are best-effort estimations only. Actual distribution is subject to DAO governance."
 msgstr "所有預估獎勵與預計分配均僅為依現有資訊盡力作出的估算。實際分配取決於 DAO 治理。"
@@ -5970,8 +5978,8 @@ msgid "Max open interest exceeded. Current: {openInterestText}, max: {maxOpenInt
 msgstr "超過最大未平倉量。目前：{openInterestText}，上限：{maxOpenInterestText}"
 
 #: src/components/PositionSeller/SplitReceiveSwapProfitFeeWarning.tsx
-msgid "Receiving as {receiveTokenSymbol} will swap your profit and cost {swapProfitFeePercentage} (<0>{swapProfitFeeUsd}</0>). Receive {profitTokenSymbol} and {collateralTokenSymbol} separately to skip the swap. <1>Read more</1>."
-msgstr "以 {receiveTokenSymbol} 接收會兌換您的利潤，並產生 {swapProfitFeePercentage}（<0>{swapProfitFeeUsd}</0>）的成本。分開接收 {profitTokenSymbol} 和 {collateralTokenSymbol} 可跳過兌換。<1>了解更多</1>。"
+msgid "Receiving as {receiveTokenSymbol} will cost {swapProfitFeePercentage} (<0>{swapProfitFeeUsd}</0>). Receive {profitTokenSymbol} and {collateralTokenSymbol} separately to skip the swap. <1>Read more</1>."
+msgstr "以 {receiveTokenSymbol} 接收會產生 {swapProfitFeePercentage}（<0>{swapProfitFeeUsd}</0>）的成本。分開接收 {profitTokenSymbol} 和 {collateralTokenSymbol} 可跳過兌換。<1>了解更多</1>。"
 
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 msgid "Anonymous by default — connect with just your wallet.<0/>Share an email only if you want updates."
@@ -6711,6 +6719,10 @@ msgstr "步驟 1：賣出"
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Auto"
 msgstr "自動"
+
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Max receivable ≈ {maxReceiveText}"
+msgstr "最多可收到 ≈ {maxReceiveText}"
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "The amount is more than your eligible amount left in the Legacy vault"
@@ -11740,6 +11752,10 @@ msgstr "搜尋市場"
 msgid "Negative funding fee"
 msgstr "負資金費用"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Your wallet hasn't confirmed the transaction yet. Check its status in your wallet before trying again, so it isn't sent twice."
+msgstr "您的錢包尚未確認該交易。請在重試前於錢包中查看其狀態，以免重複送出。"
+
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
 msgid "FAILURES"
@@ -13201,8 +13217,8 @@ msgid "No — the API, SDK, and docs are open to everyone. Joining the program a
 msgstr "不需要——API、SDK 和文件對所有人開放。加入計畫將額外獲得直接支援和分發資源。"
 
 #: src/components/Errors/errorToasts.tsx
-msgid "Increase the max network fee buffer to {0} in {settingsLink}"
-msgstr "在 {settingsLink} 中將最大網路費用緩衝增加至 {0}"
+msgid "Increase the max network fee buffer {bufferText} in {settingsLink}"
+msgstr "在 {settingsLink} 中將最大網路費用緩衝增加{bufferText}"
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "GLP to GM airdrop"

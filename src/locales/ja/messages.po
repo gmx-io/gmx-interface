@@ -4936,6 +4936,10 @@ msgstr "ショートのストップ成行注文を設定 @ {formattedPrice}"
 msgid "Funding fee"
 msgstr "ファンディング手数料"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Your previous transaction went through. Check your positions, orders and balances before sending it again."
+msgstr "前回のトランザクションは完了しました。再送信する前に、ポジション、注文、残高を確認してください。"
+
 #: src/components/TVChartContainer/constants.ts
 msgid "Partial TP"
 msgstr "一部TP"
@@ -5704,6 +5708,10 @@ msgstr "プラスファクター"
 msgid "Full position close"
 msgstr "ポジション全決済"
 
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Enable wallet batching regardless of UI flags"
+msgstr "UI フラグに関係なくウォレットのバッチ処理を有効にする"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "All projected rewards and estimated distributions are best-effort estimations only. Actual distribution is subject to DAO governance."
 msgstr "予測報酬および推定分配額は、いずれも可能な範囲で算出した推定値にすぎません。実際の分配はDAOガバナンスに従います。"
@@ -5970,8 +5978,8 @@ msgid "Max open interest exceeded. Current: {openInterestText}, max: {maxOpenInt
 msgstr "最大建玉を超過しました。現在: {openInterestText}、上限: {maxOpenInterestText}"
 
 #: src/components/PositionSeller/SplitReceiveSwapProfitFeeWarning.tsx
-msgid "Receiving as {receiveTokenSymbol} will swap your profit and cost {swapProfitFeePercentage} (<0>{swapProfitFeeUsd}</0>). Receive {profitTokenSymbol} and {collateralTokenSymbol} separately to skip the swap. <1>Read more</1>."
-msgstr "{receiveTokenSymbol} で受け取ると利益がスワップされ、{swapProfitFeePercentage}（<0>{swapProfitFeeUsd}</0>）のコストがかかります。スワップを避けるには {profitTokenSymbol} と {collateralTokenSymbol} を別々に受け取ってください。<1>詳細はこちら</1>。"
+msgid "Receiving as {receiveTokenSymbol} will cost {swapProfitFeePercentage} (<0>{swapProfitFeeUsd}</0>). Receive {profitTokenSymbol} and {collateralTokenSymbol} separately to skip the swap. <1>Read more</1>."
+msgstr "{receiveTokenSymbol} で受け取ると、{swapProfitFeePercentage}（<0>{swapProfitFeeUsd}</0>）のコストがかかります。スワップを避けるには {profitTokenSymbol} と {collateralTokenSymbol} を別々に受け取ってください。<1>詳細はこちら</1>。"
 
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 msgid "Anonymous by default — connect with just your wallet.<0/>Share an email only if you want updates."
@@ -6711,6 +6719,10 @@ msgstr "ステップ1: 売却"
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Auto"
 msgstr "自動"
+
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Max receivable ≈ {maxReceiveText}"
+msgstr "受取上限 ≈ {maxReceiveText}"
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "The amount is more than your eligible amount left in the Legacy vault"
@@ -11740,6 +11752,10 @@ msgstr "マーケットを検索"
 msgid "Negative funding fee"
 msgstr "ネガティブファンディング手数料"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Your wallet hasn't confirmed the transaction yet. Check its status in your wallet before trying again, so it isn't sent twice."
+msgstr "ウォレットはまだトランザクションを確認していません。二重送信を避けるため、再試行する前にウォレットでステータスを確認してください。"
+
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
 msgid "FAILURES"
@@ -13201,8 +13217,8 @@ msgid "No — the API, SDK, and docs are open to everyone. Joining the program a
 msgstr "いいえ。API、SDK、ドキュメントは誰でも利用できます。プログラムに参加すると、直接サポートと展開支援が追加されます。"
 
 #: src/components/Errors/errorToasts.tsx
-msgid "Increase the max network fee buffer to {0} in {settingsLink}"
-msgstr "{settingsLink} で最大ネットワーク手数料バッファを {0} に引き上げてください"
+msgid "Increase the max network fee buffer {bufferText} in {settingsLink}"
+msgstr "{settingsLink} で最大ネットワーク手数料バッファを {bufferText} 引き上げてください"
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "GLP to GM airdrop"

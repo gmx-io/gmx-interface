@@ -4936,6 +4936,10 @@ msgstr "숏 스탑 마켓 설정 @ {formattedPrice}"
 msgid "Funding fee"
 msgstr "펀딩 수수료"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Your previous transaction went through. Check your positions, orders and balances before sending it again."
+msgstr "이전 트랜잭션이 처리되었습니다. 다시 보내기 전에 포지션, 주문, 잔액을 확인하세요."
+
 #: src/components/TVChartContainer/constants.ts
 msgid "Partial TP"
 msgstr "부분 TP"
@@ -5704,6 +5708,10 @@ msgstr "양수 팩터"
 msgid "Full position close"
 msgstr "포지션 전체 종료"
 
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Enable wallet batching regardless of UI flags"
+msgstr "UI 플래그와 관계없이 지갑 일괄 처리 활성화"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "All projected rewards and estimated distributions are best-effort estimations only. Actual distribution is subject to DAO governance."
 msgstr "모든 예상 보상 및 예상 분배액은 최선의 노력을 바탕으로 산정한 추정치일 뿐입니다. 실제 분배는 DAO 거버넌스에 따라 결정됩니다."
@@ -5970,8 +5978,8 @@ msgid "Max open interest exceeded. Current: {openInterestText}, max: {maxOpenInt
 msgstr "최대 미결제약정 초과. 현재: {openInterestText}, 최대: {maxOpenInterestText}"
 
 #: src/components/PositionSeller/SplitReceiveSwapProfitFeeWarning.tsx
-msgid "Receiving as {receiveTokenSymbol} will swap your profit and cost {swapProfitFeePercentage} (<0>{swapProfitFeeUsd}</0>). Receive {profitTokenSymbol} and {collateralTokenSymbol} separately to skip the swap. <1>Read more</1>."
-msgstr "{receiveTokenSymbol}(으)로 받으면 수익이 스왑되며 {swapProfitFeePercentage}(<0>{swapProfitFeeUsd}</0>)의 비용이 발생합니다. 스왑을 건너뛰려면 {profitTokenSymbol} 및 {collateralTokenSymbol}을(를) 별도로 받으십시오. <1>자세히 보기</1>."
+msgid "Receiving as {receiveTokenSymbol} will cost {swapProfitFeePercentage} (<0>{swapProfitFeeUsd}</0>). Receive {profitTokenSymbol} and {collateralTokenSymbol} separately to skip the swap. <1>Read more</1>."
+msgstr "{receiveTokenSymbol}(으)로 받으면 {swapProfitFeePercentage}(<0>{swapProfitFeeUsd}</0>)의 비용이 발생합니다. 스왑을 건너뛰려면 {profitTokenSymbol} 및 {collateralTokenSymbol}을(를) 별도로 받으십시오. <1>자세히 보기</1>."
 
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 msgid "Anonymous by default — connect with just your wallet.<0/>Share an email only if you want updates."
@@ -6711,6 +6719,10 @@ msgstr "1단계: 판매"
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Auto"
 msgstr "자동"
+
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Max receivable ≈ {maxReceiveText}"
+msgstr "최대 수령 가능 ≈ {maxReceiveText}"
 
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "The amount is more than your eligible amount left in the Legacy vault"
@@ -11740,6 +11752,10 @@ msgstr "시장 검색"
 msgid "Negative funding fee"
 msgstr "음의 펀딩 수수료"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Your wallet hasn't confirmed the transaction yet. Check its status in your wallet before trying again, so it isn't sent twice."
+msgstr "지갑에서 아직 트랜잭션을 확인하지 않았습니다. 중복 전송을 막으려면 다시 시도하기 전에 지갑에서 상태를 확인하세요."
+
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
 msgid "FAILURES"
@@ -13201,8 +13217,8 @@ msgid "No — the API, SDK, and docs are open to everyone. Joining the program a
 msgstr "아니요. API, SDK, 문서는 누구에게나 열려 있습니다. 프로그램 가입 시 직접 지원과 배포가 추가됩니다."
 
 #: src/components/Errors/errorToasts.tsx
-msgid "Increase the max network fee buffer to {0} in {settingsLink}"
-msgstr "{settingsLink}에서 최대 네트워크 수수료 버퍼를 {0}(으)로 높이십시오"
+msgid "Increase the max network fee buffer {bufferText} in {settingsLink}"
+msgstr "{settingsLink}에서 최대 네트워크 수수료 버퍼를 {bufferText} 높이십시오"
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "GLP to GM airdrop"

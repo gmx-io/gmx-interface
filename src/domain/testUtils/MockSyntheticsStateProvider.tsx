@@ -167,6 +167,7 @@ export function MockSyntheticsStateProvider({
         oracleSettings: undefined,
 
         jitLiquidityData: { jitLiquidityMap: undefined },
+        closedMarkets: undefined,
         accountWhitelistsResult: { accountWhitelists: undefined },
         usdgBoostAprResult: { usdgBoostAprResponse: undefined },
       },

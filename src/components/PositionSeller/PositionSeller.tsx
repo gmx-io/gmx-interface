@@ -120,6 +120,7 @@ import { EmbeddedActionButton } from "components/Button/EmbeddedActionButton";
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 import {
   DecreaseReceiveOutputDisplay,
+  getTokenDisplaySymbol,
   SplitReceiveTokensLabel,
 } from "components/DecreaseReceiveOutput/DecreaseReceiveOutput";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
@@ -386,7 +387,7 @@ export function PositionSeller() {
 
   const splitReceiveSwapProfitFeeWarning = getSplitReceiveSwapProfitFeeWarning({
     shouldShow: !isTwap && isSplitReceiveAvailable && !isReceiveSeparated,
-    receiveToken,
+    receiveTokenSymbol: getTokenDisplaySymbol(receiveToken),
     profitToken: position?.pnlToken,
     collateralToken: position?.collateralToken,
     swapProfitFee: fees?.swapProfitFee,
@@ -394,7 +395,7 @@ export function PositionSeller() {
 
   const twapSplitReceiveSwapProfitFeeWarning = getSplitReceiveSwapProfitFeeWarning({
     shouldShow: isTwap && isSplitReceiveAvailable && !isReceiveSeparated && getIsHighSwapProfitFee(fees?.swapProfitFee),
-    receiveToken: position?.collateralToken,
+    receiveTokenSymbol: getTokenDisplaySymbol(position?.collateralToken),
     profitToken: position?.pnlToken,
     collateralToken: position?.collateralToken,
     swapProfitFee: fees?.swapProfitFee,

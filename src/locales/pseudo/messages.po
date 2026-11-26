@@ -4936,6 +4936,10 @@ msgstr ""
 msgid "Funding fee"
 msgstr ""
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Your previous transaction went through. Check your positions, orders and balances before sending it again."
+msgstr ""
+
 #: src/components/TVChartContainer/constants.ts
 msgid "Partial TP"
 msgstr ""
@@ -5704,6 +5708,10 @@ msgstr ""
 msgid "Full position close"
 msgstr ""
 
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Enable wallet batching regardless of UI flags"
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "All projected rewards and estimated distributions are best-effort estimations only. Actual distribution is subject to DAO governance."
 msgstr ""
@@ -5970,7 +5978,7 @@ msgid "Max open interest exceeded. Current: {openInterestText}, max: {maxOpenInt
 msgstr ""
 
 #: src/components/PositionSeller/SplitReceiveSwapProfitFeeWarning.tsx
-msgid "Receiving as {receiveTokenSymbol} will swap your profit and cost {swapProfitFeePercentage} (<0>{swapProfitFeeUsd}</0>). Receive {profitTokenSymbol} and {collateralTokenSymbol} separately to skip the swap. <1>Read more</1>."
+msgid "Receiving as {receiveTokenSymbol} will cost {swapProfitFeePercentage} (<0>{swapProfitFeeUsd}</0>). Receive {profitTokenSymbol} and {collateralTokenSymbol} separately to skip the swap. <1>Read more</1>."
 msgstr ""
 
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
@@ -6710,6 +6718,10 @@ msgstr ""
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/ConversionRouteSelector.tsx
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Auto"
+msgstr ""
+
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Max receivable ≈ {maxReceiveText}"
 msgstr ""
 
 #: src/components/Errors/getContractErrorMessage.ts
@@ -11740,6 +11752,10 @@ msgstr ""
 msgid "Negative funding fee"
 msgstr ""
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Your wallet hasn't confirmed the transaction yet. Check its status in your wallet before trying again, so it isn't sent twice."
+msgstr ""
+
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
 msgid "FAILURES"
@@ -13201,7 +13217,7 @@ msgid "No — the API, SDK, and docs are open to everyone. Joining the program a
 msgstr ""
 
 #: src/components/Errors/errorToasts.tsx
-msgid "Increase the max network fee buffer to {0} in {settingsLink}"
+msgid "Increase the max network fee buffer {bufferText} in {settingsLink}"
 msgstr ""
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
