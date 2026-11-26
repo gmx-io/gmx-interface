@@ -12,19 +12,27 @@ export type ParityInput<Case> = { ctx: ParityContext; market: MarketInfo; testCa
 
 type Value = bigint | boolean | undefined;
 
-type KnownIssue = {
+type KnownIssue<Case, Out> = {
   reason: string;
   /** Only in this scenario, on live state and in every scenario by default */
   scenario?: Scenario;
+  /**
+   * The differing cases this issue explains. A case that differs and matches no issue fails the field, and an issue that
+   * matches no differing case in any state fails as fixed. Without it the issue explains every case, and the field is
+   * not checked in its states
+   */
+  appliesTo?: (input: ParityInput<Case>, app: Out, contract: Out) => boolean;
+  /** A rounding difference a run may not reach: it explains cases, but need not explain one */
+  occasional?: boolean;
 };
 
-type Field<Case> = {
+type Field<Case, Out> = {
   /** What a bigint difference is measured against, the contract value by default */
   bpsOf?: (input: ParityInput<Case>) => bigint;
   /** The bigint difference allowed, 0.001 bps by default */
   toleranceBps?: number | ((input: ParityInput<Case>) => number);
-  /** Why the field differs from the contract: its tests expect a difference and fail once it is gone */
-  knownIssues?: KnownIssue[];
+  /** Why the field differs from the contract */
+  knownIssues?: KnownIssue<Case, Out>[];
 };
 
 type ParitySpec<Case extends { label: string }, Out extends Record<string, Value>> = {
@@ -33,7 +41,7 @@ type ParitySpec<Case extends { label: string }, Out extends Record<string, Value
   app: (input: ParityInput<Case>) => Out | Promise<Out>;
   contract: (input: ParityInput<Case>) => Promise<Out>;
   /** Two bigints compare by their difference in bps, anything else must be equal */
-  fields: { [K in keyof Out]: Field<Case> };
+  fields: { [K in keyof Out]: Field<Case, Out> };
   /**
    * Situations the chain state or a scenario must produce at least once. The cases only aim at them, so without this
    * a pair would pass silently when, say, no deposit on this block has positive impact or a scenario didn't apply
@@ -51,7 +59,19 @@ type ParitySpec<Case extends { label: string }, Out extends Record<string, Value
 // The code a run measures, "-dirty" when it has uncommitted changes
 const codeVersion = execFileSync("git", ["describe", "--always", "--dirty"], { encoding: "utf8" }).trim();
 
-type Row = { state: string; market: string; case: string; field: string; diffBps: number; failure?: string };
+const getKnownIssues = <Case, Out>(field: Field<Case, Out>, state: string) =>
+  (field.knownIssues ?? []).filter((issue) => issue.scenario === undefined || issue.scenario.name === state);
+
+type Row = {
+  state: string;
+  market: string;
+  case: string;
+  field: string;
+  diffBps: number;
+  failure?: string;
+  /** The reasons of the known issues that explain the failure */
+  knownIssues?: string[];
+};
 
 const DEFAULT_TOLERANCE_BPS = 0.001;
 
@@ -69,7 +89,7 @@ const formatValue = (value: Value) => (value === undefined ? "none" : String(val
 
 const formatRow = (row: Row) => `${row.market} / ${row.case}: ${row.failure}`;
 
-function compareField<Case>(field: Field<Case>, input: ParityInput<Case>, app: Value, contract: Value) {
+function compareField<Case, Out>(field: Field<Case, Out>, input: ParityInput<Case>, app: Value, contract: Value) {
   if (typeof app === "bigint" && typeof contract === "bigint") {
     const base = field.bpsOf ? field.bpsOf(input) : contract;
     const diffBps = toBps(app - contract, base);
@@ -99,9 +119,15 @@ async function compareCase<Case extends { label: string }, Out extends Record<st
   try {
     const contract = await spec.contract(input);
     const rows = fieldNames.map((field) => {
-      const comparison = compareField(spec.fields[field], input, app[field], contract[field]);
+      const config = spec.fields[field];
+      const comparison = compareField(config, input, app[field], contract[field]);
+      const knownIssues = comparison.failure
+        ? getKnownIssues(config, input.ctx.state)
+            .filter((issue) => issue.appliesTo?.(input, app, contract) ?? true)
+            .map((issue) => issue.reason)
+        : undefined;
 
-      return { ...row, field, ...comparison };
+      return { ...row, field, ...comparison, knownIssues };
     });
 
     return { app, rows };
@@ -133,9 +159,6 @@ async function loadInputs<Case extends { label: string }, Out extends Record<str
 
   return { ctx, markets, inputs: inputsByMarket.flat() };
 }
-
-const getKnownIssues = <Case>(field: Field<Case>, state: string) =>
-  (field.knownIssues ?? []).filter((issue) => issue.scenario === undefined || issue.scenario.name === state);
 
 async function runPair<Case extends { label: string }, Out extends Record<string, Value>>(
   name: string,
@@ -178,14 +201,21 @@ async function runPair<Case extends { label: string }, Out extends Record<string
         );
       }
 
-      getKnownIssues(config, state).forEach((issue) =>
-        console.log(`${state} / ${field}: known issue: ${issue.reason}`)
-      );
+      getKnownIssues(config, state).forEach((issue) => {
+        const count = failures.filter((row) => row.knownIssues?.includes(issue.reason)).length;
+
+        console.log(`${state} / ${field}: known issue in ${count} cases: ${issue.reason}`);
+      });
     })
   );
   reverts.forEach((revert) => console.log(revert));
   requiredCases.forEach((requiredCase) => console.log(`cases matching ${requiredCase.name}: ${requiredCase.count}`));
-  console.table([...rows].sort((a, b) => Math.abs(b.diffBps) - Math.abs(a.diffBps)).slice(0, 20));
+  console.table(
+    [...rows]
+      .sort((a, b) => Math.abs(b.diffBps) - Math.abs(a.diffBps))
+      .slice(0, 20)
+      .map(({ knownIssues, ...row }) => ({ ...row, knownIssues: knownIssues?.length }))
+  );
 
   return { rows, reverts, requiredCases, casesByState };
 }
@@ -206,15 +236,39 @@ export function parity<Case extends { label: string }, Out extends Record<string
 
     states.forEach((state) =>
       Object.entries(spec.fields).forEach(([field, config]) => {
+        const knownIssues = getKnownIssues(config, state);
         const getFailures = () =>
-          result.rows.filter((row) => row.state === state && row.field === field && row.failure).map(formatRow);
+          result.rows.filter((row) => row.state === state && row.field === field && row.failure);
 
-        if (getKnownIssues(config, state).length > 0) {
-          it.fails(`${state} / ${field} differs: known issues`, () => expect(getFailures()).toEqual([]));
+        if (knownIssues.length === 0) {
+          it(`${state} / ${field} matches the contract`, () => expect(getFailures().map(formatRow)).toEqual([]));
+        } else if (knownIssues.some((issue) => !issue.appliesTo)) {
+          it.fails(`${state} / ${field} differs: known issues, not checked`, () =>
+            expect(getFailures().map(formatRow)).toEqual([])
+          );
         } else {
-          it(`${state} / ${field} matches the contract`, () => expect(getFailures()).toEqual([]));
+          it(`${state} / ${field} matches the contract apart from its known issues`, () => {
+            const unexplained = getFailures().filter((row) => row.knownIssues!.length === 0);
+
+            expect(unexplained.map(formatRow)).toEqual([]);
+          });
         }
       })
+    );
+
+    // in any state: a scenario may be there to keep an issue out
+    Object.entries(spec.fields).forEach(([field, config]) =>
+      (config.knownIssues ?? [])
+        .filter((issue) => issue.appliesTo && !issue.occasional)
+        .forEach((issue) =>
+          it(`${field} still has the known issue: ${issue.reason}`, () => {
+            const explained = result.rows.filter(
+              (row) => row.field === field && row.knownIssues?.includes(issue.reason)
+            );
+
+            expect(explained.length).toBeGreaterThan(0);
+          })
+        )
     );
 
     it("the contract reverts on no case", () => expect(result.reverts).toEqual([]));
