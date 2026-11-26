@@ -75,6 +75,12 @@ const makeSelectEnabledFeature = (feature: keyof FeaturesSettings) => {
 export const selectIsRelayRouterEnabled = makeSelectEnabledFeature("relayRouterEnabled");
 export const selectIsSubaccountRelayRouterEnabled = makeSelectEnabledFeature("subaccountRelayRouterEnabled");
 
+// still loading counts as on, so a sale is not forced to Pair on every page load
+export const selectIsWithdrawalSwapEnabled = createSelector((q) => q(selectFeatures)?.withdrawalSwapEnabled !== false);
+export const selectIsGlvWithdrawalSwapEnabled = createSelector(
+  (q) => q(selectFeatures)?.glvWithdrawalSwapEnabled !== false
+);
+
 export const selectBlockTimestampData = (s: SyntheticsState) => s.globals.blockTimestampData;
 
 export const selectGlvInfo = (s: SyntheticsState) => s.globals.glvInfo.glvData;

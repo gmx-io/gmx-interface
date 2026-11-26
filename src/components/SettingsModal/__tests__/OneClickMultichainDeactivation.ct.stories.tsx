@@ -19,7 +19,12 @@ import { expandDecimals } from "lib/numbers";
 
 import { SettingsModal } from "components/SettingsModal/SettingsModal";
 
-const EXPRESS_AVAILABLE_FEATURES = { relayRouterEnabled: true, subaccountRelayRouterEnabled: true };
+const EXPRESS_AVAILABLE_FEATURES = {
+  relayRouterEnabled: true,
+  subaccountRelayRouterEnabled: true,
+  withdrawalSwapEnabled: true,
+  glvWithdrawalSwapEnabled: true,
+};
 
 const DEPOSIT_CONTROL_STYLE = { position: "fixed", top: 0, left: 0, zIndex: 2000 } as const;
 

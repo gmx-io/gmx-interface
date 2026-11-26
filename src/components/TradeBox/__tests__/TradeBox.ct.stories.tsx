@@ -31,7 +31,12 @@ import { useIsCurtainOpen } from "../Curtain";
 import { TradeBox } from "../TradeBox";
 import { TradeBoxHeaderTabs } from "../TradeBoxHeaderTabs";
 
-const EXPRESS_ON_FEATURES = { relayRouterEnabled: true, subaccountRelayRouterEnabled: true };
+const EXPRESS_ON_FEATURES = {
+  relayRouterEnabled: true,
+  subaccountRelayRouterEnabled: true,
+  withdrawalSwapEnabled: true,
+  glvWithdrawalSwapEnabled: true,
+};
 
 /** Mounts the external swap quote machinery, which lives in SyntheticsPage rather than TradeBox. */
 function ExternalSwapHandlerHost() {

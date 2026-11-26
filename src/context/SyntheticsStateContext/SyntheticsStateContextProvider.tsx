@@ -379,6 +379,8 @@ export function SyntheticsStateContextProvider({
       isUiApiSupported(chainId) &&
       getIsExpressAvailable(uiFlags) &&
       features?.relayRouterEnabled !== false,
+    isWithdrawalSwapEnabled: features?.withdrawalSwapEnabled !== false,
+    isGlvWithdrawalSwapEnabled: features?.glvWithdrawalSwapEnabled !== false,
   });
 
   const gasLimits = useGasLimits(chainId);

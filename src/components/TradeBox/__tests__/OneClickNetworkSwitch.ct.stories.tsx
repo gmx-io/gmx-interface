@@ -22,7 +22,12 @@ import type { SignedSubaccountApproval } from "sdk/utils/subaccount";
 import { ActiveFormScope } from "components/ActiveFormScope/ActiveFormScope";
 import { TradeBox } from "components/TradeBox/TradeBox";
 
-const EXPRESS_AVAILABLE_FEATURES = { relayRouterEnabled: true, subaccountRelayRouterEnabled: true };
+const EXPRESS_AVAILABLE_FEATURES = {
+  relayRouterEnabled: true,
+  subaccountRelayRouterEnabled: true,
+  withdrawalSwapEnabled: true,
+  glvWithdrawalSwapEnabled: true,
+};
 
 function NetworkSwitchControl() {
   const { switchChainAsync } = useSwitchChain();
