@@ -3932,6 +3932,7 @@ msgid "<0>Deposit</0> or <1>buy</1> {wrappedNativeTokenSymbol}."
 msgstr "{wrappedNativeTokenSymbol}을(를) <0>입금</0>하거나 <1>구매</1>하십시오."
 
 #: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
 msgid "This order cannot be changed on Solana"
 msgstr ""
 
@@ -6435,6 +6436,10 @@ msgstr "로딩 중…"
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "Funds will appear in your GMX Account soon"
 msgstr "자금이 곧 GMX Account에 입금됩니다"
+
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
+msgid "Not sent: {title}. {reason}"
+msgstr ""
 
 #: src/components/InterviewToast/InterviewToast.tsx
 msgid "Join an anonymous one-on-one chat to share your GMX liquidity provider experience"

@@ -5,6 +5,7 @@ import {
   SolanaOrderActionsContext,
   type SolanaOrderActions,
   type SolanaOrderChanges,
+  type SolanaTriggerEntry,
 } from "domain/solana/solanaOrderActions";
 import { helperToast } from "lib/helperToast";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
@@ -13,7 +14,7 @@ import { isSwapOrderType } from "sdk/utils/orders";
 import type { OrderInfo, PositionOrderInfo } from "sdk/utils/orders/types";
 import { DecreasePositionSwapType } from "sdk/utils/orders/types";
 
-import type { OrderStatusTitleData } from "components/StatusNotification/getOrderStatusTitle";
+import { getOrderStatusTitle, type OrderStatusTitleData } from "components/StatusNotification/getOrderStatusTitle";
 
 import {
   buildGmsolCancelAction,
@@ -34,14 +35,33 @@ import {
 } from "../transactions/useGmsolOrderTransactions";
 import { useSolanaTradingEnabled } from "../useSolanaTradingEnabled";
 
-function getOrderError(order: OrderInfo) {
+// A cancel closes the order account, so it needs no order kind, unlike an edit.
+function getCancelError(order: OrderInfo) {
   const metadata = order.solana;
-  // getGmsolOrderContext maps position order kinds only
-  if (order.isTwap || isSwapOrderType(order.orderType) || !metadata) return t`This order cannot be changed on Solana`;
+  if (order.isTwap || !metadata) return t`This order cannot be changed on Solana`;
   if (metadata.actionState !== "pending") return t`This order is no longer open`;
   // TODO(FESOL-56): the pinned validator has no callback account rules yet, so these orders cannot be updated or closed.
   if (metadata.callback) return t`Orders with a callback cannot be changed on Solana yet`;
   return undefined;
+}
+
+function getOrderError(order: OrderInfo) {
+  // getGmsolOrderContext maps position order kinds only
+  if (isSwapOrderType(order.orderType)) return t`This order cannot be changed on Solana`;
+  return getCancelError(order);
+}
+
+type SkippedOrder = { order: OrderInfo; reason: string };
+
+function getSkippedOrdersMessage(skipped: SkippedOrder[]) {
+  return (
+    <>
+      {skipped.map(({ order, reason }) => {
+        const title = getOrderStatusTitle(getGmsolOrderTitle(order, "cancel"));
+        return <div key={order.key}>{t`Not sent: ${title}. ${reason}`}</div>;
+      })}
+    </>
+  );
 }
 
 function getUpdateError({ order, changes }: { order: PositionOrderInfo; changes: SolanaOrderChanges }) {
@@ -60,7 +80,8 @@ type FlowStep = {
   trackExecution: boolean;
   build: () => GmsolOrderAction;
   titles: (action: GmsolOrderAction) => OrderStatusTitleData[];
-  order?: OrderInfo;
+  // Why the existing order this step changes cannot be changed on Solana
+  orderError?: string;
 };
 
 /** Sends the shared position and order list actions on Solana. Mounted only inside the Solana trade state. */
@@ -142,67 +163,78 @@ export function GmsolOrderActionsProvider({ children }: { children: ReactNode })
     async (
       submission: GmsolOrderSubmission,
       steps: { trackExecution: boolean; action: GmsolOrderAction; orders: OrderStatusTitleData[] }[]
-    ): Promise<boolean> => {
-      for (const { trackExecution, action, orders } of steps) {
+    ): Promise<number> => {
+      for (const [index, { trackExecution, action, orders }] of steps.entries()) {
         const sendError = getSendError();
         if (sendError) {
           helperToast.error(sendError);
-          return false;
+          return index;
         }
-        if (!submission.isActive()) return false;
+        if (!submission.isActive()) return index;
         const pending = getPendingGmsolSubmission(submission.owner);
-        if (pending) return check(submission, pending);
+        if (pending) {
+          await check(submission, pending);
+          return index;
+        }
 
         const notification = begin({ owner: submission.owner, operation: action.type, orders, trackExecution });
         try {
           notification.submitted(await submission.submit(action, { onSubmitted: notification.submitted }));
         } catch (error) {
           notification.failed(error);
-          return false;
+          return index;
         }
       }
-      return true;
+      return steps.length;
     },
     [begin, check, getSendError]
   );
 
   // Each call is one transaction flow. An unresolved earlier submission is checked first and nothing new is sent.
+  // Resolves to how many steps confirmed, counted from the first.
   const runFlow = useCallback(
-    async (steps: FlowStep[]): Promise<boolean> => {
-      if (getIsGmsolOrderSubmitting()) return false;
+    async (steps: FlowStep[], skipped: SkippedOrder[] = []): Promise<number> => {
+      if (getIsGmsolOrderSubmitting()) return 0;
       const sendError = getSendError();
       if (sendError) {
         helperToast.error(sendError);
-        return false;
+        return 0;
       }
-      if (getPendingGmsolSubmission(current.current.owner!)) return checkPendingSubmission();
-      if (steps.length === 0) return false;
+      if (getPendingGmsolSubmission(current.current.owner!)) {
+        await checkPendingSubmission();
+        return 0;
+      }
+      if (steps.length === 0 && skipped.length === 0) return 0;
 
-      for (const { order } of steps) {
-        const orderError = order && getOrderError(order);
-        if (orderError) {
-          helperToast.error(orderError);
-          return false;
-        }
+      const orderError = steps.find((step) => step.orderError)?.orderError;
+      if (orderError) {
+        helperToast.error(orderError);
+        return 0;
       }
 
       const actions = prepare(steps.map((step) => step.build));
-      if (!actions) return false;
+      if (!actions) return 0;
 
-      const submission = acquire(current.current.owner);
-      if (!submission) return false;
-      try {
-        return await sendSequentially(
-          submission,
-          steps.map(({ trackExecution, titles }, index) => ({
-            trackExecution,
-            action: actions[index],
-            orders: titles(actions[index]),
-          }))
-        );
-      } finally {
-        submission.release();
+      let confirmed = 0;
+      if (steps.length > 0) {
+        const submission = acquire(current.current.owner);
+        if (!submission) return 0;
+        try {
+          confirmed = await sendSequentially(
+            submission,
+            steps.map(({ trackExecution, titles }, index) => ({
+              trackExecution,
+              action: actions[index],
+              orders: titles(actions[index]),
+            }))
+          );
+        } finally {
+          submission.release();
+        }
       }
+      // Every toast replaces the previous one, so the skipped orders are named after the last order toast.
+      if (skipped.length > 0 && confirmed === steps.length) helperToast.error(getSkippedOrdersMessage(skipped));
+      return confirmed;
     },
     [acquire, checkPendingSubmission, getSendError, prepare, sendSequentially]
   );
@@ -215,17 +247,18 @@ export function GmsolOrderActionsProvider({ children }: { children: ReactNode })
       getOrderError,
       getUpdateError,
       checkPendingSubmission,
-      closePosition: ({ position, decreaseAmounts, receiveToken, allowedSlippage }) =>
-        runFlow([
+      closePosition: async ({ position, decreaseAmounts, receiveToken, allowedSlippage }) =>
+        (await runFlow([
           {
             trackExecution: true,
             build: () => buildGmsolCloseAction({ position, decreaseAmounts, receiveToken, allowedSlippage }),
             titles: (action) => getGmsolCreateOrderTitles(action, position),
           },
-        ]),
-      setTriggerOrders: ({ position, entries }) => {
-        const steps: FlowStep[] = [];
-        for (const { amounts, existingFullCloseOrder } of entries) {
+        ])) === 1,
+      setTriggerOrders: async ({ position, entries }) => {
+        const steps: (FlowStep & { entry?: SolanaTriggerEntry })[] = [];
+        for (const entry of entries) {
+          const { amounts, existingFullCloseOrder } = entry;
           if (!amounts) continue;
           const replaces = amounts.isFullClose && existingFullCloseOrder;
           const sameSwapType =
@@ -234,8 +267,9 @@ export function GmsolOrderActionsProvider({ children }: { children: ReactNode })
               existingFullCloseOrder.decreasePositionSwapType;
           if (replaces && sameSwapType) {
             steps.push({
+              entry,
               trackExecution: false,
-              order: existingFullCloseOrder,
+              orderError: getOrderError(existingFullCloseOrder),
               build: () =>
                 buildGmsolUpdateAction({
                   order: existingFullCloseOrder,
@@ -252,6 +286,7 @@ export function GmsolOrderActionsProvider({ children }: { children: ReactNode })
           // The new order is created before the replaced one is cancelled: a failure in between leaves an extra
           // order instead of a position without its TP/SL. EVM batches both atomically in buildTpSlBatchPayloads.
           steps.push({
+            entry,
             trackExecution: false,
             build: () => buildGmsolTriggerAction(position, amounts),
             titles: (action) => getGmsolCreateOrderTitles(action, position),
@@ -259,32 +294,41 @@ export function GmsolOrderActionsProvider({ children }: { children: ReactNode })
           if (replaces) {
             steps.push({
               trackExecution: false,
-              order: existingFullCloseOrder,
+              orderError: getCancelError(existingFullCloseOrder),
               build: () => buildGmsolCancelAction(existingFullCloseOrder),
               titles: () => [getGmsolOrderTitle(existingFullCloseOrder, "cancel")],
             });
           }
         }
-        return runFlow(steps);
+        const confirmed = await runFlow(steps);
+        // An entry is sent once its order is created or updated, even if cancelling the order it replaces failed.
+        return steps.slice(0, confirmed).flatMap((step) => (step.entry ? [step.entry] : []));
       },
-      updateOrder: ({ order, changes }) =>
-        runFlow([
+      updateOrder: async ({ order, changes }) =>
+        (await runFlow([
           {
             trackExecution: false,
-            order,
+            orderError: getOrderError(order),
             build: () => buildGmsolUpdateAction({ order, changes }),
             titles: () => [getGmsolOrderTitle(order, "update")],
           },
-        ]),
-      cancelOrders: (orders) =>
-        runFlow(
-          orders.map((order) => ({
-            trackExecution: false,
-            order,
-            build: () => buildGmsolCancelAction(order),
-            titles: () => [getGmsolOrderTitle(order, "cancel")],
-          }))
-        ),
+        ])) === 1,
+      cancelOrders: async (orders) => {
+        const steps: FlowStep[] = [];
+        const skipped: SkippedOrder[] = [];
+        for (const order of orders) {
+          const reason = getCancelError(order);
+          if (reason) skipped.push({ order, reason });
+          else
+            steps.push({
+              trackExecution: false,
+              build: () => buildGmsolCancelAction(order),
+              titles: () => [getGmsolOrderTitle(order, "cancel")],
+            });
+        }
+        const confirmed = await runFlow(steps, skipped);
+        return orders.length > 0 && confirmed === orders.length;
+      },
     }),
     [checkPendingSubmission, error, hasPendingSubmission, isSubmitting, runFlow]
   );

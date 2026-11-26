@@ -22,6 +22,7 @@ import {
   selectOrderEditorSetTriggerPriceInputValue,
 } from "context/SyntheticsStateContext/selectors/orderEditorSelectors";
 import { useCalcSelector, useSelector } from "context/SyntheticsStateContext/utils";
+import { useSolanaOrderActions } from "domain/solana/solanaOrderActions";
 import { useEstimateBatchExpressParamsWithApprovedGasToken } from "domain/synthetics/express/useGasPaymentTokenFallback";
 import {
   getExpressParamsForSubmit,
@@ -54,6 +55,7 @@ export function DynamicLines({
   bodyFontSizePt: number;
 }) {
   const { signer } = useWallet();
+  const solanaOrderActions = useSolanaOrderActions();
   const chainId = useSelector(selectChainId);
   const srcChainId = useSelector(selectSrcChainId);
   const { provider } = useJsonRpcProvider(chainId);
@@ -72,6 +74,19 @@ export function DynamicLines({
 
   const onCancelOrder = useCallback(
     async (key: string) => {
+      if (solanaOrderActions) {
+        const order = getByKey(ordersInfoData, key);
+        if (!order) return;
+
+        setCancellingOrdersKeys((prev) => [...prev, key]);
+        try {
+          await solanaOrderActions.cancelOrders([order]);
+        } finally {
+          setCancellingOrdersKeys((prev) => prev.filter((k) => k !== key));
+        }
+        return;
+      }
+
       if (!signer || !provider) return;
 
       if (hasOutdatedUi) {
@@ -145,6 +160,7 @@ export function DynamicLines({
       provider,
       setCancellingOrdersKeys,
       signer,
+      solanaOrderActions,
       srcChainId,
       subaccount,
     ]

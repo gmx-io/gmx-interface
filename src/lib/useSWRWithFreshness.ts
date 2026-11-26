@@ -1,5 +1,5 @@
 import { useEffect, useReducer } from "react";
-import useSWR, { type Key, type SWRConfiguration } from "swr";
+import useSWR, { mutate, type Key, type SWRConfiguration } from "swr";
 
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 
@@ -83,6 +83,15 @@ export function useSWRWithFreshness<Data, Arg = any>(
     error,
     freshness: data === undefined ? UNKNOWN : { isStale: error !== undefined || isExpired, asOf: data.fetchedAt },
   };
+}
+
+// Unlike a plain mutate, it does not revalidate: the value is already what the hook's fetcher would return.
+export async function mutateSWRWithFreshness<Data>(key: Key, promise: Promise<Data>): Promise<void> {
+  await mutate<Fetched<Data>>(
+    key,
+    promise.then((value) => ({ value, fetchedAt: Date.now() })),
+    { revalidate: false }
+  );
 }
 
 export function mergeFreshness(...items: (Freshness | undefined)[]): Freshness {

@@ -14,7 +14,7 @@ import {
   GmsolTradeboxError,
 } from "../tradebox/buildTradeboxOrderAction";
 import { WRAPPED_SOL_MINT } from "../transactions/addresses";
-import { getGmsolOrderContext } from "../transactions/orderContext";
+import { getGmsolOrderAccounts, getGmsolOrderContext } from "../transactions/orderContext";
 import type { GmsolOrderAction, GmsolOrderUpdate } from "../transactions/types";
 
 /** A market close of an existing position, from the close modal's decrease amounts. */
@@ -87,8 +87,8 @@ export function buildGmsolUpdateAction({
   changes: Pick<GmsolOrderUpdate, "sizeDeltaUsd" | "triggerPrice" | "acceptablePrice">;
 }): GmsolOrderAction {
   const context = getGmsolOrderContext(order);
-  // 0 and maxUint256 are EVM "unlimited" sentinels; the pinned SDK cannot set an unlimited price, so they leave it as is.
-  const isUnlimited = (price: bigint) => price <= 0n || price === maxUint256;
+  // Unlimited: 0, maxUint256, or a stored u128::MAX scaled up by the index decimals; the pinned SDK cannot set it.
+  const isUnlimited = (price: bigint) => price <= 0n || price >= maxUint256;
   const pick = (next: bigint | undefined, current: bigint) =>
     next === undefined || next === current || isUnlimited(next) ? undefined : next;
   const update: GmsolOrderUpdate = {
@@ -117,5 +117,5 @@ export function buildGmsolUpdateAction({
 
 /** Order account, rent receiver, referrer and escrow come from gmx-api /v1/orders through `order.solana`. */
 export function buildGmsolCancelAction(order: OrderInfo): GmsolOrderAction {
-  return { type: "cancel", order: getGmsolOrderContext(order) };
+  return { type: "cancel", order: getGmsolOrderAccounts(order) };
 }

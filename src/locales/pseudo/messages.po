@@ -3932,6 +3932,7 @@ msgid "<0>Deposit</0> or <1>buy</1> {wrappedNativeTokenSymbol}."
 msgstr ""
 
 #: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
 msgid "This order cannot be changed on Solana"
 msgstr ""
 
@@ -6434,6 +6435,10 @@ msgstr ""
 
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "Funds will appear in your GMX Account soon"
+msgstr ""
+
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
+msgid "Not sent: {title}. {reason}"
 msgstr ""
 
 #: src/components/InterviewToast/InterviewToast.tsx

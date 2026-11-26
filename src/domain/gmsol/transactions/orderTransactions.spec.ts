@@ -221,6 +221,17 @@ it("validates pinned WASM create, update and cancel transactions for both sides 
         await expect(validateGmsolTransactionPlan(edited)).resolves.toBeDefined();
       }
     }
+  // A swap escrows only its input and output tokens, and a cancel carries no order kind.
+  const { kind: _kind, ...accounts } = orderContext("LimitIncrease", false, other);
+  const swap = { ...accounts, finalOutputToken: market.shortTokenAddress, longToken: undefined, shortToken: undefined };
+  const cancelled = await buildGmsolOrderTransactions({
+    owner,
+    action: { type: "cancel", order: swap },
+    ...lifetime,
+    lookupTables,
+    sdk,
+  });
+  await expect(validateGmsolTransactionPlan(cancelled)).resolves.toBeDefined();
 });
 it("validates native SOL wrapping without allowing arbitrary token operations FESOL-56", async () => {
   const native = {

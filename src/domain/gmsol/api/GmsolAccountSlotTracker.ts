@@ -1,6 +1,6 @@
-import { commitGmsolSnapshot } from "./refetchAtSlot";
+import { commitGmsolSnapshot, type GmsolSlotted } from "./refetchAtSlot";
 
-type AccountSlots = { acceptedSlot?: number; requiredSlot?: number; error?: Error };
+type AccountSlots = { acceptedSlot?: number; acceptedData?: unknown; requiredSlot?: number; error?: Error };
 
 export class GmsolAccountSlotTracker {
   slots = new Map<string, AccountSlots>();
@@ -44,15 +44,30 @@ export class GmsolAccountSlotTracker {
     this.notify();
   }
 
-  takeSnapshot<T>(key: string, responseSlot: number | undefined, response: T): T {
+  // A read the floor overtook in flight keeps the last accepted data, unless it answered below its own requested slot.
+  async read<T>(key: string, read: (minContextSlot: number | undefined) => Promise<GmsolSlotted<T>>): Promise<T> {
+    const requestedSlot = this.getMinContextSlot(key);
+    const settled = await read(requestedSlot).then(
+      (response) => ({ response }),
+      (error: unknown) => ({ error })
+    );
     const state = this.slots.get(key);
-    const next = commitGmsolSnapshot({ acceptedSlot: state?.acceptedSlot, responseSlot, response });
-    // Check the latest floor when a read settles: a newer confirmation may have arrived in flight.
-    if (state?.requiredSlot !== undefined && next.slot < state.requiredSlot) {
-      throw new Error("Solana response slot is older than the confirmed transaction");
+    const floor = this.getMinContextSlot(key);
+    const kept = state?.acceptedSlot === undefined ? undefined : { data: state.acceptedData as T };
+    try {
+      if ("error" in settled) {
+        if (kept && floor !== undefined && (requestedSlot === undefined || requestedSlot < floor)) return kept.data;
+        throw settled.error;
+      }
+      const { slot, data } = settled.response;
+      const next = commitGmsolSnapshot({ requestedSlot, floor, responseSlot: slot, response: data });
+      if (!next) return kept ? kept.data : data;
+      this.slots.set(key, { ...state, acceptedSlot: next.slot, acceptedData: next.data, error: undefined });
+      this.notify();
+      return next.data;
+    } catch (error) {
+      this.fail(key, error);
+      throw error;
     }
-    this.slots.set(key, { ...state, acceptedSlot: next.slot, error: undefined });
-    this.notify();
-    return next.data;
   }
 }
