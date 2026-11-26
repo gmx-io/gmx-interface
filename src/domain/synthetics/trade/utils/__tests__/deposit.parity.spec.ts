@@ -119,16 +119,8 @@ parity("getDepositAmounts <-> Reader.getDepositAmountOut", {
     marketTokenAmount: {
       knownIssues: [
         {
-          reason: "2.2.1 recomputes a positive deposit impact with the rebate (getPriceImpactUsdForDeposit), we don't",
-        },
-        {
           reason:
             "we take the swap and ui fees in USD and convert them at the min price, the contract applies the factors to the token amounts",
-        },
-        { reason: "we charge the swap fee factor on deposits, the contract the deposit fee factor" },
-        {
-          reason:
-            "getPriceImpactForSwap keeps the pool's balanceWasImproved when the virtual inventory impact wins, the contract takes the virtual one: the other fee tier",
         },
       ],
     },

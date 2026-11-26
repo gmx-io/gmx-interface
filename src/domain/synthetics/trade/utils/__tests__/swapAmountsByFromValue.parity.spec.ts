@@ -111,10 +111,6 @@ parity("getSwapAmountsByFromValue <-> Reader.getSwapAmountOut, one market", {
           reason:
             "getSwapStats works in USD and rounds once, the contract rounds the fee and the impact to token-in units and the output to token-out units",
         },
-        {
-          reason:
-            "getPriceImpactForSwap keeps the pool's balanceWasImproved when the virtual inventory impact wins, the contract takes the virtual one: the other fee tier",
-        },
       ],
     },
   },
