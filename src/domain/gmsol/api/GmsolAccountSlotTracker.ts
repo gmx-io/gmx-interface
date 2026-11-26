@@ -1,6 +1,25 @@
+import { HttpError } from "sdk/utils/http/http";
+
 import { commitGmsolSnapshot, type GmsolSlotted } from "./refetchAtSlot";
 
-type AccountSlots = { acceptedSlot?: number; acceptedData?: unknown; requiredSlot?: number; error?: Error };
+type AccountSlots = {
+  acceptedSlot?: number;
+  acceptedData?: unknown;
+  requiredSlot?: number;
+  requiredAt?: number;
+  error?: Error;
+};
+
+// A stopped index answers floor reads the same way, so past this window they count as errors, not catching up.
+const INDEX_CATCH_UP_MS = 60_000;
+
+function isIndexBehindFloor(error: unknown) {
+  return (
+    error instanceof HttpError &&
+    ((error.statusCode === 503 && error.code === "SLOT_NOT_REACHED") ||
+      (error.statusCode === 429 && error.code === "BUSY"))
+  );
+}
 
 export class GmsolAccountSlotTracker {
   slots = new Map<string, AccountSlots>();
@@ -40,8 +59,13 @@ export class GmsolAccountSlotTracker {
   requireSlot(key: string, slot: number) {
     const state = this.slots.get(key);
     if (state?.requiredSlot !== undefined && state.requiredSlot >= slot) return;
-    this.slots.set(key, { ...state, requiredSlot: slot });
+    this.slots.set(key, { ...state, requiredSlot: slot, requiredAt: Date.now() });
     this.notify();
+  }
+
+  isCatchingUp(key: string) {
+    const requiredAt = this.slots.get(key)?.requiredAt;
+    return this.isPending(key) && requiredAt !== undefined && Date.now() - requiredAt <= INDEX_CATCH_UP_MS;
   }
 
   // A read the floor overtook in flight keeps the last accepted data, unless it answered below its own requested slot.
@@ -57,6 +81,13 @@ export class GmsolAccountSlotTracker {
     try {
       if ("error" in settled) {
         if (kept && floor !== undefined && (requestedSlot === undefined || requestedSlot < floor)) return kept.data;
+        if (kept && this.isCatchingUp(key) && isIndexBehindFloor(settled.error)) {
+          if (state?.error) {
+            this.slots.set(key, { ...state, error: undefined });
+            this.notify();
+          }
+          return kept.data;
+        }
         throw settled.error;
       }
       const { slot, data } = settled.response;
