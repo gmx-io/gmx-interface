@@ -37,6 +37,7 @@ import {
   setPendingGmsolSubmission,
   GmsolPendingSubmissionError,
   GmsolSubmissionExpiredError,
+  type GmsolSubmissionOrigin,
 } from "./pendingSubmission";
 import { GMSOL_RENT_ACCOUNT_SIZES, getGmsolSolReserve } from "./solReserve";
 import type { GmsolOrderAction, GmsolTransactionPlan } from "./types";
@@ -344,12 +345,14 @@ export type GmsolSendResult = {
 
 export async function sendGmsolOrderTransactions({
   plan: input,
+  origin,
   getWalletAddress,
   signTransaction,
   onConfirmed,
   onSubmitted,
 }: {
   plan: GmsolTransactionPlan;
+  origin?: GmsolSubmissionOrigin;
   getWalletAddress: () => string | undefined;
   signTransaction: (bytes: Uint8Array) => Promise<Uint8Array>;
   onConfirmed: (result: { signature: string; slot: bigint; owner: string }) => Promise<void>;
@@ -436,14 +439,17 @@ export async function sendGmsolOrderTransactions({
         );
         return decoded.name === "create_order_v2" ? [decoded.accounts.order] : [];
       });
+      const operation = plan.action.type === "create" && !orderAddresses.length ? "prepare" : plan.action.type;
       setPendingGmsolSubmission(plan.owner, {
         signature: expectedSignature,
         orderAddresses,
         trackExecution:
           plan.action.type === "create" &&
           plan.action.orders.some((order) => order.kind === "MarketIncrease" || order.kind === "MarketDecrease"),
-        operation: plan.action.type === "create" && !orderAddresses.length ? "prepare" : plan.action.type,
+        operation,
+        origin,
         lastValidBlockHeight: groupPlan.lastValidBlockHeight.toString(),
+        ...(operation === "prepare" ? { ownWrapLamports: wrapLamports.toString() } : {}),
         ...(confirmedSignatures.length > 0 && !trackingRequests.length
           ? { confirmedSignatures: [...confirmedSignatures], wrappedLamports: wrappedLamports.toString() }
           : {}),

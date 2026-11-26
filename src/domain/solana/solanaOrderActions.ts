@@ -1,6 +1,7 @@
 import { createContext, useContext } from "react";
 
 import { isSolanaNetwork } from "config/chains";
+import type { GmsolSubmissionOrigin } from "domain/gmsol/transactions/pendingSubmission";
 import { useChainId } from "lib/chains";
 import type { OrderInfo, PositionOrderInfo } from "sdk/utils/orders/types";
 import type { PositionInfo } from "sdk/utils/positions/types";
@@ -29,10 +30,10 @@ export type SolanaOrderActions = {
   // Why nothing can be sent right now (loading, trading off, outdated page), or undefined
   error: string | undefined;
   busyReason: string | undefined;
-  // An earlier submission is unresolved: the next action only checks it and reports nothing sent
+  // An earlier submission from any origin is unresolved: the next action only checks it and reports nothing sent
   hasPendingSubmission: boolean;
-  // Checks the unresolved earlier submission and sends nothing new; true only if its order transaction confirmed
-  checkPendingSubmission: () => Promise<boolean>;
+  // Sends nothing new; true only if its order transaction confirmed and its record has the caller's origin or none
+  checkPendingSubmission: (p: { origin: GmsolSubmissionOrigin }) => Promise<boolean>;
   closePosition: (p: {
     position: PositionInfo;
     decreaseAmounts: DecreasePositionAmounts;

@@ -26,7 +26,11 @@ import { getGmsolCreateOrderTitles, getGmsolOrderTitle } from "../orderTracking/
 import { useSolanaOrderNotifications } from "../orderTracking/useSolanaOrderNotifications";
 import { GmsolTradeboxError } from "../tradebox/buildTradeboxOrderAction";
 import { getGmsolTradeboxErrorMessage } from "../tradebox/tradeboxErrorMessages";
-import { getPendingGmsolSubmission, type PendingGmsolSubmission } from "../transactions/pendingSubmission";
+import {
+  getPendingGmsolSubmission,
+  type GmsolSubmissionOrigin,
+  type PendingGmsolSubmission,
+} from "../transactions/pendingSubmission";
 import type { GmsolOrderAction } from "../transactions/types";
 import {
   getIsGmsolOrderSubmitting,
@@ -112,25 +116,8 @@ export function GmsolOrderActionsProvider({ children }: { children: ReactNode })
   const current = useRef({ error, owner: wallet.address });
   current.current = { error, owner: wallet.address };
 
-  // A flow whose owner or network changed has lost the submitter, which another flow may hold by now.
-  const ownSubmission = useRef<GmsolOrderSubmission | undefined>(undefined);
-  const busyReason =
-    isSubmitting && !ownSubmission.current?.isActive()
-      ? t`Another order request is in progress. Check your wallet`
-      : undefined;
-
-  const acquireOwn = useCallback((): GmsolOrderSubmission | undefined => {
-    const submission = acquire(current.current.owner);
-    if (!submission) return undefined;
-    ownSubmission.current = submission;
-    return {
-      ...submission,
-      release: () => {
-        if (ownSubmission.current === submission) ownSubmission.current = undefined;
-        submission.release();
-      },
-    };
-  }, [acquire]);
+  // Set while any flow holds the submitter; a control whose own flow it is shows its own progress text first.
+  const busyReason = isSubmitting ? t`Another order request is in progress. Check your wallet` : undefined;
 
   const getSendError = useCallback(() => {
     const { error, owner } = current.current;
@@ -158,24 +145,29 @@ export function GmsolOrderActionsProvider({ children }: { children: ReactNode })
   );
 
   // A call made while another flow holds the wallet returns before any toast, so that flow's toast stays open.
-  const checkPendingSubmission = useCallback(async (): Promise<boolean> => {
-    if (getIsGmsolOrderSubmitting()) return false;
-    const sendError = getSendError();
-    if (sendError) {
-      helperToast.error(sendError);
-      return false;
-    }
+  const checkPendingSubmission = useCallback(
+    async ({ origin }: { origin: GmsolSubmissionOrigin }): Promise<boolean> => {
+      if (getIsGmsolOrderSubmitting()) return false;
+      const sendError = getSendError();
+      if (sendError) {
+        helperToast.error(sendError);
+        return false;
+      }
 
-    const pending = getPendingGmsolSubmission(current.current.owner!);
-    if (!pending) return false;
-    const submission = acquireOwn();
-    if (!submission) return false;
-    try {
-      return await check(submission, pending);
-    } finally {
-      submission.release();
-    }
-  }, [acquireOwn, check, getSendError]);
+      const pending = getPendingGmsolSubmission(current.current.owner!);
+      if (!pending) return false;
+      const submission = acquire(current.current.owner);
+      if (!submission) return false;
+      try {
+        const isConfirmed = await check(submission, pending);
+        // Another flow's order says nothing about the caller's inputs; a record without an origin predates origins.
+        return isConfirmed && (pending.origin === undefined || pending.origin === origin);
+      } finally {
+        submission.release();
+      }
+    },
+    [acquire, check, getSendError]
+  );
 
   // Every action is built before the first transaction is sent, so a build error never leaves a flow half-sent.
   const prepare = useCallback((builds: (() => GmsolOrderAction)[]): GmsolOrderAction[] | undefined => {
@@ -193,9 +185,14 @@ export function GmsolOrderActionsProvider({ children }: { children: ReactNode })
   const sendSequentially = useCallback(
     async (
       submission: GmsolOrderSubmission,
-      steps: { trackExecution: boolean; action: GmsolOrderAction; orders: OrderStatusTitleData[] }[]
+      steps: {
+        origin: GmsolSubmissionOrigin;
+        trackExecution: boolean;
+        action: GmsolOrderAction;
+        orders: OrderStatusTitleData[];
+      }[]
     ): Promise<number> => {
-      for (const [index, { trackExecution, action, orders }] of steps.entries()) {
+      for (const [index, { origin, trackExecution, action, orders }] of steps.entries()) {
         const sendError = getSendError();
         if (sendError) {
           helperToast.error(sendError);
@@ -210,7 +207,7 @@ export function GmsolOrderActionsProvider({ children }: { children: ReactNode })
 
         const notification = begin({ owner: submission.owner, operation: action.type, orders, trackExecution });
         try {
-          notification.submitted(await submission.submit(action, { onSubmitted: notification.submitted }));
+          notification.submitted(await submission.submit(action, { origin, onSubmitted: notification.submitted }));
         } catch (error) {
           notification.failed(error);
           return index;
@@ -223,7 +220,15 @@ export function GmsolOrderActionsProvider({ children }: { children: ReactNode })
 
   // Each call is one transaction flow. An unresolved earlier submission is checked first and nothing new is sent.
   const runFlow = useCallback(
-    async (steps: FlowStep[], skipped: SkippedOrder[] = []): Promise<number> => {
+    async ({
+      origin,
+      steps,
+      skipped = [],
+    }: {
+      origin: GmsolSubmissionOrigin;
+      steps: FlowStep[];
+      skipped?: SkippedOrder[];
+    }): Promise<number> => {
       if (getIsGmsolOrderSubmitting()) return 0;
       const sendError = getSendError();
       if (sendError) {
@@ -231,7 +236,7 @@ export function GmsolOrderActionsProvider({ children }: { children: ReactNode })
         return 0;
       }
       if (getPendingGmsolSubmission(current.current.owner!)) {
-        await checkPendingSubmission();
+        await checkPendingSubmission({ origin });
         return 0;
       }
       if (steps.length === 0 && skipped.length === 0) return 0;
@@ -247,12 +252,13 @@ export function GmsolOrderActionsProvider({ children }: { children: ReactNode })
 
       let confirmed = 0;
       if (steps.length > 0) {
-        const submission = acquireOwn();
+        const submission = acquire(current.current.owner);
         if (!submission) return 0;
         try {
           confirmed = await sendSequentially(
             submission,
             steps.map(({ trackExecution, titles }, index) => ({
+              origin,
               trackExecution,
               action: actions[index],
               orders: titles(actions[index]),
@@ -268,7 +274,7 @@ export function GmsolOrderActionsProvider({ children }: { children: ReactNode })
       }
       return confirmed;
     },
-    [acquireOwn, checkPendingSubmission, getSendError, prepare, sendSequentially]
+    [acquire, checkPendingSubmission, getSendError, prepare, sendSequentially]
   );
 
   const value = useMemo(
@@ -281,13 +287,16 @@ export function GmsolOrderActionsProvider({ children }: { children: ReactNode })
       getUpdateError,
       checkPendingSubmission,
       closePosition: async ({ position, decreaseAmounts, receiveToken, allowedSlippage }) =>
-        (await runFlow([
-          {
-            trackExecution: true,
-            build: () => buildGmsolCloseAction({ position, decreaseAmounts, receiveToken, allowedSlippage }),
-            titles: (action) => getGmsolCreateOrderTitles(action, position),
-          },
-        ])) === 1,
+        (await runFlow({
+          origin: "close",
+          steps: [
+            {
+              trackExecution: true,
+              build: () => buildGmsolCloseAction({ position, decreaseAmounts, receiveToken, allowedSlippage }),
+              titles: (action) => getGmsolCreateOrderTitles(action, position),
+            },
+          ],
+        })) === 1,
       setTriggerOrders: async ({ position, entries }) => {
         const steps: (FlowStep & { entry?: SolanaTriggerEntry })[] = [];
         for (const entry of entries) {
@@ -333,19 +342,22 @@ export function GmsolOrderActionsProvider({ children }: { children: ReactNode })
             });
           }
         }
-        const confirmed = await runFlow(steps);
+        const confirmed = await runFlow({ origin: "triggers", steps });
         // An entry is sent once its order is created or updated, even if cancelling the order it replaces failed.
         return steps.slice(0, confirmed).flatMap((step) => (step.entry ? [step.entry] : []));
       },
       updateOrder: async ({ order, changes }) =>
-        (await runFlow([
-          {
-            trackExecution: false,
-            orderError: getOrderError(order),
-            build: () => buildGmsolUpdateAction({ order, changes }),
-            titles: () => [getGmsolOrderTitle(order, "update")],
-          },
-        ])) === 1,
+        (await runFlow({
+          origin: "update",
+          steps: [
+            {
+              trackExecution: false,
+              orderError: getOrderError(order),
+              build: () => buildGmsolUpdateAction({ order, changes }),
+              titles: () => [getGmsolOrderTitle(order, "update")],
+            },
+          ],
+        })) === 1,
       cancelOrders: async (orders) => {
         const steps: FlowStep[] = [];
         const skipped: SkippedOrder[] = [];
@@ -360,7 +372,7 @@ export function GmsolOrderActionsProvider({ children }: { children: ReactNode })
               titles: () => [getGmsolOrderTitle(order, "cancel")],
             });
         }
-        const confirmed = await runFlow(steps, skipped);
+        const confirmed = await runFlow({ origin: "cancel", steps, skipped });
         return orders.length > 0 && confirmed === orders.length;
       },
     }),

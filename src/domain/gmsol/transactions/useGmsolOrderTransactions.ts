@@ -21,6 +21,7 @@ import {
   GmsolSubmissionExpiredError,
   reconcileGmsolSubmission,
   setPendingGmsolSubmission,
+  type GmsolSubmissionOrigin,
 } from "./pendingSubmission";
 import {
   GmsolTransactionError,
@@ -31,7 +32,7 @@ import {
 import type { GmsolOrderAction } from "./types";
 import { requireGmsol } from "./validateTransaction";
 
-type SubmitOptions = { onSubmitted: (result: GmsolSendResult) => void };
+type SubmitOptions = { origin?: GmsolSubmissionOrigin; onSubmitted: (result: GmsolSendResult) => void };
 
 export type GmsolOrderSubmission = {
   owner: string;
@@ -76,6 +77,7 @@ async function submitGmsolOrder(
     requireGmsol(isActive(), "Solana order session changed before signing");
     return sendGmsolOrderTransactions({
       plan,
+      origin: options?.origin,
       getWalletAddress: () => (isActive() ? owner : undefined),
       signTransaction: async (bytes) => {
         const signTransaction = getActiveSolanaSigner();
@@ -100,7 +102,12 @@ async function submitGmsolOrder(
   requireGmsol(previous, "No valid order to submit");
   const { preparation } = previous;
   // Shaped like the sender's error when a preparation lands but its orders do not: the toast says accounts are ready.
-  const prepared = (error: Error, confirmed: string[], failed?: string) =>
+  const prepared = (
+    error: Error,
+    confirmed: string[],
+    failed?: string,
+    { ownWrapLamports = 0n }: { ownWrapLamports?: bigint } = {}
+  ) =>
     new GmsolTransactionError(
       error,
       failed ? [...confirmed, failed] : confirmed,
@@ -109,7 +116,7 @@ async function submitGmsolOrder(
       [],
       failed,
       confirmed,
-      { wrappedLamports: preparation?.wrappedLamports }
+      { wrappedLamports: (preparation?.wrappedLamports ?? 0n) + ownWrapLamports }
     );
   if (previous.expired) {
     clearPendingGmsolSubmission(owner, previous.signature);
@@ -123,7 +130,9 @@ async function submitGmsolOrder(
   }
   if (previous.operation === "prepare") {
     const error = new Error("Previous account preparation confirmed. Submit the order again.");
-    throw prepared(error, [...(preparation?.signatures ?? []), previous.signature]);
+    throw prepared(error, [...(preparation?.signatures ?? []), previous.signature], undefined, {
+      ownWrapLamports: previous.ownWrapLamports,
+    });
   }
   requireGmsol(previous.slot <= BigInt(Number.MAX_SAFE_INTEGER), "Confirmation slot exceeds API precision");
   const refreshErrors: unknown[] = [];

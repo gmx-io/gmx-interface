@@ -6,15 +6,23 @@ import { getSolanaRpc } from "lib/solana/rpc";
 import { isSolanaTransactionExpired } from "lib/solana/transactionExpiry";
 import { Storage } from "lib/storage/Storage";
 
+const GMSOL_SUBMISSION_ORIGINS = ["tradebox", "close", "triggers", "update", "cancel"] as const;
+
+// The order flow that sent a submission: a status check closes a modal only for a submission of its own origin.
+export type GmsolSubmissionOrigin = (typeof GMSOL_SUBMISSION_ORIGINS)[number];
+
 export type PendingGmsolSubmission = {
   signature: string;
   orderAddresses: string[];
   trackExecution?: boolean;
   operation: "create" | "update" | "cancel" | "prepare";
+  origin?: GmsolSubmissionOrigin;
   // A decimal string, because the record is JSON; records written before it was stored lack it.
   lastValidBlockHeight?: string;
   confirmedSignatures?: string[];
   wrappedLamports?: string;
+  // Only a "prepare" record has it: what its own transaction wraps, while wrappedLamports counts earlier ones.
+  ownWrapLamports?: string;
 };
 
 const storage = () => new Storage<Record<string, PendingGmsolSubmission | undefined>>("gmsol-pending-submissions");
@@ -57,6 +65,18 @@ function parsePreparation({ confirmedSignatures, wrappedLamports }: PendingGmsol
   };
 }
 
+function parseOwnWrapLamports({ ownWrapLamports }: PendingGmsolSubmission) {
+  if (ownWrapLamports === undefined) return undefined;
+  if (typeof ownWrapLamports !== "string") throw new Error("Malformed pending submission");
+  return BigInt(ownWrapLamports);
+}
+
+function requireKnownOrigin({ origin }: PendingGmsolSubmission) {
+  if (origin !== undefined && !GMSOL_SUBMISSION_ORIGINS.includes(origin)) {
+    throw new Error("Malformed pending submission");
+  }
+}
+
 /** A missing status proves nothing until the blockhash has expired at a finalized block; an RPC failure never proves anything. */
 export async function reconcileGmsolSubmission(owner: string) {
   const pending = getPendingGmsolSubmission(owner);
@@ -64,6 +84,7 @@ export async function reconcileGmsolSubmission(owner: string) {
   if (!getIsSolanaNetworkEnabled()) throw new GmsolPendingSubmissionError(pending.signature);
   let status;
   let preparation;
+  let ownWrapLamports;
   try {
     const { value } = await getSolanaRpc()
       .getSignatureStatuses([solanaSignature(pending.signature)], { searchTransactionHistory: true })
@@ -72,8 +93,10 @@ export async function reconcileGmsolSubmission(owner: string) {
     const lastValidBlockHeight =
       pending.lastValidBlockHeight === undefined ? undefined : BigInt(pending.lastValidBlockHeight);
     preparation = parsePreparation(pending);
+    ownWrapLamports = parseOwnWrapLamports(pending);
+    requireKnownOrigin(pending);
     if (!status && (await isSolanaTransactionExpired(pending.signature, lastValidBlockHeight))) {
-      return { ...pending, preparation, expired: true as const };
+      return { ...pending, preparation, ownWrapLamports, expired: true as const };
     }
   } catch {
     throw new GmsolPendingSubmissionError(pending.signature);
@@ -81,5 +104,12 @@ export async function reconcileGmsolSubmission(owner: string) {
   if (!status || (status.confirmationStatus !== "confirmed" && status.confirmationStatus !== "finalized")) {
     throw new GmsolPendingSubmissionError(pending.signature);
   }
-  return { ...pending, preparation, expired: false as const, failed: status.err !== null, slot: status.slot };
+  return {
+    ...pending,
+    preparation,
+    ownWrapLamports,
+    expired: false as const,
+    failed: status.err !== null,
+    slot: status.slot,
+  };
 }

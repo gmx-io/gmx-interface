@@ -194,7 +194,7 @@ it("frees the shared submitter when the wallet prompt times out TRD-72", async (
   act(() => next!.release());
 });
 
-it("reports an order transaction that expired or failed after a confirmed setup as that setup TRD-72", async () => {
+it("reconciles each stored record shape into the setup, expiry or unresolved state TRD-72", async () => {
   render(
     <GmxSdkProvider>
       <Probe />
@@ -202,7 +202,9 @@ it("reports an order transaction that expired or failed after a confirmed setup 
   );
   const [setup, orders] = [1, 2].map((byte) => getBase58Decoder().decode(new Uint8Array(64).fill(byte)));
   const prepared = { confirmedSignatures: [setup], wrappedLamports: "5" };
-  const failed = { err: { InstructionError: [0, { Custom: 1 }] }, confirmationStatus: "confirmed", slot: 3n };
+  const preparing: Partial<PendingGmsolSubmission> = { operation: "prepare", orderAddresses: [], ownWrapLamports: "7" };
+  const confirmed = { err: null, confirmationStatus: "confirmed", slot: 3n };
+  const failed = { ...confirmed, err: { InstructionError: [0, { Custom: 1 }] } };
   const rows: [Partial<PendingGmsolSubmission>, unknown, unknown[]][] = [
     [{}, null, ["failed", "expired", [], 0n]],
     [prepared, null, ["failed", "prepared", [setup], 5n]],
@@ -210,10 +212,18 @@ it("reports an order transaction that expired or failed after a confirmed setup 
     [{ ...prepared, confirmedSignatures: ["setup"] }, null, ["unknown", undefined, [orders], 0n]],
     [{ ...prepared, wrappedLamports: "5.0" }, null, ["unknown", undefined, [orders], 0n]],
     [{ confirmedSignatures: [setup] }, null, ["unknown", undefined, [orders], 0n]],
+    [preparing, confirmed, ["failed", "prepared", [orders], 7n]],
+    [{ ...prepared, ...preparing }, confirmed, ["failed", "prepared", [setup, orders], 12n]],
+    [{ ...prepared, ...preparing }, failed, ["failed", "prepared", [orders], 5n]],
+    [{ ...prepared, ...preparing }, null, ["failed", "prepared", [setup], 5n]],
+    [{ operation: "prepare", orderAddresses: [] }, confirmed, ["failed", "prepared", [orders], 0n]],
+    [{ ...preparing, ownWrapLamports: "7.0" }, confirmed, ["unknown", undefined, [orders], 0n]],
+    [{ origin: "close" }, null, ["failed", "expired", [], 0n]],
+    [{ origin: "swap" as never }, null, ["unknown", undefined, [orders], 0n]],
   ];
   for (const [fields, status, expected] of rows) {
     const record = { signature: orders, orderAddresses: ["order"], lastValidBlockHeight: "1", ...fields };
-    setPendingGmsolSubmission("owner", { ...record, operation: "create" });
+    setPendingGmsolSubmission("owner", { operation: "create", ...record });
     mocks.status.mockReturnValue(status);
     const submission = state.acquire("owner")!;
     const error = await submission.submit(undefined).catch((caught: unknown) => caught);

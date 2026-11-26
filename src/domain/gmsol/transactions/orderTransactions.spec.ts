@@ -435,7 +435,13 @@ it("signs native wrapping only against an unchanged wallet WSOL snapshot TRD-72"
     transport.rpc.getSignatureStatuses.mockImplementation(() => ({
       send: async () => {
         const record = getPendingGmsolSubmission(owner);
-        stored.push([record?.lastValidBlockHeight, record?.confirmedSignatures, record?.wrappedLamports]);
+        stored.push([
+          record?.lastValidBlockHeight,
+          record?.confirmedSignatures,
+          record?.wrappedLamports,
+          record?.ownWrapLamports,
+          record?.origin,
+        ]);
         const status = stored.length === 2 ? null : { err: null, confirmationStatus: "confirmed", slot: 2n };
         return { context: { slot: 2n }, value: [status] };
       },
@@ -449,6 +455,7 @@ it("signs native wrapping only against an unchanged wallet WSOL snapshot TRD-72"
     });
     const result = await sendGmsolOrderTransactions({
       plan,
+      origin: "tradebox",
       getWalletAddress: () => owner,
       signTransaction: sign,
       // Settles only at the second prompt, so a send that waits for the setup's refresh first never gets there.
@@ -462,9 +469,9 @@ it("signs native wrapping only against an unchanged wallet WSOL snapshot TRD-72"
     if (failure === undefined) {
       const setup = [(result as { signatures: string[] }).signatures[0]];
       expect(stored).toEqual([
-        ["1", undefined, undefined],
-        ["3", setup, "3000000"],
-        ["3", setup, "3000000"],
+        ["1", undefined, undefined, "3000000", "tradebox"],
+        ["3", setup, "3000000", undefined, "tradebox"],
+        ["3", setup, "3000000", undefined, "tradebox"],
       ]);
       const signedOrders = decodeGmsolTransaction(sign.mock.calls[1][0], { ...plan, ...fresh });
       expect(signedOrders.compiled.lifetimeToken).toBe(fresh.recentBlockhash);

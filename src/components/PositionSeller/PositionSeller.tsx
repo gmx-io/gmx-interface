@@ -642,7 +642,7 @@ export function PositionSeller() {
     if (actions.hasPendingSubmission) {
       setIsSubmitting(true);
       try {
-        if (await actions.checkPendingSubmission()) onClose();
+        if (await actions.checkPendingSubmission({ origin: "close" })) onClose();
       } finally {
         setIsSubmitting(false);
       }

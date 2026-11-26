@@ -962,7 +962,7 @@ export function AddTPSLModal({
       setIsSubmitting(true);
       try {
         if (solanaOrderActions.hasPendingSubmission) {
-          if (await solanaOrderActions.checkPendingSubmission()) setIsVisible(false);
+          if (await solanaOrderActions.checkPendingSubmission({ origin: "triggers" })) setIsVisible(false);
         } else {
           const [tpEntry, slEntry] = solanaTriggerEntries;
           const sent = await solanaOrderActions.setTriggerOrders({ position, entries: solanaTriggerEntries });

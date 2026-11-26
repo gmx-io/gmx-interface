@@ -246,6 +246,7 @@ export default function GmsolTradeboxAdapter({
       });
       try {
         const result = await submission.submit(pending ? undefined : intent.action, {
+          origin: "tradebox",
           onSubmitted: notification.submitted,
         });
         notification.submitted(result);

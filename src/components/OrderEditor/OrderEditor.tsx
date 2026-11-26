@@ -668,7 +668,7 @@ export function OrderEditor(p: Props) {
       if (solanaOrderActions.hasPendingSubmission) {
         setIsSubmitting(true);
         try {
-          if (await solanaOrderActions.checkPendingSubmission()) p.onClose();
+          if (await solanaOrderActions.checkPendingSubmission({ origin: "update" })) p.onClose();
         } finally {
           setIsSubmitting(false);
         }
