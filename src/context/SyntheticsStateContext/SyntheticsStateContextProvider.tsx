@@ -43,6 +43,7 @@ import {
   useMarketTokensDataRequest,
 } from "domain/synthetics/markets";
 import { useClosedMarketsWithDebug } from "domain/synthetics/markets/debugClosedMarkets";
+import { useLongNumbersTesterAccount } from "components/NumberInput/tester/longNumbersTester"; // rewards-tester (long numbers)
 import { isGlvEnabled } from "domain/synthetics/markets/glv";
 import type { ClosedMarkets } from "domain/synthetics/markets/types";
 import { useClosedMarketsRequest } from "domain/synthetics/markets/useClosedMarketsRequest";
@@ -230,7 +231,8 @@ export function SyntheticsStateContextProvider({
   const isTradePage = pageType === "trade";
   const isAccountPage = pageType === "accounts";
 
-  const account = isAccountPage ? checkSummedAccount : walletAccount;
+  const testerAccount = useLongNumbersTesterAccount(walletAccount, isTradePage); // rewards-tester (long numbers)
+  const account = isAccountPage ? checkSummedAccount : testerAccount; // rewards-tester (long numbers)
   const leaderboard = useLeaderboardState(account, isLeaderboardPage);
   const chainId = isLeaderboardPage ? leaderboard.chainId : overrideChainId ?? selectedChainId;
   const networkId = overrideChainId !== undefined || isLeaderboardPage ? chainId : selectedNetworkId;

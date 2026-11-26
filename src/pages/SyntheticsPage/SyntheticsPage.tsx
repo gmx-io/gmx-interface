@@ -83,6 +83,7 @@ import { TradeHistory } from "components/TradeHistory/TradeHistory";
 import ShareClosedPosition from "components/TradeHistory/TradeHistoryRow/ShareClosedPosition";
 import { Chart } from "components/TVChart/Chart";
 import ChartHeader from "components/TVChart/ChartHeader";
+import { LongNumbersTesterPanel } from "components/NumberInput/tester/LongNumbersTesterPanel"; // rewards-tester (long numbers)
 import type { OpenChartTPSLModalParams } from "components/TVChartContainer/useChartContextMenu";
 
 import logoIcon from "img/logo-icon.svg";
@@ -645,6 +646,7 @@ export function SyntheticsPage(p: Props) {
           </div>
         )}
       </div>
+      <LongNumbersTesterPanel /> {/* rewards-tester (long numbers) */}
       {ordersModalState.isVisible && (
         <OrdersModal
           isVisible={ordersModalState.isVisible}
