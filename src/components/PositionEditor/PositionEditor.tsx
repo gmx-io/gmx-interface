@@ -93,9 +93,10 @@ import Modal from "components/Modal/Modal";
 import NumberInput from "components/NumberInput/NumberInput";
 import { NumericValue } from "components/NumericValue/NumericValue";
 import { UsdPriceValue } from "components/NumericValue/UsdPriceValue";
-import { UsdValue } from "components/NumericValue/UsdValue";
 import Tabs from "components/Tabs/Tabs";
 import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { formatUsdHintParts } from "components/TradeboxMarginFields/approxHints";
+import { ApproxValue } from "components/TradeboxMarginFields/ApproxValue";
 import { MarginPercentageSlider } from "components/TradeboxMarginFields/MarginPercentageSlider";
 import { TradeInputBox } from "components/TradeboxMarginFields/TradeInputBox";
 import { TradeInputField } from "components/TradeboxMarginFields/TradeInputField";
@@ -727,7 +728,7 @@ export function PositionEditor() {
                   />
                   {collateralDeltaUsd !== undefined && collateralDeltaUsd > 0n && !collateralToken?.isStable && (
                     <span className="shrink-0 text-12 text-typography-secondary numbers">
-                      ≈<UsdValue usd={collateralDeltaUsd} />
+                      <ApproxValue value={formatUsdHintParts(collateralDeltaUsd)} />
                     </span>
                   )}
                 </>

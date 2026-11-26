@@ -830,6 +830,13 @@ describe("number parts", () => {
     }
   });
 
+  it("lets a token amount and its USD value wrap between them", () => {
+    const parts = formatTokenAmountWithUsdParts(expandDecimals(1, 18), usd(2500), "ETH", 18)!;
+
+    expect(parts.filter((part) => part.kind === "break")).toEqual([{ kind: "break", text: " " }]);
+    expect(joinNumberParts(parts.slice(parts.findIndex((part) => part.kind === "break") + 1))).toMatch(/^\(.*\)$/);
+  });
+
   it("marks the currency affix and keeps magnitude suffixes as text", () => {
     expect(formatUsdParts(-usd(1234))).toEqual([
       { kind: "text", text: "-" },

@@ -2,6 +2,8 @@ import cx from "classnames";
 import { ChangeEvent, useCallback, useRef, ReactNode } from "react";
 import { useMedia } from "react-use";
 
+import type { NumberPart } from "lib/numbers";
+
 import NumberInput from "components/NumberInput/NumberInput";
 import {
   SELECTOR_BASE_MOBILE_THRESHOLD,
@@ -16,13 +18,14 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 
 import UsdIcon from "img/ic_usd.svg?react";
 
+import { ApproxValue } from "./ApproxValue";
 import { TradeInputBox } from "./TradeInputBox";
 
 export type DisplayMode = "token" | "usd";
 
 type Props = {
   label: ReactNode;
-  alternateValue: ReactNode;
+  alternateValue: ReactNode | NumberPart[];
   tokenSymbol?: string;
   tokenLabel?: string;
   displayMode: DisplayMode;
@@ -117,7 +120,9 @@ export function TradeInputField({
             maxDecimals={maxDecimals}
           />
           {alternateValue && (
-            <span className="shrink-0 text-12 text-typography-secondary numbers">≈{alternateValue}</span>
+            <span className="shrink-0 text-12 text-typography-secondary numbers">
+              <ApproxValue value={alternateValue} />
+            </span>
           )}
         </>
       }

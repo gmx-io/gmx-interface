@@ -380,11 +380,12 @@ test.describe("Trading Settings: One-Click limits before activation", () => {
     await mount(<OneClickTradingModeStory expressEnabled />);
 
     await page.getByRole("button", { name: "One-Click settings" }).click();
-    // 22 digits made parseInt return "1.1e+21", which BigInt threw on while rendering
-    await limitInput(page, "Action(s)").fill("1".repeat(22));
-    await limitInput(page, "Day(s)").fill("4".repeat(400));
+    // 22 digits made parseInt return "1.1e+21", which BigInt threw on while rendering; the fields now stop
+    // at 15 digits, the longest value they take, which is still beyond both bounds
+    await limitInput(page, "Action(s)").fill("1".repeat(15));
+    await limitInput(page, "Day(s)").fill("4".repeat(15));
 
-    await expect(limitInput(page, "Action(s)")).toHaveValue("1".repeat(22));
+    await expect(limitInput(page, "Action(s)")).toHaveValue("1".repeat(15));
     await expect(page.getByRole("button", { name: "Save settings" })).toBeDisabled();
     await expect(settingsModal(page)).toBeVisible();
   });

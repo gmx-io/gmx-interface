@@ -85,14 +85,7 @@ import { useLocalizedMap } from "lib/i18n";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { reportHandledRejection } from "lib/metrics/reportHandledRejection";
 import { initDecreaseOrderMetricData, sendOrderSubmittedMetric, sendTxnValidationErrorMetric } from "lib/metrics/utils";
-import {
-  expandDecimals,
-  formatAmountFree,
-  formatDeltaUsdParts,
-  formatPercentage,
-  formatTokenAmount,
-  parseValue,
-} from "lib/numbers";
+import { expandDecimals, formatAmountFree, formatDeltaUsdParts, formatPercentage, parseValue } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
@@ -129,7 +122,6 @@ import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import { MarginDestinationSelector } from "components/MarginDestinationSelector/MarginDestinationSelector";
 import Modal from "components/Modal/Modal";
 import { DeltaUsdValue } from "components/NumericValue/DeltaUsdValue";
-import { UsdValue } from "components/NumericValue/UsdValue";
 import Tabs from "components/Tabs/Tabs";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import TokenIcon from "components/TokenIcon/TokenIcon";
@@ -137,6 +129,7 @@ import TokenSelector from "components/TokenSelector/TokenSelector";
 import { ButtonTooltipWrapper } from "components/Tooltip/ButtonTooltipWrapper";
 import StandardTooltip from "components/Tooltip/StandardTooltip";
 import { TooltipContent, TooltipReadMore, TooltipText } from "components/Tooltip/TooltipBlocks";
+import { formatTokenAmountHint, formatUsdHintParts } from "components/TradeboxMarginFields/approxHints";
 import { MarginPercentageSlider } from "components/TradeboxMarginFields/MarginPercentageSlider";
 import { TradeInputField, DisplayMode } from "components/TradeboxMarginFields/TradeInputField";
 import { FundingPayoutRow } from "components/TradeFeesRow/FundingPayoutRow";
@@ -1169,12 +1162,11 @@ export function PositionSeller() {
                     tokenSymbol={position?.indexToken?.symbol}
                     alternateValue={(() => {
                       if (closeSize.showSizeInTokens) {
-                        return <UsdValue usd={closeSize.closeSizeUsd} />;
+                        return formatUsdHintParts(closeSize.closeSizeUsd);
                       }
                       if (!position || !toToken || position.sizeInUsd === 0n) return "0";
                       const closeSizeInTokens = (closeSize.closeSizeUsd * position.sizeInTokens) / position.sizeInUsd;
-                      const visualMultiplier = BigInt(toToken.visualMultiplier ?? 1);
-                      return formatTokenAmount(closeSizeInTokens / visualMultiplier, toToken.decimals, toToken.symbol);
+                      return formatTokenAmountHint(closeSizeInTokens, toToken);
                     })()}
                     rightHeadline={
                       <button

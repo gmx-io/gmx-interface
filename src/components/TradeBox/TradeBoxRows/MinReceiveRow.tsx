@@ -7,9 +7,13 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { applySlippageToMinOut } from "domain/synthetics/trade";
-import { formatBalanceAmount } from "lib/numbers";
+import { expandDecimals, formatBalanceAmount, formatTokenAmount } from "lib/numbers";
 
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
+
+// More than the total supply of any token, so a bigger amount can't be real (e.g. a 15-digit BTC pay into PEPE):
+// it reads "> 1,000,000,000,000,000.00 PEPE" and stays inside the row; real amounts stay exact
+const MAX_REAL_TOKEN_AMOUNT = "1000000000000000";
 
 export function MinReceiveRow({ allowedSlippage }: { allowedSlippage: number }) {
   const { isMarket, isSwap } = useSelector(selectTradeboxTradeFlags);
@@ -29,10 +33,16 @@ export function MinReceiveRow({ allowedSlippage }: { allowedSlippage: number }) 
     : swapAmounts.minOutputAmount;
 
   return (
-    <SyntheticsInfoRow label={<Trans>Minimum receive</Trans>} valueClassName="numbers break-all !whitespace-normal">
-      {formatBalanceAmount(displayMinReceive, toToken.decimals, toToken.symbol, {
-        isStable: toToken.isStable,
-      })}
+    <SyntheticsInfoRow label={<Trans>Minimum receive</Trans>} valueClassName="numbers">
+      {displayMinReceive > BigInt(MAX_REAL_TOKEN_AMOUNT) * expandDecimals(1, toToken.decimals)
+        ? formatTokenAmount(displayMinReceive, toToken.decimals, toToken.symbol, {
+            useCommas: true,
+            displayDecimals: 2,
+            maxThreshold: MAX_REAL_TOKEN_AMOUNT,
+          })
+        : formatBalanceAmount(displayMinReceive, toToken.decimals, toToken.symbol, {
+            isStable: toToken.isStable,
+          })}
     </SyntheticsInfoRow>
   );
 }

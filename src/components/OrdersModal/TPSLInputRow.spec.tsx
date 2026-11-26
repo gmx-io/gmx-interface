@@ -83,7 +83,8 @@ describe("TPSLInputRow", () => {
     );
 
     const inputs = view.getAllByRole("textbox") as HTMLInputElement[];
-    fireEvent.change(inputs[1], { target: { value: "9659861417460889000000" } });
+    // the longest whole part an amount field takes (15 digits)
+    fireEvent.change(inputs[1], { target: { value: "965986141746088" } });
 
     const calculatedPrice = onPriceChange.mock.calls[onPriceChange.mock.calls.length - 1][0];
     expect(calculatedPrice).toMatch(/^\d+(?:\.\d+)?$/);

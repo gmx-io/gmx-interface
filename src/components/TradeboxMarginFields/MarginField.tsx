@@ -22,12 +22,13 @@ import useWallet from "lib/wallets/useWallet";
 import { useMultichainTradeTokensRequest } from "components/GmxAccountModal/hooks";
 import { getIsMaxActionDisabled, MaxActions } from "components/MaxActions/MaxActions";
 import NumberInput from "components/NumberInput/NumberInput";
-import { UsdValue } from "components/NumericValue/UsdValue";
 import { MultichainTokenSelector } from "components/TokenSelector/MultichainTokenSelector";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 
 import WalletIcon from "img/ic_wallet.svg?react";
 
+import { formatUsdHintParts } from "./approxHints";
+import { ApproxValue } from "./ApproxValue";
 import { TradeInputBox } from "./TradeInputBox";
 
 type Props = {
@@ -111,7 +112,7 @@ export function MarginField({
           />
           {showUsd && (
             <span className="shrink-0 text-12 text-typography-secondary numbers">
-              ≈<UsdValue usd={fromUsd} />
+              <ApproxValue value={formatUsdHintParts(fromUsd)} />
             </span>
           )}
         </>

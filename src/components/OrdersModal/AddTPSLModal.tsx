@@ -96,7 +96,6 @@ import {
   calculateDisplayDecimals,
   formatDeltaUsdParts,
   formatPercentage,
-  formatTokenAmount,
   formatUsdParts,
   parseValue,
 } from "lib/numbers";
@@ -124,13 +123,13 @@ import Modal from "components/Modal/Modal";
 import { NetworkFeeRow } from "components/NetworkFeeRow/NetworkFeeRow";
 import { DeltaUsdValue } from "components/NumericValue/DeltaUsdValue";
 import { NumericValue } from "components/NumericValue/NumericValue";
-import { UsdValue } from "components/NumericValue/UsdValue";
 import { getSplitReceiveSwapProfitFeeWarning } from "components/PositionSeller/SplitReceiveSwapProfitFeeWarning";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import Tabs from "components/Tabs/Tabs";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import StandardTooltip from "components/Tooltip/StandardTooltip";
 import { ExpressTradingWarningCard } from "components/TradeBox/ExpressTradingWarningCard";
+import { formatTokenAmountHint, formatUsdHintParts } from "components/TradeboxMarginFields/approxHints";
 import { MarginPercentageSlider } from "components/TradeboxMarginFields/MarginPercentageSlider";
 import { TradeInputField, DisplayMode } from "components/TradeboxMarginFields/TradeInputField";
 import { TradeFeesRow } from "components/TradeFeesRow/TradeFeesRow";
@@ -1263,12 +1262,11 @@ export function AddTPSLModal({
               tokenSymbol={indexToken.symbol}
               alternateValue={(() => {
                 if (closeSize.showSizeInTokens) {
-                  return <UsdValue usd={closeSize.closeSizeUsd} />;
+                  return formatUsdHintParts(closeSize.closeSizeUsd);
                 }
                 if (position.sizeInUsd === 0n) return "0";
                 const closeSizeInTokens = (closeSize.closeSizeUsd * position.sizeInTokens) / position.sizeInUsd;
-                const vm = BigInt(indexToken.visualMultiplier ?? 1);
-                return formatTokenAmount(closeSizeInTokens / vm, indexToken.decimals, indexToken.symbol);
+                return formatTokenAmountHint(closeSizeInTokens, indexToken);
               })()}
               rightHeadline={
                 <button
