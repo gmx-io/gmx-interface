@@ -111,6 +111,7 @@ import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import {
   DecreaseReceiveOutputDisplay,
+  getTokenDisplaySymbol,
   SplitReceiveTokensLabel,
 } from "components/DecreaseReceiveOutput/DecreaseReceiveOutput";
 import { InsufficientGmxAccountTokenBalanceMessage, ValidationBannerErrorContent } from "components/Errors/gasErrors";
@@ -589,7 +590,7 @@ export function AddTPSLModal({
 
   const splitReceiveSwapProfitFeeWarning = getSplitReceiveSwapProfitFeeWarning({
     shouldShow: isSplitReceiveAvailable && !isReceiveSeparated && getIsHighSwapProfitFee(activeFees?.swapProfitFee),
-    receiveToken: position.collateralToken,
+    receiveTokenSymbol: getTokenDisplaySymbol(position.collateralToken),
     profitToken: position.pnlToken,
     collateralToken: position.collateralToken,
     swapProfitFee: activeFees?.swapProfitFee,

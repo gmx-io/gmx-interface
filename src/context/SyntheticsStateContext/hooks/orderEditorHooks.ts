@@ -11,6 +11,8 @@ import {
   selectOrderEditorTriggerRatioInputValue,
   selectOrderEditorIsSubmitting,
   selectOrderEditorSetIsSubmitting,
+  selectOrderEditorIsReceiveSeparated,
+  selectOrderEditorSetIsReceiveSeparated,
 } from "../selectors/orderEditorSelectors";
 import { useSelector } from "../utils";
 
@@ -42,6 +44,12 @@ export const useOrderEditorTriggerPriceInputValueState = () => {
   const triggerPriceInputValue = useSelector(selectOrderEditorTriggerPriceInputValue);
   const setTriggerPriceInputValue = useSelector(selectOrderEditorSetTriggerPriceInputValue);
   return [triggerPriceInputValue, setTriggerPriceInputValue] as const;
+};
+
+export const useOrderEditorIsReceiveSeparatedState = () => {
+  const isReceiveSeparated = useSelector(selectOrderEditorIsReceiveSeparated);
+  const setIsReceiveSeparated = useSelector(selectOrderEditorSetIsReceiveSeparated);
+  return [isReceiveSeparated, setIsReceiveSeparated] as const;
 };
 
 export const useOrderEditorTriggerRatioInputValueState = () => {
