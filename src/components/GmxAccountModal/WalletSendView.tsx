@@ -18,6 +18,7 @@ import { showWalletCrossChainSendStatusToast } from "domain/multichain/progress/
 import { sendCrossChainDepositTxn } from "domain/multichain/sendCrossChainDepositTxn";
 import { getIsStargateRouteUnavailableError } from "domain/multichain/stargateErrors";
 import { SendParam } from "domain/multichain/types";
+import { useIsStargatePoolPaused } from "domain/multichain/useIsStargatePoolPaused";
 import { useMultichainQuoteFeeUsd } from "domain/multichain/useMultichainQuoteFeeUsd";
 import { useQuoteOft } from "domain/multichain/useQuoteOft";
 import { useQuoteOftLimits } from "domain/multichain/useQuoteOftLimits";
@@ -295,9 +296,20 @@ export function WalletSendView() {
   const hasCrossChainQuoteError =
     quoteOftError !== undefined || quoteSendError !== undefined || baseQuoteSendError !== undefined;
 
+  const { isPaused: isDestinationPoolPaused, isLoading: isDestinationPoolStatusLoading } = useIsStargatePoolPaused({
+    chainId: destinationChainId,
+    stargateAddress:
+      isSameChain || isDestinationUnsupported || selectedToken === undefined
+        ? undefined
+        : getMappedTokenId(chainId as SettlementChainId, selectedToken.address, destinationChainId as SourceChainId)
+            ?.stargate,
+  });
+
   const isRouteUnavailable = useMemo(
-    () => [quoteOftError, quoteSendError, baseQuoteSendError].some(getIsStargateRouteUnavailableError),
-    [quoteOftError, quoteSendError, baseQuoteSendError]
+    () =>
+      [quoteOftError, quoteSendError, baseQuoteSendError].some(getIsStargateRouteUnavailableError) ||
+      isDestinationPoolPaused,
+    [quoteOftError, quoteSendError, baseQuoteSendError, isDestinationPoolPaused]
   );
 
   const { networkFee, networkFeeUsd, protocolFeeAmount, protocolFeeUsd } = useMultichainQuoteFeeUsd({
@@ -702,7 +714,7 @@ export function WalletSendView() {
       buttonState = { text: t`Send`, disabled: true };
     } else if (isApproving) {
       buttonState = { text: t`Approving...`, disabled: true };
-    } else if (needsApproval && (isQuoteOftLoading || isQuoteSendLoading)) {
+    } else if (needsApproval && (isQuoteOftLoading || isQuoteSendLoading || isDestinationPoolStatusLoading)) {
       buttonState = { text: t`Approve ${selectedToken.symbol}`, disabled: true };
     } else if (needsApproval) {
       buttonState = { text: t`Approve ${selectedToken.symbol}`, onClick: handleApprove };

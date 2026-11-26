@@ -751,17 +751,26 @@ export const WithdrawalView = () => {
     decimals: selectedTokenSettlementChainTokenId?.decimals,
   });
 
-  const isStargatePoolPaused = useIsStargatePoolPaused({
+  const { isPaused: isSourcePoolPaused } = useIsStargatePoolPaused({
     chainId,
     stargateAddress: isSameChain ? undefined : selectedTokenSettlementChainTokenId?.stargate,
+  });
+
+  const { isPaused: isDestinationPoolPaused } = useIsStargatePoolPaused({
+    chainId: withdrawalViewChain,
+    stargateAddress:
+      isSameChain || withdrawalViewChain === undefined || unwrappedSelectedTokenAddress === undefined
+        ? undefined
+        : getMappedTokenId(chainId as SettlementChainId, unwrappedSelectedTokenAddress, withdrawalViewChain)?.stargate,
   });
 
   const isRouteUnavailable = useMemo(
     () =>
       [quoteOftError, probeQuoteOftError, baseNativeFeeError].some(getIsStargateRouteUnavailableError) ||
       probeQuoteOft?.limit.maxAmountLD === 0n ||
-      isStargatePoolPaused,
-    [quoteOftError, probeQuoteOftError, baseNativeFeeError, probeQuoteOft, isStargatePoolPaused]
+      isSourcePoolPaused ||
+      isDestinationPoolPaused,
+    [quoteOftError, probeQuoteOftError, baseNativeFeeError, probeQuoteOft, isSourcePoolPaused, isDestinationPoolPaused]
   );
 
   const {

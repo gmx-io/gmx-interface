@@ -26,6 +26,7 @@ import {
   RANDOM_ACCOUNT,
   getDepositTokenSymbolsForNetwork,
   getMappedTokenId,
+  getStargatePoolAddress,
 } from "config/multichain";
 import {
   useGmxAccountDepositViewChain,
@@ -53,6 +54,7 @@ import {
 import { decodeStargateError, getIsStargateRouteUnavailableError } from "domain/multichain/stargateErrors";
 import { SendParam } from "domain/multichain/types";
 import { useGmxAccountFundingHistory } from "domain/multichain/useGmxAccountFundingHistory";
+import { useIsStargatePoolPaused } from "domain/multichain/useIsStargatePoolPaused";
 import { useMultichainDepositNetworkComposeGas } from "domain/multichain/useMultichainDepositNetworkComposeGas";
 import { useMultichainQuoteFeeUsd } from "domain/multichain/useMultichainQuoteFeeUsd";
 import { useNativeTokenBalance } from "domain/multichain/useNativeTokenBalance";
@@ -476,14 +478,31 @@ export const DepositView = () => {
     decimals: selectedTokenSourceChainTokenId?.decimals,
   });
 
+  const { isPaused: isDestinationPoolPaused, isLoading: isDestinationPoolStatusLoading } = useIsStargatePoolPaused({
+    chainId: settlementChainId,
+    stargateAddress:
+      depositViewChain === undefined || depositViewChain === settlementChainId || depositViewTokenAddress === undefined
+        ? undefined
+        : getStargatePoolAddress(settlementChainId, depositViewTokenAddress),
+  });
+
   const isRouteUnavailable = useMemo(
     () =>
       [probeQuoteOftError, quoteOftError, quoteSendError, baseQuoteSendError].some(
         getIsStargateRouteUnavailableError
       ) ||
       // A path with no credit left still quotes, with maxAmountLD = 0; only the send reverts
-      [probeQuoteOft, quoteOft].some((quote) => quote?.limit.maxAmountLD === 0n),
-    [probeQuoteOftError, quoteOftError, quoteSendError, baseQuoteSendError, probeQuoteOft, quoteOft]
+      [probeQuoteOft, quoteOft].some((quote) => quote?.limit.maxAmountLD === 0n) ||
+      isDestinationPoolPaused,
+    [
+      probeQuoteOftError,
+      quoteOftError,
+      quoteSendError,
+      baseQuoteSendError,
+      probeQuoteOft,
+      quoteOft,
+      isDestinationPoolPaused,
+    ]
   );
 
   const { networkFee, networkFeeUsd, protocolFeeAmount, protocolFeeUsd } = useMultichainQuoteFeeUsd({
@@ -1265,7 +1284,11 @@ export const DepositView = () => {
       bannerErrorName: ValidationBannerErrorName.insufficientNativeTokenBalance,
       disabled: true,
     };
-  } else if (needTokenApprove && depositViewChain !== settlementChainId && areMultichainFeesLoading) {
+  } else if (
+    needTokenApprove &&
+    depositViewChain !== settlementChainId &&
+    (areMultichainFeesLoading || isDestinationPoolStatusLoading)
+  ) {
     // The approval is unlimited, so it waits for the quotes that report a paused route
     buttonState = {
       text: t`Approve ${selectedToken?.symbol}`,

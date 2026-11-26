@@ -10,15 +10,15 @@ const STARGATE_STATUS_ABI = [
 
 const STARGATE_PAUSED_STATUS = 3;
 
-// A pool-wide pause reverts only sendToken: quoteOFT and quoteSend still answer, so the quotes can't show it
+// A pool-wide pause reverts only sendToken and the receive: the quotes still answer, so they can't show it on either end
 export function useIsStargatePoolPaused({
   chainId,
   stargateAddress,
 }: {
   chainId: AnyChainId | undefined;
   stargateAddress: string | undefined;
-}): boolean {
-  const { data } = useSWR<boolean>(
+}): { isPaused: boolean; isLoading: boolean } {
+  const { data, isLoading } = useSWR<boolean>(
     chainId !== undefined && stargateAddress !== undefined ? ["stargatePoolStatus", chainId, stargateAddress] : null,
     {
       fetcher: async () => {
@@ -34,5 +34,5 @@ export function useIsStargatePoolPaused({
     }
   );
 
-  return data === true;
+  return { isPaused: data === true, isLoading };
 }

@@ -6,6 +6,7 @@ import { createWalletClient, custom, decodeFunctionData, zeroAddress, zeroHash, 
 import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { ARBITRUM, SOURCE_BSC_MAINNET } from "config/chains";
+import { getMappedTokenId } from "config/multichain";
 import type { SendParam } from "domain/multichain/types";
 import type { ExpressTxnParams } from "domain/synthetics/express/types";
 import type { TokensData } from "domain/tokens";
@@ -287,11 +288,15 @@ function mountWithdrawal(destination: number) {
       eip6492SignatureWrapperHash: zeroHash,
     },
   };
-  state.quote.mockImplementation(async ({ args }: { args: [SendParam] }) => [
-    { minAmountLD: 1n, maxAmountLD: 10n ** 18n },
-    [],
-    { amountSentLD: args[0].amountLD, amountReceivedLD: args[0].amountLD - 1n },
-  ]);
+  state.quote.mockImplementation(async ({ functionName, args }: { functionName: string; args: [SendParam] }) =>
+    functionName === "status"
+      ? 1
+      : [
+          { minAmountLD: 1n, maxAmountLD: 10n ** 18n },
+          [],
+          { amountSentLD: args[0].amountLD, amountReceivedLD: args[0].amountLD - 1n },
+        ]
+  );
   state.send.mockImplementation(async ({ data }: { data: Hex }) => {
     const decoded = decodeFunctionData({ abi: getAbi(ARBITRUM, "MultichainTransferRouter"), data });
     if (decoded.functionName !== "transferOut") throw new Error("Expected transferOut");
@@ -503,5 +508,21 @@ describe("WithdrawalView", () => {
       cleanup();
       state.notify = () => undefined;
     }
+  });
+
+  it("blocks the withdrawal once the destination Stargate pool is paused TRD-168", async () => {
+    vi.useFakeTimers();
+    const view = mountWithdrawal(SOURCE_BSC_MAINNET);
+    await act(async () => vi.advanceTimersByTimeAsync(150));
+    expect(view.getByRole("button", { name: "Withdraw", exact: true })).toBeTruthy();
+    const quote = state.quote.getMockImplementation()!;
+    const destinationPool = getMappedTokenId(ARBITRUM, state.token, SOURCE_BSC_MAINNET)!.stargate;
+    state.quote.mockImplementation(async (call: { functionName: string; address: string; args: [SendParam] }) =>
+      call.functionName === "status" ? (call.address === destinationPool ? 3 : 1) : quote(call)
+    );
+    await act(async () => vi.advanceTimersByTimeAsync(60150));
+    expect(view.getByRole("button", { name: "Route temporarily unavailable" }).hasAttribute("disabled")).toBe(true);
+    cleanup();
+    state.notify = () => undefined;
   });
 });
