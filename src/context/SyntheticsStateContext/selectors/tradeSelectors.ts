@@ -170,7 +170,8 @@ const makeSelectFindSwapPathByKey = createSelectorFactory(
     fromTokenAddress: string | undefined,
     toTokenAddress: string | undefined,
     swapPricingType: SwapPricingType | undefined = SwapPricingType.Swap,
-    manualPathKey?: string
+    manualPathKey?: string,
+    relaxedMaxPoolAmountMarketAddress?: string
   ) => {
     const manualPath: string[] | undefined = manualPathKey === undefined ? undefined : JSON.parse(manualPathKey);
 
@@ -190,6 +191,7 @@ const makeSelectFindSwapPathByKey = createSelectorFactory(
         disabledMarkets: _debugSwapMarketsConfig?.disabledSwapMarkets,
         manualPath: manualPath ?? _debugSwapMarketsConfig?.manualPath,
         gasEstimationParams,
+        relaxedMaxPoolAmountMarketAddress,
       });
 
       return findSwapPath;
@@ -202,13 +204,15 @@ export const makeSelectFindSwapPath = (
   fromTokenAddress: string | undefined,
   toTokenAddress: string | undefined,
   swapPricingType?: SwapPricingType,
-  manualPath?: string[]
+  manualPath?: string[],
+  relaxedMaxPoolAmountMarketAddress?: string
 ) =>
   makeSelectFindSwapPathByKey(
     fromTokenAddress,
     toTokenAddress,
     swapPricingType,
-    manualPath === undefined ? undefined : JSON.stringify(manualPath)
+    manualPath === undefined ? undefined : JSON.stringify(manualPath),
+    relaxedMaxPoolAmountMarketAddress
   );
 
 export const makeSelectIncreasePositionAmounts = ({

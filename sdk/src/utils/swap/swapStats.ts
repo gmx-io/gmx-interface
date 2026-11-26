@@ -137,6 +137,7 @@ export function getSwapPathStats(p: {
   shouldUnwrapNativeToken: boolean;
   shouldApplyPriceImpact: boolean;
   swapPricingType: SwapPricingType;
+  relaxedMaxPoolAmountMarketAddress?: string;
 }): SwapPathStats | undefined {
   const {
     marketsInfoData,
@@ -147,6 +148,7 @@ export function getSwapPathStats(p: {
     shouldApplyPriceImpact,
     wrappedNativeTokenAddress,
     swapPricingType,
+    relaxedMaxPoolAmountMarketAddress,
   } = p;
 
   if (swapPath.length === 0) {
@@ -190,6 +192,7 @@ export function getSwapPathStats(p: {
       usdIn: usdOut,
       shouldApplyPriceImpact,
       swapPricingType,
+      shouldRelaxMaxPoolAmountForTokenIn: i === 0 && marketAddress === relaxedMaxPoolAmountMarketAddress,
     });
 
     tokenInAddress = swapStep.tokenOutAddress;
@@ -228,8 +231,17 @@ export function getSwapStats(p: {
   usdIn: bigint;
   shouldApplyPriceImpact: boolean;
   swapPricingType: SwapPricingType;
+  shouldRelaxMaxPoolAmountForTokenIn?: boolean;
 }): SwapStats {
-  const { marketInfo, tokenInAddress, tokenOutAddress, usdIn, shouldApplyPriceImpact, swapPricingType } = p;
+  const {
+    marketInfo,
+    tokenInAddress,
+    tokenOutAddress,
+    usdIn,
+    shouldApplyPriceImpact,
+    swapPricingType,
+    shouldRelaxMaxPoolAmountForTokenIn = false,
+  } = p;
 
   const isWrap = tokenInAddress === NATIVE_TOKEN_ADDRESS;
   const isUnwrap = tokenOutAddress === NATIVE_TOKEN_ADDRESS;
@@ -262,7 +274,7 @@ export function getSwapStats(p: {
     const capacityUsd = getSwapCapacityUsd(marketInfo, isFromLongToShort);
     const swapFeeUsd = getSwapFee(marketInfo, usdIn, false, swapPricingType);
     const usdInAfterFees = usdIn - swapFeeUsd;
-    const isOutCapacity = capacityUsd < usdInAfterFees;
+    const isOutCapacity = !shouldRelaxMaxPoolAmountForTokenIn && capacityUsd < usdInAfterFees;
 
     return {
       swapFeeUsd: 0n,
@@ -293,6 +305,7 @@ export function getSwapStats(p: {
     isWrap,
     isUnwrap,
     swapPricingType,
+    shouldRelaxMaxPoolAmountForTokenIn,
   });
 
   if (maxPnlFactorExceededStats) {
@@ -350,7 +363,7 @@ export function getSwapStats(p: {
 
   const capacityUsd = getSwapCapacityUsd(marketInfo, isFromLongToShort);
 
-  const isOutCapacity = capacityUsd < usdInAfterFees;
+  const isOutCapacity = !shouldRelaxMaxPoolAmountForTokenIn && capacityUsd < usdInAfterFees;
 
   const liquidity = getAvailableUsdLiquidityForCollateral(marketInfo, !isFromLongToShort);
 
@@ -467,8 +480,20 @@ function getMaxPnlFactorExceededSwapStats(p: {
   isWrap: boolean;
   isUnwrap: boolean;
   swapPricingType: SwapPricingType;
+  shouldRelaxMaxPoolAmountForTokenIn: boolean;
 }): SwapStats | undefined {
-  const { marketInfo, isLong, usdIn, amountIn, tokenInAddress, tokenOutAddress, isWrap, isUnwrap, swapPricingType } = p;
+  const {
+    marketInfo,
+    isLong,
+    usdIn,
+    amountIn,
+    tokenInAddress,
+    tokenOutAddress,
+    isWrap,
+    isUnwrap,
+    swapPricingType,
+    shouldRelaxMaxPoolAmountForTokenIn,
+  } = p;
 
   if (!getIsMaxPnlFactorExceededForSwap({ marketInfo, isLong, usdIn })) {
     return undefined;
@@ -477,7 +502,7 @@ function getMaxPnlFactorExceededSwapStats(p: {
   const capacityUsd = getSwapCapacityUsd(marketInfo, isLong);
   const swapFeeUsd = getSwapFee(marketInfo, usdIn, false, swapPricingType);
   const usdInAfterFees = usdIn - swapFeeUsd;
-  const isOutCapacity = capacityUsd < usdInAfterFees;
+  const isOutCapacity = !shouldRelaxMaxPoolAmountForTokenIn && capacityUsd < usdInAfterFees;
 
   return {
     swapFeeUsd: 0n,
