@@ -1,8 +1,13 @@
 import { toast, ToastContent, ToastOptions } from "react-toastify";
 
+import { getIsSolanaNetworkSelected } from "config/solanaNetwork";
+import { WALLET_BATCH_CONFIRMED_LATE_ERROR, WALLET_BATCH_PENDING_ERROR } from "lib/errors/customErrors";
+
 import { ErrorToastWithSupport } from "components/Errors/ErrorToastWithSupport";
 
 import { tradingErrorTracker, TradingErrorInfo } from "./tradingErrorTracker";
+
+const WALLET_BATCH_NOTICE_ERRORS = [WALLET_BATCH_PENDING_ERROR, WALLET_BATCH_CONFIRMED_LATE_ERROR];
 
 export type HelperToastErrorOptions = ToastOptions & {
   tradingErrorInfo?: TradingErrorInfo;
@@ -24,12 +29,24 @@ export const helperToast = {
       "isUserRejectedError" in tradingErrorInfo.errorData &&
       (tradingErrorInfo.errorData as { isUserRejectedError?: boolean }).isUserRejectedError === true;
 
-    if (tradingErrorInfo && !isUserRejection) {
+    // these say what happened to an earlier batch, so they aren't trouble to offer support for
+    const isWalletBatchNotice =
+      tradingErrorInfo?.errorData &&
+      typeof tradingErrorInfo.errorData === "object" &&
+      "errorMessage" in tradingErrorInfo.errorData &&
+      WALLET_BATCH_NOTICE_ERRORS.includes((tradingErrorInfo.errorData as { errorMessage?: string }).errorMessage ?? "");
+
+    if (tradingErrorInfo && !isUserRejection && !isWalletBatchNotice) {
       tradingErrorTracker.reportError(tradingErrorInfo);
     }
 
+    // The support chat is not booted on Solana, so "Contact support" would open nothing there.
     const finalContent =
-      tradingErrorInfo && tradingErrorTracker.shouldSuggestSupport() && typeof content !== "function" ? (
+      tradingErrorInfo &&
+      !isWalletBatchNotice &&
+      !getIsSolanaNetworkSelected() &&
+      tradingErrorTracker.shouldSuggestSupport() &&
+      typeof content !== "function" ? (
         <ErrorToastWithSupport>{content}</ErrorToastWithSupport>
       ) : (
         content

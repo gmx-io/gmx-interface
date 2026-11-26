@@ -8,6 +8,7 @@ import { WagmiProvider } from "wagmi";
 import { GmxAccountContextProvider } from "context/GmxAccountContext/GmxAccountContext";
 import type { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { StateCtx } from "context/SyntheticsStateContext/utils";
+import type { TypedSizeUsd } from "domain/synthetics/trade/useTradeboxState";
 import { createMockMarketInfo } from "domain/testUtils/mockMarketInfo";
 import {
   createMockSyntheticsState as createMockState,
@@ -71,6 +72,9 @@ export type IntegrationStoryProps = {
   initialToValue?: string;
   initialTriggerPrice?: string;
   maxAvailableAmount?: bigint;
+  ethPrice?: number;
+  /** A new key remounts the fields over the same trade box state, as a desktop ↔ mobile layout switch does */
+  remountKey?: number;
 };
 
 /**
@@ -85,15 +89,20 @@ export function IntegrationStory({
   initialToValue = "0.5",
   initialTriggerPrice,
   maxAvailableAmount = expandDecimals(10000, 6),
+  ethPrice = 2000,
+  remountKey,
 }: IntegrationStoryProps) {
   const [fromValue, setFromValue] = useState(initialFromValue);
   const [toValue, setToValue] = useState(initialToValue);
   const [focused, setFocused] = useState<"from" | "to">("from");
   const [triggerPrice, setTriggerPrice] = useState(initialTriggerPrice ?? "");
+  const [typedSizeUsd, setTypedSizeUsd] = useState<TypedSizeUsd>();
 
   const setToValueWithReset = useCallback((value: string, _resetPriceImpact: boolean) => {
     setToValue(value);
   }, []);
+
+  const { tokensData } = useDynamicTokensData(ethPrice);
 
   const state = useMemo(
     () =>
@@ -103,10 +112,13 @@ export function IntegrationStory({
         fromTokenInputValue: fromValue,
         toTokenInputValue: toValue,
         focusedInput: focused,
+        typedSizeUsd,
+        setTypedSizeUsd,
         triggerPriceInputValue: triggerPrice,
         isLeverageSliderEnabled,
+        tokensData,
       }),
-    [tradeMode, tradeType, fromValue, toValue, focused, triggerPrice, isLeverageSliderEnabled]
+    [tradeMode, tradeType, fromValue, toValue, focused, typedSizeUsd, triggerPrice, isLeverageSliderEnabled, tokensData]
   );
 
   const isLimit = tradeMode === TradeMode.Limit || tradeMode === TradeMode.StopMarket;
@@ -126,6 +138,7 @@ export function IntegrationStory({
       </div>
 
       <TradeboxMarginFields
+        key={remountKey}
         maxAvailableAmount={maxAvailableAmount}
         onSelectFromTokenAddress={noop}
         fromTokenInputValue={fromValue}

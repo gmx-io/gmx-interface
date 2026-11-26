@@ -159,6 +159,12 @@ export function GmSwapBoxDepositWithdrawal() {
   const [marketOrGlvTokenInputValue, setMarketOrGlvTokenInputValue] = usePoolsDetailsMarketOrGlvTokenInputValue();
   const setFocusedInput = useSelector(selectPoolsDetailsSetFocusedInput);
 
+  const resetInputs = useCallback(() => {
+    setFirstTokenInputValue("");
+    setSecondTokenInputValue("");
+    setMarketOrGlvTokenInputValue("");
+  }, [setFirstTokenInputValue, setMarketOrGlvTokenInputValue, setSecondTokenInputValue]);
+
   const account = useSelector(selectAccount);
   const glvAndMarketsInfoData = useSelector(selectGlvAndMarketsInfoData);
   const marketsInfoData = useSelector(selectMarketsInfoData);
@@ -204,12 +210,6 @@ export function GmSwapBoxDepositWithdrawal() {
   const indexName = useMemo(() => marketInfo && getMarketIndexName(marketInfo), [marketInfo]);
 
   const tokenOptions = useSelector(selectPoolsDetailsTokenOptions);
-
-  const firstTokenUsd = convertToUsd(
-    firstTokenAmount,
-    firstToken?.decimals,
-    isDeposit ? firstToken?.prices?.minPrice : firstToken?.prices?.maxPrice
-  );
 
   const secondTokenUsd = convertToUsd(
     secondTokenAmount,
@@ -295,14 +295,15 @@ export function GmSwapBoxDepositWithdrawal() {
     shortTokenLiquidityUsd: shortCollateralLiquidityUsd,
     marketsInfoData,
     glvAndMarketsInfoData,
+    onSent: resetInputs,
   });
 
   const submitState = useMemo<SubmitButtonState>(
     () =>
-      isMarketClosed && !transitState.isWithdrawalUsdgPendingConversion
+      isMarketClosed && !transitState.isWithdrawalSent
         ? { text: t`Market closed`, disabled: true }
         : transitState.submitState ?? gmSwapSubmitState,
-    [gmSwapSubmitState, isMarketClosed, transitState.isWithdrawalUsdgPendingConversion, transitState.submitState]
+    [gmSwapSubmitState, isMarketClosed, transitState.isWithdrawalSent, transitState.submitState]
   );
 
   const transitUsdgStepUsd =
@@ -315,6 +316,13 @@ export function GmSwapBoxDepositWithdrawal() {
       : undefined;
   const isTransitSellStep2 = isWithdrawal && transitState.isTransitRoute;
   const isTransitBuyStep2 = isDeposit && transitState.isTransitRoute;
+  const { sentSellAmountOut } = transitState;
+
+  const firstTokenUsd = convertToUsd(
+    sentSellAmountOut ?? firstTokenAmount,
+    firstToken?.decimals,
+    isDeposit ? firstToken?.prices?.minPrice : firstToken?.prices?.maxPrice
+  );
 
   const settlementChainGasPaymentToken = useSelector(selectSettlementChainGasPaymentToken);
   const gmxAccountGasPaymentToken = useSelector(selectGmxAccountGasPaymentToken);
@@ -459,12 +467,6 @@ export function GmSwapBoxDepositWithdrawal() {
     },
     [marketInfo, glvInfo, setFocusedInput]
   );
-
-  const resetInputs = useCallback(() => {
-    setFirstTokenInputValue("");
-    setSecondTokenInputValue("");
-    setMarketOrGlvTokenInputValue("");
-  }, [setFirstTokenInputValue, setMarketOrGlvTokenInputValue, setSecondTokenInputValue]);
 
   const onGlvOrMarketChange = useCallback(
     (glvOrMarketAddress: string) => {
@@ -718,7 +720,11 @@ export function GmSwapBoxDepositWithdrawal() {
                   bottomRightLabel={t`Balance`}
                   bottomRightValue={firstTokenMaxDetails.formattedBalance}
                   onClickTopRightLabel={isDeposit ? onMaxClickFirstToken : undefined}
-                  inputValue={firstTokenInputValue}
+                  inputValue={
+                    sentSellAmountOut !== undefined && firstToken
+                      ? formatAmountFree(sentSellAmountOut, firstToken.decimals)
+                      : firstTokenInputValue
+                  }
                   onInputValueChange={handleFirstTokenInputValueChange}
                   maxActions={firstTokenMaxActionsProps}
                   className={isPair ? "rounded-b-0" : undefined}

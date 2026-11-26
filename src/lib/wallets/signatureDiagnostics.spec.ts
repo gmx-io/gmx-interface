@@ -1,3 +1,4 @@
+// @vitest-shared-worker
 import { describe, expect, it } from "vitest";
 
 import { analyzeSignatureShape, ERC6492_MAGIC_SUFFIX, getSignatureKind } from "./signatureDiagnostics";

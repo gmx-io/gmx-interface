@@ -31,6 +31,7 @@ export type MarketPoolTokens = {
 export type MarketInfo = GmsolMarketConfig &
   Market &
   MarketPoolTokens & {
+    useV221LiquidationImpact?: boolean;
     isDisabled: boolean;
 
     longPoolAmount: bigint;
@@ -135,6 +136,8 @@ export type MarketInfo = GmsolMarketConfig &
     swapImpactExponentFactor: bigint;
     withdrawalFeeFactorBalanceWasImproved?: bigint;
     withdrawalFeeFactorBalanceWasNotImproved?: bigint;
+    depositFeeFactorBalanceWasImproved?: bigint;
+    depositFeeFactorBalanceWasNotImproved?: bigint;
 
     borrowingFactorPerSecondForLongs: bigint;
     borrowingFactorPerSecondForShorts: bigint;
@@ -269,6 +272,8 @@ export type MarketConfig = Pick<
   | "atomicSwapFeeFactor"
   | "withdrawalFeeFactorBalanceWasImproved"
   | "withdrawalFeeFactorBalanceWasNotImproved"
+  | "depositFeeFactorBalanceWasImproved"
+  | "depositFeeFactorBalanceWasNotImproved"
   | "virtualMarketId"
   | "virtualIndexTokenId"
   | "virtualLongTokenId"
@@ -281,7 +286,12 @@ export type MarketsData = {
 
 export type RawMarketInfo = Omit<
   MarketInfo,
-  "longToken" | "shortToken" | "indexToken" | "claimableFundingAmountLong" | "claimableFundingAmountShort"
+  | "longToken"
+  | "shortToken"
+  | "indexToken"
+  | "claimableFundingAmountLong"
+  | "claimableFundingAmountShort"
+  | "useV221LiquidationImpact"
 >;
 
 export type RawMarketsInfoData = {

@@ -23,7 +23,8 @@ export function MarketClosedBadge({ poolName, isPool, label = "closed", isTrunca
       contentClassName={cx("gap-4", { "min-w-0": isTruncatable })}
       variant="iconStroke"
       iconClassName="!size-12"
-      shouldStopPropagation
+      shouldStopPropagation="touch"
+      shouldPreventDefault={false}
       content={
         <TooltipContent>
           <TooltipTitle>
@@ -41,7 +42,7 @@ export function MarketClosedBadge({ poolName, isPool, label = "closed", isTrunca
                 </Trans>
               </TooltipText>
               <TooltipText>
-                <Trans>Market orders, TWAP, Close and Edit margin are unavailable until then.</Trans>
+                <Trans>Market orders, TWAP, Close, withdrawals and "Now" deposits are unavailable until then.</Trans>
               </TooltipText>
             </>
           )}

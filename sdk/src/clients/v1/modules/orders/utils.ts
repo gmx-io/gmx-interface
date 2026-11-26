@@ -249,6 +249,7 @@ export function parseGetOrdersResponse(res: MulticallResult<ReturnType<typeof bu
         autoCancel: order.flags.autoCancel as boolean,
         uiFeeReceiver: order.addresses.uiFeeReceiver as Address,
         validFromTime: BigInt(order.numbers.validFromTime),
+        srcChainId: BigInt(order.numbers.srcChainId),
         data: order._dataList,
       };
 

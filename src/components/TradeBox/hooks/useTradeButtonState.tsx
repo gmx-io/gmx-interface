@@ -4,6 +4,7 @@ import { ReactNode, useCallback, useMemo } from "react";
 import { zeroAddress } from "viem";
 
 import { AVALANCHE, SettlementChainId } from "config/chains";
+import { getNetworkFeatures } from "config/features";
 import { JUMPER_BRIDGE_URL } from "config/links";
 import { MULTI_CHAIN_DEPOSIT_TRADE_TOKENS } from "config/multichain";
 import { useConnectModal } from "context/ConnectModalContext/ConnectModalContext";
@@ -22,6 +23,7 @@ import {
 import { selectTradeboxClosedMarketOrderState } from "context/SyntheticsStateContext/selectors/closedMarketsSelectors";
 import {
   selectGmxAccountGasPaymentToken,
+  selectIsExpressTransactionAvailable,
   selectSettlementChainGasPaymentToken,
   selectUnavailableGasPaymentTokenAddresses,
 } from "context/SyntheticsStateContext/selectors/expressSelectors";
@@ -68,10 +70,14 @@ import {
   selectExternalSwapQuoteParams,
 } from "context/SyntheticsStateContext/selectors/tradeSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import { useGmxAccountShowDepositButton } from "domain/multichain/useGmxAccountShowDepositButton";
 import { ExpressTxnParams } from "domain/synthetics/express";
 import { findNextGasPaymentToken } from "domain/synthetics/express/useSwitchGasPaymentTokenIfRequired";
-import { getCanUseTokenPermits } from "domain/synthetics/express/validateMultichainExpressSubmit";
+import {
+  getExpressTokenPermitBlockReason,
+  getGasPaymentTokenToApprove,
+} from "domain/synthetics/express/validateMultichainExpressSubmit";
 import { getExternalAggregatorSwapUrl } from "domain/synthetics/externalSwaps/utils";
 import { substractMaxLeverageSlippage } from "domain/synthetics/positions/utils";
 import { useSidecarEntries } from "domain/synthetics/sidecarOrders/useSidecarEntries";
@@ -96,6 +102,7 @@ import {
   getIsGasPaymentTokenApproval,
 } from "domain/tokens/gasPaymentTokenApproval";
 import { useTokenApproval } from "domain/tokens/useTokenApproval";
+import { useChainId } from "lib/chains";
 import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
 import { useLocalizedMap } from "lib/i18n";
 import { reportHandledRejection } from "lib/metrics/reportHandledRejection";
@@ -119,7 +126,13 @@ import { mustNeverExist } from "sdk/utils/types";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { useMultichainTokens } from "components/GmxAccountModal/hooks";
-import { TooltipAction, TooltipContent, TooltipLink, TooltipText } from "components/Tooltip/TooltipBlocks";
+import {
+  TooltipAction,
+  TooltipContent,
+  TooltipLink,
+  TooltipReadMore,
+  TooltipText,
+} from "components/Tooltip/TooltipBlocks";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
@@ -157,6 +170,8 @@ export function useTradeboxButtonState({
   canSwitchGasPaymentToken,
 }: TradeboxButtonStateOptions): TradeboxButtonState {
   const chainId = useSelector(selectChainId);
+  const { isClassicEnabled: isClassicTokenPermitsEnabled } = useTokenPermitsContext();
+  const isExpressTransactionAvailable = useSelector(selectIsExpressTransactionAvailable);
   const srcChainId = useSelector(selectSrcChainId);
   const signer = useEthersSigner();
 
@@ -220,15 +235,15 @@ export function useTradeboxButtonState({
       list.push({ tokenAddress: fromToken.address, amount: payAmount });
     }
 
-    if (expressParams?.gasPaymentParams) {
-      list.push({
-        tokenAddress: expressParams.gasPaymentParams.gasPaymentTokenAddress,
-        amount: expressParams.gasPaymentParams.gasPaymentTokenAmount,
-      });
+    const gasPaymentTokenToApprove = getGasPaymentTokenToApprove(expressParams);
+    if (gasPaymentTokenToApprove) {
+      list.push(gasPaymentTokenToApprove);
     }
 
     return list;
-  }, [fromToken, payAmount, expressParams?.gasPaymentParams]);
+  }, [fromToken, payAmount, expressParams]);
+
+  const permitBlockReason = getExpressTokenPermitBlockReason(expressParams);
 
   const {
     tokensToApprove,
@@ -237,11 +252,14 @@ export function useTradeboxButtonState({
     isApproving,
     handleApprove,
     getIsPermitApproval,
+    approvalBatch,
   } = useTokenApproval({
     chainId,
     spenderAddress: getContract(chainId, "SyntheticsRouter"),
     tokens: approvalTokens,
-    allowPermit: getCanUseTokenPermits(expressParams),
+    allowPermit: permitBlockReason === undefined || isClassicTokenPermitsEnabled,
+    // a relayed order can't share the wallet's confirmation, so only Classic orders batch the approvals
+    allowBatch: !isExpressTransactionAvailable,
     skip: isFromTokenGmxAccount,
     metric: {
       flow: "trade",
@@ -249,16 +267,18 @@ export function useTradeboxButtonState({
       isExpress1CT: Boolean(expressParams?.subaccount),
       gasPaymentTokenAddress: expressParams?.gasPaymentParams?.gasPaymentTokenAddress,
       payTokenAddress: fromToken?.address,
+      permitBlockReason,
     },
   });
 
   const isDataReady = Boolean(fromToken && payAmount !== undefined);
   const isAllowanceLoaded = isDataReady && isAllowanceLoadedRaw;
-  const isApprovalRequired = !isFromTokenGmxAccount && isAllowanceLoaded && tokensToApprove.length > 0;
+  const isApprovalRequired =
+    !isFromTokenGmxAccount && isAllowanceLoaded && tokensToApprove.length > 0 && approvalBatch === undefined;
   // until allowances are known an order could be sent without the approval it needs
   const isAllowancePending = isDataReady && isAllowanceLoading && !isApproving;
 
-  const pendingApprovalTokenAddress = isAllowanceLoaded && !isApproving ? tokensToApprove[0] : undefined;
+  const pendingApprovalTokenAddress = isApprovalRequired && !isApproving ? tokensToApprove[0] : undefined;
   const isPendingGasPaymentTokenApproval =
     pendingApprovalTokenAddress !== undefined &&
     getIsGasPaymentTokenApproval({
@@ -452,9 +472,7 @@ export function useTradeboxButtonState({
                 )}
               </TooltipText>
               {setMaxLeverageAction}
-              <TooltipLink href="https://docs.gmx.io/docs/trading/order-types/#max-leverage">
-                <Trans>Read more</Trans>
-              </TooltipLink>
+              <TooltipReadMore href="https://docs.gmx.io/docs/trading/order-types/#max-leverage" />
             </TooltipContent>
           );
 
@@ -645,9 +663,9 @@ export function useTradeboxButtonState({
     if (isWrapOrUnwrap) {
       txnPromise = onSubmitWrapOrUnwrap();
     } else if (isSwap) {
-      txnPromise = onSubmitSwap();
+      txnPromise = onSubmitSwap(approvalBatch);
     } else if (isIncrease) {
-      txnPromise = Promise.resolve(onSubmitIncreaseOrder());
+      txnPromise = Promise.resolve(onSubmitIncreaseOrder(approvalBatch));
     } else {
       txnPromise = onSubmitDecreaseOrder();
     }
@@ -671,6 +689,7 @@ export function useTradeboxButtonState({
     return true;
   }, [
     account,
+    approvalBatch,
     chainId,
     expressParams?.subaccount,
     fromToken,
@@ -813,7 +832,7 @@ export function useTradeboxButtonState({
       };
     }
 
-    if ((isApproving || isAllowanceLoaded) && tokensToApprove.length) {
+    if ((isApproving || isAllowanceLoaded) && tokensToApprove.length && approvalBatch === undefined) {
       const tokenToApprove = tokensToApprove[0];
       const tokenSymbol = getToken(chainId, tokenToApprove).symbol;
       const isGasPaymentTokenApproval = getIsGasPaymentTokenApproval({
@@ -916,6 +935,7 @@ export function useTradeboxButtonState({
     takeProfit.error?.percentage,
     isApproving,
     tokensToApprove,
+    approvalBatch,
     isAllowanceLoaded,
     isAllowancePending,
     isApprovalRequired,
@@ -1166,6 +1186,8 @@ function NoSwapPathTooltipContent({
   const { setFromTokenAddress, setToTokenAddress, setTradeType, setTradeMode } = useSelector(selectTradeboxState);
   const { isSwap } = useSelector(selectTradeboxTradeFlags);
   const isFromTokenGmxAccount = useSelector(selectTradeboxIsFromTokenGmxAccount);
+  const { networkId } = useChainId();
+  const isSwapAvailable = getNetworkFeatures(networkId).swap;
 
   const makeHandleSwapClick = useCallback(
     (fromTokenSymbol: string, toTokenSymbol: string) => () => {
@@ -1219,9 +1241,11 @@ function NoSwapPathTooltipContent({
           No swap path found for {fromToken?.assetSymbol ?? fromToken?.symbol} to {collateralSymbol} within GMX.
         </Trans>
       </TooltipText>
-      <TooltipAction onClick={makeHandleSwapClick(fromToken.symbol, collateralToken?.symbol ?? "")}>
-        <Trans>Swap {collateralSymbol}</Trans>
-      </TooltipAction>
+      {isSwapAvailable && (
+        <TooltipAction onClick={makeHandleSwapClick(fromToken.symbol, collateralToken?.symbol ?? "")}>
+          <Trans>Swap {collateralSymbol}</Trans>
+        </TooltipAction>
+      )}
       <TooltipLink href={JUMPER_BRIDGE_URL}>
         <Trans>Bridge {collateralSymbol}</Trans>
       </TooltipLink>

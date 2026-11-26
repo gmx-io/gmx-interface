@@ -6,6 +6,7 @@ import { mockMarketsInfoData, mockTokensData, usdToToken } from "test/mock";
 import {
   getFundingFactorPerPeriod,
   getPositionFee,
+  getPriceImpactForDeposit,
   getPriceImpactForPosition,
   getPriceImpactForSwap,
   getPriceImpactUsd,
@@ -476,5 +477,65 @@ describe("getPositionFee", () => {
     expect(proOnly.totalRebateUsd).toBe(0n);
     expect(proOnly.discountUsd).toBe(10n * dollar);
     expect(proOnly.positionFeeUsd).toBe(90n * dollar);
+  });
+});
+
+describe("getPriceImpactForDeposit", () => {
+  // ETH/USD [WETH-USDC] on Arbitrum at block 526837562, expected values from the deployed
+  // SwapPricingUtils.getPriceImpactUsdForDeposit (973adf75) called with the same pool state and prices
+  const ethPrice = 1777957764443186000000000000000000n;
+  const usdcPrice = 999881577197723200000000000000n;
+  const marketInfo = mockMarketsInfoData(
+    mockTokensData({
+      ETH: { prices: { minPrice: ethPrice, maxPrice: ethPrice } },
+      USDC: { prices: { minPrice: usdcPrice, maxPrice: usdcPrice } },
+    }),
+    ["ETH-ETH-USDC"],
+    {
+      "ETH-ETH-USDC": {
+        longPoolAmount: 11200442852540875237781n,
+        shortPoolAmount: 19023130046947n,
+        swapImpactFactorPositive: 200000000000000000000n,
+        swapImpactFactorNegative: 300000000000000000000n,
+        swapImpactExponentFactor: 2000000000000000000000000000000n,
+        virtualPoolAmountForLongToken: 12100173541245288232032n,
+        virtualPoolAmountForShortToken: 20730405002499n,
+      },
+    }
+  )["ETH-ETH-USDC"];
+
+  it.each([
+    {
+      name: "re-prices a positive impact with the rebate",
+      longUsd: 0n,
+      shortUsd: 89_303_706_029n * 10n ** 24n,
+      expected: 30295834035264610872343888839400n,
+      balanceWasImproved: true,
+    },
+    {
+      name: "re-prices a positive impact that flips the pool to the other side",
+      longUsd: 0n,
+      shortUsd: 1_339_555_590_447n * 10n ** 24n,
+      expected: 99716103800429893412909032511600n,
+      balanceWasImproved: true,
+    },
+    {
+      name: "keeps a negative impact",
+      longUsd: 893_037_060_298n * 10n ** 24n,
+      shortUsd: 0n,
+      expected: -717763671959376778427532591564600n,
+      balanceWasImproved: false,
+    },
+    {
+      name: "takes the fee tier from the virtual pool when it sets the impact",
+      longUsd: 0n,
+      shortUsd: 1_699_798_681_236_129_440n * 10n ** 18n,
+      expected: -127253359863946285154770016211800n,
+      balanceWasImproved: false,
+    },
+  ])("$name like the contract TRD-21", ({ longUsd, shortUsd, expected, balanceWasImproved }) => {
+    expect(
+      getPriceImpactForDeposit(marketInfo, marketInfo.longToken, marketInfo.shortToken, longUsd, shortUsd)
+    ).toEqual({ priceImpactDeltaUsd: expected, balanceWasImproved });
   });
 });

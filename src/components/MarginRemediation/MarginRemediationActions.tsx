@@ -32,25 +32,30 @@ function useRemediablePositionKey(positionKey: string | undefined): string | und
   return isRemediable ? positionKey : undefined;
 }
 
-export function DepositMarginNowAction({
+export function DepositMarginAction({
   positionKey,
   isTooltipLine,
   children,
 }: PropsWithChildren<{ positionKey: string | undefined; isTooltipLine?: boolean }>) {
   const { networkId } = useChainId();
   const openDepositNow = usePositionEditorOpenDepositNow();
+  const openAtPrice = usePositionEditorOpenAtPrice();
   const remediablePositionKey = useRemediablePositionKey(positionKey);
   const closedMarkets = useSelector(selectClosedMarkets);
   const isMarketClosed =
     remediablePositionKey !== undefined &&
     getIsMarketClosed(closedMarkets, parsePositionKey(remediablePositionKey).marketAddress);
 
-  if (!getNetworkFeatures(networkId).collateralDeposit || remediablePositionKey === undefined || isMarketClosed) {
+  if (!getNetworkFeatures(networkId).collateralDeposit || remediablePositionKey === undefined) {
     return isTooltipLine ? null : <>{children}</>;
   }
 
+  const openDeposit = isMarketClosed
+    ? () => openAtPrice({ positionKey: remediablePositionKey })
+    : () => openDepositNow(remediablePositionKey);
+
   return (
-    <RemediationAction isTooltipLine={isTooltipLine} onClick={() => openDepositNow(remediablePositionKey)}>
+    <RemediationAction isTooltipLine={isTooltipLine} onClick={openDeposit}>
       {children}
     </RemediationAction>
   );
@@ -104,8 +109,7 @@ export function LiquidatableIncreaseMessage({ positionKey }: { positionKey: stri
   return (
     <Trans>
       Order may not execute: the resulting position would be liquidatable at the trigger price.{" "}
-      <DepositMarginNowAction positionKey={positionKey}>Deposit margin</DepositMarginNowAction> or reduce the order
-      size.
+      <DepositMarginAction positionKey={positionKey}>Deposit margin</DepositMarginAction> or reduce the order size.
     </Trans>
   );
 }

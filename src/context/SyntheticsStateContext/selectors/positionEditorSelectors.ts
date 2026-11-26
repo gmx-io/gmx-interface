@@ -157,17 +157,16 @@ export const selectPositionEditorSetTriggerPriceInputValue = (state: SyntheticsS
 
 export const selectPositionEditorReplacingOrderKey = (state: SyntheticsState) => state.positionEditor.replacingOrderKey;
 
+export const selectPositionEditorIsMarketClosed = createSelector((q) =>
+  getIsMarketClosed(q(selectClosedMarkets), q(selectPositionEditorPosition)?.marketAddress)
+);
+
 export const selectPositionEditorIsBlockedByClosedMarket = createSelector((q) => {
-  if (!getIsMarketClosed(q(selectClosedMarkets), q(selectPositionEditorPosition)?.marketAddress)) {
+  if (!q(selectPositionEditorIsMarketClosed)) {
     return false;
   }
 
-  const isWaitingDepositEdit =
-    q(selectPositionEditorOperation) === Operation.Deposit &&
-    q(selectPositionEditorDepositMode) === "atPrice" &&
-    q(selectPositionEditorReplacingOrderKey) !== undefined;
-
-  return !isWaitingDepositEdit;
+  return !(q(selectPositionEditorOperation) === Operation.Deposit && q(selectPositionEditorDepositMode) === "atPrice");
 });
 export const selectPositionEditorSetReplacingOrderKey = (state: SyntheticsState) =>
   state.positionEditor.setReplacingOrderKey;

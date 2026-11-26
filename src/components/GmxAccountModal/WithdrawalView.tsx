@@ -2,7 +2,7 @@ import { addressToBytes32 } from "@layerzerolabs/lz-v2-utilities";
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { type Provider } from "ethers";
-import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
+import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import { Address, encodeAbiParameters, encodeEventTopics, isHex, toHex, zeroAddress } from "viem";
 import { useAccount } from "wagmi";
@@ -56,12 +56,14 @@ import {
   estimateSameChainWithdrawalGas,
   sendSameChainWithdrawalTxn,
 } from "domain/multichain/sendSameChainWithdrawalTxn";
+import { getIsStargateRouteUnavailableError } from "domain/multichain/stargateErrors";
 import { toastCustomOrStargateError } from "domain/multichain/toastCustomOrStargateError";
 import { toastEnableExpress } from "domain/multichain/toastEnableExpress";
 import { BridgeOutParams, SendParam } from "domain/multichain/types";
 import { useGmxAccountFundingHistory } from "domain/multichain/useGmxAccountFundingHistory";
+import { useIsStargatePoolPaused } from "domain/multichain/useIsStargatePoolPaused";
 import { useMultichainQuoteFeeUsd } from "domain/multichain/useMultichainQuoteFeeUsd";
-import { useQuoteOft } from "domain/multichain/useQuoteOft";
+import { useQuoteOft, useQuoteOftProbe } from "domain/multichain/useQuoteOft";
 import { useQuoteOftLimits } from "domain/multichain/useQuoteOftLimits";
 import { useQuoteSendNativeFee } from "domain/multichain/useQuoteSend";
 import { callRelayTransaction } from "domain/synthetics/express/callRelayTransaction";
@@ -79,8 +81,9 @@ import { convertToUsd, sortTokenDataByBalance, TokenBalanceType, TokenData } fro
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
 import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
-import { useLeadingDebounce } from "lib/debounce/useLeadingDebounde";
+import { useDebounce } from "lib/debounce/useDebounce";
 import { isCustomError, parseError } from "lib/errors";
+import { isTransactionCancelledError, TransactionCancelledError } from "lib/errors/transactionCancelledError";
 import { helperToast } from "lib/helperToast";
 import {
   initMultichainWithdrawalMetricData,
@@ -97,6 +100,7 @@ import { useJsonRpcProvider } from "lib/rpc";
 import { TxnEventName } from "lib/transactions";
 import { ExpressTxnData, sendExpressTransaction } from "lib/transactions/sendExpressTransaction";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import { useLatestValueRef } from "lib/useLatestValueRef";
 import { sendMultichainWithdrawalSuccessEvent } from "lib/userAnalytics/utils";
 import { AsyncResult, useThrottledAsync } from "lib/useThrottledAsync";
 import { WalletSigner } from "lib/wallets";
@@ -131,6 +135,8 @@ import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import { wrapChainAction } from "./wrapChainAction";
+
+const QUOTE_DEBOUNCE_MS = 100;
 
 const valueSkeleton = (
   <Skeleton
@@ -258,11 +264,13 @@ function getWithdrawalTokenOptions({
 }
 
 function useWithdrawViewTransactions({
+  inputAmount,
   selectedToken,
   inputAmountUsd,
   bridgeOutParams,
   expressTxnParamsAsyncResult,
 }: {
+  inputAmount: bigint | undefined;
   selectedToken: TokenData | undefined;
   inputAmountUsd: bigint | undefined;
   bridgeOutParams: BridgeOutParams | undefined;
@@ -276,7 +284,7 @@ function useWithdrawViewTransactions({
   const { provider } = useJsonRpcProvider(chainId);
   const isFirstWithdrawal = useIsFirstWithdrawal();
   const [, setSettlementChainId] = useGmxAccountSettlementChainId();
-  const [, setIsVisibleOrView] = useGmxAccountModalOpen();
+  const [isVisibleOrView, setIsVisibleOrView] = useGmxAccountModalOpen();
   const {
     setMultichainSubmittedWithdrawal,
     setMultichainWithdrawalSentTxnHash,
@@ -284,7 +292,40 @@ function useWithdrawViewTransactions({
     setMultichainFundingPendingId,
   } = useSyntheticsEvents();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const gasPaymentParams = expressTxnParamsAsyncResult?.data?.gasPaymentParams;
+  const mountedRef = useRef(true);
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
+  const latestWithdrawal = useLatestValueRef({
+    inputAmount,
+    bridgeOutParams,
+    account,
+    chainId,
+    withdrawalViewChain,
+    selectedTokenAddress,
+    isVisibleOrView,
+  });
+  const validateWithdrawal = useCallback(() => {
+    const current = latestWithdrawal.current;
+    if (
+      !mountedRef.current ||
+      current.isVisibleOrView !== "withdraw" ||
+      inputAmount === undefined ||
+      inputAmount <= 0n ||
+      bridgeOutParams?.amount !== inputAmount ||
+      current.inputAmount !== inputAmount ||
+      current.bridgeOutParams !== bridgeOutParams ||
+      current.account !== account ||
+      current.chainId !== chainId ||
+      current.withdrawalViewChain !== withdrawalViewChain ||
+      current.selectedTokenAddress !== selectedTokenAddress
+    ) {
+      throw new TransactionCancelledError();
+    }
+  }, [latestWithdrawal, inputAmount, bridgeOutParams, account, chainId, withdrawalViewChain, selectedTokenAddress]);
   const unwrappedSelectedTokenAddress =
     selectedTokenAddress !== undefined ? convertTokenAddress(chainId, selectedTokenAddress, "native") : undefined;
   const unwrappedSelectedTokenSymbol = unwrappedSelectedTokenAddress
@@ -303,12 +344,15 @@ function useWithdrawViewTransactions({
 
     setIsSubmitting(true);
 
-    await wrapChainAction(chainId, setSettlementChainId, async (signer) => {
-      try {
+    try {
+      validateWithdrawal();
+      const sendWithdrawal = async (signer: WalletSigner) => {
+        validateWithdrawal();
         await sendSameChainWithdrawalTxn({
           chainId: chainId as SettlementChainId,
           signer,
           bridgeOutParams,
+          validateBeforeSend: validateWithdrawal,
           callback: (txnEvent) => {
             if (txnEvent.event === TxnEventName.Sent) {
               helperToast.success(t`Withdrawal sent`, { toastId: "same-chain-gmx-account-withdrawal" });
@@ -367,12 +411,14 @@ function useWithdrawViewTransactions({
             }
           },
         });
-      } catch (error) {
-        toastCustomOrStargateError(chainId, error, { defaultMessage: t`Withdrawal failed` });
-      } finally {
-        setIsSubmitting(false);
-      }
-    });
+      };
+      await wrapChainAction(chainId, setSettlementChainId, sendWithdrawal, validateWithdrawal);
+    } catch (error) {
+      if (isTransactionCancelledError(error)) return;
+      toastCustomOrStargateError(chainId, error, { defaultMessage: t`Withdrawal failed` });
+    } finally {
+      setIsSubmitting(false);
+    }
   }, [
     account,
     bridgeOutParams,
@@ -383,6 +429,7 @@ function useWithdrawViewTransactions({
     setMultichainSubmittedWithdrawal,
     setSettlementChainId,
     withdrawalViewChain,
+    validateWithdrawal,
   ]);
 
   const handleMultichainWithdraw = useCallback(async () => {
@@ -400,20 +447,7 @@ function useWithdrawViewTransactions({
 
     sendOrderSubmittedMetric(metricData.metricId);
 
-    if (
-      gasPaymentParams === undefined ||
-      bridgeOutParams === undefined ||
-      expressTxnParamsAsyncResult.promise === undefined ||
-      provider === undefined
-    ) {
-      helperToast.error(t`Missing required parameters`);
-      sendTxnValidationErrorMetric(metricData.metricId);
-      return;
-    }
-
-    const expressTxnParams = await expressTxnParamsAsyncResult.promise;
-
-    if (expressTxnParams === undefined || !expressTxnParams.gasPaymentValidations.isValid) {
+    if (bridgeOutParams === undefined || expressTxnParamsAsyncResult.promise === undefined || provider === undefined) {
       helperToast.error(t`Missing required parameters`);
       sendTxnValidationErrorMetric(metricData.metricId);
       return;
@@ -421,9 +455,18 @@ function useWithdrawViewTransactions({
 
     setIsSubmitting(true);
     try {
-      const relayParamsPayload = expressTxnParams.relayParamsPayload;
+      validateWithdrawal();
+      const expressTxnParams = await expressTxnParamsAsyncResult.promise;
+      validateWithdrawal();
+      if (expressTxnParams === undefined || !expressTxnParams.gasPaymentValidations.isValid) {
+        helperToast.error(t`Missing required parameters`);
+        sendTxnValidationErrorMetric(metricData.metricId);
+        return;
+      }
+      const { relayParamsPayload, gasPaymentParams } = expressTxnParams;
 
-      await wrapChainAction(withdrawalViewChain, setSettlementChainId, async (signer) => {
+      const sendWithdrawal = async (signer: WalletSigner) => {
+        validateWithdrawal();
         await simulateWithdraw({
           chainId: chainId as SettlementChainId,
           relayerFeeTokenAddress: gasPaymentParams.relayerFeeTokenAddress,
@@ -436,6 +479,7 @@ function useWithdrawViewTransactions({
         });
 
         sendOrderSimulatedMetric(metricData.metricId);
+        validateWithdrawal();
 
         const signedTxnData: ExpressTxnData = await buildAndSignBridgeOutTxn({
           chainId: chainId as SettlementChainId,
@@ -446,7 +490,9 @@ function useWithdrawViewTransactions({
           relayerFeeAmount: gasPaymentParams.relayerFeeAmount,
           relayerFeeTokenAddress: gasPaymentParams.relayerFeeTokenAddress,
           srcChainId: withdrawalViewChain,
+          validateBeforeSign: validateWithdrawal,
         });
+        validateWithdrawal();
 
         const mockWithdrawalId = setMultichainSubmittedWithdrawal({
           amount: bridgeOutParams.amount,
@@ -494,8 +540,10 @@ function useWithdrawViewTransactions({
             sendTxnErrorMetric(metricData.metricId, relayError, "relayer");
           }
         }
-      });
+      };
+      await wrapChainAction(withdrawalViewChain, setSettlementChainId, sendWithdrawal, validateWithdrawal);
     } catch (error) {
+      if (isTransactionCancelledError(error)) return;
       const prettyError = toastCustomOrStargateError(chainId, error, {
         actionName: "Multichain Withdrawal",
         metricId: metricData.metricId,
@@ -509,7 +557,6 @@ function useWithdrawViewTransactions({
     bridgeOutParams,
     chainId,
     expressTxnParamsAsyncResult.promise,
-    gasPaymentParams,
     inputAmountUsd,
     isFirstWithdrawal,
     provider,
@@ -522,6 +569,7 @@ function useWithdrawViewTransactions({
     unwrappedSelectedTokenAddress,
     unwrappedSelectedTokenSymbol,
     withdrawalViewChain,
+    validateWithdrawal,
   ]);
 
   const handleWithdraw = useCallback(async () => {
@@ -567,9 +615,9 @@ export const WithdrawalView = () => {
     ? getMultichainTokenId(chainId, unwrappedSelectedTokenAddress)
     : undefined;
 
-  const realInputAmount =
+  const inputAmount =
     selectedToken && inputValue !== undefined ? parseValue(inputValue, selectedToken.decimals) : undefined;
-  const inputAmount = useLeadingDebounce(realInputAmount);
+  const quoteInputAmount: bigint | undefined = useDebounce(inputAmount, QUOTE_DEBOUNCE_MS);
   const inputAmountUsd = selectedToken
     ? convertToUsd(inputAmount, selectedToken.decimals, selectedToken.prices.maxPrice)
     : undefined;
@@ -612,8 +660,8 @@ export const WithdrawalView = () => {
     if (
       isSameChain ||
       !account ||
-      inputAmount === undefined ||
-      inputAmount <= 0n ||
+      quoteInputAmount === undefined ||
+      quoteInputAmount <= 0n ||
       withdrawalViewChain === undefined
     ) {
       return;
@@ -622,17 +670,25 @@ export const WithdrawalView = () => {
     return getMultichainTransferSendParams({
       dstChainId: withdrawalViewChain,
       account,
-      amountLD: inputAmount,
+      amountLD: quoteInputAmount,
       isToGmx: false,
     });
-  }, [isSameChain, account, inputAmount, withdrawalViewChain]);
+  }, [isSameChain, account, quoteInputAmount, withdrawalViewChain]);
 
-  const { data: quoteOft, isLoading: isQuoteOftLoading } = useQuoteOft({
+  const {
+    data: requestedQuoteOft,
+    isLoading: isQuoteRequestLoading,
+    error: quoteOftError,
+  } = useQuoteOft({
     sendParams: sendParamsWithoutSlippage,
     fromStargateAddress: selectedTokenSettlementChainTokenId?.stargate,
     fromChainId: chainId,
     toChainId: withdrawalViewChain,
   });
+
+  const isQuoteOftLoading = !isSameChain && (inputAmount !== quoteInputAmount || isQuoteRequestLoading);
+  const quoteOft = !isQuoteOftLoading ? requestedQuoteOft : undefined;
+  const quoteAmountReceived = quoteOft?.receipt.amountReceivedLD;
 
   const { isBelowLimit, lowerLimitFormatted, isAboveLimit, upperLimitFormatted } = useQuoteOftLimits({
     quoteOft,
@@ -677,12 +733,45 @@ export const WithdrawalView = () => {
     withdrawalViewChain,
   ]);
 
-  const { data: baseNativeFee, isLoading: isBaseNativeFeeLoading } = useQuoteSendNativeFee({
+  const {
+    data: baseNativeFee,
+    isLoading: isBaseNativeFeeLoading,
+    error: baseNativeFeeError,
+  } = useQuoteSendNativeFee({
     sendParams: baseSendParams,
     fromStargateAddress: selectedTokenSettlementChainTokenId?.stargate,
     fromChainId: chainId,
     toChainId: withdrawalViewChain,
   });
+
+  const { data: probeQuoteOft, error: probeQuoteOftError } = useQuoteOftProbe({
+    fromStargateAddress: selectedTokenSettlementChainTokenId?.stargate,
+    fromChainId: chainId,
+    toChainId: withdrawalViewChain,
+    decimals: selectedTokenSettlementChainTokenId?.decimals,
+  });
+
+  const { isPaused: isSourcePoolPaused, isLoading: isSourcePoolStatusLoading } = useIsStargatePoolPaused({
+    chainId,
+    stargateAddress: isSameChain ? undefined : selectedTokenSettlementChainTokenId?.stargate,
+  });
+
+  const { isPaused: isDestinationPoolPaused, isLoading: isDestinationPoolStatusLoading } = useIsStargatePoolPaused({
+    chainId: withdrawalViewChain,
+    stargateAddress:
+      isSameChain || withdrawalViewChain === undefined || unwrappedSelectedTokenAddress === undefined
+        ? undefined
+        : getMappedTokenId(chainId as SettlementChainId, unwrappedSelectedTokenAddress, withdrawalViewChain)?.stargate,
+  });
+
+  const isRouteUnavailable = useMemo(
+    () =>
+      [quoteOftError, probeQuoteOftError, baseNativeFeeError].some(getIsStargateRouteUnavailableError) ||
+      probeQuoteOft?.limit.maxAmountLD === 0n ||
+      isSourcePoolPaused ||
+      isDestinationPoolPaused,
+    [quoteOftError, probeQuoteOftError, baseNativeFeeError, probeQuoteOft, isSourcePoolPaused, isDestinationPoolPaused]
+  );
 
   const {
     networkFeeUsd: bridgeNetworkFeeUsd,
@@ -787,14 +876,14 @@ export const WithdrawalView = () => {
     const dstEid = getLayerZeroEndpointId(withdrawalViewChain);
     const stargateAddress = getStargatePoolAddress(chainId, unwrappedSelectedTokenAddress);
 
-    if (dstEid === undefined || stargateAddress === undefined || quoteOft === undefined) {
+    if (dstEid === undefined || stargateAddress === undefined || quoteAmountReceived === undefined) {
       return;
     }
 
     return {
       token: selectedTokenAddress as Address,
       amount: inputAmount,
-      minAmountOut: applySlippageToMinOut(MULTICHAIN_FUNDING_SLIPPAGE_BPS, quoteOft.receipt.amountReceivedLD),
+      minAmountOut: applySlippageToMinOut(MULTICHAIN_FUNDING_SLIPPAGE_BPS, quoteAmountReceived),
       data: encodeAbiParameters(
         [
           {
@@ -814,7 +903,7 @@ export const WithdrawalView = () => {
     inputAmount,
     isSameChain,
     chainId,
-    quoteOft,
+    quoteAmountReceived,
   ]);
 
   const gasPrice = useGasPrice(chainId);
@@ -908,7 +997,7 @@ export const WithdrawalView = () => {
     requireValidations: false,
     overrideWnt: !isSameChain,
     gasPaymentTokenAsCollateralAmount: baseGasPaymentTokenAsCollateralAmount,
-    enabled: !isSameChain,
+    enabled: !isSameChain && !isRouteUnavailable,
   });
 
   const expressTransactionBuilder: ExpressTransactionBuilder | undefined = useMemo(() => {
@@ -939,7 +1028,7 @@ export const WithdrawalView = () => {
     requireValidations: false,
     overrideWnt: !isSameChain,
     gasPaymentTokenAsCollateralAmount,
-    enabled: !isSameChain,
+    enabled: !isSameChain && !isRouteUnavailable,
   });
 
   const errors = useArbitraryError(expressTxnParamsAsyncResult.error, { isGmxAccount: true });
@@ -1197,6 +1286,7 @@ export const WithdrawalView = () => {
   );
 
   const { handleWithdraw, isSubmitting } = useWithdrawViewTransactions({
+    inputAmount,
     selectedToken,
     inputAmountUsd,
     bridgeOutParams,
@@ -1204,16 +1294,21 @@ export const WithdrawalView = () => {
   });
 
   const handleMaxButtonClick = useCallback(() => {
-    if (withdrawalMaxDetails.maxAvailableAmount > 0n) {
+    if (!isSubmitting && withdrawalMaxDetails.maxAvailableAmount > 0n) {
       setInputValue(withdrawalMaxDetails.formattedMaxAvailableAmount);
     }
-  }, [withdrawalMaxDetails.maxAvailableAmount, withdrawalMaxDetails.formattedMaxAvailableAmount, setInputValue]);
+  }, [
+    isSubmitting,
+    withdrawalMaxDetails.maxAvailableAmount,
+    withdrawalMaxDetails.formattedMaxAvailableAmount,
+    setInputValue,
+  ]);
 
   const handleKeepGasClick = useCallback(() => {
-    if (withdrawalMaxDetails.formattedKeepGasAmount !== undefined) {
+    if (!isSubmitting && withdrawalMaxDetails.formattedKeepGasAmount !== undefined) {
       setInputValue(withdrawalMaxDetails.formattedKeepGasAmount);
     }
-  }, [withdrawalMaxDetails.formattedKeepGasAmount, setInputValue]);
+  }, [isSubmitting, withdrawalMaxDetails.formattedKeepGasAmount, setInputValue]);
 
   const isInputEmpty = inputAmount === undefined || inputAmount <= 0n;
 
@@ -1225,7 +1320,11 @@ export const WithdrawalView = () => {
     shouldShowInfoRowPlaceholder &&
     (isSameChain
       ? sameChainNetworkFeeAsyncResult.isLoading
-      : areMultichainFeesLoading || (!expressTxnParamsAsyncResult.data && !expressTxnParamsAsyncResult.error));
+      : !isRouteUnavailable &&
+        (areMultichainFeesLoading ||
+          isSourcePoolStatusLoading ||
+          isDestinationPoolStatusLoading ||
+          (!expressTxnParamsAsyncResult.data && !expressTxnParamsAsyncResult.error)));
 
   const expressOrdersEnabled = useSelector(selectExpressOrdersEnabled);
   const setExpressOrdersEnabled = useSelector(selectSetExpressOrdersEnabled);
@@ -1270,6 +1369,11 @@ export const WithdrawalView = () => {
       ),
       disabled: true,
     };
+  } else if (isRouteUnavailable) {
+    buttonState = {
+      text: t`Route temporarily unavailable`,
+      disabled: true,
+    };
   } else if (isInputEmpty) {
     buttonState = {
       text: t`Enter withdrawal amount`,
@@ -1291,7 +1395,7 @@ export const WithdrawalView = () => {
       text: t`Withdraw`,
       disabled: true,
     };
-  } else if (isNetworkFeeLoading) {
+  } else if (isNetworkFeeLoading || bridgeOutParams === undefined) {
     buttonState = {
       text: (
         <>
@@ -1447,10 +1551,16 @@ export const WithdrawalView = () => {
   );
 
   const isTestnet = isTestnetChain(chainId);
+  const tokenSymbol = selectedToken?.symbol;
+  const destinationNetworkName = withdrawalViewChain !== undefined ? getChainName(withdrawalViewChain) : undefined;
 
   const estimatedTimeValue = useMemo(() => {
     if (isSameChain) {
       return <Trans>Instant</Trans>;
+    }
+
+    if (isRouteUnavailable) {
+      return "-";
     }
 
     if (inputAmount === undefined || inputAmount === 0n) {
@@ -1458,7 +1568,7 @@ export const WithdrawalView = () => {
     }
 
     return isTestnet ? <Trans>1m 40s</Trans> : <Trans>20s</Trans>;
-  }, [isSameChain, inputAmount, isTestnet]);
+  }, [isSameChain, isRouteUnavailable, inputAmount, isTestnet]);
 
   const networkFeeValue = useMemo(() => {
     if (isSameChain) {
@@ -1476,6 +1586,10 @@ export const WithdrawalView = () => {
           isExpress={false}
         />
       );
+    }
+
+    if (isRouteUnavailable) {
+      return "-";
     }
 
     const someExpressFeeAmount = someGasPaymentTokenAmount ?? lastValidNetworkFees.someGasPaymentTokenAmount;
@@ -1501,9 +1615,14 @@ export const WithdrawalView = () => {
     lastValidNetworkFees.someGasPaymentTokenAmount,
     sameChainNetworkFeeDetails,
     someGasPaymentTokenAmount,
+    isRouteUnavailable,
   ]);
 
   const bridgeFeeValue = useMemo(() => {
+    if (isRouteUnavailable) {
+      return "-";
+    }
+
     const someBridgeNetworkFee = bridgeNetworkFee ?? lastValidNetworkFees.bridgeNetworkFee;
     const someBridgeNetworkFeeUsd = bridgeNetworkFeeUsd ?? lastValidNetworkFees.bridgeNetworkFeeUsd;
 
@@ -1529,11 +1648,16 @@ export const WithdrawalView = () => {
     lastValidNetworkFees.bridgeNetworkFee,
     lastValidNetworkFees.bridgeNetworkFeeUsd,
     relayerFeeToken,
+    isRouteUnavailable,
   ]);
 
   const withdrawFeeValue = useMemo(() => {
     if (isSameChain) {
       return <Trans>No fee</Trans>;
+    }
+
+    if (isRouteUnavailable) {
+      return "-";
     }
 
     if (protocolFeeUsd === undefined || selectedTokenSettlementChainTokenId === undefined) {
@@ -1549,9 +1673,16 @@ export const WithdrawalView = () => {
         symbol={selectedToken?.symbol}
       />
     );
-  }, [isSameChain, protocolFeeUsd, selectedTokenSettlementChainTokenId, protocolFeeAmount, selectedToken?.symbol]);
+  }, [
+    isSameChain,
+    protocolFeeUsd,
+    selectedTokenSettlementChainTokenId,
+    protocolFeeAmount,
+    selectedToken?.symbol,
+    isRouteUnavailable,
+  ]);
 
-  const isWithdrawFeeLoading = shouldShowInfoRowPlaceholder && areMultichainFeesLoading;
+  const isWithdrawFeeLoading = shouldShowInfoRowPlaceholder && !isRouteUnavailable && areMultichainFeesLoading;
 
   const isGmxBalanceLoading = shouldShowInfoRowPlaceholder && isGmxAccountUsdLoading;
 
@@ -1570,6 +1701,7 @@ export const WithdrawalView = () => {
             <Trans>Asset</Trans>
           </div>
           <DropdownSelector
+            disabled={isSubmitting}
             value={selectedTokenAddress}
             onChange={handlePickToken}
             placeholder={t`Select token`}
@@ -1592,6 +1724,7 @@ export const WithdrawalView = () => {
             <Trans>To network</Trans>
           </div>
           <DropdownSelector
+            disabled={isSubmitting}
             value={withdrawalViewChain}
             onChange={(value) => {
               setWithdrawalViewChain(Number(value) as SourceChainId);
@@ -1643,7 +1776,7 @@ export const WithdrawalView = () => {
                     onKeepGas={handleKeepGasClick}
                   />
                 )}
-                <button type="button" onClick={handleMaxButtonClick}>
+                <button type="button" onClick={handleMaxButtonClick} disabled={isSubmitting}>
                   <Trans>Available:</Trans>{" "}
                   <Amount
                     className="text-typography-primary"
@@ -1658,6 +1791,7 @@ export const WithdrawalView = () => {
           </div>
           <div className="relative text-16 leading-base">
             <NumberInput
+              isDisabled={isSubmitting}
               value={inputValue}
               onValueChange={(e) => setInputValue(e.target.value)}
               className="w-full rounded-8 border border-slate-800 bg-slate-800 py-13 pl-14 pr-96 text-16 leading-base
@@ -1677,7 +1811,7 @@ export const WithdrawalView = () => {
 
       {!isInsufficientBalance && (
         <>
-          {isAboveLimit && (
+          {isAboveLimit && !isRouteUnavailable && (
             <AlertInfoCard type="error" className="my-4" hideClose>
               <div>
                 <Trans>
@@ -1731,11 +1865,22 @@ export const WithdrawalView = () => {
               isGmxBalanceLoading ? (
                 valueSkeleton
               ) : (
-                <ValueTransition from={formatUsdParts(gmxAccountUsd)} to={formatUsdParts(nextGmxAccountBalanceUsd)} />
+                <ValueTransition
+                  from={formatUsdParts(gmxAccountUsd)}
+                  to={isRouteUnavailable ? undefined : formatUsdParts(nextGmxAccountBalanceUsd)}
+                />
               )
             }
           />
         </div>
+      )}
+
+      {isRouteUnavailable && (
+        <AlertInfoCard type="error" className="mb-16" hideClose>
+          <Trans>
+            Stargate isn't accepting {tokenSymbol} transfers to {destinationNetworkName} right now. Try another asset.
+          </Trans>
+        </AlertInfoCard>
       )}
 
       {!isInsufficientBalance && (

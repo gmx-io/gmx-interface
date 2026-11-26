@@ -1,3 +1,4 @@
+// @vitest-shared-worker
 import { sub } from "date-fns";
 import { describe, expect, it } from "vitest";
 

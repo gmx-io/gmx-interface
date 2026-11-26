@@ -17,6 +17,7 @@ import {
   usePositionEditorPositionState,
 } from "context/SyntheticsStateContext/hooks/positionEditorHooks";
 import { useSavedAllowedSlippage } from "context/SyntheticsStateContext/hooks/settingsHooks";
+import { selectIsExpressTransactionAvailable } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectBlockTimestampData,
   selectMarketsInfoData,
@@ -33,6 +34,7 @@ import {
   selectPositionEditorIsDepositSwapUnfillable,
   selectPositionEditorMaxWithdrawAmount,
   selectPositionEditorRawMaxWithdrawAmount,
+  selectPositionEditorReplacingOrder,
   selectPositionEditorReplacingOrderKey,
   selectPositionEditorSelectedCollateralAddress,
   selectPositionEditorSelectedCollateralToken,
@@ -40,11 +42,13 @@ import {
   selectPositionEditorTriggerPrice,
 } from "context/SyntheticsStateContext/selectors/positionEditorSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import { ExpressTxnParams } from "domain/synthetics/express/types";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import {
-  getCanUseTokenPermits,
   getExpressParamsForSubmit,
+  getExpressTokenPermitBlockReason,
+  getGasPaymentTokenToApprove,
   reportMultichainExpressSubmitError,
 } from "domain/synthetics/express/validateMultichainExpressSubmit";
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
@@ -100,7 +104,7 @@ import { applySlippageToMinOut } from "sdk/utils/trade/trade";
 
 import { EmbeddedActionButton } from "components/Button/EmbeddedActionButton";
 import { MarginDepositInsufficientMessage } from "components/MarginRemediation/MarginRemediationActions";
-import { TooltipAction, TooltipContent, TooltipLink, TooltipText } from "components/Tooltip/TooltipBlocks";
+import { TooltipAction, TooltipContent, TooltipReadMore, TooltipText } from "components/Tooltip/TooltipBlocks";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
@@ -148,10 +152,13 @@ export function usePositionEditorButtonState(
   const setCollateralInputValue = useSelector(selectPositionEditorSetCollateralInputValue);
   const { collateralDeltaAmount, collateralDeltaUsd } = useSelector(selectPositionEditorCollateralInputAmountAndUsd);
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
+  const { isClassicEnabled: isClassicTokenPermitsEnabled, classicTokenPermits } = useTokenPermitsContext();
+  const isExpressTransactionAvailable = useSelector(selectIsExpressTransactionAvailable);
   const marketsInfoData = useSelector(selectMarketsInfoData);
   const depositMode = useSelector(selectPositionEditorDepositMode);
   const triggerPrice = useSelector(selectPositionEditorTriggerPrice);
   const replacingOrderKey = useSelector(selectPositionEditorReplacingOrderKey);
+  const replacingOrder = useSelector(selectPositionEditorReplacingOrder);
   const positionOrders = useSelector(makeSelectOrdersByPositionKey(editingPositionKey));
   const maxAutoCancelOrders = useSelector(selectMaxAutoCancelOrders);
   const depositSwapAmounts = useSelector(selectPositionEditorDepositSwapAmounts);
@@ -213,6 +220,7 @@ export function usePositionEditorButtonState(
         indexTokenAddress: position.indexToken.address,
         allowedSlippage,
         replacingOrderKey,
+        replacingOrder,
       });
     }
 
@@ -314,6 +322,7 @@ export function usePositionEditorButtonState(
     marketsInfoData,
     position,
     receiveUsd,
+    replacingOrder,
     replacingOrderKey,
     selectedCollateralAddress,
     selectedCollateralToken,
@@ -345,26 +354,28 @@ export function usePositionEditorButtonState(
       list.push({ tokenAddress: selectedCollateralAddress, amount: collateralDeltaAmount });
     }
 
-    if (expressParams?.gasPaymentParams) {
-      list.push({
-        tokenAddress: expressParams.gasPaymentParams.gasPaymentTokenAddress,
-        amount: expressParams.gasPaymentParams.gasPaymentTokenAmount,
-      });
+    const gasPaymentTokenToApprove = getGasPaymentTokenToApprove(expressParams);
+    if (gasPaymentTokenToApprove) {
+      list.push(gasPaymentTokenToApprove);
     }
 
     return list;
-  }, [isDeposit, selectedCollateralAddress, collateralDeltaAmount, expressParams?.gasPaymentParams]);
+  }, [isDeposit, selectedCollateralAddress, collateralDeltaAmount, expressParams]);
+
+  const permitBlockReason = getExpressTokenPermitBlockReason(expressParams);
 
   const {
     tokensToApprove,
     isAllowanceLoaded: isAllowanceLoadedRaw,
     isApproving,
     handleApprove,
+    approvalBatch,
   } = useTokenApproval({
     chainId,
     spenderAddress: routerAddress,
     tokens: approvalTokens,
-    allowPermit: getCanUseTokenPermits(expressParams),
+    allowPermit: permitBlockReason === undefined || isClassicTokenPermitsEnabled,
+    allowBatch: !isExpressTransactionAvailable,
     skip: isCollateralTokenFromGmxAccount,
     metric: {
       flow: "editCollateral",
@@ -372,11 +383,13 @@ export function usePositionEditorButtonState(
       isExpress1CT: Boolean(expressParams?.subaccount),
       gasPaymentTokenAddress: expressParams?.gasPaymentParams?.gasPaymentTokenAddress,
       payTokenAddress: isDeposit ? selectedCollateralAddress : undefined,
+      permitBlockReason,
     },
   });
 
   const isAllowanceLoaded =
     Boolean(selectedCollateralAddress && collateralDeltaAmount !== undefined) && isAllowanceLoadedRaw;
+  const isApprovalStepRequired = isAllowanceLoaded && tokensToApprove.length > 0 && approvalBatch === undefined;
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -528,9 +541,7 @@ export function usePositionEditorButtonState(
           <TooltipAction onClick={setMaxWithdrawal}>
             <Trans>Set max withdrawal</Trans>
           </TooltipAction>
-          <TooltipLink href="https://docs.gmx.io/docs/trading/order-types/#max-leverage">
-            <Trans>Read more</Trans>
-          </TooltipLink>
+          <TooltipReadMore href="https://docs.gmx.io/docs/trading/order-types/#max-leverage" />
         </TooltipContent>
       );
     }
@@ -573,7 +584,7 @@ export function usePositionEditorButtonState(
       return;
     }
 
-    if (isAllowanceLoaded && tokensToApprove.length && selectedCollateralToken) {
+    if (isApprovalStepRequired && selectedCollateralToken) {
       if (!chainId || isApproving) return;
 
       userAnalytics.pushEvent<TokenApproveClickEvent>({
@@ -655,6 +666,9 @@ export function usePositionEditorButtonState(
       provider,
       batchParams,
       expressParams: getExpressParamsForSubmit(fulfilledExpressParams),
+      tokenPermits: classicTokenPermits,
+      walletCallsBatch: approvalBatch,
+      batchFlow: isDeposit ? "editCollateral" : undefined,
       isGmxAccount: isCollateralTokenFromGmxAccount,
       simulationParams: shouldDisableValidationForTesting
         ? undefined
@@ -784,7 +798,7 @@ export function usePositionEditorButtonState(
     };
   }
 
-  if (isAllowanceLoaded && tokensToApprove.length && selectedCollateralToken) {
+  if (isApprovalStepRequired && selectedCollateralToken) {
     const { text, tooltipContent } = getApproveButtonState();
     return {
       text,

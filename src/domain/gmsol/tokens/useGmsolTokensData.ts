@@ -19,7 +19,7 @@ export function useGmsolTokensData({
 }: {
   enabled: boolean;
   rawMarketsInfoData: RawMarketsInfoData | undefined;
-}): TokensDataResult & { isUnavailable: boolean } {
+}): TokensDataResult & { isUnavailable: boolean; refetch: () => Promise<unknown> } {
   const oracleFetcher = useOracleKeeperFetcher(ARBITRUM);
   const key = enabled
     ? ["gmsolPrices", SOLANA_NETWORK_ID, getUiApiCacheKey(SOLANA_NETWORK_ID), oracleFetcher.url]
@@ -28,6 +28,7 @@ export function useGmsolTokensData({
     data: pricesData,
     error,
     freshness,
+    refetch,
   } = useSWRWithFreshness<GmsolTokenPricesData | undefined>(key, () => fetchGmsolPrices(oracleFetcher), {
     refreshInterval: FREQUENT_UPDATE_INTERVAL,
     maxAgeMs: FREQUENT_UPDATE_INTERVAL + API_STALE_MS,
@@ -70,5 +71,6 @@ export function useGmsolTokensData({
     isBalancesLoaded: false,
     error,
     isUnavailable: Boolean(error) || isExpired || isIncomplete || (receivedAt !== undefined && !tokensData),
+    refetch,
   };
 }

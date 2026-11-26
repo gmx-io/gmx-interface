@@ -39,6 +39,7 @@ export function useMaxAutoCancelOrdersState({
     return {
       warning: null,
       autoCancelOrdersLimit: 0,
+      allowedAutoCancelOrdersNumber: undefined,
     };
   }
 
@@ -46,22 +47,27 @@ export function useMaxAutoCancelOrdersState({
   const autoCancelOrdersLimit = allowedAutoCancelOrdersNumber - existingAutoCancelOrders.length;
   const showWarning = autoCancelOrdersLimit < draftOrdersCount;
 
-  let warning: React.ReactNode = null;
-
-  if (showWarning) {
-    warning = (
-      <AlertInfoCard type="warning" hideClose>
-        <Trans>
-          Max {allowedAutoCancelOrdersNumber} auto-cancel TP/SL orders allowed. Extra orders require manual
-          cancellation. Existing orders still close with the position.{" "}
-          <ExternalLink href="https://docs.gmx.io/docs/trading/order-types/#auto-cancel-tpsl">Read more</ExternalLink>.
-        </Trans>
-      </AlertInfoCard>
-    );
-  }
-
   return {
-    warning,
+    warning: showWarning ? (
+      <MaxAutoCancelOrdersWarning allowedAutoCancelOrdersNumber={allowedAutoCancelOrdersNumber} />
+    ) : null,
     autoCancelOrdersLimit,
+    allowedAutoCancelOrdersNumber,
   };
+}
+
+export function MaxAutoCancelOrdersWarning({
+  allowedAutoCancelOrdersNumber,
+}: {
+  allowedAutoCancelOrdersNumber: number;
+}) {
+  return (
+    <AlertInfoCard type="warning" hideClose>
+      <Trans>
+        Max {allowedAutoCancelOrdersNumber} auto-cancel TP/SL orders allowed. Extra orders require manual cancellation.
+        Existing orders still close with the position.{" "}
+        <ExternalLink href="https://docs.gmx.io/docs/trading/order-types/#auto-cancel-tpsl">Read more</ExternalLink>.
+      </Trans>
+    </AlertInfoCard>
+  );
 }

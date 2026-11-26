@@ -4,7 +4,7 @@ import { usePrevious } from "react-use";
 import {
   selectTradeboxCollateralTokenAddress,
   selectTradeboxFromTokenAddress,
-  selectTradeboxIsTPSLEnabled,
+  selectTradeboxIsTPSLToggledOn,
   selectTradeboxMarketAddress,
   selectTradeboxToTokenAddress,
   selectTradeboxTradeFlags,
@@ -18,7 +18,7 @@ export function useTradeboxTPSLReset(setIsDismissed: (isDismissed: boolean) => v
   const marketAddress = useSelector(selectTradeboxMarketAddress);
   const collateralToken = useSelector(selectTradeboxCollateralTokenAddress);
   const { isLong, isIncrease } = useSelector(selectTradeboxTradeFlags);
-  const isTpSlEnabled = useSelector(selectTradeboxIsTPSLEnabled);
+  const isTpSlToggledOn = useSelector(selectTradeboxIsTPSLToggledOn);
 
   const previouseFromTokenAddress = usePrevious(fromTokenAddress);
   const previousToTokenAddress = usePrevious(toTokenAddress);
@@ -33,7 +33,7 @@ export function useTradeboxTPSLReset(setIsDismissed: (isDismissed: boolean) => v
   const isMarketChanged = toTokenAddress !== previousToTokenAddress;
   const shouldResetTPSL = !isRemountDuringConversion && isIncrease !== previousIsIncrease;
   const shouldCarryOverTPSL = !isRemountDuringConversion && (isMarketChanged || isLong !== previousIsLong);
-  const shouldKeepTypedTPSLPrices = isTpSlEnabled && !isMarketChanged;
+  const shouldKeepTypedTPSLPrices = isTpSlToggledOn && !isMarketChanged;
 
   const shouldResetPriceImpactWarning =
     shouldResetTPSL ||

@@ -5,7 +5,7 @@ import { getByKey } from "utils/objects";
 import { OrderType, SwapPricingType } from "utils/orders/types";
 import { getSwapAmountsByFromValue, getSwapAmountsByToValue } from "utils/swap";
 import { createFindSwapPath } from "utils/swap/swapPath";
-import { convertToUsd, getIsUnwrap, getIsWrap, getTokensRatioByPrice } from "utils/tokens";
+import { convertToUsd, getIsEquivalentTokens, getIsUnwrap, getIsWrap, getTokensRatioByPrice } from "utils/tokens";
 import { TokenData, TokensData, TokensRatio } from "utils/tokens/types";
 import { getIncreasePositionAmounts } from "utils/trade/increase";
 import { SwapAmounts, SwapOptimizationOrderArray } from "utils/trade/types";
@@ -156,6 +156,9 @@ export async function increaseOrderHelper(
     fromTokenAddress: params.payTokenAddress,
     toTokenAddress: collateralTokenAddress,
     marketsInfoData,
+    disabledMarkets: getIsEquivalentTokens(fromToken, collateralToken)
+      ? undefined
+      : await sdk.oracle.getClosedMarketAddresses(),
     gasEstimationParams: {
       gasLimits,
       gasPrice,
@@ -282,19 +285,6 @@ export async function swap(sdk: GmxSdk, params: SwapParams) {
     return undefined;
   }
 
-  const findSwapPath = createFindSwapPath({
-    chainId: sdk.chainId,
-    fromTokenAddress: params.fromTokenAddress,
-    toTokenAddress: params.toTokenAddress,
-    marketsInfoData,
-    gasEstimationParams: {
-      gasLimits,
-      gasPrice,
-      tokensData,
-    },
-    swapPricingType: SwapPricingType.Swap,
-  });
-
   const isWrapOrUnwrap = Boolean(
     fromToken && toToken && (getIsWrap(fromToken, toToken) || getIsUnwrap(fromToken, toToken))
   );
@@ -316,6 +306,20 @@ export async function swap(sdk: GmxSdk, params: SwapParams) {
       minOutputAmount: tokenAmount,
     };
   }
+
+  const findSwapPath = createFindSwapPath({
+    chainId: sdk.chainId,
+    fromTokenAddress: params.fromTokenAddress,
+    toTokenAddress: params.toTokenAddress,
+    marketsInfoData,
+    disabledMarkets: await sdk.oracle.getClosedMarketAddresses(),
+    gasEstimationParams: {
+      gasLimits,
+      gasPrice,
+      tokensData,
+    },
+    swapPricingType: SwapPricingType.Swap,
+  });
 
   const swapOptimizationOrder: SwapOptimizationOrderArray | undefined = isLimit ? ["length", "liquidity"] : undefined;
 

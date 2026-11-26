@@ -542,6 +542,30 @@ const MARKETS_UI_CONFIGS: Record<NetworkId, Record<string, MarketUiConfig>> = {
     "0x162C091263fBb3dfAf1D55DCC979533EB341DA5f": {
       enabled: true,
     },
+    // LINK/USD [USDG-USDG]
+    "0x71Dd0524F8e0aab8FE59E6B3888145A8ac117Aa3": {
+      enabled: true,
+    },
+    // PEPE/USD [USDG-USDG]
+    "0x1e5bf5390a75a6ab085bd4e7E63A00074C43B858": {
+      enabled: true,
+    },
+    // DOGE/USD [USDG-USDG]
+    "0x2bDCC67868abA103406dCeb4F853B6BF2227AB14": {
+      enabled: true,
+    },
+    // BNB/USD [USDG-USDG]
+    "0x55556D4734DFA693F554985818dBcA07a0225986": {
+      enabled: true,
+    },
+    // SUI/USD [USDG-USDG]
+    "0x460E90d682920E0Fe500aa180a45326d2089f18f": {
+      enabled: true,
+    },
+    // XMR/USD [USDG-USDG]
+    "0x51C4C72263D705Ab2F78531Bd3c8a43D362CCB53": {
+      enabled: true,
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]
@@ -795,6 +819,11 @@ export const MARKET_CLOSING_DATES: Record<number, Record<string, number>> = {
     "0x0CCB4fAa6f1F1B30911619f1184082aB4E25813c": Date.UTC(2026, 10, 2), // XRP/USD [WETH-USDC]
     "0x587759c237acCa739bCE3911647BacF56C876E60": Date.UTC(2026, 10, 2), // ZEC/USD [WBTC.e-USDC]
     "0xBcb8FE13d02b023e8f94f6881Cc0192fd918A5C0": Date.UTC(2026, 10, 2), // HYPE/USD [WBTC-USDC]
+    "0x7c54D547FAD72f8AFbf6E5b04403A0168b654C6f": Date.UTC(2026, 11, 8), // XMR/USD [WBTC-USDC]
+    "0x0Bb2a83F995E1E1eae9D7fDCE68Ab1ac55b2cc85": Date.UTC(2026, 11, 8), // PEPE/USD [WETH-USDC]
+    "0x6Ecf2133E2C9751cAAdCb6958b9654baE198a797": Date.UTC(2026, 11, 8), // SUI/USD [WETH-USDC]
+    "0x065577D05c3D4C11505ed7bc97BBF85d462A6A6f": Date.UTC(2026, 11, 8), // BNB/USD [WBTC.e-USDC]
+    "0x6853EA96FF216fAb11D2d930CE3C508556A4bdc4": Date.UTC(2026, 11, 8), // DOGE/USD [WETH-USDC]
   },
 };
 

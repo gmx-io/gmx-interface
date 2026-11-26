@@ -678,6 +678,14 @@ export async function buildMarketsConfigsRequest(
           methodName: "getUint",
           params: [prebuiltHashedKeys.withdrawalFeeFactorBalanceWasNotImproved],
         },
+        depositFeeFactorBalanceWasImproved: {
+          methodName: "getUint",
+          params: [prebuiltHashedKeys.depositFeeFactorBalanceWasImproved],
+        },
+        depositFeeFactorBalanceWasNotImproved: {
+          methodName: "getUint",
+          params: [prebuiltHashedKeys.depositFeeFactorBalanceWasNotImproved],
+        },
         virtualMarketId: {
           methodName: "getBytes32",
           params: [prebuiltHashedKeys.virtualMarketId],
@@ -780,6 +788,8 @@ export function parseMarketsConfigsResponse(
         withdrawalFeeFactorBalanceWasImproved: dataStoreValues.withdrawalFeeFactorBalanceWasImproved.returnValues[0],
         withdrawalFeeFactorBalanceWasNotImproved:
           dataStoreValues.withdrawalFeeFactorBalanceWasNotImproved.returnValues[0],
+        depositFeeFactorBalanceWasImproved: dataStoreValues.depositFeeFactorBalanceWasImproved.returnValues[0],
+        depositFeeFactorBalanceWasNotImproved: dataStoreValues.depositFeeFactorBalanceWasNotImproved.returnValues[0],
         swapImpactExponentFactor: dataStoreValues.swapImpactExponentFactor.returnValues[0],
         virtualMarketId: dataStoreValues.virtualMarketId.returnValues[0],
         virtualIndexTokenId: dataStoreValues.virtualIndexTokenId.returnValues[0],

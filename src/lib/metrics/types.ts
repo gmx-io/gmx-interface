@@ -1,6 +1,8 @@
 import type { NetworkId, SourceChainId } from "config/chains";
+import type { ExpressTokenPermitBlockReason } from "domain/synthetics/express/validateMultichainExpressSubmit";
 import type { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import type { MissedCoinsPlace } from "domain/synthetics/userFeedback";
+import type { TokenPermitUnavailableReason } from "domain/tokens/tokenPermitsEligibility";
 import type { ErrorData } from "lib/errors";
 import type { DisplayMode } from "lib/pwa/getDisplayMode";
 import type { LaunchSource } from "lib/pwa/getLaunchSource";
@@ -176,8 +178,8 @@ export type LoadingFailedEvent = {
 export type ApiDataFallbackCounter = {
   event: "apiData.fallback";
   data: {
-    domain: "markets" | "positions" | "orders" | "wsPrices";
-    reason: "stale" | "error" | "initial";
+    domain: "markets" | "positions" | "orders" | "wsPrices" | "restPrices";
+    reason: "stale" | "error" | "initial" | "timeout" | "empty" | "partial";
     chainId: number;
   };
 };
@@ -317,6 +319,7 @@ export type RpcTrackerUpdateEndpointsEvent = {
     secondary: string;
     primaryBlockGap: number | "unknown";
     secondaryBlockGap: number | "unknown";
+    progressUnit?: "slot";
   } & Partial<EndpointsPairRepeats>;
 };
 
@@ -328,11 +331,23 @@ export type RpcTrackerEndpointTiming = {
   };
 };
 
+export type RpcTrackerEndpointHealthEvent = {
+  event: "rpcTracker.endpoint.health";
+  isError: boolean;
+  data: {
+    chainId: number;
+    chainName: string;
+    endpoint: string;
+    isHealthy: boolean;
+  };
+};
+
 export type RpcTrackerEndpointBlockGapTiming = {
   event: "rpcTracker.endpoint.blockGap";
   data: {
     endpoint: string;
     chainId: number;
+    progressUnit?: "slot";
   };
 };
 
@@ -408,6 +423,7 @@ export type ExpressOrderMetricData = {
   isSubaccountValid: boolean | undefined;
   isSubbaccountExpired: boolean | undefined;
   isSubaccountActionsExceeded: boolean | undefined;
+  isSubaccountNonceExpired: boolean | undefined;
   approximateGasLimit: number;
   approximateL1GasLimit: number;
   gasPrice: number;
@@ -775,6 +791,13 @@ export type TokenApprovalFlow =
   | "accountTransfer"
   | "paxosTransit";
 
+// why a token a permit could cover was approved with a transaction
+export type TokenPermitSkipReason =
+  | "notInFlow"
+  | ExpressTokenPermitBlockReason
+  | Exclude<TokenPermitUnavailableReason, "tokenNotAllowed">
+  | "permitFailed";
+
 export type TokenApprovalMetricParams = {
   flow: TokenApprovalFlow;
   isGasPaymentToken?: boolean;
@@ -782,13 +805,15 @@ export type TokenApprovalMetricParams = {
   isExpress1CT?: boolean;
   // the spender is a user account rather than a contract, so it stays out of analytics
   hideSpender?: boolean;
+  permitSkipReason?: TokenPermitSkipReason;
 };
 
 export type TokenApprovalEvent = {
   event: "tokenApproval";
   isError: false;
   data: Omit<TokenApprovalMetricParams, "hideSpender"> & {
-    method: "transaction" | "permit";
+    /** `batch`: approved in one wallet confirmation together with the action (EIP-5792) */
+    method: "transaction" | "permit" | "batch";
     outcome: "accepted" | "rejected" | "failed";
     chainId: number;
     tokenAddress: string;
@@ -844,6 +869,32 @@ export type SubaccountRemovalEvent = {
     /** `unknown`: the relay didn't confirm, the next attempt finds out on chain */
     outcome: "removed" | "rejected" | "failed" | "unknown";
     chainId: number;
+  };
+};
+
+export type WalletBatchOutcome =
+  | "sent"
+  | "confirmed"
+  | "rejected"
+  | "upgradeRejected"
+  | "unsupported"
+  | "failed"
+  | "statusUnknown"
+  // the result of a `statusUnknown` batch, learned when the next send of its flow asks the wallet
+  | "confirmedLate"
+  | "failedLate";
+
+export type WalletBatchEvent = {
+  event: "walletBatch";
+  isError: false;
+  data: {
+    outcome: WalletBatchOutcome;
+    flow: string;
+    chainId: number;
+    callsCount: number;
+    /** `ready` means the wallet asked to upgrade the account to a smart account first */
+    atomicStatus: string | undefined;
+    errorCode: number | undefined;
   };
 };
 
