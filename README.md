@@ -43,6 +43,7 @@ The trading app dev server runs at [http://localhost:3010](http://localhost:3010
 
 - `PARITY_RPC_URL`: required, an Alchemy Arbitrum RPC URL
 - `PARITY_BLOCK`: the block to read, the latest by default
+- `PARITY_MAX_POSITIONS`: how many open positions to sample, 300 by default
 
 ## Documentation
 
