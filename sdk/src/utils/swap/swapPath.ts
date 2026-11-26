@@ -78,6 +78,8 @@ export const createFindSwapPath = (params: {
   swapPricingType: SwapPricingType | undefined;
   disabledMarkets?: string[] | undefined;
   manualPath?: string[] | undefined;
+  /** A first hop through this market skips the tokenIn max pool amount check, as SwapUtils shouldRelaxMaxPoolAmountForTokenIn */
+  relaxedMaxPoolAmountMarketAddress?: string;
 }): FindSwapPath => {
   const {
     chainId,
@@ -88,6 +90,7 @@ export const createFindSwapPath = (params: {
     manualPath,
     gasEstimationParams,
     swapPricingType = SwapPricingType.Swap,
+    relaxedMaxPoolAmountMarketAddress,
   } = params;
   const wrappedFromAddress = getWrappedAddress(chainId, fromTokenAddress);
   const wrappedToAddress = getWrappedAddress(chainId, toTokenAddress);
@@ -116,8 +119,13 @@ export const createFindSwapPath = (params: {
     return FALLBACK_FIND_SWAP_PATH;
   }
 
+  const relaxedMaxPoolAmountFirstHop =
+    relaxedMaxPoolAmountMarketAddress && wrappedFromAddress
+      ? { marketAddress: relaxedMaxPoolAmountMarketAddress, tokenInAddress: wrappedFromAddress }
+      : undefined;
+
   const marketEdgeLiquidityGetter = createMarketEdgeLiquidityGetter(marketsInfoData);
-  const naiveEstimator = createNaiveSwapEstimator(marketsInfoData, swapPricingType);
+  const naiveEstimator = createNaiveSwapEstimator(marketsInfoData, swapPricingType, relaxedMaxPoolAmountFirstHop);
   const naiveNetworkEstimator = gasEstimationParams
     ? createNaiveNetworkEstimator({
         gasLimits: gasEstimationParams.gasLimits,
@@ -126,7 +134,7 @@ export const createFindSwapPath = (params: {
         chainId,
       })
     : undefined;
-  const estimator = createSwapEstimator(marketsInfoData, swapPricingType);
+  const estimator = createSwapEstimator(marketsInfoData, swapPricingType, relaxedMaxPoolAmountFirstHop);
 
   const findSwapPath: FindSwapPath = (usdIn: bigint, opts?: { order?: ("liquidity" | "length")[] }) => {
     if (tokenSwapPaths.length === 0 || !fromTokenAddress || !wrappedFromAddress || !wrappedToAddress) {
@@ -208,6 +216,7 @@ export const createFindSwapPath = (params: {
       shouldApplyPriceImpact: true,
       usdIn,
       swapPricingType,
+      relaxedMaxPoolAmountMarketAddress,
     });
 
     cache[cacheKey] = result;

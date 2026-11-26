@@ -52,4 +52,42 @@ describe("pool withdrawal to one token", () => {
       expect(swap.swapFeeUsd, receiveTokenAddress).toBe(applyFactor(swap.usdIn, SWAP_FEE_FACTOR));
     }
   });
+
+  it("swaps through the pool even when its pool is full, as the withdrawal took those tokens out first", () => {
+    const marketInfo = createMockMarketInfo(ETH_TOKEN);
+    const fullMarketInfo = {
+      ...marketInfo,
+      maxLongPoolAmount: marketInfo.longPoolAmount,
+      maxShortPoolAmount: marketInfo.shortPoolAmount,
+    };
+    const marketToken = {
+      ...USDC_TOKEN,
+      address: marketInfo.marketTokenAddress,
+      symbol: "GM",
+      decimals: 18,
+      prices: { minPrice: expandDecimals(1, 30), maxPrice: expandDecimals(1, 30) },
+      totalSupply: expandDecimals(4_000_000, 18),
+    };
+
+    for (const receiveTokenAddress of [ETH_ADDRESS, USDC_ADDRESS]) {
+      const amounts = selectDepositWithdrawalAmounts(
+        createMockSyntheticsState({
+          marketInfo: fullMarketInfo,
+          poolsDetails: {
+            glvOrMarketAddress: marketInfo.marketTokenAddress,
+            operation: Operation.Withdrawal,
+            mode: Mode.Single,
+            firstTokenAddress: receiveTokenAddress,
+            focusedInput: "market",
+            marketOrGlvTokenInputValue: "1000",
+            withdrawalMarketTokensData: { [marketInfo.marketTokenAddress]: marketToken },
+          },
+        })
+      ) as WithdrawalAmounts;
+      const swapPathStats =
+        receiveTokenAddress === ETH_ADDRESS ? amounts.shortTokenSwapPathStats : amounts.longTokenSwapPathStats;
+
+      expect(swapPathStats?.swapPath, receiveTokenAddress).toEqual([marketInfo.marketTokenAddress]);
+    }
+  });
 });

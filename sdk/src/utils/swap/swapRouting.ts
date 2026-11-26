@@ -27,7 +27,8 @@ import { getSwapStats } from "./swapStats";
 
 export const createSwapEstimator = (
   marketsInfoData: MarketsInfoData,
-  swapPricingType: SwapPricingType
+  swapPricingType: SwapPricingType,
+  relaxedMaxPoolAmountFirstHop?: { marketAddress: string; tokenInAddress: string }
 ): SwapEstimator => {
   return (e: MarketEdge, usdIn: bigint) => {
     const marketInfo = marketsInfoData[e.marketAddress];
@@ -45,6 +46,9 @@ export const createSwapEstimator = (
       tokenOutAddress: e.to,
       shouldApplyPriceImpact: true,
       swapPricingType,
+      shouldRelaxMaxPoolAmountForTokenIn:
+        e.marketAddress === relaxedMaxPoolAmountFirstHop?.marketAddress &&
+        e.from === relaxedMaxPoolAmountFirstHop.tokenInAddress,
     });
 
     const isOutLiquidity = swapStats?.isOutLiquidity;
@@ -85,7 +89,8 @@ export const createMarketEdgeLiquidityGetter = (marketsInfoData: MarketsInfoData
 */
 export const createNaiveSwapEstimator = (
   marketsInfoData: MarketsInfoData,
-  swapPricingType: SwapPricingType
+  swapPricingType: SwapPricingType,
+  relaxedMaxPoolAmountFirstHop?: { marketAddress: string; tokenInAddress: string }
 ): NaiveSwapEstimator => {
   return (e: MarketEdge, usdIn: bigint) => {
     let marketInfo = marketsInfoData[e.marketAddress];
@@ -101,6 +106,9 @@ export const createNaiveSwapEstimator = (
       tokenOutAddress: e.to,
       shouldApplyPriceImpact: true,
       swapPricingType,
+      shouldRelaxMaxPoolAmountForTokenIn:
+        e.marketAddress === relaxedMaxPoolAmountFirstHop?.marketAddress &&
+        e.from === relaxedMaxPoolAmountFirstHop.tokenInAddress,
     });
 
     const usdOut = swapStats?.usdOut;

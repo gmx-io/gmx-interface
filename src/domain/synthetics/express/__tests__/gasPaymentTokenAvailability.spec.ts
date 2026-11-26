@@ -43,7 +43,7 @@ function feeRoute(swapPath: string[], step: Partial<SwapStats> = {}) {
 }
 
 function onchain(state: Partial<GasPaymentTokensOnchainState>): GasPaymentTokensOnchainState {
-  return { unpricedTokenAddresses: [], pausedTokenAddresses: [], ...state };
+  return { unpricedTokenAddresses: [], pausedTokenAddresses: [], isFeeSwapDisabled: false, ...state };
 }
 
 describe("getGasPaymentTokenUnavailableReason", () => {
@@ -94,6 +94,20 @@ describe("getGasPaymentTokenUnavailableReason", () => {
       expected: "paused",
     },
     { name: "WETH needs no fee swap", token: WETH, route: () => undefined, expected: undefined },
+    {
+      name: "USDC when fee swaps are switched off",
+      token: USDC,
+      route: feeRoute([ETH_USD_WETH_USDC]),
+      state: onchain({ isFeeSwapDisabled: true }),
+      expected: "feeSwap",
+    },
+    {
+      name: "WETH when fee swaps are switched off",
+      token: WETH,
+      route: () => undefined,
+      state: onchain({ isFeeSwapDisabled: true }),
+      expected: undefined,
+    },
   ])("$name", ({ token, route, state, expected }) => {
     expect(
       getGasPaymentTokenUnavailableReason({
@@ -214,23 +228,32 @@ describe("fetchGasPaymentTokensOnchainState", () => {
       result: { token: token as HexData, min: 1n, max: 1n, timestamp: 1n, provider: token as HexData },
     }) as HexData;
   const notPaused = encodeFunctionResult({ abi: abis.Pausable, functionName: "paused", result: false }) as HexData;
+  const featureDisabled = (isDisabled: boolean) =>
+    encodeFunctionResult({ abi: abis.DataStore, functionName: "getBool", result: isDisabled }) as HexData;
 
-  it("marks a token unpriced only when its price read reverts", async () => {
-    const aggregate3Result = encodeFunctionResult({
-      abi: multicall3Abi,
-      functionName: "aggregate3",
-      result: getGasPaymentTokens(ARBITRUM).flatMap((token): { success: boolean; returnData: HexData }[] => [
-        token === USDG ? { success: false, returnData: "0x" } : { success: true, returnData: priceResult(token) },
-        { success: true, returnData: notPaused },
-      ]),
-    });
-    rpc.request.mockResolvedValue(aggregate3Result);
+  it.each([false, true])(
+    "marks a token unpriced only when its price read reverts, and reads the fee swap switch: %s",
+    async (isFeeSwapDisabled) => {
+      const aggregate3Result = encodeFunctionResult({
+        abi: multicall3Abi,
+        functionName: "aggregate3",
+        result: [
+          ...getGasPaymentTokens(ARBITRUM).flatMap((token): { success: boolean; returnData: HexData }[] => [
+            token === USDG ? { success: false, returnData: "0x" } : { success: true, returnData: priceResult(token) },
+            { success: true, returnData: notPaused },
+          ]),
+          { success: true, returnData: featureDisabled(isFeeSwapDisabled) },
+        ],
+      });
+      rpc.request.mockResolvedValue(aggregate3Result);
 
-    await expect(fetchGasPaymentTokensOnchainState(ARBITRUM)).resolves.toEqual({
-      unpricedTokenAddresses: [USDG],
-      pausedTokenAddresses: [],
-    });
-  });
+      await expect(fetchGasPaymentTokensOnchainState(ARBITRUM)).resolves.toEqual({
+        unpricedTokenAddresses: [USDG],
+        pausedTokenAddresses: [],
+        isFeeSwapDisabled,
+      });
+    }
+  );
 
   it("throws on a failed request instead of marking every token unpriced", async () => {
     rpc.request.mockRejectedValue(new Error("network error"));

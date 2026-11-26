@@ -8,6 +8,8 @@ import {
   selectDepositMarketTokensData,
   selectGlvAndMarketsInfoData,
   selectGlvInfo,
+  selectIsGlvWithdrawalSwapEnabled,
+  selectIsWithdrawalSwapEnabled,
   selectMarketsInfoData,
   selectMultichainMarketTokensBalancesResult,
   selectSrcChainId,
@@ -115,8 +117,17 @@ export const selectPoolsDetailsAvailableModes = createSelector((q): Mode[] => {
   const paySource = q(selectPoolsDetailsPaySource);
 
   const areBothCollateralsCrossChain = q(selectPoolsDetailsAreBothCollateralsCrossChain);
+  const glvInfo = q(selectPoolsDetailsGlvInfo);
+  const isGmWithdrawalSwapEnabled = q(selectIsWithdrawalSwapEnabled);
+  const isGlvWithdrawalSwapEnabled = q(selectIsGlvWithdrawalSwapEnabled);
 
-  return getGmSwapBoxAvailableModes({ operation, market: marketInfo, paySource, areBothCollateralsCrossChain });
+  return getGmSwapBoxAvailableModes({
+    operation,
+    market: marketInfo,
+    paySource,
+    areBothCollateralsCrossChain,
+    isWithdrawalSwapEnabled: glvInfo ? isGlvWithdrawalSwapEnabled : isGmWithdrawalSwapEnabled,
+  });
 });
 
 export const selectPoolsDetailsAvailableOperations = createSelector((q): Operation[] => {
@@ -800,18 +811,26 @@ export const selectPoolsDetailsWithdrawalFindSwapPath = createSelector((q) => {
     return undefined;
   }
 
+  const marketAddress = q(selectPoolsDetailsMarketTokenAddress);
+
   // if we want long token in the end, we need to swap short to long
   if (longTokenAddress === receiveTokenAddress) {
-    return q(makeSelectFindSwapPath(shortTokenAddress, receiveTokenAddress, SwapPricingType.Swap));
+    return q(
+      makeSelectFindSwapPath(shortTokenAddress, receiveTokenAddress, SwapPricingType.Swap, undefined, marketAddress)
+    );
   }
 
   // if we want short token in the end, we need to swap long to short
   if (shortTokenAddress === receiveTokenAddress) {
-    return q(makeSelectFindSwapPath(longTokenAddress, receiveTokenAddress, SwapPricingType.Swap));
+    return q(
+      makeSelectFindSwapPath(longTokenAddress, receiveTokenAddress, SwapPricingType.Swap, undefined, marketAddress)
+    );
   }
 
   if (longTokenAddress === shortTokenAddress) {
-    return q(makeSelectFindSwapPath(longTokenAddress, receiveTokenAddress, SwapPricingType.Swap));
+    return q(
+      makeSelectFindSwapPath(longTokenAddress, receiveTokenAddress, SwapPricingType.Swap, undefined, marketAddress)
+    );
   }
 
   // Invariant that useEffect must fix.
