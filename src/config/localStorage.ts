@@ -72,6 +72,7 @@ export const EXPRESS_TRADING_NATIVE_TOKEN_WARN_HIDDEN_KEY = "express-trading-nat
 export const EXPRESS_TRADING_WRAP_OR_UNWRAP_WARN_HIDDEN_KEY = "express-trading-wrap-or-unwrap-warn-hidden";
 export const EXPRESS_TRADING_EXPIRED_SUBACCOUNT_WARN_HIDDEN_KEY = "express-trading-expired-subaccount-warn-hidden";
 export const EXPRESS_TRADING_ALLOWED_ACTIONS_WARN_HIDDEN_KEY = "express-trading-allowed-actions-warn-hidden";
+export const EXPRESS_TRADING_NONCE_EXPIRED_WARN_HIDDEN_KEY = "express-trading-nonce-expired-warn-hidden";
 
 export const MARGIN_DEPOSIT_SUGGESTION_HIDDEN_KEY = "margin-deposit-suggestion-hidden";
 
@@ -90,7 +91,6 @@ export const UI_FLAG_EVENTS_DISMISSED_KEY_PREFIX = "ui-flag-event-dismissed";
 export const DELISTING_ANNOUNCEMENT_DISMISSED_KEY_PREFIX = "delisting-announcement-dismissed";
 export const BALANCER_PROGRAM_ANNOUNCEMENT_DISMISSED_KEY = "balancer-program-announcement-dismissed";
 export const USDG_POOLS_ANNOUNCEMENT_DISMISSED_KEY = "usdg-pools-announcement-v2-dismissed";
-export const MORPHO_LOOP_ANNOUNCEMENT_DISMISSED_KEY = "morpho-loop-announcement-dismissed";
 export const CLOSING_POOLS_NOTICE_SEEN_KEY_PREFIX = "closing-pools-notice-seen";
 
 export const GMX_ACCOUNT_CONNECTED_BANNER_DISMISSED_KEY = "gmx-account-connected-banner-dismissed";
@@ -115,11 +115,12 @@ export const CLOSE_SIZE_DENOMINATION_KEY = "close-size-in-tokens";
 
 export const CHART_LINES_SIZE_DENOMINATION_KEY = "chart-lines-size-in-tokens";
 
+export const CONFIRM_ORDER_SIGNATURES_KEY = "confirm-order-signatures";
+
 const FALLBACK_TRACKER_PREFIX = "fallback-tracker";
 
 const COLLATERAL_CLOSE_DESTINATION_KEY = "collateral-close-destination";
 const COLLATERAL_CLOSE_DESTINATION_DIALOG_HIDDEN_KEY = "collateral-close-destination-dialog-hidden";
-const HAD_GMX_ACCOUNT_BALANCE_KEY = "had-gmx-account-balance";
 
 const EXPRESS_ORDERS_ENABLED_KEY = "express-orders-enabled";
 const GAS_PAYMENT_TOKEN_ADDRESS_KEY = "gas-payment-token-address";
@@ -217,6 +218,11 @@ export function getSubaccountConfigKey(chainId: number | undefined, account: str
   return [chainId, account, "one-click-trading-config"];
 }
 
+export function getLegacySubaccountConfigKey(chainId: number | undefined, account: string | undefined) {
+  if (!chainId || !account) return null;
+  return [chainId, account, "one-click-trading-legacy-config"];
+}
+
 export function getSyntheticsReceiveMoneyTokenKey(
   chainId: number,
   marketName: string | undefined,
@@ -244,10 +250,6 @@ export function getCollateralCloseDestinationKey(chainId: number, account: strin
 
 export function getCollateralCloseDestinationDialogHiddenKey(chainId: number, account: string | undefined) {
   return [chainId, account, COLLATERAL_CLOSE_DESTINATION_DIALOG_HIDDEN_KEY];
-}
-
-export function getHadGmxAccountBalanceKey(chainId: number, account: string | undefined) {
-  return [chainId, account, HAD_GMX_ACCOUNT_BALANCE_KEY];
 }
 
 export function getExpressOrdersEnabledKey(chainId: number, account: string | undefined) {

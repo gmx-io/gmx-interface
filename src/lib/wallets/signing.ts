@@ -1,7 +1,7 @@
 import { t } from "@lingui/macro";
 import { getAccount, getChainId, getWalletClient } from "@wagmi/core";
 import { AbstractSigner, type Wallet } from "ethers";
-import { hashTypedData, isAddressEqual, withRetry, type Hex } from "viem";
+import { hashTypedData, isAddressEqual, UserRejectedRequestError, withRetry, type Hex } from "viem";
 
 import { getChainName } from "config/chains";
 import { extendError, parseError, type ErrorLike } from "lib/errors";
@@ -20,6 +20,7 @@ import type { IAbstractSigner } from "sdk/utils/signer";
 
 import { switchNetwork, type WalletSigner } from ".";
 import { analyzeSignatureShape, getSignatureKind, reportSignatureProduced } from "./signatureDiagnostics";
+import { silentEmbeddedWalletSigner } from "./silentEmbeddedWalletSigner";
 import { AccountType } from "./useAccountType";
 import { clientToSigner } from "./useEthersSigner";
 import { getConnectedWalletName, isAccountMissingOnChain } from "./useWalletSessionChains";
@@ -50,7 +51,10 @@ export type SignTypedDataParams = {
   shouldUseSignerMethod?: boolean;
   minified?: boolean;
   verificationChainId: number;
+  /** Signs without the Privy confirmation window when the embedded wallet has registered a silent signer */
+  canSkipEmbeddedWalletConfirmation?: boolean;
   relayParams?: RelayParamsPayload;
+  validateBeforeSign?: () => void;
 };
 
 type RpcSendable = Pick<WalletSigner["provider"], "send">;
@@ -81,6 +85,15 @@ async function probeChainBoundSigning({
   return accountTypes.some(mustSignOnVerificationChain);
 }
 
+// Privy rejects with these when the user closes its MFA or password recovery screen
+const PRIVY_USER_CANCEL_MESSAGES = ["MFA canceled", "User exited before their wallet could be recovered"];
+
+function isSilentSigningCancelledByUser(error: ErrorLike): boolean {
+  const errorData = parseError(error);
+
+  return errorData?.isUserRejectedError === true || PRIVY_USER_CANCEL_MESSAGES.includes(errorData?.errorMessage ?? "");
+}
+
 function isUnsupportedChainError(error: ErrorLike): boolean {
   return parseError(error)?.errorMessage?.includes("Unsupported chains") ?? false;
 }
@@ -89,9 +102,22 @@ function isChainSwapFailure(error: ErrorLike): boolean {
   return error?.message === SMART_WALLET_WRONG_CHAIN_ERROR || error?.message === SMART_WALLET_CHAIN_UNAVAILABLE_ERROR;
 }
 
-function providerSendSign(signer: AnySigner, from: string, eip712: object) {
+function providerSendSign({
+  signer,
+  from,
+  eip712,
+  validateBeforeSign,
+}: {
+  signer: AnySigner;
+  from: string;
+  eip712: object;
+  validateBeforeSign?: () => void;
+}) {
   return withRetry<string>(
-    () => (signer.provider as RpcSendable).send("eth_signTypedData_v4", [from, JSON.stringify(eip712)]),
+    () => {
+      validateBeforeSign?.();
+      return (signer.provider as RpcSendable).send("eth_signTypedData_v4", [from, JSON.stringify(eip712)]);
+    },
     {
       retryCount: 1,
       delay: 100,
@@ -130,13 +156,13 @@ async function withSmartWalletChainSwap<T, S extends AnySigner>(
     address,
     targetChainId,
     forceVerificationChain = false,
-    shouldUseLearnedChainBinding = true,
+    validateBeforeSign,
   }: {
     signer: S;
     address: string;
     targetChainId: number | undefined;
     forceVerificationChain?: boolean;
-    shouldUseLearnedChainBinding?: boolean;
+    validateBeforeSign?: () => void;
   },
   action: (signer: S | WalletSigner, signingChainId: number) => Promise<T>
 ): Promise<T> {
@@ -147,8 +173,7 @@ async function withSmartWalletChainSwap<T, S extends AnySigner>(
     return action(signer, startingChainId);
   }
 
-  const hasLearnedChainBinding =
-    shouldUseLearnedChainBinding && getChainBindingState(address, targetChainId) === "needsVerificationChain";
+  const hasLearnedChainBinding = getChainBindingState(address, targetChainId) === "needsVerificationChain";
 
   const needsSwap =
     forceVerificationChain ||
@@ -179,7 +204,7 @@ async function withSmartWalletChainSwap<T, S extends AnySigner>(
     }
 
     const swappedWalletClient = await getWalletClient(config, { chainId: targetChainId });
-    const swappedSigner = clientToSigner(swappedWalletClient, account);
+    const swappedSigner = clientToSigner(swappedWalletClient, account, validateBeforeSign);
     try {
       return await action(swappedSigner, targetChainId);
     } catch (error) {
@@ -250,39 +275,6 @@ export function hashSignedTypedData({
   return hashTypedDataWithViem({ domain, ...toSign });
 }
 
-export async function signMessage({
-  signer,
-  message,
-  verificationChainId,
-}: {
-  signer: WalletSigner | Wallet | AbstractSigner;
-  message: string;
-  verificationChainId: number;
-}): Promise<string> {
-  const from = await signer.getAddress();
-  const startingChainId = getChainId(getWagmiConfig());
-
-  // `generateSubaccount` derives a private key from this signature, so it has to stay stable for a given
-  // wallet — it is never checked on chain, and learning chain binding later would change the subaccount.
-  return withSmartWalletChainSwap(
-    { signer, address: from, targetChainId: verificationChainId, shouldUseLearnedChainBinding: false },
-    async (signWith, signingChainId) => {
-      const signature = await signWith.signMessage(message);
-
-      reportSignatureProduced({
-        address: from,
-        signature,
-        signaturePurpose: "message",
-        signingChainId,
-        startingChainId,
-        verificationChainId,
-      });
-
-      return signature;
-    }
-  );
-}
-
 export async function signTypedData(params: SignTypedDataParams) {
   const { typedData, verificationChainId, relayParams } = params;
   const signature = await signTypedDataOnce(params);
@@ -313,6 +305,8 @@ async function signTypedDataOnce({
   shouldUseSignerMethod = false,
   minified = true,
   verificationChainId,
+  canSkipEmbeddedWalletConfirmation = false,
+  validateBeforeSign,
 }: SignTypedDataParams) {
   // filter inputs
   for (const [key, value] of Object.entries(domain)) {
@@ -342,6 +336,7 @@ async function signTypedDataOnce({
 
   if (!("provider" in signer) || !("getAddress" in signer)) {
     if (signer.signTypedData) {
+      validateBeforeSign?.();
       return signer.signTypedData(domain, typesToSign, messageToSign);
     }
     throw new Error("Signer does not support provider-based signing or signTypedData");
@@ -364,21 +359,41 @@ async function signTypedDataOnce({
     message: messageToSign,
   };
 
-  const requestSignature = (signWith: AnySigner) => {
+  const requestSignature = async (signWith: AnySigner) => {
+    // looked up per attempt: the setting or the session can change while the chain checks await
+    const silentSigner = canSkipEmbeddedWalletConfirmation ? silentEmbeddedWalletSigner.get(from) : undefined;
+
+    if (silentSigner) {
+      validateBeforeSign?.();
+
+      try {
+        return await silentSigner.signTypedData(eip712);
+      } catch (error) {
+        // the user already answered Privy's MFA or recovery screen, the prompted flow would only ask again
+        if (isSilentSigningCancelledByUser(error)) {
+          throw new UserRejectedRequestError(error);
+        }
+
+        // the prompted flow can still succeed, so a failure here must not fail the order
+        metrics.pushError(error, "signing.silentEmbeddedWallet");
+      }
+    }
+
     if (shouldUseSignerMethod && signWith.signTypedData) {
+      validateBeforeSign?.();
       return signWith.signTypedData(domain, typesToSign, messageToSign).catch((e) => {
         if (!e.message.includes("requires a provider")) throw e;
-        return providerSendSign(signWith, from, eip712);
+        return providerSendSign({ signer: signWith, from, eip712, validateBeforeSign });
       });
     }
-    return providerSendSign(signWith, from, eip712);
+    return providerSendSign({ signer: signWith, from, eip712, validateBeforeSign });
   };
 
   const signaturePurpose = Object.keys(types).find((type) => type !== "EIP712Domain") ?? "unknown";
   const startingChainId = getChainId(getWagmiConfig());
 
   const firstResult = await withSmartWalletChainSwap(
-    { signer, address: from, targetChainId: verificationChainId },
+    { signer, address: from, targetChainId: verificationChainId, validateBeforeSign },
     async (signWith, signingChainId) => {
       const signature = await requestSignature(signWith);
 
@@ -438,6 +453,7 @@ async function signTypedDataOnce({
         address: from,
         targetChainId: verificationChainId,
         forceVerificationChain: true,
+        validateBeforeSign,
       },
       async (signWith, signingChainId) => {
         const signature = await requestSignature(signWith);

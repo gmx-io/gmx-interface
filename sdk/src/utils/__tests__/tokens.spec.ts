@@ -1,3 +1,4 @@
+import { parseUnits } from "viem";
 import { describe, expect, it } from "vitest";
 
 import { ARBITRUM } from "configs/chains";
@@ -9,6 +10,7 @@ import {
   convertToContractTokenPrices,
   convertToTokenAmount,
   convertToUsd,
+  getAmountByRatio,
   getMidPrice,
   getIsEquivalentTokens,
   getTokenData,
@@ -261,6 +263,73 @@ describe("getTokensRatioByMinOutputAmountAndTriggerPrice", () => {
 
     expect(result2.largestToken).toBe(usdtToken);
     expect(result2.smallestToken).toBe(usdcToken);
+  });
+
+  it("reads the stored limit in the direction it was set in when slippage is in the floor TRD-43", () => {
+    const avax = getToken("AVAX");
+    const gmx = getToken("GMX");
+    const usdc = getToken("USDC");
+    const usdt = getToken("USDT");
+    const weth = getToken("WETH");
+
+    // amounts are built the way the trade box builds them at creation: from the pay amount the floor is the
+    // receive amount at the limit less slippage; from a typed receive amount the pay amount is rounded down
+    const cases = [
+      { from: avax, to: gmx, amount: "1000", limit: "1.04", largestToken: avax, slippageBps: 0n },
+      { from: avax, to: gmx, amount: "1000", limit: "1.04", largestToken: avax, slippageBps: 500n },
+      { from: avax, to: gmx, amount: "1000", limit: "1.01", largestToken: avax, slippageBps: 150n },
+      { from: gmx, to: avax, amount: "1000", limit: "1.04", largestToken: avax, slippageBps: 500n },
+      { from: gmx, to: avax, amount: "1000", limit: "0.99", largestToken: avax, slippageBps: 50n },
+      { from: gmx, to: avax, amount: "1000", limit: "0.99", largestToken: avax, slippageBps: 200n },
+      { from: gmx, to: avax, amount: "1000", limit: "0.995", largestToken: avax, slippageBps: 100n },
+      { from: weth, to: usdc, amount: "1", limit: "3000", largestToken: weth, slippageBps: 100n },
+      { from: usdc, to: weth, amount: "3000", limit: "3000", largestToken: weth, slippageBps: 100n },
+      { from: usdc, to: usdt, amount: "1000", limit: "1.001", largestToken: usdt, slippageBps: 50n },
+      { from: usdc, to: weth, amount: "0.2468", isReceiveEntered: true, limit: "1795.4567", largestToken: weth, slippageBps: 0n },
+    ];
+
+    for (const { from, to, amount, isReceiveEntered, limit, largestToken, slippageBps } of cases) {
+      const triggerPrice = parseUnits(limit, 30);
+      const enteredAmount = parseUnits(amount, isReceiveEntered ? to.decimals : from.decimals);
+      const [fromTokenAmount, minOutputAmount] = isReceiveEntered
+        ? [
+            getAmountByRatio({
+              fromToken: to,
+              toToken: from,
+              fromTokenAmount: enteredAmount,
+              ratio: triggerPrice,
+              shouldInvertRatio: largestToken === from,
+            }),
+            enteredAmount,
+          ]
+        : [
+            enteredAmount,
+            getAmountByRatio({
+              fromToken: from,
+              toToken: to,
+              fromTokenAmount: enteredAmount,
+              ratio: triggerPrice,
+              shouldInvertRatio: largestToken === to,
+              allowedSwapSlippageBps: slippageBps,
+            }),
+          ];
+
+      const result = getTokensRatioByMinOutputAmountAndTriggerPrice({
+        fromToken: from,
+        toToken: to,
+        fromTokenAmount,
+        toTokenAmount: minOutputAmount,
+        triggerPrice,
+        minOutputAmount,
+      });
+
+      expect({ largest: result.largestToken.symbol, ratio: result.ratio }).toEqual({
+        largest: largestToken.symbol,
+        ratio: triggerPrice,
+      });
+      // the slippage read back is rounded down to whole bps
+      expect([0n, 1n]).toContain(slippageBps - result.allowedSwapSlippageBps);
+    }
   });
 });
 

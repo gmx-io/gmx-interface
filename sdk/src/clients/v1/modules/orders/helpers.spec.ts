@@ -97,6 +97,28 @@ describe("increaseOrderHelper", () => {
       createIncreaseOrderSpy = vi.spyOn(arbitrumSdk.orders, "createIncreaseOrder").mockResolvedValue();
     });
 
+    it("reroutes the collateral swap while its preferred pool is closed", async () => {
+      const closedMarkets = vi.spyOn(arbitrumSdk.oracle, "getClosedMarketAddresses");
+      const route = async () => {
+        await arbitrumSdk.orders.long({ ...mockParams, payAmount: 10n ** 18n });
+        return createIncreaseOrderSpy.mock.lastCall[0].increaseAmounts.swapStrategy.swapPathStats?.swapPath;
+      };
+
+      try {
+        closedMarkets.mockResolvedValue([]);
+        const openPath = await route();
+        expect(openPath?.length).toBeGreaterThan(0);
+        closedMarkets.mockResolvedValue(openPath);
+        const alternate = await route();
+        expect(alternate?.length).toBeGreaterThan(0);
+        expect(alternate.some((market: string) => openPath.includes(market))).toBe(false);
+        closedMarkets.mockResolvedValue([]);
+        expect(await route()).toEqual(openPath);
+      } finally {
+        closedMarkets.mockRestore();
+      }
+    });
+
     it("should call createIncreaseOrder with correct parameters for a market order with payAmount", async () => {
       const findSwapPathSpy = vi.spyOn(swapPath, "createFindSwapPath");
       const getIncreasePositionAmountsSpy = vi.spyOn(tradeAmounts, "getIncreasePositionAmounts");

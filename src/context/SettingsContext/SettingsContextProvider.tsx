@@ -10,6 +10,7 @@ import {
   BUY_SELL_ICONS_MODE_KEY,
   CHART_LINES_SIZE_DENOMINATION_KEY,
   CLOSE_SIZE_DENOMINATION_KEY,
+  CONFIRM_ORDER_SIGNATURES_KEY,
   DEBUG_CLOSED_MARKETS_KEY,
   DEBUG_ERROR_BOUNDARY_KEY,
   DEBUG_SWAP_MARKETS_CONFIG_KEY,
@@ -140,6 +141,9 @@ export type SettingsContextType = {
 
   chartLinesSizeInTokens: boolean;
   setChartLinesSizeInTokens: (val: boolean) => void;
+
+  confirmOrderSignatures: boolean;
+  setConfirmOrderSignatures: (val: boolean) => void;
 };
 
 const SettingsContext = createContext({});
@@ -150,7 +154,7 @@ export function useSettings() {
 
 export function SettingsContextProvider({ children }: { children: ReactNode }) {
   const { chainId, srcChainId, networkId } = useChainId();
-  const expressSupported = getNetworkFeatures(networkId).express;
+  const { express: expressSupported, pendingPriceImpact: pendingPriceImpactSupported } = getNetworkFeatures(networkId);
   const { account } = useWallet();
 
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
@@ -320,6 +324,11 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     false
   );
 
+  const [confirmOrderSignatures, setConfirmOrderSignatures] = useLocalStorageSerializeKey(
+    CONFIRM_ORDER_SIGNATURES_KEY,
+    false
+  );
+
   useEffect(() => {
     if (shouldUseExecutionFeeBuffer && executionFeeBufferBps === undefined) {
       setExecutionFeeBufferBps(defaultExecutionFeeBufferBps ?? 0);
@@ -402,7 +411,7 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       isLeverageSliderEnabled: isLeverageSliderEnabled!,
       setIsLeverageSliderEnabled: setIsLeverageSliderEnabled,
 
-      breakdownNetPriceImpactEnabled: savedBreakdownNetPriceImpactEnabled!,
+      breakdownNetPriceImpactEnabled: savedBreakdownNetPriceImpactEnabled! && pendingPriceImpactSupported,
       setBreakdownNetPriceImpactEnabled: setSavedBreakdownNetPriceImpactEnabled,
 
       isSetAcceptablePriceImpactEnabled: savedSetAcceptablePriceImpactEnabled!,
@@ -451,6 +460,9 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
 
       chartLinesSizeInTokens: chartLinesSizeInTokens!,
       setChartLinesSizeInTokens,
+
+      confirmOrderSignatures: confirmOrderSignatures!,
+      setConfirmOrderSignatures,
     };
   }, [
     showDebugValues,
@@ -482,6 +494,7 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setIsAutoCancelTPSL,
     isLeverageSliderEnabled,
     setIsLeverageSliderEnabled,
+    pendingPriceImpactSupported,
     savedBreakdownNetPriceImpactEnabled,
     setSavedBreakdownNetPriceImpactEnabled,
     savedSetAcceptablePriceImpactEnabled,
@@ -520,6 +533,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setShowCloseSizeInTokens,
     chartLinesSizeInTokens,
     setChartLinesSizeInTokens,
+    confirmOrderSignatures,
+    setConfirmOrderSignatures,
   ]);
 
   return <SettingsContext.Provider value={contextState}>{children}</SettingsContext.Provider>;

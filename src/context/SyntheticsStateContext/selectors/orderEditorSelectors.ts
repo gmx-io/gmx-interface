@@ -10,11 +10,13 @@ import {
 } from "domain/synthetics/fees";
 import { getMaxAllowedLeverage } from "domain/synthetics/markets";
 import {
+  DecreasePositionSwapType,
   getOrderPositionKey,
   isDecreaseOrderType,
   isIncreaseOrderType,
   isLimitOrderType,
   isLimitSwapOrderType,
+  isPositionOrder,
   isSwapOrder,
   isSwapOrderType,
   isTriggerDecreaseOrderType,
@@ -30,7 +32,6 @@ import {
   convertToUsd,
   getAmountByRatio,
   getTokenData,
-  getTokensRatioByPrice,
   TokensRatio,
 } from "domain/synthetics/tokens";
 import {
@@ -42,14 +43,28 @@ import {
   getTradeFees,
 } from "domain/synthetics/trade";
 import { getAvailableTradeQuote } from "domain/synthetics/trade/utils/common";
+import { ORDER_EDITOR_RECEIVE_MODE_FLAG } from "domain/synthetics/uiFlags/uiFlags";
 import { getTpSlLiqPriceWarning } from "domain/tpsl/utils";
-import { BN_ZERO, parseValue } from "lib/numbers";
+import { BN_ZERO, expandDecimals, formatAmountFree, parseValue, PRECISION, roundUpDivision } from "lib/numbers";
+import { EMPTY_ARRAY } from "lib/objects";
+import { isContractsV2_2_1 } from "sdk/configs/contracts";
 import { getWrappedToken } from "sdk/configs/tokens";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
 import { getByKey } from "sdk/utils/objects";
 import { getIsIncreaseOrderExecutableNow } from "sdk/utils/prices";
 import type { UserReferralInfo } from "sdk/utils/referrals/types";
+import {
+  getIsEquivalentTokens,
+  getTokensRatioByMinOutputAmountAndTriggerPrice,
+  getTokensRatioByPriceInDirection,
+} from "sdk/utils/tokens/utils";
 import { getDecreasePositionSizeDeltaInTokens } from "sdk/utils/trade/decrease";
+import { getStoredTriggerDecreaseQuote } from "sdk/utils/trade/decreaseMarginCheck";
+import {
+  type DecreaseReceiveOutput,
+  getDecreaseReceiveOutputs,
+  getSplitReceiveDecreaseSwapType,
+} from "sdk/utils/trade/decreaseOutputs";
 
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
 import { createSelector, createSelectorFactory } from "../utils";
@@ -63,8 +78,10 @@ import {
   selectOrdersInfoData,
   makeSelectPositionConstants,
   selectPositionsInfoData,
+  selectProDiscountFactor,
   selectTokensData,
   selectUiFeeFactor,
+  selectUiFlags,
   selectUserReferralInfo,
 } from "./globalSelectors";
 import {
@@ -81,6 +98,8 @@ import {
 } from "./settingsSelectors";
 import { makeSelectDecreasePositionAmounts, makeSelectFindSwapPath } from "./tradeSelectors";
 
+const RATIO_INPUT_DECIMALS = 10;
+
 export const selectCancellingOrdersKeys = (s: SyntheticsState) => s.orderEditor.cancellingOrdersKeys;
 export const selectSetCancellingOrdersKeys = (s: SyntheticsState) => s.orderEditor.setCancellingOrdersKeys;
 export const selectEditingOrderState = (s: SyntheticsState) => s.orderEditor.editingOrderState;
@@ -96,6 +115,8 @@ export const selectOrderEditorSetTriggerPriceInputValue = (s: SyntheticsState) =
 export const selectOrderEditorTriggerRatioInputValue = (s: SyntheticsState) => s.orderEditor.triggerRatioInputValue;
 export const selectOrderEditorSetTriggerRatioInputValue = (s: SyntheticsState) =>
   s.orderEditor.setTriggerRatioInputValue;
+const selectOrderEditorIsReceiveSeparatedInput = (s: SyntheticsState) => s.orderEditor.isReceiveSeparated;
+export const selectOrderEditorSetIsReceiveSeparated = (s: SyntheticsState) => s.orderEditor.setIsReceiveSeparated;
 
 export const selectOrderEditorAcceptablePrice = (s: SyntheticsState) => s.orderEditor.acceptablePrice;
 export const selectOrderEditorAcceptablePriceImpactBps = (s: SyntheticsState) => s.orderEditor.acceptablePriceImpactBps;
@@ -223,6 +244,43 @@ export const selectOrderEditorExistingPosition = createSelector((q) => {
   return positionInfo;
 });
 
+export const selectOrderEditorReceiveTokens = createSelector((q) => {
+  const order = q(selectOrderEditorOrder);
+  if (!order || !isPositionOrder(order) || !isTriggerDecreaseOrderType(order.orderType) || order.swapPath.length > 0) {
+    return;
+  }
+
+  if (!isContractsV2_2_1(q(selectChainId)) || q(selectUiFlags)?.[ORDER_EDITOR_RECEIVE_MODE_FLAG]?.enabled !== true) {
+    return;
+  }
+
+  const pnlToken = order.isLong ? order.marketInfo.longToken : order.marketInfo.shortToken;
+  const collateralToken = order.targetCollateralToken;
+  if (getIsEquivalentTokens(pnlToken, collateralToken)) return;
+
+  return { pnlToken, collateralToken };
+});
+
+export const selectOrderEditorIsReceiveSeparated = createSelector((q) => {
+  const order = q(selectOrderEditorOrder);
+
+  return (
+    q(selectOrderEditorIsReceiveSeparatedInput) ?? order?.decreasePositionSwapType === DecreasePositionSwapType.NoSwap
+  );
+});
+
+export const selectOrderEditorDecreasePositionSwapType = createSelector((q) => {
+  const order = q(selectOrderEditorOrder);
+
+  if (!order) return undefined;
+
+  if (!q(selectOrderEditorReceiveTokens)) {
+    return order.decreasePositionSwapType;
+  }
+
+  return getSplitReceiveDecreaseSwapType(order.decreasePositionSwapType, q(selectOrderEditorIsReceiveSeparated));
+});
+
 export const selectOrderEditorIncreaseProjection = createSelector((q) => {
   const order = q(selectOrderEditorOrder);
 
@@ -281,7 +339,7 @@ export const selectOrderEditorIncreaseResultingPositionMarginState = createSelec
   );
 });
 
-export const selectOrderEditorDecreaseAmounts = createSelector((q) => {
+const selectOrderEditorDecreaseProjection = createSelector((q) => {
   const order = q(selectOrderEditorOrder);
 
   if (!order) return undefined;
@@ -303,34 +361,51 @@ export const selectOrderEditorDecreaseAmounts = createSelector((q) => {
   }
 
   const existingPosition = q(selectOrderEditorExistingPosition);
-  const keepLeverage = q(selectKeepLeverage);
+  const keepLeverage = isTriggerDecreaseOrderType(order.orderType) ? false : q(selectKeepLeverage);
   const acceptablePriceImpactBps = q(selectOrderEditorAcceptablePriceImpactBps);
   const savedAcceptablePriceImpactBuffer = q(selectSavedAcceptablePriceImpactBuffer);
   const userReferralInfo = q(selectUserReferralInfo);
   const uiFeeFactor = q(selectUiFeeFactor);
   const isSetAcceptablePriceImpactEnabled = q(selectIsSetAcceptablePriceImpactEnabled);
 
-  return getAvailableTradeQuote(market.tradeMath, () =>
-    getDecreasePositionAmounts({
-      marketInfo: market,
-      collateralToken: order.targetCollateralToken,
-      isLong: order.isLong,
+  const params = {
+    marketInfo: market,
+    collateralToken: order.targetCollateralToken,
+    isLong: order.isLong,
+    position: existingPosition,
+    closeSizeUsd: sizeDeltaUsd,
+    keepLeverage,
+    triggerPrice,
+    fixedAcceptablePriceImpactBps: acceptablePriceImpactBps,
+    acceptablePriceImpactBuffer: savedAcceptablePriceImpactBuffer,
+    userReferralInfo,
+    proDiscountFactor: q(selectProDiscountFactor),
+    feeDiscountFactor: q(selectFeeDiscountFactor),
+    minCollateralUsd,
+    minPositionSizeUsd,
+    uiFeeFactor: order.uiFeeFactor ?? uiFeeFactor,
+    triggerOrderType: order.orderType as OrderType.LimitDecrease | OrderType.StopLossDecrease | undefined,
+    isSetAcceptablePriceImpactEnabled,
+    forceDecreaseSwapType: q(selectOrderEditorDecreasePositionSwapType),
+  };
+  if (existingPosition && market.tradeMath !== "gmsol" && q(selectOrderEditorReceiveTokens)) {
+    return getStoredTriggerDecreaseQuote({
+      ...params,
+      collateralToken: existingPosition.collateralToken,
       position: existingPosition,
-      closeSizeUsd: sizeDeltaUsd,
-      keepLeverage,
-      triggerPrice,
-      fixedAcceptablePriceImpactBps: acceptablePriceImpactBps,
-      acceptablePriceImpactBuffer: savedAcceptablePriceImpactBuffer,
-      userReferralInfo,
-      feeDiscountFactor: q(selectFeeDiscountFactor),
-      minCollateralUsd,
-      minPositionSizeUsd,
-      uiFeeFactor: order.uiFeeFactor ?? uiFeeFactor,
-      triggerOrderType: order.orderType as OrderType.LimitDecrease | OrderType.StopLossDecrease | undefined,
-      isSetAcceptablePriceImpactEnabled,
-    })
-  );
+      storedCollateralDeltaAmount: order.initialCollateralDeltaAmount,
+    });
+  }
+
+  return getAvailableTradeQuote(market.tradeMath, () => ({
+    decreaseAmounts: getDecreasePositionAmounts(params),
+    marginState: undefined,
+  }));
 });
+
+export const selectOrderEditorDecreaseAmounts = createSelector(
+  (q) => q(selectOrderEditorDecreaseProjection)?.decreaseAmounts
+);
 
 export const selectOrderEditorFromToken = createSelector((q) => {
   const order = q(selectOrderEditorOrder);
@@ -382,17 +457,16 @@ export const selectOrderEditorIndexToken = createSelector((q) => {
 
 export const selectOrderEditorMarkRatio = createSelector((q) => {
   const order = q(selectOrderEditorOrder);
-  if (!order) return undefined;
+  if (!order || !isSwapOrder(order) || !order.triggerRatio) return undefined;
   const fromToken = q(selectOrderEditorFromToken);
   if (!fromToken) return undefined;
   const toToken = q(selectOrderEditorToToken);
   if (!toToken) return undefined;
 
-  return getTokensRatioByPrice({
+  return getTokensRatioByPriceInDirection({
     fromToken,
     toToken,
-    fromPrice: fromToken.prices.minPrice,
-    toPrice: toToken.prices.minPrice,
+    largestTokenAddress: order.triggerRatio.largestToken.address,
   });
 });
 
@@ -404,8 +478,10 @@ export const selectOrderEditorTriggerRatio = createSelector((q) => {
   if (!markRatio || !isSwapOrderType(order.orderType)) return undefined;
 
   const ratio = parseValue(q(selectOrderEditorTriggerRatioInputValue), USD_DECIMALS);
+  if (ratio === undefined || ratio <= 0) return undefined;
+
   const tokensRatio: TokensRatio = {
-    ratio: ratio != undefined && ratio > 0 ? ratio : markRatio.ratio,
+    ratio,
     largestToken: markRatio.largestToken,
     smallestToken: markRatio.smallestToken,
   };
@@ -417,6 +493,18 @@ export const selectOrderEditorIsRatioInverted = createSelector((q) => {
   const markRatio = q(selectOrderEditorMarkRatio);
   const fromToken = q(selectOrderEditorFromToken);
   return markRatio?.largestToken.address === fromToken?.address;
+});
+
+export const selectOrderEditorMarkRatioInputValue = createSelector((q) => {
+  const markRatio = q(selectOrderEditorMarkRatio);
+  if (!markRatio) return undefined;
+
+  const step = expandDecimals(1, USD_DECIMALS - RATIO_INPUT_DECIMALS);
+  const ratio = q(selectOrderEditorIsRatioInverted)
+    ? roundUpDivision(markRatio.ratio, step) * step
+    : (markRatio.ratio / step) * step;
+
+  return formatAmountFree(ratio, USD_DECIMALS);
 });
 
 export const selectOrderEditorMinOutputAmount = createSelector((q) => {
@@ -475,6 +563,32 @@ export const selectOrderEditorMinOutputAmount = createSelector((q) => {
   }
 
   return minOutputAmount;
+});
+
+export const selectOrderEditorSwapTriggerPrice = createSelector((q) => {
+  const order = q(selectOrderEditorOrder);
+  const triggerRatio = q(selectOrderEditorTriggerRatio);
+  const fromToken = q(selectOrderEditorFromToken);
+  const toToken = q(selectOrderEditorToToken);
+
+  if (!order || !isSwapOrder(order) || !triggerRatio || !fromToken || !toToken) return undefined;
+
+  const minOutputAmount = q(selectOrderEditorMinOutputAmount);
+  const readBack = getTokensRatioByMinOutputAmountAndTriggerPrice({
+    fromToken,
+    toToken,
+    fromTokenAmount: order.initialCollateralDeltaAmount,
+    toTokenAmount: minOutputAmount,
+    triggerPrice: triggerRatio.ratio,
+    minOutputAmount,
+  });
+
+  if (readBack.largestToken.address === triggerRatio.largestToken.address) {
+    return triggerRatio.ratio;
+  }
+
+  const step = expandDecimals(1, USD_DECIMALS - RATIO_INPUT_DECIMALS);
+  return ((PRECISION * PRECISION) / triggerRatio.ratio / step) * step;
 });
 
 export const selectOrderEditorPriceImpactFeeBps = createSelector((q) => {
@@ -552,7 +666,7 @@ export const selectOrderEditorExecutionFee = createSelector((q) => {
 
   if (isDecreaseOrderType(order.orderType)) {
     estimatedGas = estimateExecuteDecreaseOrderGasLimit(gasLimits, {
-      decreaseSwapType: order.decreasePositionSwapType,
+      decreaseSwapType: q(selectOrderEditorDecreasePositionSwapType),
       swapsCount: order.swapPath.length,
     });
   }
@@ -728,6 +842,7 @@ export const selectOrderEditorPositionOrderError = createSelector((q) => {
     resultingPositionMarginState: q(selectOrderEditorIncreaseResultingPositionMarginState),
     isResultingPositionCheckBlocking: q(selectOrderEditorIsIncreaseExecutableNow),
     marginDepositNextLiqPrice: marginDepositProjections?.nextLiqPrice,
+    decreasePositionSwapType: q(selectOrderEditorDecreasePositionSwapType),
   });
 });
 
@@ -760,15 +875,28 @@ export const selectOrderEditorIsRemainingPositionAboveMaxLeverage = createSelect
     return false;
   }
 
-  const marginState = q(
-    makeSelectOrderDecreaseRemainingPositionMarginState(
-      order.key,
-      q(selectOrderEditorTriggerPrice),
-      q(selectOrderEditorSizeDeltaUsd)
-    )
-  );
+  const marginState = q(selectOrderEditorReceiveTokens)
+    ? q(selectOrderEditorDecreaseProjection)?.marginState
+    : q(
+        makeSelectOrderDecreaseRemainingPositionMarginState(
+          order.key,
+          q(selectOrderEditorTriggerPrice),
+          q(selectOrderEditorSizeDeltaUsd)
+        )
+      );
 
   return marginState?.isLiquidatable === true;
+});
+
+export const selectOrderEditorReceiveOutputs = createSelector((q): DecreaseReceiveOutput[] => {
+  const order = q(selectOrderEditorOrder);
+  if (!order || !q(selectOrderEditorReceiveTokens) || !q(selectOrderEditorExistingPosition)) return EMPTY_ARRAY;
+
+  return getDecreaseReceiveOutputs({
+    decreaseAmounts: q(selectOrderEditorDecreaseAmounts),
+    tokensData: q(selectTokensData),
+    shouldUnwrapNativeToken: order.srcChainId === 0n && order.shouldUnwrapNativeToken,
+  });
 });
 
 export const makeSelectOrderEditorPositionOrderError = createSelectorFactory(

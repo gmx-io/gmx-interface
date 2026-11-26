@@ -1,3 +1,4 @@
+// @vitest-shared-worker
 import { describe, expect, it } from "vitest";
 
 import type { ProtocolStatsSummaryResponse } from "sdk/utils/stats/types";
@@ -20,6 +21,7 @@ function summaryWith(health: "fresh" | "stale", asOf: number | null, isStale = f
   } as ProtocolStatsSummaryResponse;
 
   return {
+    refetch: async () => data,
     data,
     isLoading: false,
     error: isStale ? new Error("refresh failed") : undefined,

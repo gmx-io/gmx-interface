@@ -11,7 +11,6 @@ import { SidecarSlTpOrderEntry, SidecarOrderEntryGroupBase } from "domain/synthe
 import { buildTpSlInputPositionData } from "domain/tpsl/sidecar";
 import { expandDecimals } from "lib/numbers";
 import { bigMath } from "sdk/utils/bigmath";
-import { getIsEquivalentTokens } from "sdk/utils/tokens";
 
 import { TPSLInputRow } from "components/OrdersModal/TPSLInputRow";
 
@@ -58,12 +57,9 @@ export function SideOrderEntry({ type, entry, entriesInfo }: Props) {
           isLong,
         },
         collateralUsd,
+        collateralToken: mockPosition?.collateralToken,
+        indexToken: marketInfo?.indexToken,
         indexTokenDecimals: marketInfo?.indexToken?.decimals ?? 18,
-        collateralTokenDecimals: mockPosition?.collateralToken?.decimals,
-        isCollateralTokenEquivalentToIndex:
-          mockPosition && marketInfo?.indexToken
-            ? getIsEquivalentTokens(mockPosition.collateralToken, marketInfo.indexToken)
-            : undefined,
         visualMultiplier: marketInfo?.indexToken?.visualMultiplier ?? 1,
       })!,
     [mockPosition, collateralUsd, isLong, marketInfo]

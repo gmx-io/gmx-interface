@@ -20,8 +20,8 @@ import { selectClosedMarkets } from "context/SyntheticsStateContext/selectors/gl
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import {
-  getCanUseTokenPermits,
   getExpressParamsForSubmit,
+  getExpressTokenPermitBlockReason,
   reportMultichainExpressSubmitError,
 } from "domain/synthetics/express/validateMultichainExpressSubmit";
 import {
@@ -279,6 +279,8 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
     ];
   }, [expressParams?.gasPaymentParams, isWalletOutOfGasPaymentToken]);
 
+  const permitBlockReason = getExpressTokenPermitBlockReason(expressParams);
+
   const {
     tokensToApprove,
     isAllowanceLoaded: isAllowanceLoadedRaw,
@@ -288,13 +290,14 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
     chainId,
     spenderAddress: getContract(chainId, "SyntheticsRouter"),
     tokens: approvalTokens,
-    allowPermit: getCanUseTokenPermits(expressParams),
+    allowPermit: permitBlockReason === undefined,
     skip: isGmxAccountFeeSource,
     metric: {
       flow: "settleFundingFees",
       isExpress: Boolean(expressParams),
       isExpress1CT: Boolean(expressParams?.subaccount),
       gasPaymentTokenAddress: expressParams?.gasPaymentParams?.gasPaymentTokenAddress,
+      permitBlockReason,
     },
   });
 

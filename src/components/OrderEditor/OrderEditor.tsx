@@ -15,6 +15,7 @@ import {
 import { useMarketInfo } from "context/SyntheticsStateContext/hooks/marketHooks";
 import {
   useEditingOrderState,
+  useOrderEditorIsReceiveSeparatedState,
   useOrderEditorIsSubmittingState,
   useOrderEditorSizeInputValueState,
   useOrderEditorTriggerPriceInputValueState,
@@ -28,7 +29,9 @@ import { selectMarketsInfoData, selectTokensData } from "context/SyntheticsState
 import {
   selectOrderEditorAcceptablePrice,
   selectOrderEditorAcceptablePriceImpactBps,
+  selectOrderEditorReceiveTokens,
   selectOrderEditorDecreaseAmounts,
+  selectOrderEditorDecreasePositionSwapType,
   selectOrderEditorDefaultAllowedSwapSlippageBps,
   selectOrderEditorExecutionFee,
   selectOrderEditorExistingPosition,
@@ -40,6 +43,7 @@ import {
   selectOrderEditorIsRemainingPositionAboveMaxLeverage,
   selectOrderEditorMarginDepositProjections,
   selectOrderEditorMarkRatio,
+  selectOrderEditorMarkRatioInputValue,
   selectOrderEditorMaxAllowedLeverage,
   selectOrderEditorMinOutputAmount,
   selectOrderEditorNextPositionValuesForIncrease,
@@ -51,17 +55,19 @@ import {
   selectOrderEditorIsQuoteUnavailable,
   selectOrderEditorTpSlLiqPriceWarning,
   selectOrderEditorPriceImpactFeeBps,
+  selectOrderEditorReceiveOutputs,
   selectOrderEditorSelectedAllowedSwapSlippageBps,
   selectOrderEditorSetAcceptablePriceImpactBps,
   selectOrderEditorSetDefaultAllowedSwapSlippageBps,
   selectOrderEditorSetSelectedAllowedSwapSlippageBps,
   selectOrderEditorSizeDeltaUsd,
+  selectOrderEditorSwapTriggerPrice,
   selectOrderEditorTotalSwapImpactBps,
   selectOrderEditorTriggerPrice,
   selectOrderEditorTriggerRatio,
 } from "context/SyntheticsStateContext/selectors/orderEditorSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
+import { useOrdersActionExpressParams } from "domain/synthetics/express/useOrdersActionExpressParams";
 import {
   getExpressParamsForSubmit,
   getNetworkFeeGasPaymentParams,
@@ -109,12 +115,9 @@ import {
   getIsIncreaseResultingPositionLiquidatable,
   getIsPositionLiquidatedBeforeTrigger,
 } from "domain/synthetics/trade/utils/warnings";
+import { getIsHighSwapProfitFee } from "domain/synthetics/trade/utils/warnings";
 import { TokensRatioAndSlippage } from "domain/tokens";
-import {
-  FULL_POSITION_CLOSE_SIZE_DELTA_USD,
-  getPositionCloseSizeDeltaUsdForDisplay,
-  isFullPositionCloseSizeDeltaUsd,
-} from "domain/tpsl/utils";
+import { FULL_POSITION_CLOSE_SIZE_DELTA_USD, getPositionCloseSizeDeltaUsdForDisplay } from "domain/tpsl/utils";
 import { useChainId } from "lib/chains";
 import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
 import { reportHandledRejection } from "lib/metrics/reportHandledRejection";
@@ -125,8 +128,9 @@ import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { sendEditOrderEvent } from "lib/userAnalytics";
 import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
+import { getFeeItem } from "sdk/utils/fees";
 import { OrderType } from "sdk/utils/orders/types";
-import { BatchOrderTxnParams, buildUpdateOrderPayload } from "sdk/utils/orderTransactions";
+import { BatchOrderTxnParams, buildUpdateOrderPayload, getOrderPayoutAddresses } from "sdk/utils/orderTransactions";
 import { getIsMaxLeverageMarginReason } from "sdk/utils/trade/increaseMarginCheck";
 
 import { AcceptablePriceImpactInputRow } from "components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
@@ -135,6 +139,10 @@ import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { ColorfulButtonLink } from "components/ColorfulBanner/ColorfulBanner";
+import {
+  DecreaseReceiveOutputDisplay,
+  SplitReceiveTokensLabel,
+} from "components/DecreaseReceiveOutput/DecreaseReceiveOutput";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import { MarginDepositInsufficientMessage } from "components/MarginRemediation/MarginRemediationActions";
 import Modal from "components/Modal/Modal";
@@ -144,8 +152,16 @@ import { LiquidationPriceValue } from "components/NumericValue/LiquidationPriceV
 import { NumericValue } from "components/NumericValue/NumericValue";
 import { UsdPriceValue } from "components/NumericValue/UsdPriceValue";
 import { UsdValue } from "components/NumericValue/UsdValue";
+import { getSplitReceiveSwapProfitFeeWarning } from "components/PositionSeller/SplitReceiveSwapProfitFeeWarning";
+import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import StandardTooltip from "components/Tooltip/StandardTooltip";
-import { TooltipAction, TooltipContent, TooltipLink, TooltipRow, TooltipText } from "components/Tooltip/TooltipBlocks";
+import {
+  TooltipAction,
+  TooltipContent,
+  TooltipReadMore,
+  TooltipRow,
+  TooltipText,
+} from "components/Tooltip/TooltipBlocks";
 import { MarginPercentageSlider } from "components/TradeboxMarginFields/MarginPercentageSlider";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
@@ -194,8 +210,10 @@ export function OrderEditor(p: Props) {
   const isRemainingPositionAboveMaxLeverage = useSelector(selectOrderEditorIsRemainingPositionAboveMaxLeverage);
   const fromToken = useSelector(selectOrderEditorFromToken);
   const markRatio = useSelector(selectOrderEditorMarkRatio);
+  const markRatioInputValue = useSelector(selectOrderEditorMarkRatioInputValue);
   const isRatioInverted = useSelector(selectOrderEditorIsRatioInverted);
   const triggerRatio = useSelector(selectOrderEditorTriggerRatio);
+  const swapTriggerPrice = useSelector(selectOrderEditorSwapTriggerPrice);
   const minOutputAmount = useSelector(selectOrderEditorMinOutputAmount);
 
   const market = useMarketInfo(p.order.marketAddress);
@@ -304,7 +322,11 @@ export function OrderEditor(p: Props) {
 
   const isTriggerDecrease = isTriggerDecreaseOrderType(p.order.orderType);
 
+  const isFullCloseWithoutPosition =
+    isTriggerDecrease && !existingPosition && p.order.sizeDeltaUsd === FULL_POSITION_CLOSE_SIZE_DELTA_USD;
+
   const closeSize = useCloseSizeInput({
+    forceUsd: !existingPosition,
     positionSizeInUsd: existingPosition?.sizeInUsd,
     positionSizeInTokens: existingPosition?.sizeInTokens,
     indexTokenDecimals: positionIndexToken?.decimals ?? 18,
@@ -334,6 +356,23 @@ export function OrderEditor(p: Props) {
 
   const decreaseAmounts = useSelector(selectOrderEditorDecreaseAmounts);
   const { minCollateralUsd } = usePositionsConstants(p.order.marketAddress);
+
+  const receiveTokens = useSelector(selectOrderEditorReceiveTokens);
+  const [isReceiveSeparated, setIsReceiveSeparated] = useOrderEditorIsReceiveSeparatedState();
+  const decreasePositionSwapType = useSelector(selectOrderEditorDecreasePositionSwapType);
+  const receiveOutputs = useSelector(selectOrderEditorReceiveOutputs);
+
+  const swapProfitFee =
+    decreaseAmounts && getFeeItem(-decreaseAmounts.swapProfitFeeUsd, decreaseAmounts.swapProfitUsdIn);
+  const swapFeeWarning = getSplitReceiveSwapProfitFeeWarning({
+    shouldShow: Boolean(
+      existingPosition && receiveTokens && !isReceiveSeparated && getIsHighSwapProfitFee(swapProfitFee)
+    ),
+    receiveTokenSymbol: receiveOutputs[0]?.token.symbol,
+    profitToken: receiveTokens?.pnlToken,
+    collateralToken: receiveTokens?.collateralToken,
+    swapProfitFee,
+  });
 
   const recommendedAcceptablePriceImpactBps =
     isLimitIncreaseOrderType(p.order.orderType) && increaseAmounts?.acceptablePrice !== undefined
@@ -466,7 +505,7 @@ export function OrderEditor(p: Props) {
             orderKey: p.order.key,
             orderType: p.order.orderType,
             sizeDeltaUsd: 0n,
-            triggerPrice: triggerRatio?.ratio ?? p.order.triggerPrice,
+            triggerPrice: swapTriggerPrice ?? p.order.triggerPrice,
             acceptablePrice: 0n,
             minOutputAmount: minOutputAmount ?? p.order.minOutputAmount,
             autoCancel: p.order.autoCancel,
@@ -474,24 +513,19 @@ export function OrderEditor(p: Props) {
             decreasePositionSwapType: p.order.decreasePositionSwapType,
             executionFeeTopUp: additionalExecutionFee?.feeTokenAmount ?? 0n,
             executionGasLimit: executionFee?.gasLimit,
+            ...getOrderPayoutAddresses(p.order),
           }),
         ],
         cancelOrderParams: [],
       };
     } else {
       const positionOrder = p.order as PositionOrderInfo;
-      const nextSizeDeltaUsd = sizeDeltaUsd ?? positionOrder.sizeDeltaUsd;
-      const shouldPreserveFullCloseSize =
+      const nextSizeDeltaUsd = isTriggerDecrease ? closeSize.closeSizeUsd : sizeDeltaUsd ?? positionOrder.sizeDeltaUsd;
+      const keepStoredSize =
         isTriggerDecrease &&
-        isFullPositionCloseSizeDeltaUsd(positionOrder.sizeDeltaUsd, existingPosition?.sizeInUsd) &&
-        existingPosition !== undefined &&
-        nextSizeDeltaUsd >= existingPosition.sizeInUsd;
-
-      const updateSizeDeltaUsd = isMarginDeposit
-        ? 0n
-        : shouldPreserveFullCloseSize
-          ? FULL_POSITION_CLOSE_SIZE_DELTA_USD
-          : nextSizeDeltaUsd;
+        nextSizeDeltaUsd ===
+          getPositionCloseSizeDeltaUsdForDisplay(positionOrder.sizeDeltaUsd, existingPosition?.sizeInUsd);
+      const updateSizeDeltaUsd = isMarginDeposit ? 0n : keepStoredSize ? positionOrder.sizeDeltaUsd : nextSizeDeltaUsd;
 
       return {
         createOrderParams: [],
@@ -506,16 +540,18 @@ export function OrderEditor(p: Props) {
             acceptablePrice: acceptablePrice ?? positionOrder.acceptablePrice,
             minOutputAmount: minOutputAmount ?? positionOrder.minOutputAmount,
             autoCancel: positionOrder.autoCancel,
-            validFromTime: 0n,
-            decreasePositionSwapType: positionOrder.decreasePositionSwapType,
+            validFromTime: isTriggerDecrease ? positionOrder.validFromTime : 0n,
+            decreasePositionSwapType: decreasePositionSwapType ?? positionOrder.decreasePositionSwapType,
             executionFeeTopUp: additionalExecutionFee?.feeTokenAmount ?? 0n,
             executionGasLimit: executionFee?.gasLimit,
+            ...getOrderPayoutAddresses(p.order),
           }),
         ],
         cancelOrderParams: [],
       };
     }
   }, [
+    closeSize.closeSizeUsd,
     isQuoteUnavailable,
     signer,
     tokensData,
@@ -525,28 +561,40 @@ export function OrderEditor(p: Props) {
     existingPosition,
     isMarginDeposit,
     isTriggerDecrease,
-    triggerRatio?.ratio,
+    swapTriggerPrice,
     triggerPrice,
     chainId,
     sizeDeltaUsd,
     acceptablePrice,
     minOutputAmount,
+    decreasePositionSwapType,
     additionalExecutionFee?.feeTokenAmount,
   ]);
 
   const { formId, isActiveForm } = useActiveForm();
 
-  const { expressParams, expressParamsPromise, isMultichainSubmitDisabled } = useExpressOrdersParams({
+  const orderFeeBalanceOrders = useMemo(() => [p.order], [p.order]);
+
+  const {
+    expressParams,
+    expressParamsPromise,
+    isLoading: isExpressLoading,
+    isMultichainSubmitDisabled,
+    isGmxAccount,
+  } = useOrdersActionExpressParams({
+    orders: orderFeeBalanceOrders,
     orderParams: batchParams,
     label: "Order Editor",
-    isGmxAccount: srcChainId !== undefined,
     canSwitchGasPaymentToken: isActiveForm,
-    gasPaymentTokenFallback: "approvedToken",
   });
 
   const expressError = useMemo(() => getExpressError({ expressParams, tokensData }), [expressParams, tokensData]);
 
   const networkFee = useMemo(() => {
+    if (isMultichainSubmitDisabled) {
+      return undefined;
+    }
+
     const gasPaymentParams = getNetworkFeeGasPaymentParams({
       expressParams,
       tokensData,
@@ -567,7 +615,7 @@ export function OrderEditor(p: Props) {
     }
 
     return additionalExecutionFee;
-  }, [additionalExecutionFee, expressParams, tokensData]);
+  }, [additionalExecutionFee, expressParams, isMultichainSubmitDisabled, tokensData]);
 
   const error = useMemo(() => {
     if (isSubmitting) {
@@ -653,8 +701,6 @@ export function OrderEditor(p: Props) {
 
     const fulfilledExpressParams = await expressParamsPromise;
 
-    const isGmxAccount = srcChainId !== undefined;
-
     if (
       reportMultichainExpressSubmitError({
         isGmxAccount,
@@ -679,7 +725,7 @@ export function OrderEditor(p: Props) {
         collateralSymbol: p.order.initialCollateralToken.symbol,
       }),
       provider,
-      isGmxAccount: srcChainId !== undefined,
+      isGmxAccount,
     });
 
     if (expressParams?.subaccount) {
@@ -712,7 +758,7 @@ export function OrderEditor(p: Props) {
     expressParamsPromise,
     chainId,
     makeOrderTxnCallback,
-    srcChainId,
+    isGmxAccount,
     expressParams?.subaccount,
     p,
     market,
@@ -740,11 +786,7 @@ export function OrderEditor(p: Props) {
       };
     }
 
-    if (
-      isTriggerDecrease &&
-      isFullPositionCloseSizeDeltaUsd((p.order as PositionOrderInfo).sizeDeltaUsd) &&
-      !existingPosition
-    ) {
+    if (isFullCloseWithoutPosition && !receiveTokens) {
       return {
         text: t`Loading position...`,
         disabled: true,
@@ -764,9 +806,7 @@ export function OrderEditor(p: Props) {
               )}
             </TooltipText>
             {setMaxLeverageAction}
-            <TooltipLink href="https://docs.gmx.io/docs/trading/order-types/#max-leverage">
-              <Trans>Read more</Trans>
-            </TooltipLink>
+            <TooltipReadMore href="https://docs.gmx.io/docs/trading/order-types/#max-leverage" />
           </TooltipContent>
         ),
         disabled: true,
@@ -792,7 +832,7 @@ export function OrderEditor(p: Props) {
       };
     }
 
-    if (isMultichainSubmitDisabled) {
+    if (isExpressLoading || isMultichainSubmitDisabled) {
       return {
         text: (
           <>
@@ -831,8 +871,9 @@ export function OrderEditor(p: Props) {
     onSubmit,
     detectAndSetAvailableMaxLeverage,
     hasAvailableMaxLeverage,
-    isTriggerDecrease,
-    existingPosition,
+    isFullCloseWithoutPosition,
+    receiveTokens,
+    isExpressLoading,
     isMultichainSubmitDisabled,
   ]);
 
@@ -856,7 +897,7 @@ export function OrderEditor(p: Props) {
         const ratio = (p.order as SwapOrderInfo).triggerRatio as TokensRatioAndSlippage;
 
         if (ratio) {
-          setTriggerRatioInputValue(formatAmount(ratio.ratio, USD_DECIMALS, 2));
+          setTriggerRatioInputValue(formatAmountFree(ratio.ratio, USD_DECIMALS));
         }
 
         if (isLimitSwapOrderType(p.order.orderType)) {
@@ -869,12 +910,10 @@ export function OrderEditor(p: Props) {
       } else {
         const positionOrder = p.order as PositionOrderInfo;
 
-        if (isTriggerDecrease) {
+        if (isTriggerDecrease && positionOrder.sizeDeltaUsd === FULL_POSITION_CLOSE_SIZE_DELTA_USD) {
+          closeSize.setMaxCloseSize();
+        } else if (isTriggerDecrease) {
           const orderSizeDeltaUsd = positionOrder.sizeDeltaUsd ?? 0n;
-
-          if (isFullPositionCloseSizeDeltaUsd(orderSizeDeltaUsd) && !existingPosition) {
-            return;
-          }
 
           const displaySizeDeltaUsd = getPositionCloseSizeDeltaUsdForDisplay(
             orderSizeDeltaUsd,
@@ -884,7 +923,7 @@ export function OrderEditor(p: Props) {
             existingPosition && displaySizeDeltaUsd > existingPosition.sizeInUsd
               ? existingPosition.sizeInUsd
               : displaySizeDeltaUsd;
-          closeSize.setFromUsdString(formatAmountFree(clampedSizeDeltaUsd, USD_DECIMALS));
+          closeSize.setFromUsd(clampedSizeDeltaUsd);
         } else {
           setSizeInputValue(formatAmountFree(positionOrder.sizeDeltaUsd ?? 0n, USD_DECIMALS));
         }
@@ -893,7 +932,9 @@ export function OrderEditor(p: Props) {
 
         if (triggerPriceInputValue === "") {
           setTriggerPriceInputValue(
-            formatAmount(price, USD_DECIMALS, decimals, undefined, undefined, indexToken?.visualMultiplier)
+            isTriggerDecrease
+              ? formatAmountFree(price * BigInt(indexToken?.visualMultiplier ?? 1), USD_DECIMALS)
+              : formatAmount(price, USD_DECIMALS, decimals, undefined, undefined, indexToken?.visualMultiplier)
           );
         }
       }
@@ -1023,6 +1064,8 @@ export function OrderEditor(p: Props) {
                     <Trans>Replace margin deposit</Trans>
                   </ColorfulButtonLink>
                 </div>
+              ) : isFullCloseWithoutPosition ? (
+                <SyntheticsInfoRow label={t`Close`} value="100%" />
               ) : (
                 <BuyInputSection
                   qa="amount-input"
@@ -1044,7 +1087,7 @@ export function OrderEditor(p: Props) {
                     isTriggerDecrease && closeSize.showSizeInTokens ? positionIndexToken?.decimals ?? 18 : USD_DECIMALS
                   }
                 >
-                  {isTriggerDecrease ? (
+                  {isTriggerDecrease && existingPosition ? (
                     <span className="cursor-pointer select-none" onClick={closeSize.handleSizeToggle}>
                       {closeSize.closeSizeLabel}
                     </span>
@@ -1086,13 +1129,15 @@ export function OrderEditor(p: Props) {
 
           {isSwapOrderType(p.order.orderType) && (
             <>
-              {triggerRatio && (
+              {markRatio && (
                 <BuyInputSection
                   topLeftLabel={t`Limit price`}
                   topRightLabel={t`Mark`}
-                  topRightValue={formatAmount(markRatio?.ratio, USD_DECIMALS, 4)}
+                  topRightValue={formatAmount(markRatio.ratio, USD_DECIMALS, 4)}
                   onClickTopRightLabel={() => {
-                    setTriggerRatioInputValue(formatAmount(markRatio?.ratio, USD_DECIMALS, 10));
+                    if (markRatioInputValue !== undefined) {
+                      setTriggerRatioInputValue(markRatioInputValue);
+                    }
                   }}
                   inputValue={triggerRatioInputValue}
                   onInputValueChange={(e) => {
@@ -1101,7 +1146,7 @@ export function OrderEditor(p: Props) {
                   maxDecimals={USD_DECIMALS}
                 >
                   <Trans>
-                    {triggerRatio.smallestToken.symbol} per {triggerRatio.largestToken.symbol}
+                    {markRatio.smallestToken.symbol} per {markRatio.largestToken.symbol}
                   </Trans>
                 </BuyInputSection>
               )}
@@ -1110,6 +1155,32 @@ export function OrderEditor(p: Props) {
         </div>
 
         <div className="flex flex-col gap-14 px-20 pb-16">
+          {receiveTokens && (
+            <>
+              <ToggleSwitch
+                textClassName="text-typography-secondary"
+                isChecked={isReceiveSeparated}
+                setIsChecked={setIsReceiveSeparated}
+              >
+                <SplitReceiveTokensLabel
+                  profitToken={receiveTokens.pnlToken}
+                  collateralToken={receiveTokens.collateralToken}
+                />
+              </ToggleSwitch>
+              {existingPosition && (
+                <SyntheticsInfoRow
+                  label={t`Receive`}
+                  value={<DecreaseReceiveOutputDisplay outputs={receiveOutputs} layout="stacked" />}
+                />
+              )}
+              {swapFeeWarning && (
+                <AlertInfoCard type="warning" hideClose>
+                  {swapFeeWarning}
+                </AlertInfoCard>
+              )}
+            </>
+          )}
+
           {(isLimitIncreaseOrderType(p.order.orderType) || isStopIncreaseOrderType(p.order.orderType)) && (
             <SyntheticsInfoRow
               label={t`Leverage`}
@@ -1208,7 +1279,7 @@ export function OrderEditor(p: Props) {
                             decimals={networkFee.feeToken.decimals}
                             symbol={networkFee.feeToken.symbol}
                             isStable={networkFee.feeToken.isStable}
-                            source={getNetworkFeeSource({ isGmxAccount: srcChainId !== undefined })}
+                            source={getNetworkFeeSource({ isGmxAccount })}
                           />
                         }
                       />
@@ -1273,7 +1344,7 @@ export function OrderEditor(p: Props) {
             expressParams={expressParams}
             payTokenAddress={undefined}
             isWrapOrUnwrap={false}
-            isGmxAccount={srcChainId !== undefined}
+            isGmxAccount={isGmxAccount}
             onAfterAction={p.onClose}
           />
 

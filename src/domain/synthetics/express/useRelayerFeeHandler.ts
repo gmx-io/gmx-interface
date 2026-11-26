@@ -1,3 +1,4 @@
+import isEqual from "lodash/isEqual";
 import { useEffect, useMemo } from "react";
 
 import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
@@ -25,6 +26,8 @@ import { useThrottledAsync } from "lib/useThrottledAsync";
 import useWallet from "lib/wallets/useWallet";
 import {
   BatchOrderTxnParams,
+  type ExternalCallsPayload,
+  getBatchExternalCalls,
   getBatchExternalSwapGasLimit,
   getBatchIsNativePayment,
   getBatchRequiredActions,
@@ -50,20 +53,47 @@ export type ExpressOrdersParamsResult = {
   gasPaymentToken: TokenData | undefined;
 };
 
+function getIsExpressParamsForBatch({
+  expressParams,
+  batchExternalCalls,
+  isGmxAccount,
+}: {
+  expressParams: ExpressTxnParams | undefined;
+  batchExternalCalls: ExternalCallsPayload | undefined;
+  isGmxAccount: boolean;
+}) {
+  return (
+    expressParams !== undefined &&
+    batchExternalCalls !== undefined &&
+    expressParams.isGmxAccount === isGmxAccount &&
+    isEqual(expressParams.relayParamsPayload.externalCalls, batchExternalCalls)
+  );
+}
+
 export function getMatchingExpressParamsPromise({
   fastExpressPromise,
   asyncExpressPromise,
   isAsyncEnabled,
   isGmxAccount,
+  batchExternalCalls,
 }: {
   fastExpressPromise: Promise<ExpressTxnParams | undefined> | undefined;
   asyncExpressPromise: Promise<ExpressTxnParams | undefined> | undefined;
   isAsyncEnabled: boolean;
   isGmxAccount: boolean;
+  batchExternalCalls: ExternalCallsPayload | undefined;
 }): Promise<ExpressTxnParams | undefined> {
   const sourcePromises = isAsyncEnabled ? [fastExpressPromise, asyncExpressPromise] : [fastExpressPromise];
   const matchingSourcePromises = sourcePromises.flatMap((promise) =>
-    promise ? [promise.then((result) => (result?.isGmxAccount === isGmxAccount ? result : Promise.reject(result)))] : []
+    promise
+      ? [
+          promise.then((result) =>
+            getIsExpressParamsForBatch({ expressParams: result, batchExternalCalls, isGmxAccount })
+              ? result
+              : Promise.reject(result)
+          ),
+        ]
+      : []
   );
 
   return Promise.any(matchingSourcePromises).catch(() => undefined);
@@ -123,17 +153,24 @@ export function useExpressOrdersParams({
     ? roundBigIntToDecimals(executionFee.feeTokenAmount, executionFee.feeToken.decimals, 6)
     : undefined;
   const externalSwapGasLimit = orderParams ? getBatchExternalSwapGasLimit(orderParams) : undefined;
+  const batchExternalCalls = useMemo(
+    () => (orderParams ? getBatchExternalCalls(orderParams) : undefined),
+    [orderParams]
+  );
+  const prevBatchExternalCalls = usePrevious(batchExternalCalls);
 
   const estimationKey = `${executionFeeKey}:${requiredActions}:${externalSwapGasLimit}:${globalExpressParams?.gasPaymentTokenAddress}:${isGmxAccount}:${subaccount?.signedApproval.signature}`;
   const prevEstimationKey = usePrevious(estimationKey);
 
   const forceRecalculate = estimationKey !== prevEstimationKey;
+  const forceFastRecalculate = forceRecalculate || !isEqual(batchExternalCalls, prevBatchExternalCalls);
 
   const isFastEnabled = isAvailable && globalExpressParams && signer && orderParams && provider;
   const {
     data: fastExpressParams,
     promise: fastExpressPromise,
     error: fastExpressError,
+    isLoading: isFastExpressEstimating,
   } = useThrottledAsync(
     async ({ params: p }) => {
       try {
@@ -175,7 +212,7 @@ export function useExpressOrdersParams({
             subaccount,
           }
         : undefined,
-      forceRecalculate,
+      forceRecalculate: forceFastRecalculate,
       throttleMs: 200,
       leading: true,
       trailing: false,
@@ -222,6 +259,7 @@ export function useExpressOrdersParams({
   );
 
   const gasPaymentToken = globalExpressParams?.gasPaymentToken;
+  const hasGlobalExpressParams = globalExpressParams !== undefined;
 
   const result = useMemo(() => {
     if (!isAvailable) {
@@ -237,13 +275,31 @@ export function useExpressOrdersParams({
       };
     }
 
-    const matchingFastExpressParams = fastExpressParams?.isGmxAccount === isGmxAccount ? fastExpressParams : undefined;
+    const hasOrderParams = !getIsEmptyBatch(orderParams);
+
+    if (!hasGlobalExpressParams) {
+      return {
+        expressParams: undefined,
+        expressEstimateMethod: undefined,
+        fastExpressParams: undefined,
+        asyncExpressParams: undefined,
+        isLoading: hasOrderParams,
+        isMultichainSubmitDisabled: isGmxAccount && hasOrderParams,
+        expressParamsPromise: undefined,
+        gasPaymentToken,
+      };
+    }
+
+    const isFastEstimateForBatch =
+      forceFastRecalculate || isFastExpressEstimating
+        ? fastExpressParams?.isGmxAccount === isGmxAccount
+        : getIsExpressParamsForBatch({ expressParams: fastExpressParams, batchExternalCalls, isGmxAccount });
+    const matchingFastExpressParams = isFastEstimateForBatch ? fastExpressParams : undefined;
     const matchingAsyncExpressParams =
       asyncExpressParams?.isGmxAccount === isGmxAccount ? asyncExpressParams : undefined;
     const expressParams = isAsyncEnabled
       ? matchingAsyncExpressParams ?? matchingFastExpressParams
       : matchingFastExpressParams;
-    const hasOrderParams = !getIsEmptyBatch(orderParams);
     const isLoading = hasOrderParams && !matchingFastExpressParams && !fastExpressError;
     const isMultichainSubmitDisabled = isGmxAccount && hasOrderParams && !expressParams;
 
@@ -252,6 +308,7 @@ export function useExpressOrdersParams({
       asyncExpressPromise,
       isAsyncEnabled: Boolean(isAsyncEnabled),
       isGmxAccount,
+      batchExternalCalls,
     });
 
     return {
@@ -266,15 +323,19 @@ export function useExpressOrdersParams({
     };
   }, [
     isAvailable,
+    hasGlobalExpressParams,
     isAsyncEnabled,
     asyncExpressParams,
     fastExpressParams,
     fastExpressPromise,
     asyncExpressPromise,
     orderParams,
+    batchExternalCalls,
     fastExpressError,
     isGmxAccount,
     gasPaymentToken,
+    forceFastRecalculate,
+    isFastExpressEstimating,
   ]);
 
   useEffect(() => recordExpressParams(result.expressParams), [recordExpressParams, result.expressParams]);
