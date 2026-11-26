@@ -1,10 +1,9 @@
 import { Trans, t } from "@lingui/macro";
-import { getEmbeddedConnectedWallet, useExportWallet, useWallets } from "@privy-io/react-auth";
+import { useExportWallet } from "@privy-io/react-auth";
 import { ReactNode, useEffect, useRef, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import { useHistory } from "react-router-dom";
 import { useCopyToClipboard } from "react-use";
-import { isAddressEqual } from "viem";
 
 import { getChainName, isSolanaNetwork } from "config/chains";
 import type { ContractsChainId, SourceChainId } from "config/chains";
@@ -40,6 +39,7 @@ import { userAnalytics } from "lib/userAnalytics";
 import { DisconnectWalletEvent } from "lib/userAnalytics/types";
 import { shortenAddressOrEns, switchNetwork } from "lib/wallets";
 import { useSolanaWalletSession } from "lib/wallets/solanaWalletSession";
+import { useConnectedEmbeddedWallet } from "lib/wallets/useConnectedEmbeddedWallet";
 import useWallet from "lib/wallets/useWallet";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 
@@ -116,7 +116,7 @@ function WalletBlock({ account }: { account: string }) {
   const copyTimeoutRef = useRef<number | undefined>(undefined);
   const disconnectEvm = useDisconnectAndClose();
   const solanaWallet = useSolanaWalletSession();
-  const { wallets } = useWallets();
+  const embeddedWallet = useConnectedEmbeddedWallet();
   const { exportWallet } = useExportWallet();
   const openWalletReceive = useOpenWalletReceive();
 
@@ -124,9 +124,7 @@ function WalletBlock({ account }: { account: string }) {
     openWalletReceive();
   };
 
-  const embeddedWallet = getEmbeddedConnectedWallet(wallets);
-  const canExport =
-    !isSolanaSelected && Boolean(embeddedWallet && account && isAddressEqual(embeddedWallet.address, account));
+  const canExport = !isSolanaSelected && embeddedWallet !== undefined;
 
   const accountUrl = getAccountUrl(isSolanaSelected ? networkId : chainId, account);
 

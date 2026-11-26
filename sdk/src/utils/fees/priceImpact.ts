@@ -333,6 +333,21 @@ export function getProportionalPendingImpactValues({
   return { proportionalPendingImpactDeltaAmount, proportionalPendingImpactDeltaUsd };
 }
 
+export function getPriceImpactDeltaAmount(indexToken: TokenData, priceImpactDeltaUsd: bigint) {
+  if (priceImpactDeltaUsd > 0n) {
+    return convertToTokenAmount(priceImpactDeltaUsd, indexToken.decimals, indexToken.prices.maxPrice) ?? 0n;
+  }
+
+  if (indexToken.prices.minPrice <= 0n) {
+    return 0n;
+  }
+
+  return roundUpMagnitudeDivision(
+    priceImpactDeltaUsd * expandDecimals(1, indexToken.decimals),
+    indexToken.prices.minPrice
+  );
+}
+
 export function getPriceImpactForSwap(
   marketInfo: MarketInfo,
   tokenA: TokenData,

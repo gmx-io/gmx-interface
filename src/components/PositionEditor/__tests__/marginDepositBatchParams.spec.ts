@@ -1,3 +1,4 @@
+// @vitest-shared-worker
 import { describe, expect, it } from "vitest";
 
 import { OrderType } from "domain/synthetics/orders";
@@ -40,6 +41,7 @@ const commonParams: MarginDepositBatchParams = {
   indexTokenAddress: WETH.address,
   allowedSlippage: ALLOWED_SLIPPAGE,
   replacingOrderKey: undefined,
+  replacingOrder: undefined,
 };
 
 function getCreateOrder(batchParams: BatchOrderTxnParams) {

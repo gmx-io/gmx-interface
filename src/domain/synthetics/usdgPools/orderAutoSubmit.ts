@@ -40,6 +40,25 @@ export function getConvertFirstPayAmount(p: { payAmount: bigint; maxAvailableAmo
   return bigMath.max(p.payAmount, bigMath.min(addConversionDrift(p.payAmount), p.maxAvailableAmount));
 }
 
+/**
+ * A size typed in tokens keeps its token amount, while a size typed in USD re-derives it on every price move. That
+ * re-derive lands a commit after the tick, so in between the old token amount is priced at the new mark: the USD size
+ * counts as kept within the same drift the conversion already covers.
+ */
+export function getIsTypedSizeUnchanged(p: {
+  confirmedOrder: ConfirmedUsdgOrder;
+  sizeInputValue: string;
+  sizeDeltaUsd: bigint | undefined;
+}) {
+  const { confirmedOrder } = p;
+  const maxDriftUsd = bigMath.mulDiv(confirmedOrder.sizeDeltaUsd, CONVERSION_DRIFT_BPS, BASIS_POINTS_DIVISOR_BIGINT);
+
+  return (
+    p.sizeInputValue === confirmedOrder.sizeInputValue ||
+    (p.sizeDeltaUsd !== undefined && bigMath.abs(p.sizeDeltaUsd - confirmedOrder.sizeDeltaUsd) <= maxDriftUsd)
+  );
+}
+
 export function getConvertedOrderStatus(p: {
   confirmedOrder: ConfirmedUsdgOrder;
   setupKey: string;
@@ -58,7 +77,7 @@ export function getConvertedOrderStatus(p: {
     return "confirmed";
   }
 
-  if (p.sizeInputValue !== confirmedOrder.sizeInputValue) {
+  if (!getIsTypedSizeUnchanged(p)) {
     return "changed";
   }
 

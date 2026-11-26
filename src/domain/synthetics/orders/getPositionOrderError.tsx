@@ -2,6 +2,7 @@ import { t } from "@lingui/macro";
 
 import { BASIS_POINTS_DIVISOR } from "config/factors";
 import {
+  DecreasePositionSwapType,
   OrderType,
   PositionOrderInfo,
   isLimitIncreaseOrderType,
@@ -58,6 +59,7 @@ export function getPositionOrderError({
   marginDepositNextLiqPrice,
   resultingPositionMarginState,
   isResultingPositionCheckBlocking,
+  decreasePositionSwapType,
 }: {
   positionOrder: PositionOrderInfo;
   markPrice: bigint | undefined;
@@ -70,8 +72,11 @@ export function getPositionOrderError({
   marginDepositNextLiqPrice?: bigint;
   resultingPositionMarginState?: PositionMarginState;
   isResultingPositionCheckBlocking?: boolean;
+  decreasePositionSwapType?: DecreasePositionSwapType;
 }): string | undefined {
   const isMarginDeposit = isMarginDepositOrder(positionOrder);
+  const isReceiveModeUnchanged =
+    decreasePositionSwapType === undefined || decreasePositionSwapType === positionOrder.decreasePositionSwapType;
 
   if (markPrice === undefined) {
     return t`Loading...`;
@@ -88,7 +93,8 @@ export function getPositionOrderError({
   if (
     sizeDeltaUsd === positionOrder.sizeDeltaUsd &&
     triggerPrice === positionOrder.triggerPrice! &&
-    acceptablePrice === positionOrder.acceptablePrice
+    acceptablePrice === positionOrder.acceptablePrice &&
+    isReceiveModeUnchanged
   ) {
     return isMarginDeposit ? t`Enter a new price` : t`Enter a new amount or price`;
   }
@@ -121,12 +127,15 @@ export function getPositionOrderError({
       existingPosition?.sizeInUsd
     );
 
-    if (
+    const isSizeAndPriceUnchanged =
       sizeDeltaUsd === orderSizeDeltaUsdForCompare &&
-      triggerPrice === (positionOrder.triggerPrice ?? 0n) &&
-      acceptablePrice === positionOrder.acceptablePrice
-    ) {
-      return t`Enter a new size or price`;
+      triggerPrice === positionOrder.triggerPrice &&
+      acceptablePrice === positionOrder.acceptablePrice;
+
+    if (isSizeAndPriceUnchanged) {
+      if (isReceiveModeUnchanged) return t`Enter a new size or price`;
+      // A pending entry can have a valid attached TP/SL on the other side of today's mark.
+      if (!existingPosition) return;
     }
 
     if (sizeDeltaUsd === 0n && positionOrder.sizeDeltaUsd > 0n) {

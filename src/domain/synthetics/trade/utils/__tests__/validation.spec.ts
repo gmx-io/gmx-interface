@@ -1,9 +1,11 @@
+// @vitest-shared-worker
 import { zeroAddress } from "viem";
 import { describe, expect, it } from "vitest";
 
 import { ARBITRUM, SOURCE_BASE_MAINNET } from "config/chains";
 import { ExpressTxnParams } from "domain/synthetics/express";
 import { getSourceChainNetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
+import { getPoolTokenMinOutput } from "domain/synthetics/markets/lpMinOutput";
 import { mockExternalSwapQuote } from "domain/synthetics/testUtils/mocks";
 import type { TokenData } from "domain/synthetics/tokens";
 import type { DirectDepositAccess } from "domain/synthetics/whitelists/utils";
@@ -20,6 +22,7 @@ import {
   getDecreaseError,
   getEditCollateralError,
   getExpressError,
+  getGmDepositMinOutputError,
   getGmNativeGasError,
   getGmShiftError,
   getGmSwapError,
@@ -1065,5 +1068,52 @@ describe("getGmShiftError — whitelist-only target market", () => {
     expect(getGmShiftError({ ...shiftParams, toMarketDirectDepositAccess: "whitelisted" })).toEqual(
       getGmShiftError(shiftParams)
     );
+  });
+});
+
+describe("getGmShiftError — minimum received after slippage", () => {
+  const sellableMarket = {
+    ...sameCollateralMarket,
+    longInterestUsd: 0n,
+    shortInterestUsd: 0n,
+    longInterestInTokens: 0n,
+    shortInterestInTokens: 0n,
+  };
+  const shiftParams: Parameters<typeof getGmShiftError>[0] = {
+    chainId: ARBITRUM,
+    fromMarketInfo: sellableMarket,
+    fromToken: { ...marketToken, balance: expandDecimals(10, 18) },
+    fromTokenAmount: expandDecimals(1, 18),
+    fromTokenUsd: expandDecimals(1, 30),
+    fromLongTokenAmount: 0n,
+    fromShortTokenAmount: expandDecimals(1, 6),
+    toMarketInfo: sameCollateralMarket,
+    toToken: marketToken,
+    toTokenAmount: expandDecimals(1, 18),
+    fees: undefined,
+    priceImpactUsd: 0n,
+  };
+
+  it("protects the pool token output on GM deposits, GLV deposits and shifts SEC-50", () => {
+    for (const [quote, minimum] of [
+      [0n, 0n],
+      [1n, 0n],
+      [2n, 2n],
+      [99n, 99n],
+      [100n, 99n],
+      [101n, 100n],
+    ] as const) {
+      expect(getPoolTokenMinOutput(100, quote)).toBe(minimum);
+      expect(Boolean(getGmShiftError({ ...shiftParams, toTokenAmount: quote }).buttonErrorMessage)).toBe(
+        minimum === 0n
+      );
+      for (const params of [{ minMarketTokens: minimum }, { minGlvTokens: 10n, isMarketTokenDeposit: false }]) {
+        const error = getGmDepositMinOutputError({ params, gmLegAmount: quote, slippage: 100 });
+        expect(Boolean(error.buttonErrorMessage)).toBe(minimum === 0n);
+      }
+    }
+
+    const existingGmDeposit = { minGlvTokens: 10n, isMarketTokenDeposit: true };
+    expect(getGmDepositMinOutputError({ params: existingGmDeposit, gmLegAmount: 0n, slippage: 100 })).toEqual({});
   });
 });
