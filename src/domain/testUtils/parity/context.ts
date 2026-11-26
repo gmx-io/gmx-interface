@@ -11,6 +11,7 @@ import {
 import { abis } from "sdk/abis";
 import { getAbi } from "sdk/abis/getAbi";
 import { GmxSdk } from "sdk/clients/v1";
+import type { TickersResponse } from "sdk/clients/v1/modules/oracle";
 import { MAX_TIMEOUT, Multicall } from "sdk/clients/v1/multicall";
 import { arbitrumSdkConfig } from "sdk/clients/v1/testUtil";
 import { ARBITRUM, getViemChain } from "sdk/configs/chains";
@@ -33,8 +34,13 @@ const readerAbi = [...getAbi(chainId, "SyntheticsReader"), ...abis.CustomErrors]
 
 export type DataStoreOverrides = { uint: [key: string, value: bigint][] };
 
-/** The overrides can load on demand, from the live state, when the context for the scenario is made */
-export type Scenario = { name: string; overrides: DataStoreOverrides | (() => Promise<DataStoreOverrides>) };
+export type Scenario = {
+  name: string;
+  /** The overrides can load on demand, from the live state, when the context for the scenario is made */
+  overrides?: DataStoreOverrides | (() => Promise<DataStoreOverrides>);
+  /** The oracle prices both sides get instead of the live ones */
+  tickers?: (live: TickersResponse) => TickersResponse;
+};
 
 export type ParityContext = {
   /** LIVE_STATE or the scenario name */
@@ -135,6 +141,13 @@ async function createParityContext(scenario: Scenario | undefined): Promise<Pari
 
   // The SDK keeps one Multicall per chain, made with the first GmxSdk, so its client would skip the scenario overrides
   sdk.executeMulticall = (request): Promise<any> => new Multicall(sdk).call(request, MAX_TIMEOUT);
+
+  if (scenario?.tickers) {
+    const { tickers } = scenario;
+    const getLiveTickers = sdk.oracle.getTickers.bind(sdk.oracle);
+
+    sdk.oracle.getTickers = () => getLiveTickers().then(tickers);
+  }
 
   const { marketsInfoData, tokensData } = await sdk.markets.getMarketsInfo();
 
