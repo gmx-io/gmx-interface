@@ -86,5 +86,5 @@ this implementation with `trackExecution: true` for market orders and `false`
 for limit and TP/SL creation. Its current integrated delivery therefore includes
 the FESOL-20 contract as a code prerequisite, alongside the FESOL-56 sender.
 A submission-only consumer passes `false`: the notification completes on
-submission and does not load or run the lifecycle watcher. Submission
+submission and does not run the lifecycle watcher. Submission
 confirmation and execution evidence remain separate in either mode.
