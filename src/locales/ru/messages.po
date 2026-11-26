@@ -4969,6 +4969,10 @@ msgstr "Установить рыночный стоп-ордер для шор�
 msgid "Funding fee"
 msgstr "Комиссия за финансирование"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Your previous transaction went through. Check your positions, orders and balances before sending it again."
+msgstr "Предыдущая транзакция прошла. Проверьте позиции, ордера и балансы, прежде чем отправлять её снова."
+
 #: src/components/TVChartContainer/constants.ts
 msgid "Partial TP"
 msgstr "Частичный TP"
@@ -5726,6 +5730,10 @@ msgstr "Положительный коэффициент"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Full position close"
 msgstr "Полное закрытие позиции"
+
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Enable wallet batching regardless of UI flags"
+msgstr "Включить пакетные транзакции кошелька независимо от UI-флагов"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "All projected rewards and estimated distributions are best-effort estimations only. Actual distribution is subject to DAO governance."
@@ -11774,6 +11782,10 @@ msgstr "Поиск"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Negative funding fee"
 msgstr "Отрицательная комиссия за финансирование"
+
+#: src/components/Errors/errorToasts.tsx
+msgid "Your wallet hasn't confirmed the transaction yet. Check its status in your wallet before trying again, so it isn't sent twice."
+msgstr "Кошелёк ещё не подтвердил транзакцию. Проверьте её статус в кошельке, прежде чем повторять, чтобы она не ушла дважды."
 
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx

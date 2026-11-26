@@ -4969,6 +4969,10 @@ msgstr "在 {formattedPrice} 設定做空觸發市價單"
 msgid "Funding fee"
 msgstr "資金費用"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Your previous transaction went through. Check your positions, orders and balances before sending it again."
+msgstr "您先前的交易已完成。再次送出前，請檢查您的倉位、訂單和餘額。"
+
 #: src/components/TVChartContainer/constants.ts
 msgid "Partial TP"
 msgstr "部分停利 (TP)"
@@ -5726,6 +5730,10 @@ msgstr "正向因子"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Full position close"
 msgstr "完全平倉"
+
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Enable wallet batching regardless of UI flags"
+msgstr "忽略 UI 旗標啟用錢包批次交易"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "All projected rewards and estimated distributions are best-effort estimations only. Actual distribution is subject to DAO governance."
@@ -11774,6 +11782,10 @@ msgstr "搜尋市場"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Negative funding fee"
 msgstr "負資金費用"
+
+#: src/components/Errors/errorToasts.tsx
+msgid "Your wallet hasn't confirmed the transaction yet. Check its status in your wallet before trying again, so it isn't sent twice."
+msgstr "您的錢包尚未確認該交易。請在重試前於錢包中查看其狀態，以免重複送出。"
 
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx

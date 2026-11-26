@@ -4969,6 +4969,10 @@ msgstr ""
 msgid "Funding fee"
 msgstr ""
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Your previous transaction went through. Check your positions, orders and balances before sending it again."
+msgstr ""
+
 #: src/components/TVChartContainer/constants.ts
 msgid "Partial TP"
 msgstr ""
@@ -5725,6 +5729,10 @@ msgstr ""
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Full position close"
+msgstr ""
+
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Enable wallet batching regardless of UI flags"
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
@@ -11773,6 +11781,10 @@ msgstr ""
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Negative funding fee"
+msgstr ""
+
+#: src/components/Errors/errorToasts.tsx
+msgid "Your wallet hasn't confirmed the transaction yet. Check its status in your wallet before trying again, so it isn't sent twice."
 msgstr ""
 
 #: src/pages/DebugOracleKeeper/parts.tsx
