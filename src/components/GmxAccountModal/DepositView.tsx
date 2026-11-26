@@ -926,7 +926,8 @@ export const DepositView = () => {
     depositViewChain &&
     quoteSendNativeFee !== undefined &&
     sendParamsWithSlippage &&
-    selectedTokenSourceChainTokenId;
+    selectedTokenSourceChainTokenId &&
+    !isDestinationPoolStatusLoading;
 
   const handleCrossChainDeposit = useCallback(async (): Promise<boolean> => {
     if (!canSendCrossChainDeposit) {
