@@ -28,6 +28,7 @@ import {
   selectPositionEditorCollateralInputAmountAndUsd,
   selectPositionEditorDepositMode,
   selectPositionEditorDepositSwapAmounts,
+  selectPositionEditorIsBlockedByClosedMarket,
   selectPositionEditorIsCollateralTokenFromGmxAccount,
   selectPositionEditorIsDepositSwapPathMissing,
   selectPositionEditorIsDepositSwapUnfillable,
@@ -166,6 +167,7 @@ export function usePositionEditorButtonState(
 
   const isDeposit = operation === Operation.Deposit;
   const isAtPriceDeposit = isDeposit && depositMode === "atPrice";
+  const isBlockedByClosedMarket = useSelector(selectPositionEditorIsBlockedByClosedMarket);
 
   const { executionFee } = usePositionEditorFees({
     operation,
@@ -706,6 +708,17 @@ export function usePositionEditorButtonState(
     errorBannerContent,
     bannerErrorName: validationResult.bannerErrorName,
   };
+
+  if (isBlockedByClosedMarket) {
+    return {
+      ...commonParams,
+      text: t`Market closed`,
+      tooltipContent: null,
+      errorBannerContent: null,
+      bannerErrorName: undefined,
+      disabled: !shouldDisableValidationForTesting,
+    };
+  }
 
   if (multipleWalletExtensionsChainError.buttonErrorMessage) {
     return {

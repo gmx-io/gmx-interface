@@ -11,6 +11,7 @@ import {
   CHART_LINES_SIZE_DENOMINATION_KEY,
   CLOSE_SIZE_DENOMINATION_KEY,
   CONFIRM_ORDER_SIGNATURES_KEY,
+  DEBUG_CLOSED_MARKETS_KEY,
   DEBUG_ERROR_BOUNDARY_KEY,
   DEBUG_SWAP_MARKETS_CONFIG_KEY,
   DEBUG_TOKEN_PERMITS_ENABLED_KEY,
@@ -137,6 +138,9 @@ export type SettingsContextType = {
   debugSwapMarketsConfig: DebugSwapMarketsConfig | undefined;
   setDebugSwapMarketsConfig: (val: DebugSwapMarketsConfig) => void;
 
+  debugClosedMarkets: string | undefined;
+  setDebugClosedMarkets: (val: string) => void;
+
   savedTwapNumberOfParts: number;
   setSavedTWAPNumberOfParts: (val: number) => void;
 
@@ -241,6 +245,10 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
   const [debugSwapMarketsConfig, setDebugSwapMarketsConfig] = useLocalStorageSerializeKey<
     undefined | DebugSwapMarketsConfig
   >([chainId, DEBUG_SWAP_MARKETS_CONFIG_KEY], undefined);
+  const [debugClosedMarkets, setDebugClosedMarkets] = useLocalStorageSerializeKey<string | undefined>(
+    [chainId, DEBUG_CLOSED_MARKETS_KEY],
+    undefined
+  );
 
   const { canSignTypedData } = useWalletCanSignTypedData();
   const expressOrdersEnabledKey = getExpressOrdersEnabledKey(chainId, account);
@@ -468,6 +476,9 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       debugSwapMarketsConfig: debugSwapMarketsConfig!,
       setDebugSwapMarketsConfig,
 
+      debugClosedMarkets,
+      setDebugClosedMarkets,
+
       settingsWarningDotVisible: settingsWarningDotVisible!,
       setSettingsWarningDotVisible,
 
@@ -547,6 +558,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setExternalSwapsEnabled,
     debugSwapMarketsConfig,
     setDebugSwapMarketsConfig,
+    debugClosedMarkets,
+    setDebugClosedMarkets,
     settingsWarningDotVisible,
     setSettingsWarningDotVisible,
     savedTwapNumberOfParts,
