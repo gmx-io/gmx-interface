@@ -13,8 +13,7 @@ import {
   type AbiEvent,
 } from "viem";
 import EventEmitter from "../../../sdk/src/abis/EventEmitter";
-import ExchangeRouter from "../../../sdk/src/abis/ExchangeRouter";
-import GlvRouter from "../../../sdk/src/abis/GlvRouter";
+import { getAbi } from "../../../sdk/src/abis/getAbi";
 
 import { Utils } from "../../../sdk/src/clients/v1/modules/utils/utils";
 import { GmxApiSdk } from "../../../sdk/src/clients/v2";
@@ -326,7 +325,10 @@ for (const kind of ["gm", "glv"] as const) {
       session.nativeTransaction = async (tx, purpose, cleanup) => {
         assert.equal(purpose, `${kind}-cancel:${key}`);
         assert.equal(cleanup, true);
-        const decoded = decodeFunctionData({ abi: (kind === "gm" ? ExchangeRouter : GlvRouter) as Abi, data: tx.data });
+        const decoded = decodeFunctionData({
+          abi: getAbi(42161, kind === "gm" ? "ExchangeRouter" : "GlvRouter") as Abi,
+          data: tx.data,
+        });
         assert.equal(decoded.functionName, kind === "gm" ? "cancelDeposit" : "cancelGlvDeposit");
         assert.deepEqual(decoded.args, [key]);
         pending = false;
@@ -397,7 +399,7 @@ for (const kind of ["gm", "glv"] as const) {
     session.nativeTransaction = async (tx, purpose) => {
       const previous = await session.previousAction(purpose);
       if (previous) return previous;
-      const abi = (kind === "gm" ? ExchangeRouter : GlvRouter) as Abi;
+      const abi = getAbi(42161, kind === "gm" ? "ExchangeRouter" : "GlvRouter") as Abi;
       const batch = decodeFunctionData({ abi, data: tx.data });
       assert.equal(batch.functionName, "multicall");
       const calls = (batch.args![0] as `0x${string}`[]).map((data) => decodeFunctionData({ abi, data }));

@@ -22,34 +22,6 @@ msgctxt "Market state"
 msgid "Closed"
 msgstr "Geschlossen"
 
-#: src/components/MarketClosedBadge/MarketClosedBadge.tsx
-msgid "Limit, Stop Market and TP/SL orders can still be created, but execute only after the market reopens."
-msgstr "Limit-, Stop-Market- und TP/SL-Orders können weiterhin erstellt werden, werden aber erst ausgeführt, wenn der Markt wieder öffnet."
-
-#: src/components/MarketClosedBadge/MarketClosedBadge.tsx
-msgid "Market orders, TWAP, Close, withdrawals and \"Now\" deposits are unavailable until then."
-msgstr "Market Orders, TWAP, Schließen, Abhebungen und \"Jetzt\"-Einzahlungen sind bis dahin nicht verfügbar."
-
-#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
-msgid "Market orders and TWAP are unavailable while the market is closed. Limit, Stop Market and TP/SL orders can still be created, but execute only after the market reopens."
-msgstr "Market Orders und TWAP sind nicht verfügbar, solange der Markt geschlossen ist. Limit-, Stop-Market- und TP/SL-Orders können weiterhin erstellt werden, werden aber erst ausgeführt, wenn der Markt wieder öffnet."
-
-#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
-msgid "Switch to a limit order"
-msgstr "Zu einer Limit-Order wechseln"
-
-#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
-msgid "Market closed. This order executes only after the market reopens. The reopen price may differ from the last price."
-msgstr "Markt geschlossen. Diese Order wird erst ausgeführt, wenn der Markt wieder öffnet. Der Preis bei der Wiedereröffnung kann vom letzten Preis abweichen."
-
-#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
-msgid "Market closed. This order executes only after the market reopens. A price gap at the reopen can fill a Stop Market or Stop-Loss at a worse price."
-msgstr "Markt geschlossen. Diese Order wird erst ausgeführt, wenn der Markt wieder öffnet. Eine Preislücke bei der Wiedereröffnung kann eine Stop-Market- oder Stop-Loss-Order zu einem schlechteren Preis ausführen."
-
-#: src/components/PositionItem/PositionItem.tsx
-msgid "This position is above liquidation risk, but it may become close to liquidation when the market switches to off-hours risk parameters."
-msgstr "Diese Position liegt über dem Liquidationsrisiko, könnte aber nahe an die Liquidation geraten, wenn der Markt auf die Risikoparameter außerhalb der Handelszeiten umschaltet."
-
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Slippage exceeded"
 msgstr "Slippage überschritten"
@@ -185,14 +157,6 @@ msgstr "Order konnte nicht aktualisiert werden"
 #: src/components/TenderlySettings/TenderlySettings.tsx
 msgid "See <0>Tenderly docs</0>"
 msgstr "Siehe <0>Tenderly-Dokumentation</0>"
-
-#: src/components/SettingsModal/DebugSettings.tsx
-msgid "Force markets closed"
-msgstr "Märkte als geschlossen festlegen"
-
-#: src/components/SettingsModal/DebugSettings.tsx
-msgid "Index token symbols, comma-separated. These markets show as closed."
-msgstr "Index-Token-Symbole, durch Kommas getrennt. Diese Märkte werden als geschlossen angezeigt."
 
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Show debug values"
@@ -2817,6 +2781,10 @@ msgstr "Unzureichende Liquidität des Empfangstokens"
 msgid "Size percentage required"
 msgstr "Größenprozentsatz erforderlich"
 
+#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
+msgid "Market closed. This order executes only after the market reopens. A price gap at the reopen can fill a Stop Market or Stop-Loss at a worse price."
+msgstr "Markt geschlossen. Diese Order wird erst ausgeführt, wenn der Markt wieder öffnet. Eine Preislücke bei der Wiedereröffnung kann eine Stop-Market- oder Stop-Loss-Order zu einem schlechteren Preis ausführen."
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
@@ -4342,6 +4310,10 @@ msgstr "Express benötigt {gasPaymentTokensText} in Ihrem GMX Account. Zahlen Si
 msgid "Pending borrowing fees from all open positions"
 msgstr "Ausstehende Leihgebühren aus allen offenen Positionen"
 
+#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
+msgid "Market closed. This order executes only after the market reopens. The reopen price may differ from the last price."
+msgstr "Markt geschlossen. Diese Order wird erst ausgeführt, wenn der Markt wieder öffnet. Der Preis bei der Wiedereröffnung kann vom letzten Preis abweichen."
+
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "Remove endpoint"
 msgstr "Endpunkt entfernen"
@@ -4955,6 +4927,10 @@ msgstr "{fromText} zu"
 msgid "{poolName} pool is closing and isn't taking new stop market orders."
 msgstr "Der Pool {poolName} wird geschlossen und nimmt keine neuen Stop-Market-Orders an."
 
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Index token symbols, comma-separated. These markets show as closed."
+msgstr "Index-Token-Symbole, durch Kommas getrennt. Diese Märkte werden als geschlossen angezeigt."
+
 #: landing/src/pages/Builders/EcosystemSection/EcosystemSection.tsx
 msgid "Frontends"
 msgstr "Frontends"
@@ -5046,6 +5022,10 @@ msgstr "Betrag eingeben"
 #: src/components/OneClickSessions/OneClickSessions.tsx
 msgid "{count, plural, one {Active until {expiryDate}, # action left} other {Active until {expiryDate}, # actions left}}"
 msgstr "{count, plural, one {Aktiv bis {expiryDate}, # Aktion übrig} other {Aktiv bis {expiryDate}, # Aktionen übrig}}"
+
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Force markets closed"
+msgstr "Märkte als geschlossen festlegen"
 
 #: src/domain/multichain/useWithdrawBlockedError.tsx
 msgid "Add {0} to your wallet"
@@ -5667,6 +5647,10 @@ msgstr "Leihexponent Long"
 msgid "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1>"
 msgstr "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1>"
 
+#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
+msgid "This market is closed. Settle after the market reopens."
+msgstr "Dieser Markt ist geschlossen. Rechnen Sie ab, wenn der Markt wieder öffnet."
+
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Long funding rate"
 msgstr "Finanzierungsrate Long"
@@ -6078,10 +6062,6 @@ msgstr "Ankündigungen konnten nicht geladen werden. Bitte versuchen Sie es spä
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Max open interest exceeded. Current: {openInterestText}, max: {maxOpenInterestText}"
 msgstr "Maximales Open Interest überschritten. Aktuell: {openInterestText}, Max: {maxOpenInterestText}"
-
-#: src/components/PositionSeller/SplitReceiveSwapProfitFeeWarning.tsx
-msgid "Receiving as {receiveTokenSymbol} will cost {swapProfitFeePercentage} (<0>{swapProfitFeeUsd}</0>). Receive {profitTokenSymbol} and {collateralTokenSymbol} separately to skip the swap. <1>Read more</1>."
-msgstr "Beim Empfang als {receiveTokenSymbol} entstehen Kosten von {swapProfitFeePercentage} (<0>{swapProfitFeeUsd}</0>). Empfangen Sie {profitTokenSymbol} und {collateralTokenSymbol} separat, um den Tausch zu vermeiden. <1>Mehr erfahren</1>."
 
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 msgid "Anonymous by default — connect with just your wallet.<0/>Share an email only if you want updates."
@@ -6853,6 +6833,10 @@ msgstr "Nahtloser Handel"
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "close"
 msgstr "schließen"
+
+#: src/components/MarketClosedBadge/MarketClosedBadge.tsx
+msgid "Market orders, TWAP, Close, withdrawals and \"Now\" deposits are unavailable until then."
+msgstr "Market Orders, TWAP, Schließen, Abhebungen und \"Jetzt\"-Einzahlungen sind bis dahin nicht verfügbar."
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 msgid "from your wallet"
@@ -7823,6 +7807,10 @@ msgstr "Geben Sie oben Hex-Fehlerdaten ein, um sie zu decodieren"
 msgid "Allowed actions"
 msgstr "Erlaubte Aktionen"
 
+#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
+msgid "Switch to a limit order"
+msgstr "Zu einer Limit-Order wechseln"
+
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "Your discount is now active!"
 msgstr "Ihr Rabatt ist jetzt aktiv!"
@@ -8215,6 +8203,10 @@ msgstr "PnL relativ zum eingesetzten Kapital (Kapitalrendite)"
 msgid "Order error. Prices are volatile for this market. Try again by <0>increasing the allowed slippage</0>"
 msgstr "Orderfehler. Die Preise in diesem Markt sind volatil. Versuchen Sie es erneut, indem Sie <0>die zulässige Slippage erhöhen</0>"
 
+#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
+msgid "Market orders and TWAP are unavailable while the market is closed. Limit, Stop Market and TP/SL orders can still be created, but execute only after the market reopens."
+msgstr "Market Orders und TWAP sind nicht verfügbar, solange der Markt geschlossen ist. Limit-, Stop-Market- und TP/SL-Orders können weiterhin erstellt werden, werden aber erst ausgeführt, wenn der Markt wieder öffnet."
+
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "No transfer history matching search"
 msgstr "Kein Übertragungsverlauf entspricht der Suche"
@@ -8441,6 +8433,10 @@ msgstr "TP-Preis"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "ParaSwap"
 msgstr "ParaSwap"
+
+#: src/components/MarketClosedBadge/MarketClosedBadge.tsx
+msgid "Limit, Stop Market and TP/SL orders can still be created, but execute only after the market reopens."
+msgstr "Limit-, Stop-Market- und TP/SL-Orders können weiterhin erstellt werden, werden aber erst ausgeführt, wenn der Markt wieder öffnet."
 
 #: src/components/MarketsList/NetFeeHeaderTooltipContent.tsx
 msgid "Ensures available liquidity."
@@ -9043,6 +9039,10 @@ msgstr "GM und GLV enthalten auch Märkte, die Sie nicht mehr halten"
 msgid "The remaining position would exceed the maximum allowed leverage. Close a larger part, withdraw less, or add margin first."
 msgstr "Die verbleibende Position würde den maximal zulässigen Hebel überschreiten. Schließen Sie einen größeren Teil, heben Sie weniger ab oder fügen Sie zuerst Margin hinzu."
 
+#: src/components/PositionSeller/SplitReceiveSwapProfitFeeWarning.tsx
+msgid "Receiving as {receiveTokenSymbol} will cost {swapProfitFeePercentage} (<0>{swapProfitFeeUsd}</0>). Receive {profitTokenSymbol} and {collateralTokenSymbol} separately to skip the swap. <1>Read more</1>."
+msgstr "Beim Empfang als {receiveTokenSymbol} entstehen Kosten von {swapProfitFeePercentage} (<0>{swapProfitFeeUsd}</0>). Empfangen Sie {profitTokenSymbol} und {collateralTokenSymbol} separat, um den Tausch zu vermeiden. <1>Mehr erfahren</1>."
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX trading stats"
 msgstr "Handelsstatistiken zu GMX"
@@ -9164,6 +9164,10 @@ msgstr "Garantierte Liquidität"
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "V1 rebates"
 msgstr "V1-Rabatte"
+
+#: src/components/Errors/errorToasts.tsx
+msgid "Increase the max network fee buffer {bufferText} in {settingsLink}"
+msgstr "Erhöhen Sie den maximalen Netzwerkgebührenpuffer in den {settingsLink} {bufferText}"
 
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 msgid "Sell GLV"
@@ -10021,6 +10025,8 @@ msgstr "Einzahlungsbetrag eingeben"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
@@ -11274,6 +11280,7 @@ msgstr "tief liquide Märkte"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
+#: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/PositionEditor/PositionEditor.tsx
@@ -13212,10 +13219,6 @@ msgstr "Aktueller Impact: {0}. Verwenden Sie -0,30 % oder mehr für eine bessere
 msgid "This market is disabled. Contact support to claim your remaining funding fees."
 msgstr "Dieser Markt ist deaktiviert. Wenden Sie sich an den Support, um Ihre verbleibenden Finanzierungsgebühren zu beanspruchen."
 
-#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
-msgid "This market is closed. Settle after the market reopens."
-msgstr "Dieser Markt ist geschlossen. Rechnen Sie ab, wenn der Markt wieder öffnet."
-
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Received at close"
@@ -13396,10 +13399,6 @@ msgstr "MARKPREIS"
 #: landing/src/pages/Builders/FaqSection/FaqSection.tsx
 msgid "No — the API, SDK, and docs are open to everyone. Joining the program adds direct support and distribution on top."
 msgstr "Nein — API, SDK und Dokumentation stehen allen offen. Eine Teilnahme am Programm bietet zusätzlich direkten Support und Distribution."
-
-#: src/components/Errors/errorToasts.tsx
-msgid "Increase the max network fee buffer {bufferText} in {settingsLink}"
-msgstr "Erhöhen Sie den maximalen Netzwerkgebührenpuffer in den {settingsLink} {bufferText}"
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "GLP to GM airdrop"
@@ -14311,6 +14310,10 @@ msgstr "NETTORATE / 1H"
 msgid "30d performance APY"
 msgstr "30-Tage-Performance-APY"
 
+#: src/components/PositionItem/PositionItem.tsx
+msgid "This position is above liquidation risk, but it may become close to liquidation when the market switches to off-hours risk parameters."
+msgstr "Diese Position liegt über dem Liquidationsrisiko, könnte aber nahe an die Liquidation geraten, wenn der Markt auf die Risikoparameter außerhalb der Handelszeiten umschaltet."
+
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 #: src/components/ShareModal/ShareCardActionButtons.tsx
 msgid "Share on"
@@ -14337,6 +14340,7 @@ msgid "multiple asset classes"
 msgstr "mehrere Anlageklassen"
 
 #: src/components/AnnouncementBanner/AnnouncementBanner.tsx
+#: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx

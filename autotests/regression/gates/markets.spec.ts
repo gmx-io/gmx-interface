@@ -5,6 +5,7 @@ import { getApiUrl } from "../../../sdk/src/configs/api";
 import { MARKETS } from "../../../sdk/src/configs/markets";
 import { getOracleKeeperUrl } from "../../../sdk/src/configs/oracleKeeper";
 import { getTokensMap } from "../../../sdk/src/configs/tokens";
+import { closedMarketAddresses } from "../fixtures/marketConfig";
 import { productionChains, publicClient } from "../fixtures/productionChains";
 
 type ApiMarket = Record<string, string> & {
@@ -124,11 +125,15 @@ for (const { name, id: chainId } of productionChains) {
   });
 
   test(`23.04 ${name} open interest and pool caps are set for every enabled market`, async () => {
+    // Closing pools (MARKET_CLOSING_DATES) take no new positions once closed, so their open interest caps are zero.
+    const closed = new Set(closedMarketAddresses(chainId));
     const problems = (await enabledConfiguredMarkets(chainId)).flatMap((market) =>
       [
         "maxLongPoolAmount",
         "maxShortPoolAmount",
-        ...(market.isSpotOnly ? [] : ["maxOpenInterestLong", "maxOpenInterestShort"]),
+        ...(market.isSpotOnly || closed.has(market.marketTokenAddress)
+          ? []
+          : ["maxOpenInterestLong", "maxOpenInterestShort"]),
       ]
         .filter((key) => !(BigInt(market[key]) > 0n))
         .map((key) => `${market.marketTokenAddress}: ${key}=${market[key]}`)

@@ -13,6 +13,7 @@ import {
   selectedMarketName,
   watchMarketsApi,
 } from "../fixtures/marketData";
+import { feeBreakdown } from "../fixtures/quoteDetails";
 import {
   inputNumber,
   labelledInput,
@@ -31,8 +32,7 @@ async function feesTooltip(page: Page) {
 }
 
 function percentOf(text: string, label: string) {
-  const match = new RegExp(`${label}:\\s*\\(([\\d.]+)% of`).exec(text);
-  return match ? Number(match[1]) : NaN;
+  return feeBreakdown(text).find((item) => item.label === label)?.percent ?? NaN;
 }
 
 test("2.32 Long and Short open fees equal the position fee configured in /v1/markets/info (ETH, plus GOLD at 0.01/0.02% on Arbitrum)", async ({
@@ -167,8 +167,8 @@ test("5.33 paying USDC into the pool's long-token collateral shows the swap hop 
   const box = await openExecutionDetails(page);
   await expect(box.getByText("Fees (including swap)")).toBeVisible();
   const popup = await feesTooltip(page);
-  await expect(popup).toContainText(`Swap USDC to ${longToken}:`);
-  await expect(popup).toContainText("Open fee:");
+  await expect(popup).toContainText(`Swap USDC to ${longToken}`);
+  await expect(popup).toContainText("Open fee");
   const pair = name.replace(/^.*\[/, "[");
   const swapFees = api
     .config!.filter((m) => !m.isDisabled && m.name.endsWith(pair))

@@ -8,7 +8,7 @@ const OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions";
 const MODEL = process.env.OPENROUTER_MODEL || "anthropic/claude-opus-5.5";
 
 const SYSTEM_PROMPT = `You review automated Playwright regression runs for the GMX trading interface (gmx.io / app.gmx.io).
-Each run targets one pull request's deployment preview. Arbitrum runs in full; the projects named avalanche* run only a small set of Avalanche tests. The suites never sign or spend funds:
+Each run targets one pull request's deployment preview. In a run named "Arbitrum + Avalanche subset", Arbitrum runs in full and the projects named avalanche* run only a small set of Avalanche tests; a run named "Avalanche" runs every test on Avalanche. The run named "Funded harness" checks the funded scenarios' harness without a funded wallet. The suites never sign or spend funds:
 - ui: public pages without a wallet, live market data.
 - landing: the gmx.io landing site.
 - mobile: Chromium with Pixel 7 emulation.
@@ -16,12 +16,13 @@ Each run targets one pull request's deployment preview. Arbitrum runs in full; t
 - live-state: real public accounts discovered through indexers, read-only, with live API/RPC/indexer data.
 - gates: endpoint configuration, endpoint health and market configuration sanity for every production chain.
 - avalanche, avalanche-live-state: the Avalanche subset of ui, connected-state and live-state.
+- funded-*: the funded scenarios' gas gate, runtime and browser wallet checks and a UI rehearsal, all without funds; nothing is sent on-chain.
 Tests marked as expected failures document known app bugs and are not failures; never call them regressions from this PR.
 checklistRows is the run's checklist accounting: only rows of the C (headless) set are counted, and rows checked only partially or with a known app bug are listed apart from passed rows. Report those groups as they are, never as passed.
 Each shard stops after a fixed number of failures to save CI time. A run with stoppedEarly=true did not run notRun.total tests (counted per project in notRun.byProject); their result is unknown, not passed.
 
 Write a pull request comment in GitHub Markdown, under 250 words, with no preamble:
-1. A one-line verdict starting with ✅, ⚠️ or ❌, with pass/fail/flaky counts for Arbitrum and for the Avalanche subset. If the run stopped early, say so in the verdict with the number of tests that did not run, and never call such a run green.
+1. A one-line verdict starting with ✅, ⚠️ or ❌, with pass/fail/flaky counts for each chain the suites ran on and for the funded harness. If the run stopped early, say so in the verdict with the number of tests that did not run, and never call such a run green.
 2. "What failed": changedFiles lists app files first; appFileCount says how many of its total files are app code, so never claim the PR has no app changes when appFileCount is above zero. Group the failures by probable cause, choosing from: likely regression from this PR's changes, live data or third-party/infrastructure problem (RPC rate limits, indexer timeouts, CORS, outages), test problem, unclear. For each group, list short test names with a one-line reason grounded in the error text and, for regressions, the changed files. Say "unclear" instead of guessing.
 3. "Flaky": one line naming tests that passed only on retry, or omit when there are none.
 4. "Next": at most two bullets.
@@ -69,7 +70,8 @@ async function askModel(input: string): Promise<Analysis> {
     });
     const result = (await response.json().catch(() => ({}))) as ChatResponse;
     if (!response.ok || result.error) {
-      return fallbackSummary(`AI summary unavailable: OpenRouter returned ${response.status}.`);
+      const reason = result.error?.message ? ` ${result.error.message.slice(0, 200)}` : "";
+      return fallbackSummary(`AI summary unavailable: OpenRouter returned ${response.status}.${reason}`);
     }
     const text = result.choices?.[0]?.message?.content?.trim();
     return text ? { text, byModel: true } : fallbackSummary("AI summary unavailable: empty response.");
@@ -140,7 +142,7 @@ async function main() {
     .join("\n\n");
   const body = [
     COMMENT_MARKER,
-    `## E2E regression for ${process.env.HEAD_SHA?.slice(0, 7) ?? "this PR"}`,
+    `## Regression for ${process.env.HEAD_SHA?.slice(0, 7) ?? "this PR"}`,
     "",
     ...(stoppedNotes.length ? [...stoppedNotes, ""] : []),
     analysis.text,
