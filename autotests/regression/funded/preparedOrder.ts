@@ -1,4 +1,4 @@
-import { getAddress, hashTypedData, maxUint256, zeroAddress } from "viem";
+import { getAddress, hashTypedData, maxUint256, zeroAddress, zeroHash } from "viem";
 
 import { getBatchTypedData } from "../../../sdk/src/utils/express/utils/batchOrderUtils";
 import { getExpressContractAddress } from "../../../sdk/src/utils/express/utils/relayParamsUtils";
@@ -37,6 +37,7 @@ export type OrderIntent =
       autoCancel: boolean;
       minOutputAmount: bigint;
       validFromTime: bigint;
+      decreasePositionSwapType: number;
     }
   | { kind: "cancel"; keys: string[] }
   | { kind: "swap"; tokenIn: string; amount: bigint; minOutputAmount: bigint; unwrapNative: boolean };
@@ -82,6 +83,7 @@ export function inspectPreparedOrder({
   if (Number(relayParams.desChainId) !== 42161 || BigInt(relayParams.deadline) <= BigInt(Math.floor(Date.now() / 1000)))
     fail();
   if (!Array.isArray(relayParams.tokenPermits) || relayParams.tokenPermits.length) fail();
+  if (relayParams.eip6492SignatureWrapperHash !== zeroHash) fail("Unexpected EIP-6492 signature wrapper");
   for (const field of [
     "sendTokens",
     "sendAmounts",

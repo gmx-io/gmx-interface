@@ -48,7 +48,7 @@ export function usePendingExpressTxnNotifications({
   setPendingPositionsUpdates: Dispatch<SetStateAction<PendingPositionsUpdates>>;
   pendingOrderToastIdRef: MutableRefObject<number | undefined>;
 }) {
-  const { executionFeeBufferBps, setIsSettingsVisible } = useSettings();
+  const { executionFeeBufferBps, expressOrdersEnabled, setIsSettingsVisible } = useSettings();
   const { invalidateSubaccountApproval } = useSubaccountContext();
   const { setOptimisticTokensBalancesUpdates, optimisticTokensBalancesUpdates, websocketTokenBalancesUpdates } =
     useTokensBalancesUpdates();
@@ -102,6 +102,7 @@ export function usePendingExpressTxnNotifications({
                 txUrl: undefined,
                 errorMessage: executionFeeErrorParams.errorData.errorMessage,
                 shouldOfferExpress: false,
+                expressOrdersEnabled,
                 setIsSettingsVisible,
               });
 
@@ -215,6 +216,7 @@ export function usePendingExpressTxnNotifications({
     [
       chainId,
       executionFeeBufferBps,
+      expressOrdersEnabled,
       invalidateSubaccountApproval,
       relayTaskStatuses,
       pendingExpressTxns,

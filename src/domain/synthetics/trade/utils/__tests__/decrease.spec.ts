@@ -1,6 +1,14 @@
+// @vitest-shared-worker
 import { describe, expect, it } from "vitest";
 
-import { DecreasePositionSwapType } from "domain/synthetics/orders";
+import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
+import type { PositionInfoLoaded } from "domain/synthetics/positions";
+import { convertToTokenAmount } from "domain/synthetics/tokens";
+import { createMockMarketInfo } from "domain/testUtils/mockMarketInfo";
+import { createMockPositionInfo } from "domain/testUtils/mockPositionInfo";
+import { MOCK_ACCOUNT } from "domain/testUtils/mockSyntheticsState";
+import { ETH_TOKEN, USDC_TOKEN } from "domain/testUtils/mockTokens";
+import { expandDecimals } from "lib/numbers";
 
 import {
   USDC_TOKEN_FIXTURE,
@@ -194,6 +202,40 @@ describe("getDecreasePositionAmounts primaryOutput/secondaryOutput", () => {
     expect(amounts.primaryOutput.usd + amounts.secondaryOutput.usd).toEqual(amounts.receiveUsd);
     expect(amounts.swapProfitFeeUsd).toEqual(0n);
   });
+
+  it.each([
+    // 1 ETH position opened at $2000, take-profit → PnL token and the price its output is converted at
+    ["long at $2400", true, USDC_TOKEN, 2400, ETH_TOKEN, expandDecimals(2400, 30)],
+    ["short at $1800", false, ETH_TOKEN, 1800, USDC_TOKEN, USDC_TOKEN.prices.minPrice],
+  ])(
+    "converts the PnL token output of a %s take-profit PRO-4070",
+    (_, isLong, collateralToken, trigger, pnlToken, price) => {
+      const marketInfo = createMockMarketInfo();
+      const position = createMockPositionInfo({ account: MOCK_ACCOUNT, marketInfo, collateralToken, isLong });
+      const amounts = getDecreasePositionAmounts({
+        closeSizeUsd: position.sizeInUsd,
+        collateralToken,
+        position: position as PositionInfoLoaded,
+        keepLeverage,
+        isLong,
+        marketInfo,
+        minCollateralUsd,
+        minPositionSizeUsd,
+        uiFeeFactor,
+        userReferralInfo: undefined,
+        isSetAcceptablePriceImpactEnabled: false,
+        triggerPrice: expandDecimals(trigger, 30),
+        triggerOrderType: OrderType.LimitDecrease,
+        forceDecreaseSwapType: DecreasePositionSwapType.NoSwap,
+      });
+
+      expect(amounts.primaryOutput.tokenAddress).toBe(pnlToken.address);
+      expect(amounts.primaryOutput.usd).toBeGreaterThan(0n);
+      expect(amounts.primaryOutput.amount).toBe(
+        convertToTokenAmount(amounts.primaryOutput.usd, pnlToken.decimals, price)
+      );
+    }
+  );
 
   it("has zero secondary output for partial close without collateral delta", () => {
     const amounts = getDecreasePositionAmounts({

@@ -1,3 +1,4 @@
+// @vitest-shared-worker
 import { expect, it } from "vitest";
 
 import { commitGmsolSnapshot } from "./refetchAtSlot";

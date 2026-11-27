@@ -16,7 +16,9 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
 import { showWalletCrossChainSendStatusToast } from "domain/multichain/progress/walletCrossChainSendToast";
 import { sendCrossChainDepositTxn } from "domain/multichain/sendCrossChainDepositTxn";
+import { getIsStargateRouteUnavailableError } from "domain/multichain/stargateErrors";
 import { SendParam } from "domain/multichain/types";
+import { useIsStargatePoolPaused } from "domain/multichain/useIsStargatePoolPaused";
 import { useMultichainQuoteFeeUsd } from "domain/multichain/useMultichainQuoteFeeUsd";
 import { useQuoteOft } from "domain/multichain/useQuoteOft";
 import { useQuoteOftLimits } from "domain/multichain/useQuoteOftLimits";
@@ -286,12 +288,29 @@ export function WalletSendView() {
     fromChainId: chainId,
     toChainId: destinationChainId,
     fromTokenAddress: selectedToken?.address,
+    isBaseQuote: true,
   });
 
   const quoteSendNativeFee = quoteSendData?.nativeFee;
 
   const hasCrossChainQuoteError =
     quoteOftError !== undefined || quoteSendError !== undefined || baseQuoteSendError !== undefined;
+
+  const { isPaused: isDestinationPoolPaused, isLoading: isDestinationPoolStatusLoading } = useIsStargatePoolPaused({
+    chainId: destinationChainId,
+    stargateAddress:
+      isSameChain || isDestinationUnsupported || selectedToken === undefined
+        ? undefined
+        : getMappedTokenId(chainId as SettlementChainId, selectedToken.address, destinationChainId as SourceChainId)
+            ?.stargate,
+  });
+
+  const isRouteUnavailable = useMemo(
+    () =>
+      [quoteOftError, quoteSendError, baseQuoteSendError].some(getIsStargateRouteUnavailableError) ||
+      isDestinationPoolPaused,
+    [quoteOftError, quoteSendError, baseQuoteSendError, isDestinationPoolPaused]
+  );
 
   const { networkFee, networkFeeUsd, protocolFeeAmount, protocolFeeUsd } = useMultichainQuoteFeeUsd({
     quoteSendNativeFee: quoteSendNativeFee ?? baseQuoteSendData?.nativeFee,
@@ -549,7 +568,7 @@ export function WalletSendView() {
       return <Trans>Instant</Trans>;
     }
 
-    if (isDestinationUnsupported) {
+    if (isDestinationUnsupported || isRouteUnavailable) {
       return "-";
     }
 
@@ -558,7 +577,7 @@ export function WalletSendView() {
     }
 
     return isTestnet ? <Trans>1m 40s</Trans> : <Trans>20s</Trans>;
-  }, [isSameChain, isDestinationUnsupported, amount, isTestnet]);
+  }, [isSameChain, isDestinationUnsupported, isRouteUnavailable, amount, isTestnet]);
 
   const isNetworkFeeLoading = isSameChain
     ? sameChainNetworkFeeDetails === undefined && sameChainNetworkFeeAsyncResult.error === undefined
@@ -582,7 +601,7 @@ export function WalletSendView() {
       );
     }
 
-    if (isDestinationUnsupported) {
+    if (isDestinationUnsupported || isRouteUnavailable) {
       return "-";
     }
 
@@ -609,6 +628,7 @@ export function WalletSendView() {
     sameChainNetworkFeeDetails,
     sameChainNetworkFeeAsyncResult.error,
     isDestinationUnsupported,
+    isRouteUnavailable,
     networkFee,
     networkFeeUsd,
     nativeToken,
@@ -622,7 +642,7 @@ export function WalletSendView() {
       return <Trans>No fee</Trans>;
     }
 
-    if (isDestinationUnsupported) {
+    if (isDestinationUnsupported || isRouteUnavailable) {
       return "-";
     }
 
@@ -646,12 +666,16 @@ export function WalletSendView() {
   }, [
     isSameChain,
     isDestinationUnsupported,
+    isRouteUnavailable,
     protocolFeeAmount,
     selectedToken?.decimals,
     selectedToken?.symbol,
     protocolFeeUsd,
     hasCrossChainQuoteError,
   ]);
+
+  const tokenSymbol = selectedToken?.symbol;
+  const destinationNetworkName = getChainName(destinationChainId);
 
   let buttonState: { text: ReactNode; disabled?: boolean; onClick?: () => void } = {
     text: t`Send`,
@@ -667,6 +691,8 @@ export function WalletSendView() {
       text: t`Sending ${selectedToken.symbol} to ${getChainName(destinationChainId)} is not supported`,
       disabled: true,
     };
+  } else if (isRouteUnavailable && !isApproving) {
+    buttonState = { text: t`Route temporarily unavailable`, disabled: true };
   } else if (recipient === "") {
     buttonState = { text: t`Enter recipient address`, disabled: true };
   } else if (!isRecipientValid) {
@@ -688,9 +714,19 @@ export function WalletSendView() {
       buttonState = { text: t`Send`, disabled: true };
     } else if (isApproving) {
       buttonState = { text: t`Approving...`, disabled: true };
+    } else if (
+      needsApproval &&
+      (sendParamsWithSlippage === undefined || quoteSendNativeFee === undefined || isDestinationPoolStatusLoading)
+    ) {
+      buttonState = { text: t`Approve ${selectedToken.symbol}`, disabled: true };
     } else if (needsApproval) {
       buttonState = { text: t`Approve ${selectedToken.symbol}`, onClick: handleApprove };
-    } else if (!isAllowanceLoaded || sendParamsWithSlippage === undefined || quoteSendNativeFee === undefined) {
+    } else if (
+      !isAllowanceLoaded ||
+      sendParamsWithSlippage === undefined ||
+      quoteSendNativeFee === undefined ||
+      isDestinationPoolStatusLoading
+    ) {
       buttonState = { text: t`Send`, disabled: true };
     }
   }
@@ -845,10 +881,21 @@ export function WalletSendView() {
           <SyntheticsInfoRow
             label={<Trans>Wallet balance</Trans>}
             value={
-              <ValueTransition from={formatUsdParts(walletBalanceUsd)} to={formatUsdParts(nextWalletBalanceUsd)} />
+              <ValueTransition
+                from={formatUsdParts(walletBalanceUsd)}
+                to={isRouteUnavailable ? undefined : formatUsdParts(nextWalletBalanceUsd)}
+              />
             }
           />
         </div>
+      )}
+
+      {isRouteUnavailable && (
+        <AlertInfoCard type="error" className="mb-16" hideClose>
+          <Trans>
+            Stargate isn't accepting {tokenSymbol} transfers to {destinationNetworkName} right now. Try another asset.
+          </Trans>
+        </AlertInfoCard>
       )}
 
       <Button

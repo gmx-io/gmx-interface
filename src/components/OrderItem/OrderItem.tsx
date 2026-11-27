@@ -8,6 +8,7 @@ import { useEditingOrderState } from "context/SyntheticsStateContext/hooks/order
 import { useOrderErrors } from "context/SyntheticsStateContext/hooks/orderHooks";
 import {
   selectChainId,
+  selectClosedMarkets,
   selectMarketsInfoData,
   selectOracleSettings,
   selectPositionsInfoData,
@@ -18,6 +19,7 @@ import { selectTradeboxSelectedOrderKey } from "context/SyntheticsStateContext/s
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { isBoundaryAcceptablePrice } from "domain/prices";
 import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
+import { getIsMarketClosed } from "domain/synthetics/markets/utils";
 import {
   OrderInfo,
   PositionOrderInfo,
@@ -59,6 +61,7 @@ import { getTokensRatioByPriceInDirection } from "sdk/utils/tokens/utils";
 import { AppCard, AppCardSection } from "components/AppCard/AppCard";
 import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
+import { MarketClosedBadge } from "components/MarketClosedBadge/MarketClosedBadge";
 import { MarketWithDirectionLabel } from "components/MarketWithDirectionLabel/MarketWithDirectionLabel";
 import { NumericValue } from "components/NumericValue/NumericValue";
 import { UsdValue } from "components/NumericValue/UsdValue";
@@ -654,6 +657,8 @@ function OrderItemLarge({
 }) {
   const marketInfoData = useSelector(selectMarketsInfoData);
   const isSwap = isSwapOrderType(order.orderType);
+  const closedMarkets = useSelector(selectClosedMarkets);
+  const isMarketClosed = !isSwap && getIsMarketClosed(closedMarkets, order.marketAddress);
   const { indexName, poolName, tokenSymbol } = useMemo(() => {
     const marketInfo = marketInfoData?.[order.marketAddress];
 
@@ -735,20 +740,29 @@ function OrderItemLarge({
             }
           />
         ) : (
-          <StandardTooltip
-            handle={<MarketWithDirectionLabel indexName={indexName} isLong={order.isLong} tokenSymbol={tokenSymbol} />}
-            content={
-              <TooltipRow
-                label={t`Market`}
-                value={
-                  <div className="flex items-center">
-                    <span>{indexName && indexName}</span>
-                    <span className="subtext leading-1">{poolName && `[${poolName}]`}</span>
-                  </div>
-                }
-              />
-            }
-          />
+          <>
+            <StandardTooltip
+              handle={
+                <MarketWithDirectionLabel indexName={indexName} isLong={order.isLong} tokenSymbol={tokenSymbol} />
+              }
+              content={
+                <TooltipRow
+                  label={t`Market`}
+                  value={
+                    <div className="flex items-center">
+                      <span>{indexName && indexName}</span>
+                      <span className="subtext leading-1">{poolName && `[${poolName}]`}</span>
+                    </div>
+                  }
+                />
+              }
+            />
+            {isMarketClosed && (
+              <div className="mt-4 flex">
+                <MarketClosedBadge label="marketClosed" isTruncatable />
+              </div>
+            )}
+          </>
         )}
       </TableTd>
       <TableTd>
@@ -826,6 +840,8 @@ function OrderItemSmall({
   onSelectOrderClick: undefined | (() => void);
 }) {
   const marketInfoData = useSelector(selectMarketsInfoData);
+  const closedMarkets = useSelector(selectClosedMarkets);
+  const isMarketClosed = !isSwapOrderType(order.orderType) && getIsMarketClosed(closedMarkets, order.marketAddress);
 
   const title = useMemo(() => {
     if (isSwapOrderType(order.orderType)) {
@@ -877,19 +893,20 @@ function OrderItemSmall({
     <AppCard ref={handleSetRef} dataQa={`order-${order.key}`}>
       <AppCardSection
         className={cx("relative", {
-          "after:absolute after:left-10 after:top-[50%] after:h-16 after:w-2 after:-translate-y-[50%] after:bg-blue-300":
+          "after:absolute after:left-10 after:top-[23px] after:h-16 after:w-2 after:-translate-y-[50%] after:bg-blue-300":
             isCurrentMarket,
         })}
       >
-        <div className="flex cursor-pointer items-center gap-8" onClick={onSelectOrderClick}>
-          {hideActions ? (
-            title
-          ) : (
-            <>
+        <div className="flex cursor-pointer items-start gap-8" onClick={onSelectOrderClick}>
+          {!hideActions && (
+            <span className="flex h-20 items-center">
               <Checkbox isChecked={isSelected} setIsChecked={onToggleOrder}></Checkbox>
-              {title}
-            </>
+            </span>
           )}
+          <div className="flex flex-wrap items-center gap-x-8 gap-y-4">
+            {title}
+            {isMarketClosed && <MarketClosedBadge label="marketClosed" />}
+          </div>
         </div>
       </AppCardSection>
       <AppCardSection>

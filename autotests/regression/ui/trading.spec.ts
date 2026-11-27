@@ -1,8 +1,15 @@
-import { expect } from "@playwright/test";
+import { expect, type Locator } from "@playwright/test";
 
 import { test } from "../fixtures/browser";
 import { displayedNumber } from "../fixtures/displayedNumber";
-import { headerPriceValue, infoRowValue, openExecutionDetails, openTooltip } from "../fixtures/marketData";
+import {
+  displayedSumMatches,
+  headerPriceValue,
+  infoRowValue,
+  openExecutionDetails,
+  openTooltip,
+} from "../fixtures/marketData";
+import { feeBreakdown } from "../fixtures/quoteDetails";
 import {
   inputNumber,
   labelledInput,
@@ -72,6 +79,23 @@ test("5.14 switching position size units preserves its USD value", async ({ page
   await expect.poll(() => inputNumber(size)).toBeCloseTo(1000, 0);
 });
 
+// The entered USD size is kept as a token amount, so its USD value, and each part's, follows the mark price.
+async function expectTwapParts(box: Locator, sizeUsd: number, count: number) {
+  await expect
+    .poll(async () => {
+      // One read, so the summary and the row come from the same render.
+      const text = await box.innerText();
+      const summary = /Executes (\d+) long increase orders of ([^\n]+?) each/.exec(text);
+      const perPart = displayedNumber(/Size per part\n([^\n]+)/.exec(text)?.[1] ?? "");
+      return (
+        Number(summary?.[1]) === count &&
+        displayedNumber(summary?.[2] ?? "") === perPart &&
+        displayedSumMatches(sizeUsd, Array(count).fill(perPart), 0.005)
+      );
+    })
+    .toBe(true);
+}
+
 test("6.16 TWAP form calculates size per part and enforces the minimum parts", async ({ page }) => {
   await selectTradeMode(page, "TWAP");
   await page.getByTestId("position-size-input").fill("1000");
@@ -79,12 +103,12 @@ test("6.16 TWAP form calculates size per part and enforces the minimum parts", a
   const parts = labelledInput(box, "Number of parts");
   await parts.fill("5");
   await parts.press("Tab");
-  await expect(box).toContainText(/5 long increase orders of \$\s*200\.00/);
+  await expectTwapParts(box, 1000, 5);
   await expect(box.getByText("Frequency", { exact: true })).toBeVisible();
   await parts.fill("1");
   await parts.press("Tab");
   await expect(parts).toHaveValue("2");
-  await expect(box).toContainText(/2 long increase orders of \$\s*500\.00/);
+  await expectTwapParts(box, 1000, 2);
 });
 
 test(
@@ -97,15 +121,17 @@ test(
     const fees = infoRowValue(box, /^Fees/);
     await expect.poll(async () => displayedNumber(await fees.innerText())).toBeLessThan(0);
     const breakdown = await openTooltip(page, fees.locator(".Tooltip-handle"));
-    const openFee = /Open fee:\s*\(([\d.]+)% of position size\)\s*([^\n]+)/.exec(await breakdown.innerText());
-    expect(Number(openFee?.[1])).toBeGreaterThan(0);
-    expect(displayedNumber(openFee?.[2] ?? "")).toBeLessThan(0);
+    const items = feeBreakdown(await breakdown.innerText());
+    const openFee = items.find((item) => item.label === "Open fee");
+    expect(openFee, JSON.stringify(items)).toBeDefined();
+    expect(openFee!.percent).toBeGreaterThan(0);
+    expect(openFee!.usd).toBeLessThan(0);
     await page.mouse.move(0, 0);
     // Increases execute at mark price, so the impact half of the row stays at zero.
     const [impact, totalFee] = (await infoRowValue(box, /^Price impact/).innerText()).split("/").map(displayedNumber);
     expect(impact).toBe(0);
     expect(totalFee).toBeLessThan(0);
-    expect(Math.abs(totalFee)).toBeLessThanOrEqual(Number(openFee![1]) + 0.001);
+    expect(Math.abs(totalFee)).toBeLessThanOrEqual(openFee!.percent + 0.001);
     // The network fee row fills in after the gas estimate arrives.
     await expect
       .poll(async () =>

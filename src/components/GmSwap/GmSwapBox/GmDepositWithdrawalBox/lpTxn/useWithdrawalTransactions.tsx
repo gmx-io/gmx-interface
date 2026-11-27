@@ -57,6 +57,7 @@ import {
   sendOrderSubmittedMetric,
   sendTxnValidationErrorMetric,
 } from "lib/metrics";
+import type { WalletCallsBatch } from "lib/transactions/sendWalletCalls";
 import useWallet from "lib/wallets/useWallet";
 import { getWrappedToken } from "sdk/configs/tokens";
 import { getGlvToken, getGmToken } from "sdk/utils/tokens";
@@ -69,8 +70,9 @@ import { useMultichainWithdrawalExpressTxnParams } from "./useMultichainWithdraw
 export const useWithdrawalTransactions = ({
   technicalFees,
   shouldDisableValidation,
-}: Pick<UseLpTransactionProps, "technicalFees" | "shouldDisableValidation">): {
-  onCreateWithdrawal: () => Promise<void>;
+  onSent,
+}: Pick<UseLpTransactionProps, "technicalFees" | "shouldDisableValidation" | "onSent">): {
+  onCreateWithdrawal: (walletCallsBatch?: WalletCallsBatch) => Promise<void>;
   isLoading: boolean;
   error: Error | undefined;
 } => {
@@ -110,10 +112,11 @@ export const useWithdrawalTransactions = ({
         direction: "usdgToUsdc",
         glvOrMarketAddress,
         withdrawalTxnHash: txnHash,
+        withdrawalEstimatedUsdgAmount: longTokenAmount + shortTokenAmount,
         conversion: undefined,
       });
     },
-    [account, chainId, glvOrMarketAddress, isTransitRoute, startTransitRouteProgress]
+    [account, chainId, glvOrMarketAddress, isTransitRoute, longTokenAmount, shortTokenAmount, startTransitRouteProgress]
   );
 
   const selectedMarketInfoForGlv = useSelector(selectPoolsDetailsSelectedMarketInfoForGlv);
@@ -236,7 +239,7 @@ export const useWithdrawalTransactions = ({
   const { setMultichainTransferProgress } = useSyntheticsEvents();
 
   const onCreateGlvWithdrawal = useCallback(
-    async function onCreateWithdrawal(): Promise<void> {
+    async function onCreateWithdrawal(walletCallsBatch?: WalletCallsBatch): Promise<void> {
       if (!isWithdrawal) {
         return Promise.reject();
       }
@@ -380,6 +383,7 @@ export const useWithdrawalTransactions = ({
           blockTimestampData,
           glvTokenAmount: glvTokenAmount!,
           skipSimulation: shouldDisableValidation,
+          walletCallsBatch,
         }).then(({ transactionHash }) => recordTransitWithdrawal(transactionHash));
       } else {
         throw new Error(`Invalid pay source: ${paySource}`);
@@ -387,6 +391,7 @@ export const useWithdrawalTransactions = ({
 
       return promise
         .then(makeTxnSentMetricsHandler(metricData.metricId))
+        .then(onSent)
         .catch(makeTxnErrorMetricsHandler(metricData.metricId));
     },
     [
@@ -414,11 +419,12 @@ export const useWithdrawalTransactions = ({
       setPendingTxns,
       blockTimestampData,
       shouldDisableValidation,
+      onSent,
     ]
   );
 
   const onCreateGmWithdrawal = useCallback(
-    async function onCreateWithdrawal(): Promise<void> {
+    async function onCreateWithdrawal(walletCallsBatch?: WalletCallsBatch): Promise<void> {
       if (!isWithdrawal) {
         return Promise.reject();
       }
@@ -542,6 +548,7 @@ export const useWithdrawalTransactions = ({
           setPendingTxns,
           setPendingWithdrawal: isTransitRoute ? undefined : setPendingWithdrawal,
           blockTimestampData,
+          walletCallsBatch,
         }).then(({ transactionHash }) => recordTransitWithdrawal(transactionHash));
       } else {
         throw new Error(`Invalid pay source: ${paySource}`);
@@ -549,6 +556,7 @@ export const useWithdrawalTransactions = ({
 
       return promise
         .then(makeTxnSentMetricsHandler(metricData.metricId))
+        .then(onSent)
         .catch(makeTxnErrorMetricsHandler(metricData.metricId))
         .catch((error) => {
           if (paySource === "settlementChain") {
@@ -587,6 +595,7 @@ export const useWithdrawalTransactions = ({
       shouldDisableValidation,
       setPendingTxns,
       blockTimestampData,
+      onSent,
     ]
   );
 

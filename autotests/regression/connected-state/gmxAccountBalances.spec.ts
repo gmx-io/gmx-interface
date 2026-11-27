@@ -78,6 +78,7 @@ test("4.34 4.35 4.38 4.65 withdrawal lists GMX Account tokens only, blocks excee
   await amount.fill("1");
   await expect.poll(() => inputNumber(amount)).toBe(1);
   await expect(modal).not.toContainText(/NaN|Infinity|undefined/);
-  await page.keyboard.press("Escape");
+  // Escape would also reach the GMX Account panel's window listener and can close it with the form.
+  await modal.locator(".Modal-close-button").click();
   await expect(page.getByTestId("gmx-account-balance")).toBeVisible();
 });

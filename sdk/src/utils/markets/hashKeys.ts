@@ -4,6 +4,7 @@ import {
   BASE_BORROWING_FACTOR,
   BORROWING_EXPONENT_FACTOR_KEY,
   BORROWING_FACTOR_KEY,
+  DEPOSIT_FEE_FACTOR_KEY,
   FUNDING_DECREASE_FACTOR_PER_SECOND,
   FUNDING_EXPONENT_FACTOR_KEY,
   FUNDING_FACTOR_KEY,
@@ -341,6 +342,14 @@ export function hashMarketConfigKeys(market: MarketConfigInput): MarketConfigKey
     withdrawalFeeFactorBalanceWasNotImproved: [
       ["bytes32", "address", "bool"],
       [WITHDRAWAL_FEE_FACTOR_KEY, marketAddress, false],
+    ],
+    depositFeeFactorBalanceWasImproved: [
+      ["bytes32", "address", "bool"],
+      [DEPOSIT_FEE_FACTOR_KEY, marketAddress, true],
+    ],
+    depositFeeFactorBalanceWasNotImproved: [
+      ["bytes32", "address", "bool"],
+      [DEPOSIT_FEE_FACTOR_KEY, marketAddress, false],
     ],
     virtualMarketId: [
       ["bytes32", "address"],

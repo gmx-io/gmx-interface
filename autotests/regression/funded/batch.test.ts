@@ -248,7 +248,10 @@ test("a report write failure prevents the next paid case", async () => {
 });
 
 test("a blocked funded case is left out of groups and refused by name with its reason", () => {
-  assert.throws(() => batchOptions(["--group", "one-click"]), /No funded cases selected/);
-  assert.throws(() => batchOptions(["--case", "one-click"]), /one-click is disabled: .*PRO-4504/);
-  assert.ok(!batchOptions(["--group", "all"]).selected.some((c) => c.id === "one-click"));
+  assert.deepEqual(
+    batchOptions(["--group", "earn"]).selected.map((c) => c.id),
+    ["claims"]
+  );
+  assert.throws(() => batchOptions(["--case", "staking"]), /staking is disabled: .*PRO-4528/);
+  assert.ok(!batchOptions(["--group", "all"]).selected.some((c) => c.id === "staking"));
 });

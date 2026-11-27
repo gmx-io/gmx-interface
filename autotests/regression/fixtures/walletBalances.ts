@@ -11,9 +11,7 @@ import {
   type Hex,
 } from "viem";
 
-import DataStore from "../../../sdk/src/abis/DataStore";
-import Reader from "../../../sdk/src/abis/Reader";
-import SyntheticsReader from "../../../sdk/src/abis/SyntheticsReader";
+import { getAbi } from "../../../sdk/src/abis/getAbi";
 import type { ContractsChainId } from "../../../sdk/src/configs/chains";
 import { getContract } from "../../../sdk/src/configs/contracts";
 import { multichainBalanceKey } from "../../../sdk/src/configs/dataStore";
@@ -38,6 +36,10 @@ const SOURCE_CHAIN_RPC_HOSTS: [RegExp, number][] = [
 
 function getSourceChainIdByRpcUrl(url: string) {
   const { host, pathname } = new URL(url);
+  if (host === "rpc.gmx.io") {
+    const chainId = Number(pathname.split("/")[1]);
+    return chainId in ALCHEMY_NETWORKS ? chainId : undefined;
+  }
   return SOURCE_CHAIN_RPC_HOSTS.find(([pattern]) => pattern.test(`${host}${pathname}`))?.[1];
 }
 
@@ -147,13 +149,16 @@ export async function mockWalletBalances(
 ) {
   const tokens = [...getV2Tokens(chainId).map((token) => token.address), ...Object.keys(MARKETS[chainId])];
   const accountKeys = new Map(tokens.map((token) => [multichainBalanceKey(account, token), getAddress(token)]));
+  const syntheticsReaderAbi = getAbi(chainId, "SyntheticsReader");
+  const readerAbi = getAbi(chainId, "Reader");
+  const dataStoreAbi = getAbi(chainId, "DataStore");
   function patchCall(target: string, callData: Hex, walletBalances: Map<string, bigint>): PatchResult | undefined {
     const overridden = contractRead?.(getAddress(target), callData);
     if (overridden !== undefined) return Object.assign(() => overridden, { standalone: true });
     const isContract = (name: Parameters<typeof getContract>[1]) =>
       getAddress(target) === getAddress(getContract(chainId, name));
     if (isContract("SyntheticsReader")) {
-      const call = tryDecode(() => decodeFunctionData({ abi: SyntheticsReader, data: callData }));
+      const call = tryDecode(() => decodeFunctionData({ abi: syntheticsReaderAbi, data: callData }));
       if (
         (call?.functionName === "getAccountPositions" || call?.functionName === "getAccountOrders") &&
         getAddress(call.args[1]) === account
@@ -166,17 +171,17 @@ export async function mockWalletBalances(
       }
     }
     if (isContract("Reader")) {
-      const call = tryDecode(() => decodeFunctionData({ abi: Reader, data: callData }));
+      const call = tryDecode(() => decodeFunctionData({ abi: readerAbi, data: callData }));
       if (call?.functionName === "getTokenBalancesWithSupplies" && getAddress(call.args[0]) === account) {
         return (original) => {
           if (!original) throw new Error("Cannot mock staking wallet balances without token supplies");
           const values = decodeFunctionResult({
-            abi: Reader,
+            abi: readerAbi,
             functionName: "getTokenBalancesWithSupplies",
             data: original,
           });
           return encodeFunctionResult({
-            abi: Reader,
+            abi: readerAbi,
             functionName: "getTokenBalancesWithSupplies",
             result: values.map((value, index) =>
               index % 2 === 0 ? walletBalances.get(getAddress(call.args[1][index / 2])) ?? 0n : value
@@ -186,11 +191,12 @@ export async function mockWalletBalances(
       }
     }
     if (isContract("DataStore")) {
-      const call = tryDecode(() => decodeFunctionData({ abi: DataStore, data: callData }));
+      const call = tryDecode(() => decodeFunctionData({ abi: dataStoreAbi, data: callData }));
       if (call?.functionName === "getUint" && accountKeys.has(call.args[0])) {
         const token = accountKeys.get(call.args[0])!;
         return Object.assign(
-          () => encodeFunctionResult({ abi: DataStore, functionName: "getUint", result: gmxBalances.get(token) ?? 0n }),
+          () =>
+            encodeFunctionResult({ abi: dataStoreAbi, functionName: "getUint", result: gmxBalances.get(token) ?? 0n }),
           { standalone: true }
         );
       }

@@ -5,7 +5,13 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { BN_ZERO, getBasisPoints, MaxUint256, parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { bigMath } from "sdk/utils/bigmath";
-import { isIncreaseOrderType, isStopIncreaseOrderType, isStopLossOrderType, isSwapOrderType } from "sdk/utils/orders";
+import {
+  isIncreaseOrderType,
+  isStopIncreaseOrderType,
+  isStopLossOrderType,
+  isSwapOrderType,
+  isTriggerDecreaseOrderType,
+} from "sdk/utils/orders";
 import { applySlippageToPrice } from "sdk/utils/trade";
 
 import { EditingOrderState, OrderInfo, OrdersInfoData, PositionOrderInfo } from "./types";
@@ -18,6 +24,7 @@ export function useOrderEditorState(ordersInfoData: OrdersInfoData | undefined) 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [sizeInputValue, setSizeInputValue] = useState("");
   const [triggerPriceInputValue, setTriggerPriceInputValue] = useState("");
+  const [isReceiveSeparated, setIsReceiveSeparated] = useState<boolean>();
 
   /* eslint-disable react/hook-use-state */
   const [triggerRatioInputValue, _setTriggerRatioInputValue] = useState<string>("");
@@ -54,6 +61,7 @@ export function useOrderEditorState(ordersInfoData: OrdersInfoData | undefined) 
       setSizeInputValue("");
       setTriggerPriceInputValue("");
       _setTriggerRatioInputValue("");
+      setIsReceiveSeparated(undefined);
       setShouldCalculateMinOutputAmount(false);
     }
 
@@ -100,6 +108,8 @@ export function useOrderEditorState(ordersInfoData: OrdersInfoData | undefined) 
       setTriggerPriceInputValue,
       triggerRatioInputValue,
       setTriggerRatioInputValue,
+      isReceiveSeparated,
+      setIsReceiveSeparated,
 
       defaultAllowedSwapSlippageBps,
       setDefaultAllowedSwapSlippageBps,
@@ -126,6 +136,7 @@ export function useOrderEditorState(ordersInfoData: OrdersInfoData | undefined) 
     sizeInputValue,
     triggerPriceInputValue,
     triggerRatioInputValue,
+    isReceiveSeparated,
 
     defaultAllowedSwapSlippageBps,
     setDefaultAllowedSwapSlippageBps,
@@ -183,6 +194,13 @@ function useAcceptablePrice(
   if (order) {
     if (isSwapOrder) {
       acceptablePrice = BN_ZERO;
+    } else if (
+      isTriggerDecreaseOrderType(order.orderType) &&
+      triggerPrice === order.triggerPrice &&
+      acceptablePriceImpactBps === initialAcceptablePriceImpactBps
+    ) {
+      // Editing the receive mode must preserve the exact stored price, including protection set on another device.
+      acceptablePrice = (order as PositionOrderInfo).acceptablePrice;
     } else if (isStopLossOrderType(order.orderType) || isStopIncreaseOrderType(order.orderType)) {
       // For Stop Loss and Stop Market orders Acceptable Price is not applicable and set to 0 or MaxUnit256
       acceptablePrice = (order as PositionOrderInfo).acceptablePrice;

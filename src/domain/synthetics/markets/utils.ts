@@ -24,7 +24,7 @@ import { JitLiquidityInfo, getJitMaxReservedUsd } from "../jit/utils";
 import { PositionInfo } from "../positions";
 import { convertToTokenAmount, convertToUsd, getMidPrice } from "../tokens";
 import { isGlvAddress, isGlvInfo } from "./glv";
-import { GlvInfo, GlvOrMarketInfo, MarketInfo } from "./types";
+import { ClosedMarkets, GlvInfo, GlvOrMarketInfo, MarketInfo } from "./types";
 import { TokenData, TokensData } from "../tokens/types";
 
 export * from "sdk/utils/markets";
@@ -501,3 +501,7 @@ export function getTradeboxLeverageSliderMarks(maxAllowedLeverage: number) {
 }
 
 export const isMarketInfo = (market: GlvInfo | MarketInfo): market is MarketInfo => !isGlvInfo(market);
+
+export function getIsMarketClosed(closedMarkets: ClosedMarkets | undefined, marketAddress: string | undefined) {
+  return marketAddress !== undefined && closedMarkets?.[marketAddress] === true;
+}

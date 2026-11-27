@@ -16,20 +16,25 @@ for (const period of ["Total", "Last 30d", "Last 7d"]) {
     page,
   }) => {
     const days = { Total: 0, "Last 30d": 30, "Last 7d": 7 }[period]!;
-    const request = page.waitForRequest((request) => {
-      if (request.method() !== "POST") return false;
-      let body;
-      try {
-        body = request.postDataJSON();
-      } catch {
-        // other POSTs, such as analytics beacons, are not JSON
-        return false;
-      }
-      return body?.operationName === "PeriodAccountStats" && (body.variables.from === 0) === (days === 0);
-    });
+    // A failed indexer request leaves the table empty until the app retries it.
+    const response = page.waitForResponse(
+      (response) => {
+        const request = response.request();
+        if (request.method() !== "POST" || !response.ok()) return false;
+        let body;
+        try {
+          body = request.postDataJSON();
+        } catch {
+          // other POSTs, such as analytics beacons, are not JSON
+          return false;
+        }
+        return body?.operationName === "PeriodAccountStats" && (body.variables.from === 0) === (days === 0);
+      },
+      { timeout: 45_000 }
+    );
     await page.goto("/leaderboard");
     await page.getByRole("button", { name: period, exact: true }).click();
-    const { from } = (await request).postDataJSON().variables;
+    const { from } = (await response).request().postDataJSON().variables;
     if (days) expect(Math.abs(Date.now() / 1000 - days * 86_400 - from)).toBeLessThan(2 * 86_400);
     const table = page.getByRole("table");
     const link = table.locator('a[href*="/traders/"]').first();

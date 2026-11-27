@@ -17,7 +17,7 @@ import { privateKeyToAccount } from "viem/accounts";
 import { arbitrum, base } from "viem/chains";
 
 import { GmxApiSdk } from "../../../sdk/src/clients/v2";
-import SyntheticsReader from "../../../sdk/src/abis/SyntheticsReader";
+import { getAbi } from "../../../sdk/src/abis/getAbi";
 import { getContract } from "../../../sdk/src/configs/contracts";
 import { subaccountListKey } from "../../../sdk/src/configs/dataStore";
 import { getOracleKeeperUrl } from "../../../sdk/src/configs/oracleKeeper";
@@ -149,7 +149,7 @@ export class FundedSession {
       ),
       readFundedData("On-chain positions", () =>
         this.rpc.readContract({
-          abi: SyntheticsReader as Abi,
+          abi: getAbi(42161, "SyntheticsReader") as Abi,
           address: getContract(42161, "SyntheticsReader"),
           functionName: "getAccountPositions",
           args: [getContract(42161, "DataStore"), this.address, 0n, 100n],
@@ -157,7 +157,7 @@ export class FundedSession {
       ),
       readFundedData("On-chain orders", () =>
         this.rpc.readContract({
-          abi: SyntheticsReader as Abi,
+          abi: getAbi(42161, "SyntheticsReader") as Abi,
           address: getContract(42161, "SyntheticsReader"),
           functionName: "getAccountOrders",
           args: [getContract(42161, "DataStore"), this.address, 0n, 100n],
@@ -682,9 +682,8 @@ export class FundedSession {
     );
   }
 
-  signUiMessage(message: Hex) {
-    return this.account.signMessage({ message: { raw: message as `0x${string}` } });
-  }
+  // Only the rehearsal needs the generated 1CT key, to simulate its on-chain state.
+  followUiSubaccount(_subaccount: string) {}
 
   signUiTypedData(data: Parameters<typeof this.account.signTypedData>[0]) {
     return this.account.signTypedData(data);
@@ -794,7 +793,7 @@ export class FundedSession {
       bridgeOutParams: params,
       gasPaymentToken: state.usdc.address,
     });
-    const feeUsd = inspectBridgeWithdrawal(prepared, params, state);
+    const feeUsd = inspectBridgeWithdrawal(prepared, params, state, this.address);
     if (
       params.amount + prepared.payload.gasPaymentParams.gasPaymentTokenAmount >
       (await accountBalance(this, state.usdc.address))

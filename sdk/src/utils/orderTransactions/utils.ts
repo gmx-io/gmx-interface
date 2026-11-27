@@ -1,6 +1,7 @@
 import uniq from "lodash/uniq";
 import { encodeFunctionData, type Hex, zeroAddress, zeroHash } from "viem";
 
+import ERC20PermitInterface from "abis/ERC20PermitInterface";
 import { getAbi } from "abis/getAbi";
 import ERC20ABI from "abis/Token";
 import {
@@ -11,14 +12,15 @@ import {
 } from "configs/chains";
 import { getContract, isContractsV2_2_1 } from "configs/contracts";
 import { convertTokenAddress, getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
+import { isSameAddress } from "utils/address";
 import { bigMath } from "utils/bigmath";
 import { ExecutionFee } from "utils/fees/types";
 import { expandDecimals, MaxUint256, USD_DECIMALS } from "utils/numbers";
 import { getByKey } from "utils/objects";
-import { isIncreaseOrderType, isSwapOrderType } from "utils/orders";
-import { DecreasePositionSwapType, OrderType } from "utils/orders/types";
+import { isIncreaseOrderType, isSwapOrderType, isTwapOrder } from "utils/orders";
+import { DecreasePositionSwapType, OrderInfo, OrderType } from "utils/orders/types";
 import { convertToContractPrice, convertToUsd } from "utils/tokens";
-import { ContractPrice, ERC20Address, TokensData } from "utils/tokens/types";
+import { ContractPrice, ERC20Address, SignedTokenPermit, TokensData } from "utils/tokens/types";
 import { applySlippageToMinOut, applySlippageToPrice } from "utils/trade";
 import { ExternalSwapQuote } from "utils/trade/types";
 import { getTwapValidFromTime } from "utils/twap";
@@ -53,6 +55,13 @@ export type UpdateOrderTxnParams = {
 
 export type CancelOrderTxnParams = {
   orderKey: string;
+} & OrderPayoutAddresses;
+
+/** Where an existing order pays out on execution or cancellation; undefined when the caller didn't load it */
+export type OrderPayoutAddresses = {
+  receiver?: string;
+  cancellationReceiver?: string;
+  callbackContract?: string;
 };
 
 export type CreateOrderPayload = {
@@ -104,7 +113,7 @@ export type UpdateOrderParams = {
   executionFeeTopUp: bigint;
   // lets express take the priority fee allowance out of the top-up
   executionGasLimit?: bigint;
-};
+} & OrderPayoutAddresses;
 
 export type ExecutionFeeEstimate = { executionFee: bigint; gasLimit: bigint };
 
@@ -517,7 +526,7 @@ export function buildUpdateOrderPayload(p: UpdateOrderParams): UpdateOrderTxnPar
       acceptablePrice: convertToContractPrice(p.acceptablePrice, indexToken.decimals),
       minOutputAmount: p.minOutputAmount,
       autoCancel: p.autoCancel,
-      validFromTime: 0n,
+      validFromTime: p.validFromTime ?? 0n,
       decreasePositionSwapType: p.decreasePositionSwapType,
       executionFeeTopUp: p.executionFeeTopUp,
     },
@@ -894,17 +903,53 @@ function combineTransfers(tokenTransfers: TokenTransfer[]) {
   return { tokenTransfers: Object.values(transfersMap), value };
 }
 
+/**
+ * Sets the Router allowance inside the same wallet transaction. ExchangeRouter and GlvRouter share this call, and it
+ * has to come before the first sendTokens, which spends the allowance.
+ */
+export function buildTokenPermitsCall(tokenPermits: SignedTokenPermit[]): ExchangeRouterCall {
+  return {
+    method: "makeExternalCalls",
+    params: [
+      tokenPermits.map((permit) => permit.token),
+      tokenPermits.map((permit) =>
+        encodeFunctionData({
+          abi: ERC20PermitInterface,
+          functionName: "permit",
+          args: [
+            permit.owner as Hex,
+            permit.spender as Hex,
+            permit.value,
+            permit.deadline,
+            permit.v,
+            permit.r as Hex,
+            permit.s as Hex,
+          ],
+        })
+      ),
+      [],
+      [],
+    ],
+  };
+}
+
 export function getBatchOrderMulticallPayload({
   chainId,
   params,
+  tokenPermits = [],
 }: {
   chainId: ContractsChainId;
   params: BatchOrderTxnParams;
+  tokenPermits?: SignedTokenPermit[];
 }) {
   const { createOrderParams, updateOrderParams, cancelOrderParams } = params;
 
   const multicall: ExchangeRouterCall[] = [];
   let value = 0n;
+
+  if (tokenPermits.length > 0) {
+    multicall.push(buildTokenPermitsCall(tokenPermits));
+  }
 
   for (const params of createOrderParams) {
     const { multicall: createMulticall, value: createValue } = buildCreateOrderMulticall(params);
@@ -985,7 +1030,7 @@ export function buildUpdateOrderMulticall(updateTxn: UpdateOrderTxnParams) {
       updatePayload.acceptablePrice,
       updatePayload.triggerPrice,
       updatePayload.minOutputAmount,
-      0n,
+      updatePayload.validFromTime,
       ...(isContractsV2_2_1(chainId) ? [updatePayload.decreasePositionSwapType] : []),
       updatePayload.autoCancel,
     ],
@@ -1084,4 +1129,35 @@ export function getBatchIsNativePayment(orderParams: BatchOrderTxnParams) {
 
 export function getIsInvalidBatchReceiver(batchParams: BatchOrderTxnParams, signerAddress: string) {
   return batchParams.createOrderParams.some((co) => co.orderPayload.addresses.receiver !== signerAddress);
+}
+
+export function getOrderPayoutAddresses(order: OrderPayoutAddresses | undefined): OrderPayoutAddresses {
+  return {
+    receiver: order?.receiver,
+    cancellationReceiver: order?.cancellationReceiver,
+    callbackContract: order?.callbackContract,
+  };
+}
+
+export function getCancelOrderParams(order: OrderInfo): CancelOrderTxnParams[] {
+  return (isTwapOrder(order) ? order.orders : [order]).map((part) => ({
+    orderKey: part.key,
+    ...getOrderPayoutAddresses(part),
+  }));
+}
+
+// edits and cancels pay out to the addresses stored on the existing order, so unknown ones count as foreign
+export function getIsBatchPayoutOnlyToAccount(batchParams: BatchOrderTxnParams, account: string) {
+  const isAccountOrUnset = (address: string | undefined) => address === zeroAddress || isSameAddress(address, account);
+  const existingOrders = [...batchParams.updateOrderParams.map((uo) => uo.params), ...batchParams.cancelOrderParams];
+
+  return (
+    !getIsInvalidBatchReceiver(batchParams, account) &&
+    existingOrders.every(
+      (order) =>
+        isSameAddress(order.receiver, account) &&
+        isAccountOrUnset(order.cancellationReceiver) &&
+        isAccountOrUnset(order.callbackContract)
+    )
+  );
 }

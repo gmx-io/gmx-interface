@@ -1,10 +1,15 @@
+import { useMemo } from "react";
 import useSWR from "swr";
 
 import type { AnyChainId } from "config/chains";
+import { RANDOM_ACCOUNT } from "config/multichain";
+import { expandDecimals } from "lib/numbers";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 
+import { getMultichainTransferSendParams } from "./getSendParams";
+import { retryStargateQuoteOnError } from "./stargateErrors";
 import type { QuoteOft, SendParam } from "./types";
 
 export function useQuoteOft({
@@ -56,6 +61,7 @@ export function useQuoteOft({
         };
       },
       refreshInterval: CONFIG_UPDATE_INTERVAL,
+      onErrorRetry: retryStargateQuoteOnError,
     }
   );
 
@@ -64,4 +70,34 @@ export function useQuoteOft({
     isLoading: quoteOftQuery.isLoading,
     error: quoteOftQuery.error,
   };
+}
+
+// A FeeLib pause (error) and an empty path (maxAmountLD = 0) show only in quoteOFT. This quote of one whole token keeps
+// one key while the input, the price or the compose gas estimate change, so the route state doesn't drop in between
+export function useQuoteOftProbe({
+  fromStargateAddress,
+  fromChainId,
+  toChainId,
+  decimals,
+}: {
+  fromStargateAddress: string | undefined;
+  fromChainId: AnyChainId | undefined;
+  toChainId: AnyChainId | undefined;
+  decimals: number | undefined;
+}) {
+  const sendParams = useMemo(() => {
+    if (fromChainId === undefined || toChainId === undefined || decimals === undefined || fromChainId === toChainId) {
+      return undefined;
+    }
+
+    return getMultichainTransferSendParams({
+      srcChainId: fromChainId,
+      dstChainId: toChainId,
+      account: RANDOM_ACCOUNT.address,
+      amountLD: expandDecimals(1, decimals),
+      isToGmx: false,
+    });
+  }, [decimals, fromChainId, toChainId]);
+
+  return useQuoteOft({ sendParams, fromStargateAddress, fromChainId, toChainId });
 }

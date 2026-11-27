@@ -1,6 +1,10 @@
 import { maxUint256 } from "viem";
 
-import type { CancelOrderTxnParams } from "sdk/utils/orderTransactions";
+import {
+  getOrderPayoutAddresses,
+  type CancelOrderTxnParams,
+  type OrderPayoutAddresses,
+} from "sdk/utils/orderTransactions";
 import { getCollateralPriceAtIndexPrice } from "sdk/utils/positions";
 import type { UserReferralInfo } from "sdk/utils/referrals/types";
 
@@ -29,9 +33,11 @@ export function isMarginDepositOrder(order: MarginDepositOrderLike): boolean {
 
 /** Contracts auto-cancel only decrease orders, so a full close cancels margin deposits in the same batch. */
 export function getMarginDepositCancelOrderParams(
-  positionOrders: (MarginDepositOrderLike & { key: string })[]
+  positionOrders: (MarginDepositOrderLike & OrderPayoutAddresses & { key: string })[]
 ): CancelOrderTxnParams[] {
-  return positionOrders.filter((order) => isMarginDepositOrder(order)).map((order) => ({ orderKey: order.key }));
+  return positionOrders
+    .filter((order) => isMarginDepositOrder(order))
+    .map((order) => ({ orderKey: order.key, ...getOrderPayoutAddresses(order) }));
 }
 
 /** Collateral that follows the index is repriced with it at execution, so the deposit is valued there. */

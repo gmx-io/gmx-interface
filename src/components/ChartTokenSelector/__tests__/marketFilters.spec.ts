@@ -1,3 +1,4 @@
+// @vitest-shared-worker
 import { describe, it, expect } from "vitest";
 
 import { DAY_MS, SECONDS_IN_DAY } from "lib/dates";

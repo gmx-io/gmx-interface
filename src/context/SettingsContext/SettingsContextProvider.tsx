@@ -1,5 +1,5 @@
 import noop from "lodash/noop";
-import { ReactNode, createContext, useContext, useEffect, useMemo, useState } from "react";
+import { ReactNode, createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
 import { ARBITRUM, getExecutionFeeConfig, isSolanaNetwork } from "config/chains";
 import { isDevelopment } from "config/env";
@@ -10,9 +10,12 @@ import {
   BUY_SELL_ICONS_MODE_KEY,
   CHART_LINES_SIZE_DENOMINATION_KEY,
   CLOSE_SIZE_DENOMINATION_KEY,
+  CONFIRM_ORDER_SIGNATURES_KEY,
+  DEBUG_CLOSED_MARKETS_KEY,
   DEBUG_ERROR_BOUNDARY_KEY,
   DEBUG_SWAP_MARKETS_CONFIG_KEY,
   DEBUG_TOKEN_PERMITS_ENABLED_KEY,
+  DEBUG_WALLET_BATCHING_ENABLED_KEY,
   DISABLE_ORDER_VALIDATION_KEY,
   DISABLE_SHARE_MODAL_PNL_CHECK_KEY,
   EXTERNAL_SWAPS_ENABLED_KEY,
@@ -44,6 +47,13 @@ import { isValidTokenSafe } from "sdk/configs/tokens";
 import { DEFAULT_TWAP_NUMBER_OF_PARTS } from "sdk/configs/twap";
 
 export type BuySellIconsMode = "off" | "current" | "all";
+
+export type SettingsTab = "trading" | "display" | "notifications" | "debug";
+
+/** Where Settings opened from, when not from a Settings button. */
+export type SettingsTabSource = "walletMenu" | "gmxAccountModal";
+
+export type SettingsTabRequest = { tab: SettingsTab; source?: SettingsTabSource };
 
 const DEFAULT_BUY_SELL_ICONS_MODE: BuySellIconsMode = "current";
 
@@ -81,6 +91,8 @@ export type SettingsContextType = {
   setShouldDisableShareModalPnlCheck: (val: boolean) => void;
   isTokenPermitsQaOverrideEnabled: boolean;
   setIsTokenPermitsQaOverrideEnabled: (val: boolean) => void;
+  isWalletBatchingQaOverrideEnabled: boolean;
+  setIsWalletBatchingQaOverrideEnabled: (val: boolean) => void;
   shouldShowPositionLines: boolean;
   setShouldShowPositionLines: (val: boolean) => void;
   buySellIconsMode: BuySellIconsMode;
@@ -104,6 +116,10 @@ export type SettingsContextType = {
 
   isSettingsVisible: boolean;
   setIsSettingsVisible: (val: boolean) => void;
+  /** The tab the Settings modal switches to when it opens. */
+  settingsTabRequest: SettingsTabRequest | undefined;
+  setSettingsTabRequest: (request: SettingsTabRequest | undefined) => void;
+  openSettingsTab: (tab: SettingsTab, source?: SettingsTabSource) => void;
 
   expressOrdersEnabled: boolean;
   setExpressOrdersEnabled: (val: boolean) => void;
@@ -122,6 +138,9 @@ export type SettingsContextType = {
   debugSwapMarketsConfig: DebugSwapMarketsConfig | undefined;
   setDebugSwapMarketsConfig: (val: DebugSwapMarketsConfig) => void;
 
+  debugClosedMarkets: string | undefined;
+  setDebugClosedMarkets: (val: string) => void;
+
   savedTwapNumberOfParts: number;
   setSavedTWAPNumberOfParts: (val: number) => void;
 
@@ -136,6 +155,9 @@ export type SettingsContextType = {
 
   chartLinesSizeInTokens: boolean;
   setChartLinesSizeInTokens: (val: boolean) => void;
+
+  confirmOrderSignatures: boolean;
+  setConfirmOrderSignatures: (val: boolean) => void;
 };
 
 const SettingsContext = createContext({});
@@ -150,6 +172,11 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
   const { account } = useWallet();
 
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
+  const [settingsTabRequest, setSettingsTabRequest] = useState<SettingsTabRequest>();
+  const openSettingsTab = useCallback((tab: SettingsTab, source?: SettingsTabSource) => {
+    setSettingsTabRequest({ tab, source });
+    setIsSettingsVisible(true);
+  }, []);
   const [showDebugValues, setShowDebugValues] = useLocalStorageSerializeKey(SHOW_DEBUG_VALUES_KEY, false);
   const [isErrorBoundaryDebugEnabled, setIsErrorBoundaryDebugEnabled] = useLocalStorageSerializeKey(
     DEBUG_ERROR_BOUNDARY_KEY,
@@ -218,6 +245,10 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
   const [debugSwapMarketsConfig, setDebugSwapMarketsConfig] = useLocalStorageSerializeKey<
     undefined | DebugSwapMarketsConfig
   >([chainId, DEBUG_SWAP_MARKETS_CONFIG_KEY], undefined);
+  const [debugClosedMarkets, setDebugClosedMarkets] = useLocalStorageSerializeKey<string | undefined>(
+    [chainId, DEBUG_CLOSED_MARKETS_KEY],
+    undefined
+  );
 
   const { canSignTypedData } = useWalletCanSignTypedData();
   const expressOrdersEnabledKey = getExpressOrdersEnabledKey(chainId, account);
@@ -283,6 +314,15 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setSavedIsTokenPermitsQaOverrideEnabled = noop;
   }
 
+  let [savedIsWalletBatchingQaOverrideEnabled, setSavedIsWalletBatchingQaOverrideEnabled] = useLocalStorageSerializeKey(
+    [chainId, DEBUG_WALLET_BATCHING_ENABLED_KEY],
+    false
+  );
+  if (!isDevelopment()) {
+    savedIsWalletBatchingQaOverrideEnabled = false;
+    setSavedIsWalletBatchingQaOverrideEnabled = noop;
+  }
+
   const [savedShouldShowPositionLines, setSavedShouldShowPositionLines] = useLocalStorageSerializeKey(
     [chainId, SHOULD_SHOW_POSITION_LINES_KEY],
     true
@@ -309,6 +349,11 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
 
   const [chartLinesSizeInTokens, setChartLinesSizeInTokens] = useLocalStorageSerializeKey(
     CHART_LINES_SIZE_DENOMINATION_KEY,
+    false
+  );
+
+  const [confirmOrderSignatures, setConfirmOrderSignatures] = useLocalStorageSerializeKey(
+    CONFIRM_ORDER_SIGNATURES_KEY,
     false
   );
 
@@ -385,6 +430,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       setShouldDisableShareModalPnlCheck: setSavedShouldDisableShareModalPnlCheck,
       isTokenPermitsQaOverrideEnabled: savedIsTokenPermitsQaOverrideEnabled!,
       setIsTokenPermitsQaOverrideEnabled: setSavedIsTokenPermitsQaOverrideEnabled,
+      isWalletBatchingQaOverrideEnabled: savedIsWalletBatchingQaOverrideEnabled!,
+      setIsWalletBatchingQaOverrideEnabled: setSavedIsWalletBatchingQaOverrideEnabled,
       shouldShowPositionLines: savedShouldShowPositionLines!,
       setShouldShowPositionLines: setSavedShouldShowPositionLines,
       buySellIconsMode: savedBuySellIconsMode!,
@@ -411,6 +458,9 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
 
       isSettingsVisible,
       setIsSettingsVisible,
+      settingsTabRequest,
+      setSettingsTabRequest,
+      openSettingsTab,
 
       expressOrdersEnabled:
         expressOrdersEnabled! && canSignTypedData && (!isSolanaNetwork(networkId) || expressSupported),
@@ -426,6 +476,9 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       debugSwapMarketsConfig: debugSwapMarketsConfig!,
       setDebugSwapMarketsConfig,
 
+      debugClosedMarkets,
+      setDebugClosedMarkets,
+
       settingsWarningDotVisible: settingsWarningDotVisible!,
       setSettingsWarningDotVisible,
 
@@ -440,6 +493,9 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
 
       chartLinesSizeInTokens: chartLinesSizeInTokens!,
       setChartLinesSizeInTokens,
+
+      confirmOrderSignatures: confirmOrderSignatures!,
+      setConfirmOrderSignatures,
     };
   }, [
     showDebugValues,
@@ -463,6 +519,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setSavedShouldDisableShareModalPnlCheck,
     savedIsTokenPermitsQaOverrideEnabled,
     setSavedIsTokenPermitsQaOverrideEnabled,
+    savedIsWalletBatchingQaOverrideEnabled,
+    setSavedIsWalletBatchingQaOverrideEnabled,
     savedShouldShowPositionLines,
     setSavedShouldShowPositionLines,
     savedBuySellIconsMode,
@@ -485,6 +543,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     tenderlyProjectSlug,
     tenderlySimulationEnabled,
     isSettingsVisible,
+    settingsTabRequest,
+    openSettingsTab,
     networkId,
     expressSupported,
     expressOrdersEnabled,
@@ -498,6 +558,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setExternalSwapsEnabled,
     debugSwapMarketsConfig,
     setDebugSwapMarketsConfig,
+    debugClosedMarkets,
+    setDebugClosedMarkets,
     settingsWarningDotVisible,
     setSettingsWarningDotVisible,
     savedTwapNumberOfParts,
@@ -508,6 +570,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setShowCloseSizeInTokens,
     chartLinesSizeInTokens,
     setChartLinesSizeInTokens,
+    confirmOrderSignatures,
+    setConfirmOrderSignatures,
   ]);
 
   return <SettingsContext.Provider value={contextState}>{children}</SettingsContext.Provider>;

@@ -66,17 +66,21 @@ export const REQUIRED_UI_VERSION_KEY = "required-ui-version";
 export const DEBUG_SWAP_SETTINGS_KEY = "debug-swap-settings";
 export const EXTERNAL_SWAPS_ENABLED_KEY = "external-swaps-enabled";
 export const DEBUG_SWAP_MARKETS_CONFIG_KEY = "debug-swap-markets-config";
+export const DEBUG_CLOSED_MARKETS_KEY = "debug-closed-markets";
 
 export const EXPRESS_TRADING_NATIVE_TOKEN_WARN_HIDDEN_KEY = "express-trading-native-token-warn-hidden";
 export const EXPRESS_TRADING_WRAP_OR_UNWRAP_WARN_HIDDEN_KEY = "express-trading-wrap-or-unwrap-warn-hidden";
 export const EXPRESS_TRADING_EXPIRED_SUBACCOUNT_WARN_HIDDEN_KEY = "express-trading-expired-subaccount-warn-hidden";
 export const EXPRESS_TRADING_ALLOWED_ACTIONS_WARN_HIDDEN_KEY = "express-trading-allowed-actions-warn-hidden";
+export const EXPRESS_TRADING_NONCE_EXPIRED_WARN_HIDDEN_KEY = "express-trading-nonce-expired-warn-hidden";
 
 export const MARGIN_DEPOSIT_SUGGESTION_HIDDEN_KEY = "margin-deposit-suggestion-hidden";
 
 export const INTERVIEW_INVITATION_SHOWN_TIME_KEY = "interview-invitation-shown-time";
 export const TOKEN_FAVORITES_PREFERENCE_KEY = "token-favorites-preference";
 export const SETTINGS_WARNING_DOT_VISIBLE_KEY = "settings-warning-dot-visible";
+export const NOTIFICATIONS_DEVICE_KEY = "notifications-device";
+export const NOTIFICATIONS_DAILY_STATE_SENT_AT_KEY = "notifications-daily-state-sent-at";
 export const SUPPORT_CHAT_WAS_EVER_SHOWN_KEY = "support-chat-was-ever-shown";
 export const SUPPORT_CHAT_WAS_EVER_CLICKED_KEY = "support-chat-was-ever-clicked";
 export const SUPPORT_CHAT_USER_ID_KEY = "support-chat-user-id";
@@ -98,6 +102,7 @@ const DEBUG_MULTICALL_BATCHING_KEY = "debug-multicall-batching";
 // older builds set it on any permit error and never cleared it
 export const LEGACY_PERMITS_DISABLED_KEY = "permits-disabled";
 export const DEBUG_TOKEN_PERMITS_ENABLED_KEY = "debug-token-permits-enabled";
+export const DEBUG_WALLET_BATCHING_ENABLED_KEY = "debug-wallet-batching-enabled";
 
 export const AB_FLAG_STORAGE_KEY = "ab-flags";
 
@@ -113,11 +118,12 @@ export const CLOSE_SIZE_DENOMINATION_KEY = "close-size-in-tokens";
 
 export const CHART_LINES_SIZE_DENOMINATION_KEY = "chart-lines-size-in-tokens";
 
+export const CONFIRM_ORDER_SIGNATURES_KEY = "confirm-order-signatures";
+
 const FALLBACK_TRACKER_PREFIX = "fallback-tracker";
 
 const COLLATERAL_CLOSE_DESTINATION_KEY = "collateral-close-destination";
 const COLLATERAL_CLOSE_DESTINATION_DIALOG_HIDDEN_KEY = "collateral-close-destination-dialog-hidden";
-const HAD_GMX_ACCOUNT_BALANCE_KEY = "had-gmx-account-balance";
 
 const EXPRESS_ORDERS_ENABLED_KEY = "express-orders-enabled";
 const GAS_PAYMENT_TOKEN_ADDRESS_KEY = "gas-payment-token-address";
@@ -126,6 +132,7 @@ const GMX_ACCOUNT_GAS_PAYMENT_TOKEN_ADDRESS_KEY = "gmx-account-gas-payment-token
 const SUBACCOUNT_APPROVAL_KEY = "subaccount-approval";
 const TOKEN_PERMITS_KEY = "token-permits";
 const TOKEN_PERMITS_FALLBACK_KEY = "token-permits-fallback";
+const PENDING_WALLET_BATCH_KEY = "pending-wallet-batch";
 
 const HIGH_LEVERAGE_WARNING_DISMISSED_TIMESTAMP_KEY = "high-leverage-warning-dismissed-timestamp";
 
@@ -151,6 +158,10 @@ export function getTokenPermitsKey(chainId: number, account: string | undefined)
 export function getTokenPermitsFallbackKey(chainId: number, account: string | undefined) {
   if (!chainId || !account) return null;
   return [chainId, account, TOKEN_PERMITS_FALLBACK_KEY];
+}
+
+export function getPendingWalletBatchKey(chainId: number, account: string) {
+  return [chainId, account, PENDING_WALLET_BATCH_KEY];
 }
 
 export function getSyntheticsListSectionKey(chainId: number) {
@@ -215,6 +226,11 @@ export function getSubaccountConfigKey(chainId: number | undefined, account: str
   return [chainId, account, "one-click-trading-config"];
 }
 
+export function getLegacySubaccountConfigKey(chainId: number | undefined, account: string | undefined) {
+  if (!chainId || !account) return null;
+  return [chainId, account, "one-click-trading-legacy-config"];
+}
+
 export function getSyntheticsReceiveMoneyTokenKey(
   chainId: number,
   marketName: string | undefined,
@@ -242,10 +258,6 @@ export function getCollateralCloseDestinationKey(chainId: number, account: strin
 
 export function getCollateralCloseDestinationDialogHiddenKey(chainId: number, account: string | undefined) {
   return [chainId, account, COLLATERAL_CLOSE_DESTINATION_DIALOG_HIDDEN_KEY];
-}
-
-export function getHadGmxAccountBalanceKey(chainId: number, account: string | undefined) {
-  return [chainId, account, HAD_GMX_ACCOUNT_BALANCE_KEY];
 }
 
 export function getExpressOrdersEnabledKey(chainId: number, account: string | undefined) {
