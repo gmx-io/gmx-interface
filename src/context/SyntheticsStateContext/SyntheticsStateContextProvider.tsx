@@ -43,6 +43,7 @@ import {
   useMarketTokensDataRequest,
 } from "domain/synthetics/markets";
 import { useClosedMarketsWithDebug } from "domain/synthetics/markets/debugClosedMarkets";
+import * as des103Tester from "components/MarketClosedBadge/tester/closedMarketsTester"; // rewards-tester (DES-103 closed markets)
 import { isGlvEnabled } from "domain/synthetics/markets/glv";
 import type { ClosedMarkets } from "domain/synthetics/markets/types";
 import { useClosedMarketsRequest } from "domain/synthetics/markets/useClosedMarketsRequest";
@@ -230,7 +231,8 @@ export function SyntheticsStateContextProvider({
   const isTradePage = pageType === "trade";
   const isAccountPage = pageType === "accounts";
 
-  const account = isAccountPage ? checkSummedAccount : walletAccount;
+  const testerAccount = des103Tester.useClosedMarketsTesterAccount(walletAccount, isTradePage); // rewards-tester (DES-103 closed markets)
+  const account = isAccountPage ? checkSummedAccount : testerAccount; // rewards-tester (DES-103 closed markets)
   const leaderboard = useLeaderboardState(account, isLeaderboardPage);
   const chainId = isLeaderboardPage ? leaderboard.chainId : overrideChainId ?? selectedChainId;
   const networkId = overrideChainId !== undefined || isLeaderboardPage ? chainId : selectedNetworkId;
@@ -303,6 +305,7 @@ export function SyntheticsStateContextProvider({
     useClosedMarketsRequest(chainId, { enabled: !isSolanaNetwork(networkId) }),
     marketsInfo.marketsInfoData
   );
+  const testerClosedMarkets = des103Tester.useClosedMarketsWithTester(closedMarkets, marketsInfo.marketsInfoData); // rewards-tester (DES-103 closed markets)
 
   const [missedCoinsModalPlace, setMissedCoinsModalPlace] = useState<MissedCoinsPlace>();
 
@@ -490,7 +493,7 @@ export function SyntheticsStateContextProvider({
         oracleSettings,
 
         jitLiquidityData,
-        closedMarkets,
+        closedMarkets: testerClosedMarkets, // rewards-tester (DES-103 closed markets)
 
         accountWhitelistsResult,
         usdgBoostAprResult,
@@ -537,7 +540,7 @@ export function SyntheticsStateContextProvider({
     isCandlesLoaded,
     isFirstOrder,
     jitLiquidityData,
-    closedMarkets,
+    testerClosedMarkets, // rewards-tester (DES-103 closed markets)
     accountWhitelistsResult,
     usdgBoostAprResult,
     isLargeAccount,
