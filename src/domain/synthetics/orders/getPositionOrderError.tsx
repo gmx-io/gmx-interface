@@ -15,6 +15,38 @@ import { NextPositionValues } from "domain/synthetics/trade";
 import { getPositionCloseSizeDeltaUsdForDisplay } from "domain/tpsl/utils";
 import { getIsMaxLeverageMarginReason, PositionMarginState } from "sdk/utils/trade/increaseMarginCheck";
 
+export function getTriggerDecreaseMarkPriceError({
+  orderType,
+  isLong,
+  triggerPrice,
+  markPrice,
+}: {
+  orderType: OrderType;
+  isLong: boolean;
+  triggerPrice: bigint;
+  markPrice: bigint;
+}): string | undefined {
+  if (isLong) {
+    if (orderType === OrderType.LimitDecrease && triggerPrice <= markPrice) {
+      return t`Set trigger price above mark price`;
+    }
+
+    if (orderType === OrderType.StopLossDecrease && triggerPrice >= markPrice) {
+      return t`Set trigger price below mark price`;
+    }
+  } else {
+    if (orderType === OrderType.LimitDecrease && triggerPrice >= markPrice) {
+      return t`Set trigger price below mark price`;
+    }
+
+    if (orderType === OrderType.StopLossDecrease && triggerPrice <= markPrice) {
+      return t`Set trigger price above mark price`;
+    }
+  }
+
+  return undefined;
+}
+
 export function getPositionOrderError({
   positionOrder,
   markPrice,
@@ -108,28 +140,25 @@ export function getPositionOrderError({
       if (!existingPosition) return;
     }
 
+    if (sizeDeltaUsd === 0n && orderSizeDeltaUsdForCompare > 0n) {
+      return t`Enter an amount`;
+    }
+
     if (existingPosition && sizeDeltaUsd > existingPosition.sizeInUsd) {
       return t`Max close amount exceeded`;
     }
 
     // a beyond-liq trigger alone only warns (getTpSlLiqPriceWarning); unpayable costs below still block
 
-    if (positionOrder.isLong) {
-      if (positionOrder.orderType === OrderType.LimitDecrease && triggerPrice <= markPrice) {
-        return t`Set trigger price above mark price`;
-      }
+    const markPriceError = getTriggerDecreaseMarkPriceError({
+      orderType: positionOrder.orderType,
+      isLong: positionOrder.isLong,
+      triggerPrice,
+      markPrice,
+    });
 
-      if (positionOrder.orderType === OrderType.StopLossDecrease && triggerPrice >= markPrice) {
-        return t`Set trigger price below mark price`;
-      }
-    } else {
-      if (positionOrder.orderType === OrderType.LimitDecrease && triggerPrice >= markPrice) {
-        return t`Set trigger price below mark price`;
-      }
-
-      if (positionOrder.orderType === OrderType.StopLossDecrease && triggerPrice <= markPrice) {
-        return t`Set trigger price above mark price`;
-      }
+    if (markPriceError) {
+      return markPriceError;
     }
 
     if (isCostUnpayable) {

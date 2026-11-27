@@ -5165,6 +5165,7 @@ msgstr "Уменьшение по стоп-лоссу"
 msgid "Wallet balance"
 msgstr "Баланс кошелька"
 
+#: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/TPSLInputRow.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "Est. PnL"
@@ -10660,6 +10661,7 @@ msgstr "Объём за 24ч"
 #: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 #: src/components/Errors/getContractErrorMessage.ts
 #: src/components/OrdersModal/AddTPSLModal.tsx
+#: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts

@@ -7,7 +7,8 @@ import { convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import type { TokenData } from "domain/synthetics/tokens";
 import type { DecreasePositionAmounts } from "domain/synthetics/trade";
 import { DUST_USD } from "lib/legacy";
-import { MaxUint256 } from "lib/numbers";
+import { expandDecimals, MaxUint256 } from "lib/numbers";
+import { bigMath } from "sdk/utils/bigmath";
 import type { UserReferralInfo } from "sdk/utils/referrals/types";
 import { getTriggerDecreaseRemainingPositionMarginState } from "sdk/utils/trade/decreaseMarginCheck";
 
@@ -199,6 +200,60 @@ export function getCappedTpSlLossUsd({
   }
 
   return capLossAtCollateral(pnlUsd, collateralUsd);
+}
+
+export function getTpSlCollateralUsdAtPrice({
+  collateralUsd,
+  collateralAmountInIndexTokens,
+  indexTokenDecimals,
+  price,
+}: {
+  collateralUsd: bigint;
+  collateralAmountInIndexTokens: bigint | undefined;
+  indexTokenDecimals: number;
+  price: bigint | undefined;
+}): bigint {
+  if (collateralAmountInIndexTokens === undefined || price === undefined || price === 0n) {
+    return collateralUsd;
+  }
+
+  return bigMath.mulDiv(collateralAmountInIndexTokens, price, expandDecimals(1, indexTokenDecimals));
+}
+
+export type TpSlEstimatedPnl = {
+  pnlUsd: bigint;
+  pnlPercentage?: bigint;
+};
+
+export function getCappedTpSlEstimatedPnl({
+  estimatedPnl,
+  collateralUsd,
+  triggerPrice,
+  liquidationPrice,
+  isLong,
+}: {
+  estimatedPnl: TpSlEstimatedPnl;
+  collateralUsd: bigint;
+  triggerPrice: bigint | undefined;
+  liquidationPrice: bigint | undefined;
+  isLong: boolean;
+}): TpSlEstimatedPnl {
+  const pnlUsd = getCappedTpSlLossUsd({
+    pnlUsd: estimatedPnl.pnlUsd,
+    collateralUsd,
+    triggerPrice,
+    liquidationPrice,
+    isLong,
+  });
+
+  if (pnlUsd === estimatedPnl.pnlUsd) {
+    return estimatedPnl;
+  }
+
+  return {
+    pnlUsd,
+    pnlPercentage: collateralUsd > 0n ? bigMath.mulDiv(pnlUsd, 10000n, collateralUsd) : estimatedPnl.pnlPercentage,
+  };
 }
 
 export function calculateTotalSizeUsd(p: {

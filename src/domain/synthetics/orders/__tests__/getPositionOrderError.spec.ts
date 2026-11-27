@@ -2,7 +2,7 @@
 import { describe, expect, it } from "vitest";
 
 import { BASIS_POINTS_DIVISOR } from "config/factors";
-import { expandDecimals } from "lib/numbers";
+import { expandDecimals, MaxUint256 } from "lib/numbers";
 
 import { PositionInfoLoaded } from "../../positions";
 import { NextPositionValues } from "../../trade";
@@ -180,5 +180,42 @@ describe("getPositionOrderError — regular limit increase orders", () => {
     });
 
     expect(error).toBe("Max leverage: 100.0x");
+  });
+});
+
+describe("getPositionOrderError — take-profit orders", () => {
+  // a zero-size update of an order that withdraws collateral turns it into a withdrawal at the trigger price
+  // a full close without a position (a TP/SL of an unfilled limit) opens with Close 0 and keeps its stored size
+  it.each<[string, bigint, number, number, boolean, string | undefined]>([
+    ["blocks a close size cleared to zero", expandDecimals(5_000, 30), 0, 56_000, true, "Enter an amount"],
+    ["blocks a full close cleared to zero", MaxUint256, 0, 56_000, true, "Enter an amount"],
+    ["allows a price edit of a full close without a position", MaxUint256, 0, 56_000, false, undefined],
+    ["keeps a zero-size collateral withdrawal editable", 0n, 0, 56_000, true, undefined],
+    ["allows a new close size", expandDecimals(5_000, 30), 2_000, 56_000, true, undefined],
+    [
+      "blocks a price at the mark price",
+      expandDecimals(5_000, 30),
+      2_000,
+      50_000,
+      true,
+      "Set trigger price above mark price",
+    ],
+  ])("%s", (_, orderSizeDeltaUsd, sizeUsd, priceUsd, hasPosition, expected) => {
+    const takeProfitOrder = {
+      ...makeIncreaseOrder(),
+      orderType: OrderType.LimitDecrease,
+      sizeDeltaUsd: orderSizeDeltaUsd,
+      triggerPrice: expandDecimals(55_000, 30),
+    };
+
+    const error = getPositionOrderError({
+      ...baseParams,
+      positionOrder: takeProfitOrder,
+      sizeDeltaUsd: expandDecimals(sizeUsd, 30),
+      triggerPrice: expandDecimals(priceUsd, 30),
+      existingPosition: hasPosition ? makePosition(expandDecimals(40_000, 30)) : undefined,
+    });
+
+    expect(error).toBe(expected);
   });
 });

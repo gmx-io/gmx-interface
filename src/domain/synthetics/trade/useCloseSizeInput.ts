@@ -55,6 +55,7 @@ export function useCloseSizeInput({
 
   const safeSizeUsd = positionSizeInUsd ?? 0n;
   const safeSizeInTokens = positionSizeInTokens ?? 0n;
+  const canShowSizeInTokens = !forceUsd && safeSizeUsd > 0n && safeSizeInTokens > 0n;
 
   const tokenDisplayDecimals = useMemo(
     () => calculateDisplayDecimals(safeSizeInTokens, indexTokenDecimals),
@@ -224,7 +225,12 @@ export function useCloseSizeInput({
     if (localDenominationRef.current === showSizeInTokens) return;
     localDenominationRef.current = showSizeInTokens;
 
-    if (trackedPercentage !== null || !manualInput || safeSizeUsd <= 0n || safeSizeInTokens <= 0n) return;
+    if (trackedPercentage !== null || !manualInput) return;
+
+    if (!canShowSizeInTokens) {
+      setManualInput("");
+      return;
+    }
 
     if (showSizeInTokens) {
       const parsedUsd = parseValue(manualInput, USD_DECIMALS);
@@ -240,6 +246,7 @@ export function useCloseSizeInput({
       }
     }
   }, [
+    canShowSizeInTokens,
     showSizeInTokens,
     trackedPercentage,
     manualInput,

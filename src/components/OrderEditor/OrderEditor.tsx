@@ -53,6 +53,7 @@ import {
   selectOrderEditorPositionKey,
   selectOrderEditorPositionOrderError,
   selectOrderEditorIsQuoteUnavailable,
+  selectOrderEditorTpSlEstimatedPnl,
   selectOrderEditorTpSlLiqPriceWarning,
   selectOrderEditorPriceImpactFeeBps,
   selectOrderEditorReceiveOutputs,
@@ -91,6 +92,7 @@ import {
 } from "domain/synthetics/orders";
 import { getMarginDepositRiskLevel, isMarginDepositOrder } from "domain/synthetics/orders/marginDeposit";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
+import { formatTriggerPriceInputValue } from "domain/synthetics/orders/triggerPriceInput";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import {
   formatAcceptablePriceParts,
@@ -126,6 +128,7 @@ import { getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { sendEditOrderEvent } from "lib/userAnalytics";
+import { getPositiveOrNegativeClass } from "lib/utils";
 import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
 import { getFeeItem } from "sdk/utils/fees";
@@ -207,6 +210,7 @@ export function OrderEditor(p: Props) {
   const isQuoteUnavailable = useSelector(selectOrderEditorIsQuoteUnavailable);
   const triggerPrice = useSelector(selectOrderEditorTriggerPrice);
   const liqPriceWarning = useSelector(selectOrderEditorTpSlLiqPriceWarning);
+  const tpSlEstimatedPnl = useSelector(selectOrderEditorTpSlEstimatedPnl);
   const isRemainingPositionAboveMaxLeverage = useSelector(selectOrderEditorIsRemainingPositionAboveMaxLeverage);
   const fromToken = useSelector(selectOrderEditorFromToken);
   const markRatio = useSelector(selectOrderEditorMarkRatio);
@@ -927,14 +931,9 @@ export function OrderEditor(p: Props) {
         } else {
           setSizeInputValue(formatAmountFree(positionOrder.sizeDeltaUsd ?? 0n, USD_DECIMALS));
         }
-        const price = positionOrder.triggerPrice ?? 0n;
-        const decimals = calculateDisplayDecimals(price, USD_DECIMALS, indexToken?.visualMultiplier);
-
         if (triggerPriceInputValue === "") {
           setTriggerPriceInputValue(
-            isTriggerDecrease
-              ? formatAmountFree(price * BigInt(indexToken?.visualMultiplier ?? 1), USD_DECIMALS)
-              : formatAmount(price, USD_DECIMALS, decimals, undefined, undefined, indexToken?.visualMultiplier)
+            formatTriggerPriceInputValue(positionOrder.triggerPrice ?? 0n, indexToken?.visualMultiplier)
           );
         }
       }
@@ -1155,6 +1154,20 @@ export function OrderEditor(p: Props) {
         </div>
 
         <div className="flex flex-col gap-14 px-20 pb-16">
+          {isTriggerDecrease && (
+            <SyntheticsInfoRow
+              label={t`Est. PnL`}
+              value={
+                <DeltaUsdValue
+                  deltaUsd={tpSlEstimatedPnl?.pnlUsd}
+                  percentage={tpSlEstimatedPnl?.pnlPercentage}
+                  fallback="-"
+                  className={getPositiveOrNegativeClass(tpSlEstimatedPnl?.pnlUsd)}
+                />
+              }
+            />
+          )}
+
           {receiveTokens && (
             <>
               {receiveTokens.canSwitchMode && (

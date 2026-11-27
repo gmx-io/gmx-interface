@@ -13,9 +13,10 @@ import {
   selectOrderEditorSetTriggerPriceInputValue,
 } from "context/SyntheticsStateContext/selectors/orderEditorSelectors";
 import { useCalcSelector, useSelector } from "context/SyntheticsStateContext/utils";
+import { formatTriggerPriceInputValue } from "domain/synthetics/orders/triggerPriceInput";
 import { useSendCancelOrdersTxn } from "domain/synthetics/orders/useSendCancelOrdersTxn";
 import { helperToast } from "lib/helperToast";
-import { calculateDisplayDecimals, formatAmount, numberToBigint } from "lib/numbers";
+import { numberToBigint } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { getOrderKeys } from "sdk/utils/orders";
@@ -95,16 +96,11 @@ export function DynamicLines({
 
       const indexToken = order.indexToken;
 
-      const decimals = calculateDisplayDecimals(order.triggerPrice, USD_DECIMALS, indexToken?.visualMultiplier);
-      const formattedInitialPrice = formatAmount(
-        order.triggerPrice,
-        USD_DECIMALS,
-        decimals,
-        undefined,
-        undefined,
-        indexToken?.visualMultiplier
+      setTriggerPriceInputValue(
+        price !== undefined
+          ? String(price)
+          : formatTriggerPriceInputValue(order.triggerPrice, indexToken?.visualMultiplier)
       );
-      setTriggerPriceInputValue(price !== undefined ? String(price) : formattedInitialPrice);
     },
     [ordersInfoData, setEditingOrderState, setTriggerPriceInputValue]
   );

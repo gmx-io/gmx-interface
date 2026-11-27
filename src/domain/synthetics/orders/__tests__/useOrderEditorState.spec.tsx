@@ -1,16 +1,29 @@
 import { act, cleanup, render } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { expandDecimals } from "lib/numbers";
+import { OrderType, type PositionOrderInfo } from "sdk/utils/orders/types";
+
 vi.mock("context/SettingsContext/SettingsContextProvider", () => ({
-  useSettings: () => ({ isSetAcceptablePriceImpactEnabled: false }),
+  useSettings: () => ({ isSetAcceptablePriceImpactEnabled: true }),
 }));
 
 import { useOrderEditorState, type OrderEditorState } from "../useOrderEditorState";
 
+// the field shows 1968.38 for the stored 1968.384 trigger, the acceptable price is 5 % below it
+const order = {
+  key: "order",
+  isLong: true,
+  orderType: OrderType.LimitDecrease,
+  triggerPrice: expandDecimals(1968384, 27),
+  acceptablePrice: expandDecimals(18699648, 26),
+  indexToken: { decimals: 18 },
+} as unknown as PositionOrderInfo;
+
 let state: OrderEditorState;
 
 function Harness() {
-  state = useOrderEditorState(undefined);
+  state = useOrderEditorState({ [order.key]: order });
   return null;
 }
 
@@ -78,5 +91,20 @@ describe("order editor reset", () => {
     });
     act(() => vi.advanceTimersByTime(100));
     expect(state.triggerPriceInputValue).toBe("2300");
+  });
+});
+
+describe("order editor acceptable price", () => {
+  afterEach(cleanup);
+
+  it.each<[string, bigint]>([
+    ["1968.38", order.acceptablePrice],
+    ["1968.39", (expandDecimals(196839, 28) * 95n) / 100n],
+  ])("builds a TP's acceptable price from the price field %s", (triggerPriceInputValue, expected) => {
+    render(<Harness />);
+    act(() => state.setEditingOrderState({ orderKey: order.key, source: "PositionsList" }));
+    act(() => state.setTriggerPriceInputValue(triggerPriceInputValue));
+
+    expect(state.acceptablePrice).toBe(expected);
   });
 });
