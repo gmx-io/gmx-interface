@@ -15,6 +15,14 @@ function SolanaNetworkMessage({ title, children }: { title: string; children: Re
   );
 }
 
+export function SolanaOnlyNotice() {
+  return (
+    <SolanaNetworkMessage title={t`Solana only`}>
+      <Trans>This page is available on Solana only. Switch the network in the header to open it.</Trans>
+    </SolanaNetworkMessage>
+  );
+}
+
 export function EvmNetworksOnlyNotice() {
   return (
     <SolanaNetworkMessage title={t`EVM networks only`}>
