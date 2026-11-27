@@ -41,6 +41,7 @@ function makeTwapPart(index: number, isFrozen: boolean): Order {
     uiFeeFactor: 0n,
     updatedAtTime: 1n,
     validFromTime: BigInt(1000 + index),
+    srcChainId: 0n,
     isLong: true,
     isFrozen,
     shouldUnwrapNativeToken: false,

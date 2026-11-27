@@ -85,7 +85,7 @@ export async function openSettings(page: Page, tab: "Trading" | "Display" = "Tra
   await page.getByRole("button", { name: "Settings", exact: true }).first().click();
   const modal = page.getByTestId("settings-modal");
   await expect(modal).toBeVisible();
-  await modal.getByRole("button", { name: `${tab} settings`, exact: true }).click();
+  await modal.getByRole("button", { name: tab, exact: true }).click();
   return modal;
 }
 

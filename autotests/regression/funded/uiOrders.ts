@@ -3,7 +3,7 @@ import { expect, type Locator, type Page } from "@playwright/test";
 import { formatUnits, getAddress, maxUint256, type Abi } from "viem";
 
 import { getContract } from "../../../sdk/src/configs/contracts";
-import SyntheticsReader from "../../../sdk/src/abis/SyntheticsReader";
+import { getAbi } from "../../../sdk/src/abis/getAbi";
 import { affordablePosition, ceilDiv, economy, USD } from "./economy";
 import type { FundedSession } from "./session";
 import { eventually, ownPlannedPosition, position } from "./trading";
@@ -15,7 +15,7 @@ import { labelledInput, selectMarket } from "../fixtures/trade";
 
 async function chainOrder(session: FundedSession, key: string) {
   return (await session.rpc.readContract({
-    abi: SyntheticsReader as Abi,
+    abi: getAbi(42161, "SyntheticsReader") as Abi,
     address: getContract(42161, "SyntheticsReader"),
     functionName: "getOrder",
     args: [getContract(42161, "DataStore"), key],
@@ -234,6 +234,7 @@ export async function editUiTrigger(session: FundedSession, wallet: UiWallet, pa
       acceptablePrice: before.onchain.numbers.acceptablePrice,
       minOutputAmount: order.minOutputAmount,
       validFromTime: order.validFromTime,
+      decreasePositionSwapType: order.decreasePositionSwapType,
       autoCancel: order.autoCancel,
       editDirection: { isLong: order.isLong, orderType: order.orderType },
       ...(order.sizeDeltaUsd === maxUint256 ? { fullPositionSizeUsd: before.size } : {}),

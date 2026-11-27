@@ -7,6 +7,7 @@ import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import type { SetPendingShift } from "context/SyntheticsEvents";
 import { callContract } from "lib/contracts";
 import { OrderMetricId } from "lib/metrics/types";
+import type { WalletCallsBatch } from "lib/transactions/sendWalletCalls";
 import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import { abis } from "sdk/abis";
 import type { ContractsChainId } from "sdk/configs/chains";
@@ -16,7 +17,7 @@ import { validateSignerAddress } from "components/Errors/errorToasts";
 import { prepareOrderTxn } from "../orders/prepareOrderTxn";
 import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
 import type { TokensData } from "../tokens";
-import { applySlippageToMinOut } from "../trade";
+import { assertPositiveMinOutputAmount, getPoolTokenMinOutput } from "./lpMinOutput";
 
 type Params = {
   account: string;
@@ -33,13 +34,16 @@ type Params = {
   blockTimestampData: BlockTimestampData | undefined;
   setPendingTxns: (txns: any) => void;
   setPendingShift: SetPendingShift;
+  walletCallsBatch?: WalletCallsBatch;
 };
 
 export async function createShiftTxn(chainId: ContractsChainId, signer: Signer, p: Params) {
   const contract = new ethers.Contract(getContract(chainId, "ExchangeRouter"), abis.ExchangeRouter, signer);
   const shiftVaultAddress = getContract(chainId, "ShiftVault");
 
-  const minToMarketTokenAmount = applySlippageToMinOut(p.allowedSlippage, p.minToMarketTokenAmount);
+  const minToMarketTokenAmount = getPoolTokenMinOutput(p.allowedSlippage, p.minToMarketTokenAmount);
+
+  assertPositiveMinOutputAmount(minToMarketTokenAmount);
 
   await validateSignerAddress(signer, p.account);
 
@@ -85,6 +89,7 @@ export async function createShiftTxn(chainId: ContractsChainId, signer: Signer, 
         value: p.executionFee,
         metricId: p.metricId,
         blockTimestampData: p.blockTimestampData,
+        preCalls: p.walletCallsBatch?.calls,
       })
     : undefined;
 
@@ -95,7 +100,9 @@ export async function createShiftTxn(chainId: ContractsChainId, signer: Signer, 
     [encodedPayload],
     p.executionFee,
     simulationPromise,
-    p.metricId
+    p.metricId,
+    undefined,
+    p.walletCallsBatch !== undefined
   );
 
   return callContract(chainId, contract, "multicall", [encodedPayload], {
@@ -106,6 +113,8 @@ export async function createShiftTxn(chainId: ContractsChainId, signer: Signer, 
     gasLimit,
     gasPriceData,
     setPendingTxns: p.setPendingTxns,
+    walletCallsBatch: p.walletCallsBatch,
+    batchFlow: "gmShift",
     pendingTransactionData: {
       estimatedExecutionFee: p.executionFee,
       estimatedExecutionGasLimit: p.executionGasLimit,

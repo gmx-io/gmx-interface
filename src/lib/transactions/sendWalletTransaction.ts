@@ -1,4 +1,4 @@
-import { isAddress, isHex } from "viem";
+import { isAddress, isHex, type Address, type Hex } from "viem";
 
 import { extendError } from "lib/errors";
 import { additionalTxnErrorValidation } from "lib/errors/additionalValidation";
@@ -11,6 +11,7 @@ import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { applyGasLimitBuffer } from "sdk/utils/gas/applyBuffer";
 
 import { ISigner, ISignerSendTransactionParams } from "./iSigner";
+import { assertNoPendingWalletBatch, sendWalletCalls, type WalletCallsBatch } from "./sendWalletCalls";
 import { TransactionWaiterResult, TxnCallback, TxnEventBuilder } from "./types";
 
 export type WalletTxnCtx = {};
@@ -32,6 +33,8 @@ export async function sendWalletTransaction({
   nonce,
   msg,
   callback,
+  walletCallsBatch,
+  batchFlow = walletCallsBatch?.flow,
   validateBeforeSend,
 }: {
   chainId: number;
@@ -48,6 +51,9 @@ export async function sendWalletTransaction({
   msg?: string;
   runSimulation?: () => Promise<void>;
   callback?: TxnCallback<WalletTxnCtx>;
+  /** Sent in the same wallet confirmation, before this call; `runSimulation` has to account for them */
+  walletCallsBatch?: WalletCallsBatch;
+  batchFlow?: string;
   validateBeforeSend?: () => void;
 }): Promise<WalletTxnResult> {
   const from = signer.address;
@@ -77,6 +83,28 @@ export async function sendWalletTransaction({
           status: "success",
         }),
       };
+    }
+
+    if (batchFlow !== undefined) {
+      await assertNoPendingWalletBatch({ chainId, account: from, flow: batchFlow });
+    }
+
+    if (walletCallsBatch) {
+      await runSimulation?.().then(() => callback?.(eventBuilder.Simulated()));
+
+      validateBeforeSend?.();
+      callback?.(eventBuilder.Sending());
+
+      const { transactionHash } = await sendWalletCalls({
+        chainId,
+        account: from,
+        calls: [...walletCallsBatch.calls, { to: to as Address, data: callData as Hex, value }],
+        batch: walletCallsBatch,
+      });
+
+      callback?.(eventBuilder.Sent({ type: "wallet", transactionHash }));
+
+      return { transactionHash, wait: makeWalletTxnResultWaiter(chainId, transactionHash as `0x${string}`) };
     }
 
     const gasLimitPromise = gasLimit

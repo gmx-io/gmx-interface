@@ -17,7 +17,7 @@ type TokenWithSymbol = {
 
 type SplitReceiveSwapProfitFeeWarningProps = {
   shouldShow: boolean;
-  receiveToken: TokenWithSymbol | undefined;
+  receiveTokenSymbol: string | undefined;
   profitToken: TokenWithSymbol | undefined;
   collateralToken: TokenWithSymbol | undefined;
   swapProfitFee: FeeItem | undefined;
@@ -33,7 +33,7 @@ type SplitReceiveSwapProfitFeeWarningContentProps = {
 
 export function getSplitReceiveSwapProfitFeeWarning({
   shouldShow,
-  receiveToken,
+  receiveTokenSymbol,
   profitToken,
   collateralToken,
   swapProfitFee,
@@ -42,7 +42,6 @@ export function getSplitReceiveSwapProfitFeeWarning({
     return undefined;
   }
 
-  const receiveTokenSymbol = getTokenDisplaySymbol(receiveToken);
   const profitTokenSymbol = getTokenDisplaySymbol(profitToken);
   const collateralTokenSymbol = getTokenDisplaySymbol(collateralToken);
 
@@ -80,7 +79,7 @@ function SplitReceiveSwapProfitFeeWarning({
 }: SplitReceiveSwapProfitFeeWarningContentProps) {
   return (
     <Trans>
-      Receiving as {receiveTokenSymbol} will swap your profit and cost {swapProfitFeePercentage} (
+      Receiving as {receiveTokenSymbol} will cost {swapProfitFeePercentage} (
       <span className="font-medium text-yellow-300">{swapProfitFeeUsd}</span>). Receive {profitTokenSymbol} and{" "}
       {collateralTokenSymbol} separately to skip the swap.{" "}
       <ExternalLink href={RECEIVE_TOKEN_DOCS_URL}>Read more</ExternalLink>.

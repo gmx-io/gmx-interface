@@ -98,7 +98,7 @@ type InnerTooltipProps<T extends ElementType | undefined> = {
    */
   as?: T;
   withPortal?: boolean;
-  shouldStopPropagation?: boolean;
+  shouldStopPropagation?: boolean | "touch";
   shouldPreventDefault?: boolean;
   closeOnDoubleClick?: boolean;
   /**
@@ -382,7 +382,7 @@ export default function Tooltip<T extends ElementType>({
       if (shouldPreventDefault) {
         event.preventDefault();
       }
-      if (shouldStopPropagation) {
+      if (shouldStopPropagation === true || (shouldStopPropagation === "touch" && pointerTypeRef.current === "touch")) {
         event.stopPropagation();
       }
     },

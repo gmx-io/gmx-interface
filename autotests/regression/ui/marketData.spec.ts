@@ -40,9 +40,9 @@ function expectedHourlyRates(config: ApiMarket, values: ApiMarket) {
 }
 
 function displayedRates(text: string) {
-  const [long, short] = text.split("Short positions net rate:");
+  const [long, short] = text.split("Short positions net rate");
   const parse = (part: string) => ({
-    net365d: displayedNumber(/365d:\s*([^\n]+)/.exec(part)![1]),
+    net365d: displayedNumber(/365d\s+([^\n]+)/.exec(part)![1]),
     funding: /funding fee of ([^%]+)%/.test(part) ? displayedNumber(/funding fee of ([^%]+)%/.exec(part)![1]) : 0,
     borrow: /borrow fee of ([^%]+)%/.test(part) ? displayedNumber(/borrow fee of ([^%]+)%/.exec(part)![1]) : 0,
   });
@@ -96,7 +96,7 @@ for (const symbol of ["BTC", "ETH"]) {
     const responses = api.valuesResponses;
     await expect.poll(() => api.valuesResponses, { timeout: 30_000 }).toBeGreaterThan(responses + 1);
     const popup = await openTooltip(page, page.getByRole("banner").locator(".Chart-header-value"));
-    await expect(popup).toContainText("Short positions net rate:");
+    await expect(popup).toContainText("Short positions net rate");
     const close = (displayed: number, expected: number, tolerance: number) =>
       Math.abs(displayed - expected) <= tolerance + Math.abs(expected) * 0.03;
     let last: unknown;
@@ -139,7 +139,7 @@ for (const symbol of ["BTC", "ETH"]) {
       const key = side === "Long" ? "long" : "short";
       await expect
         .poll(async () => {
-          const match = new RegExp(`${side} OI:\\s*([\\d,.]+)\\s*\\S+\\s*\\(([^)]+)\\)`).exec(await popup.innerText());
+          const match = new RegExp(`${side} OI\\s*([\\d,.]+)\\s*\\S+\\s*\\(([^)]+)\\)`).exec(await popup.innerText());
           const values = findValues(api.values, config);
           const tokens = Number(values[`${key}InterestInTokens`]) / 10 ** decimals;
           const usd = factor(values[`${key}InterestUsd`]);

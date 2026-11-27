@@ -10,7 +10,7 @@ import {
   type Hex,
 } from "viem";
 
-import SyntheticsReader from "../../../sdk/src/abis/SyntheticsReader";
+import { getAbi } from "../../../sdk/src/abis/getAbi";
 import { getContract } from "../../../sdk/src/configs/contracts";
 import { getTokenBySymbol } from "../../../sdk/src/configs/tokens";
 import { mockWalletBalances } from "./walletBalances";
@@ -80,7 +80,7 @@ const balanceOf = (owner = account) => ({
 
 function inventoryCall(functionName: "getAccountPositions" | "getAccountOrders", address = account) {
   return encodeFunctionData({
-    abi: SyntheticsReader,
+    abi: getAbi(chainId, "SyntheticsReader"),
     functionName,
     args: [getContract(chainId, "DataStore"), address, 0n, 100n],
   });
@@ -298,6 +298,10 @@ test("a source chain with its own balances reads only them; other chains keep th
   );
   for (const [url, expected] of [
     ["https://mainnet.base.org", 8453n],
+    ["https://rpc.gmx.io/8453/largeAccount", 8453n],
+    ["https://rpc.gmx.io/56/dev", 0n],
+    ["https://rpc.gmx.io/1/fallback", 1n],
+    ["https://rpc.gmx.io/42161/fallback", 123n],
     ["https://base-mainnet.g.alchemy.com/v2/key", 8453n],
     ["https://bsc-dataseed.bnbchain.org", 0n],
     ["https://1rpc.io/bnb", 0n],

@@ -24,7 +24,6 @@ export type FundedCase = (typeof fundedCases)[number];
 
 // A case that cannot run now is skipped by groups and refused by name with its reason.
 export const blockedFundedCases: Partial<Record<FundedCase["id"], string>> = {
-  "one-click": "bounded activation needs One-Click limits set before activation (PRO-4504, #3121)",
   staking:
     "RewardRouterV3 unstakes only through a 180-day request, so the stake cannot be returned in the run (PRO-4528)",
 };

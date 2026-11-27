@@ -1,11 +1,11 @@
-import { expect, type Page } from "@playwright/test";
+import { expect, type Page, type Response } from "@playwright/test";
 import { getAddress } from "viem";
 import { MARKETS } from "../../../sdk/src/configs/markets";
 import { getToken } from "../../../sdk/src/configs/tokens";
 import { formatAmount, formatDeltaUsd, formatUsd } from "../../../sdk/src/utils/numbers/utils";
 import { test } from "../fixtures/liveWallet";
 import type { LiveAccount } from "../fixtures/liveAccounts";
-import { inputNumber } from "../fixtures/trade";
+import { infoRow, inputNumber } from "../fixtures/trade";
 import { configureClassicTrading } from "../fixtures/tradingForms";
 import { displayedNumber } from "../fixtures/displayedNumber";
 
@@ -50,6 +50,51 @@ function recordPositions(page: Page, account: string) {
 
 const text = (value: string | null | undefined) => (value ?? "").replace(/\s+/g, " ").trim();
 
+function netValueTooltipValue(page: Page, label: string) {
+  const tooltip = page.locator(".Tooltip-popup").filter({ hasText: "Margin before borrow/funding" }).last();
+  return infoRow(tooltip, label).locator("xpath=./*[last()]");
+}
+
+type OracleTracker = { checks: number; primary?: string; updatedAt?: number };
+
+// The app reports oracle keeper endpoint checks and switches as window events.
+function recordOracleTracker(page: Page) {
+  return page.addInitScript(() => {
+    const state: OracleTracker = { checks: 0 };
+    (window as unknown as { __oracleTracker: OracleTracker }).__oracleTracker = state;
+    const isOracle = (event: Event) =>
+      String((event as CustomEvent<{ trackerKey?: string }>).detail?.trackerKey).startsWith("OracleFallbackTracker");
+    window.addEventListener("FALLBACK_TRACKER_TRACK_FINISHED", (event) => {
+      if (isOracle(event)) state.checks++;
+    });
+    window.addEventListener("FALLBACK_TRACKER_ENDPOINTS_UPDATED", (event) => {
+      if (!isOracle(event)) return;
+      state.primary = (event as CustomEvent<{ primary: string }>).detail.primary;
+      state.updatedAt = Date.now();
+    });
+  });
+}
+
+// App bug: an oracle endpoint switch re-keys the price data, so positions drop out for a moment and an open close
+// form resets to 100% and the default receive token. The first check runs about 5 s after load and the next one
+// 10 s later, so wait for the first check and, when it switched, for prices from the new endpoint.
+async function waitForOracleEndpoint(page: Page) {
+  const tickers: { url: string; startedAt: number }[] = [];
+  const onResponse = (response: Response) => {
+    if (new URL(response.url()).pathname === "/prices/tickers")
+      tickers.push({ url: response.url(), startedAt: response.request().timing().startTime });
+  };
+  page.on("response", onResponse);
+  const tracker = () => page.evaluate(() => (window as unknown as { __oracleTracker: OracleTracker }).__oracleTracker);
+  await expect.poll(async () => (await tracker()).checks, { timeout: 30_000 }).toBeGreaterThan(0);
+  const { primary, updatedAt } = await tracker();
+  if (primary)
+    await expect
+      .poll(() => tickers.some((t) => t.url.startsWith(`${primary}/`) && t.startedAt > updatedAt!))
+      .toBe(true);
+  page.off("response", onResponse);
+}
+
 test("8.05 live position: displayed unrealized PnL agrees with size times the signed price change", async ({
   page,
   liveAccount,
@@ -59,7 +104,7 @@ test("8.05 live position: displayed unrealized PnL agrees with size times the si
   await liveWallet.connect(page);
   const handle = positionRow(page, liveAccount).getByRole("cell").nth(2).locator(".numbers").first();
   await handle.hover({ timeout: 45_000 });
-  const value = page.getByText("PnL:", { exact: true }).locator("..").locator(".Tooltip-row-value");
+  const value = netValueTooltipValue(page, "PnL");
   await expect(value).toBeVisible();
   let evidence: unknown;
   // The page repolls with a new mark price, so compare with the latest response seen at each check.
@@ -182,8 +227,10 @@ test.describe("Keep leverage", () => {
     liveAccount,
     liveWallet,
   }) => {
+    await recordOracleTracker(page);
     await liveWallet.connect(page);
     await configureClassicTrading(page);
+    await waitForOracleEndpoint(page);
     const row = positionRow(page, liveAccount);
     await row.getByTestId("position-close-button").click({ timeout: 45_000 });
     const modal = page.getByTestId("position-close-modal");
@@ -332,8 +379,8 @@ test("22.16 live position: pending borrow and funding fees in the net value tool
   // The net value cell stays clear of the sticky actions column that can cover the margin cell.
   const handle = positionRow(page, liveAccount).getByRole("cell").nth(2).locator(".numbers").first();
   await handle.hover({ timeout: 45_000 });
-  const value = (label: string) => page.getByText(label, { exact: true }).locator("..").locator(".Tooltip-row-value");
-  await expect(value("Borrow fee:")).toBeVisible();
+  const value = (label: string) => netValueTooltipValue(page, label);
+  await expect(value("Borrow fee")).toBeVisible();
   const observed: unknown[] = [];
   // The second round needs a response received after the first match.
   for (let round = 0; round < 2; round++) {
@@ -341,10 +388,10 @@ test("22.16 live position: pending borrow and funding fees in the net value tool
     await expect
       .poll(
         async () => {
-          if (!(await value("Borrow fee:").isVisible())) await handle.hover();
+          if (!(await value("Borrow fee").isVisible())) await handle.hover();
           const shown = {
-            borrow: text(await value("Borrow fee:").textContent()),
-            funding: text(await value("Negative funding fee:").textContent()),
+            borrow: text(await value("Borrow fee").textContent()),
+            funding: text(await value("Negative funding fee").textContent()),
           };
           for (let i = snapshots.length - 1; i >= from; i--) {
             const p = snapshots[i].find((item) => item.contractKey === liveAccount.key);

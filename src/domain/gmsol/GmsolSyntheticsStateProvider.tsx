@@ -1,4 +1,4 @@
-import { ReactNode, useMemo, useRef, useState } from "react";
+import { ReactNode, useCallback, useMemo, useRef, useState } from "react";
 
 import { ARBITRUM, SOLANA_NETWORK_ID } from "config/chains";
 import { getKeepLeverageKey } from "config/localStorage";
@@ -35,6 +35,7 @@ import { composeGmsolOrdersInfo } from "./orders/composeGmsolOrdersInfo";
 import { resolveGmsolAccountSnapshot } from "./resolveGmsolAccountSnapshot";
 import { fetchGmsol24hPriceDeltas } from "./tokens/fetchGmsol24hPriceDeltas";
 import { useGmsolTokensData } from "./tokens/useGmsolTokensData";
+import { createGmsolChartTradesFetcher } from "./tradingview/createGmsolChartTradesFetcher";
 import { useGmsolFeeDiscount, useGmsolOrders, useGmsolPositions } from "./useGmsolAccountData";
 import { useGmsolRawMarketsInfo } from "./useGmsolRawMarketsInfo";
 
@@ -109,6 +110,7 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
     (): ChartDataProvider | undefined =>
       sdk && {
         candlesFetcher: createGmsolCandlesFetcher(oracleFetcher),
+        tradesFetcher: createGmsolChartTradesFetcher(),
         getChartSymbol: getGmsolOracleSymbol,
         fetch24hPriceDeltas: () => fetchGmsol24hPriceDeltas(oracleFetcher),
         fetch24hVolumes: () => fetchGmsol24hVolumes(sdk),
@@ -153,6 +155,14 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
   const positionsRequest = useGmsolPositions(owner);
   const ordersRequest = useGmsolOrders(owner);
   const feeDiscountRequest = useGmsolFeeDiscount(owner);
+
+  const refetchPositionsRequest = positionsRequest.refetch;
+  const refetchRawMarkets = rawMarkets.refetch;
+  const refetchPrices = tokensDataResult.refetch;
+  const refetchPositions = useCallback(
+    () => Promise.all([refetchPositionsRequest(), refetchRawMarkets(), refetchPrices()]),
+    [refetchPositionsRequest, refetchRawMarkets, refetchPrices]
+  );
 
   const marketsInfoData = marketsInfo.marketsInfoData;
   const isMarketsLoading = marketsInfo.isLoading;
@@ -199,6 +209,7 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
       return {
         positionsInfoData: composedPositions.data,
         isLoading: false,
+        refetch: refetchPositions,
         dataSource: "api",
         error:
           positionsRequest.error ??
@@ -212,6 +223,7 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
       return {
         positionsInfoData: cachedPositions,
         isLoading: false,
+        refetch: refetchPositions,
         dataSource: "api",
         error: positionsRequest.error ?? new GmsolMarketsUnavailableError(marketsUnavailableError),
       };
@@ -220,12 +232,20 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
     if (positionsRequest.error || isMarketsUnavailable) {
       return {
         isLoading: false,
+        refetch: refetchPositions,
         error: positionsRequest.error ?? new GmsolMarketsUnavailableError(marketsUnavailableError),
       };
     }
 
-    return { isLoading: true };
-  }, [owner, composedPositions, positionsRequest.error, isMarketsUnavailable, marketsUnavailableError]);
+    return { isLoading: true, refetch: refetchPositions };
+  }, [
+    owner,
+    composedPositions,
+    positionsRequest.error,
+    refetchPositions,
+    isMarketsUnavailable,
+    marketsUnavailableError,
+  ]);
 
   const ordersInfo = useMemo((): AggregatedOrdersDataResult => {
     if (!owner) {
@@ -356,6 +376,7 @@ export default function GmsolSyntheticsStateProvider({ children }: { children: R
         oracleSettings: undefined,
 
         jitLiquidityData: { jitLiquidityMap: undefined },
+        closedMarkets: undefined,
 
         accountWhitelistsResult: { accountWhitelists: undefined },
         usdgBoostAprResult: { usdgBoostAprResponse: undefined },

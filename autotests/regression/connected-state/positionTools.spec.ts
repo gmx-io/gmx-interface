@@ -1,6 +1,7 @@
 import { expect, type Page } from "@playwright/test";
 
 import { test } from "../fixtures/accountState";
+import { displayedNumber } from "../fixtures/displayedNumber";
 import { fundedPositionRow } from "../fixtures/tradingForms";
 import { displayedNumbers, infoRow, inputNumber, setSettingsToggle } from "../fixtures/trade";
 
@@ -147,15 +148,25 @@ test("8.01 8.08 partial: position row re-renders API-updated size, mark and liqu
   const row = fundedPositionRow(page, true);
   await expect(row.getByRole("cell").nth(1)).toContainText(/\$\s*1,000\.00/);
   await expect(row.getByRole("cell").nth(5)).toContainText(/2,500\.00/);
-  await expect(row.getByRole("cell").nth(6)).toContainText(/1,900\.00/);
-  Object.assign(accountState.positions[0], {
-    sizeInUsd: 500n * USD,
-    markPrice: 2300n * USD,
-    liquidationPrice: 1950n * USD,
-  });
+  // On 2.2.1 the app recomputes the liquidation price from the position instead of showing the API's: it lies
+  // between entry and where the $250 margin is gone ($625 away on 0.4 ETH).
+  const liquidation = () => row.getByRole("cell").nth(6).innerText().then(displayedNumber);
+  await expect.poll(liquidation).toBeGreaterThan(1875);
+  await expect.poll(liquidation).toBeLessThan(2500);
+  const initialLiquidation = await liquidation();
+  Object.assign(accountState.positions[0], { sizeInUsd: 500n * USD, markPrice: 2300n * USD });
   await expect(row.getByRole("cell").nth(1)).toContainText(/\$\s*500\.00/);
   await expect(row.getByRole("cell").nth(5)).toContainText(/2,300\.00/);
-  await expect(row.getByRole("cell").nth(6)).toContainText(/1,950\.00/);
+  // A missing price ("NA") reads as NaN, which would pass a bare not.toBeCloseTo.
+  await expect
+    .poll(
+      async () => {
+        const value = await liquidation();
+        return Number.isFinite(value) && Math.abs(value - initialLiquidation) >= 0.5;
+      },
+      { message: "liquidation price changes to another finite value" }
+    )
+    .toBe(true);
   accountState.positions = [];
   await expect(row).toHaveCount(0);
   await expect(page.getByText("No open positions", { exact: true })).toBeVisible();

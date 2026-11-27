@@ -333,6 +333,21 @@ export function getProportionalPendingImpactValues({
   return { proportionalPendingImpactDeltaAmount, proportionalPendingImpactDeltaUsd };
 }
 
+export function getPriceImpactDeltaAmount(indexToken: TokenData, priceImpactDeltaUsd: bigint) {
+  if (priceImpactDeltaUsd > 0n) {
+    return convertToTokenAmount(priceImpactDeltaUsd, indexToken.decimals, indexToken.prices.maxPrice) ?? 0n;
+  }
+
+  if (indexToken.prices.minPrice <= 0n) {
+    return 0n;
+  }
+
+  return roundUpMagnitudeDivision(
+    priceImpactDeltaUsd * expandDecimals(1, indexToken.decimals),
+    indexToken.prices.minPrice
+  );
+}
+
 export function getPriceImpactForSwap(
   marketInfo: MarketInfo,
   tokenA: TokenData,
@@ -379,7 +394,7 @@ export function getPriceImpactForSwap(
     tradeMath: marketInfo.tradeMath,
   });
 
-  if (priceImpactDeltaUsd > 0) {
+  if (priceImpactDeltaUsd >= 0) {
     return {
       priceImpactDeltaUsd,
       balanceWasImproved,
@@ -406,25 +421,64 @@ export function getPriceImpactForSwap(
     tradeMath: marketInfo.tradeMath,
   });
 
-  const { priceImpactDeltaUsd: priceImpactUsdForVirtualInventory } = getPriceImpactUsd({
-    currentLongUsd: virtualInventoryParams.longPoolUsd,
-    currentShortUsd: virtualInventoryParams.shortPoolUsd,
-    nextLongUsd: virtualInventoryParams.nextLongPoolUsd,
-    nextShortUsd: virtualInventoryParams.nextShortPoolUsd,
-    factorPositive: marketInfo.swapImpactFactorPositive,
-    factorNegative: marketInfo.swapImpactFactorNegative,
-    exponentFactorPositive: marketInfo.swapImpactExponentFactor,
-    exponentFactorNegative: marketInfo.swapImpactExponentFactor,
-    fallbackToZero: opts.fallbackToZero,
-    tradeMath: marketInfo.tradeMath,
-  });
+  const { priceImpactDeltaUsd: priceImpactUsdForVirtualInventory, balanceWasImproved: virtualBalanceWasImproved } =
+    getPriceImpactUsd({
+      currentLongUsd: virtualInventoryParams.longPoolUsd,
+      currentShortUsd: virtualInventoryParams.shortPoolUsd,
+      nextLongUsd: virtualInventoryParams.nextLongPoolUsd,
+      nextShortUsd: virtualInventoryParams.nextShortPoolUsd,
+      factorPositive: marketInfo.swapImpactFactorPositive,
+      factorNegative: marketInfo.swapImpactFactorNegative,
+      exponentFactorPositive: marketInfo.swapImpactExponentFactor,
+      exponentFactorNegative: marketInfo.swapImpactExponentFactor,
+      fallbackToZero: opts.fallbackToZero,
+      tradeMath: marketInfo.tradeMath,
+    });
+
+  if (priceImpactUsdForVirtualInventory < priceImpactDeltaUsd!) {
+    return {
+      priceImpactDeltaUsd: priceImpactUsdForVirtualInventory,
+      balanceWasImproved: virtualBalanceWasImproved,
+    };
+  }
 
   return {
-    priceImpactDeltaUsd:
-      priceImpactUsdForVirtualInventory < priceImpactDeltaUsd!
-        ? priceImpactUsdForVirtualInventory
-        : priceImpactDeltaUsd!,
+    priceImpactDeltaUsd,
     balanceWasImproved,
+  };
+}
+
+/**
+ * A positive deposit impact is paid out of the swap impact pool into the market pool, which takes back part of the
+ * balance improvement, so the contract prices it again with that rebate included
+ * @see https://github.com/gmx-io/gmx-synthetics/blob/973adf75/contracts/pricing/SwapPricingUtils.sol#L122
+ */
+export function getPriceImpactForDeposit(
+  marketInfo: MarketInfo,
+  tokenA: TokenData,
+  tokenB: TokenData,
+  usdDeltaTokenA: bigint,
+  usdDeltaTokenB: bigint
+) {
+  const priceImpactValues = getPriceImpactForSwap(marketInfo, tokenA, tokenB, usdDeltaTokenA, usdDeltaTokenB);
+  const totalUsdDelta = usdDeltaTokenA + usdDeltaTokenB;
+
+  if (priceImpactValues.priceImpactDeltaUsd <= 0n || totalUsdDelta === 0n) {
+    return priceImpactValues;
+  }
+
+  // Each side's rebate is paid in the other token, so it is the other side's share of the impact
+  const { priceImpactDeltaUsd } = getPriceImpactForSwap(
+    marketInfo,
+    tokenA,
+    tokenB,
+    usdDeltaTokenA + bigMath.mulDiv(priceImpactValues.priceImpactDeltaUsd, usdDeltaTokenB, totalUsdDelta),
+    usdDeltaTokenB + bigMath.mulDiv(priceImpactValues.priceImpactDeltaUsd, usdDeltaTokenA, totalUsdDelta)
+  );
+
+  return {
+    priceImpactDeltaUsd: bigMath.max(priceImpactDeltaUsd, 0n),
+    balanceWasImproved: priceImpactValues.balanceWasImproved,
   };
 }
 

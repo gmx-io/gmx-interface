@@ -95,8 +95,12 @@ for (const type of ["GM", "GLV"] as const) {
           0.01 + quote.pay * 0.00001
         );
         // A swapping single-token sell leaves impact and swap fee out of Receive (PRO-4468 bug 29); the 12.15
-        // single-token withdrawal test expects that to fail.
-        if (!items.some((item) => item.label === "Swap fee")) {
+        // single-token withdrawal test expects that to fail. Its swap fee row is hidden when the fee is zero, but a
+        // withdrawal has price impact only from that swap.
+        const isSwappingSell = items.some(
+          (item) => item.label === "Swap fee" || (operation === "Sell" && item.label === "Price impact")
+        );
+        if (!isSwappingSell) {
           const sum = items.reduce((acc, item) => acc + item.usd, 0);
           expect(relativeDiff(quote.receive, quote.pay + sum)).toBeLessThan(0.001);
         }

@@ -3,8 +3,11 @@ import { formatDeltaUsd } from "../../../sdk/src/utils/numbers/utils";
 import { displayedNumber } from "../fixtures/displayedNumber";
 import { test } from "../fixtures/liveWallet";
 import { openTooltip } from "../fixtures/marketData";
+import { infoRow } from "../fixtures/trade";
 
 test.use({ liveProfile: "history" });
+
+const text = (value: string | null) => (value ?? "").replace(/\s+/g, " ").trim();
 
 for (const connected of [false, true]) {
   test(`10.03 10.05 live trade history: executed trade shows its indexed action label and explorer link ${connected ? "with a read-only wallet" : "on the public trader page"}`, async ({
@@ -74,31 +77,31 @@ test.describe("fees", () => {
     await page.getByRole("button", { name: "Trades", exact: true }).click();
     const { data } = (await (await responsePromise).json()) as { data: { tradeActions: Action[] } };
     const evidence: unknown[] = [];
-    const breakdown = new Set([
-      "Open fee:",
-      "Close fee:",
-      "Referral discount:",
-      "Borrow fee:",
-      "Funding fee:",
-      "Liquidation fee:",
-      "Net price impact:",
-      "Price impact:",
-      "Swap fee:",
-      "Swap price impact:",
-    ]);
+    const breakdown = [
+      "Open fee",
+      "Close fee",
+      "Referral discount",
+      "Borrow fee",
+      "Funding fee",
+      "Liquidation fee",
+      "Net price impact",
+      "Price impact",
+      "Swap fee",
+      "Swap price impact",
+    ];
     for (const id of [liveAccount.trades!.open, liveAccount.trades!.close]) {
       const action = data.tradeActions.find((a) => a.id === id);
       expect(action, `Indexed trade action ${id} is in the browser's first history page`).toBeDefined();
       const usd = (amount: string | null) => BigInt(amount ?? 0) * BigInt(action!.collateralTokenPriceMin);
       const expected: Record<string, string> = {
-        [[2, 3, 8].includes(action!.orderType) ? "Open fee:" : "Close fee:"]: formatDeltaUsd(
+        [[2, 3, 8].includes(action!.orderType) ? "Open fee" : "Close fee"]: formatDeltaUsd(
           -usd(action!.positionFeeAmount)
         )!,
       };
       if (usd(action!.traderDiscountAmount))
-        expected["Referral discount:"] = formatDeltaUsd(usd(action!.traderDiscountAmount))!;
-      if (usd(action!.borrowingFeeAmount)) expected["Borrow fee:"] = formatDeltaUsd(-usd(action!.borrowingFeeAmount))!;
-      if (usd(action!.fundingFeeAmount)) expected["Funding fee:"] = formatDeltaUsd(-usd(action!.fundingFeeAmount))!;
+        expected["Referral discount"] = formatDeltaUsd(usd(action!.traderDiscountAmount))!;
+      if (usd(action!.borrowingFeeAmount)) expected["Borrow fee"] = formatDeltaUsd(-usd(action!.borrowingFeeAmount))!;
+      if (usd(action!.fundingFeeAmount)) expected["Funding fee"] = formatDeltaUsd(-usd(action!.fundingFeeAmount))!;
 
       const row = page
         .locator("tr")
@@ -107,22 +110,16 @@ test.describe("fees", () => {
         .first();
       const fees = row.getByRole("cell").nth(5);
       await expect(fees).toContainText("$", { timeout: 45_000 });
-      const tooltip = page.locator(".TradeHistoryRow-tooltip").filter({ has: page.locator(".Tooltip-row") });
-      await openTooltip(page, fees.locator(".numbers").first());
-      await expect(tooltip).toBeVisible();
-      const lines = Object.fromEntries(
-        await tooltip
-          .locator(".Tooltip-row")
-          .evaluateAll((rows) =>
-            rows.map((r) => [
-              r.querySelector(".Tooltip-row-label")?.textContent?.trim() ?? "",
-              r.querySelector(".Tooltip-row-value")?.textContent?.replace(/\s+/g, " ").trim() ?? "",
-            ])
-          )
-      ) as Record<string, string>;
-      for (const [label, value] of Object.entries(expected))
-        expect(lines[label], label).toBe(value.replace(/\s+/g, " "));
-      const parts = Object.entries(lines).filter(([label]) => breakdown.has(label));
+      const tooltip = await openTooltip(page, fees.locator(".numbers").first(), /(Open|Close) fee/);
+      await expect(infoRow(tooltip, Object.keys(expected)[0])).toBeVisible();
+      // A full close appends its settlement rows to the same tooltip; only the breakdown rows add up to the fees cell.
+      const lines: Record<string, string> = {};
+      for (const label of breakdown) {
+        const line = infoRow(tooltip, label).first();
+        if (await line.count()) lines[label] = text(await line.locator("xpath=./*[last()]").textContent());
+      }
+      for (const [label, value] of Object.entries(expected)) expect(lines[label], label).toBe(text(value));
+      const parts = Object.entries(lines);
       const total = parts.reduce((sum, [, value]) => sum + displayedNumber(value), 0);
       expect(Math.abs(displayedNumber((await fees.textContent())!) - total)).toBeLessThanOrEqual(0.01 * parts.length);
       evidence.push({ action, lines, total: await fees.textContent() });

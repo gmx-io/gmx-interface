@@ -6,6 +6,7 @@ import { formatBigUsd, formatUsd } from "../../../sdk/src/utils/numbers/utils";
 import { test } from "../fixtures/liveWallet";
 import type { LiveAccount, LiveAccounts } from "../fixtures/liveAccounts";
 import { openTooltip } from "../fixtures/marketData";
+import { infoRow } from "../fixtures/trade";
 
 test.use({ liveProfile: "affiliate" });
 
@@ -145,13 +146,12 @@ test("15.11 15.13 live affiliate: top code volume, traders, rebates and discount
   await expect(cells.nth(2)).toHaveText(top.registeredReferralsCount);
   await expect(cells.nth(3)).toHaveText(formatBigUsd(rebate(top)));
 
-  const tooltipRow = (label: string) => page.getByText(label, { exact: true }).locator("..");
-  await openTooltip(page, cells.nth(1).locator(".numbers").first(), "V1 volume:");
-  await expect(tooltipRow("V1 volume:")).toContainText(formatBigUsd(BigInt(top.v1Data.volume)));
-  await expect(tooltipRow("V2 volume:")).toContainText(formatBigUsd(BigInt(top.v2Data.volume)));
-  await openTooltip(page, cells.nth(3).locator(".numbers").first(), "V1 rebates:");
-  await expect(tooltipRow("V1 rebates:")).toContainText(formatUsd(rebate(top.v1Data), { fallbackToZero: true })!);
-  await expect(tooltipRow("V2 rebates:")).toContainText(formatUsd(rebate(top.v2Data), { fallbackToZero: true })!);
+  const volumes = await openTooltip(page, cells.nth(1).locator(".numbers").first(), "V1 volume");
+  await expect(infoRow(volumes, "V1 volume")).toContainText(formatBigUsd(BigInt(top.v1Data.volume)));
+  await expect(infoRow(volumes, "V2 volume")).toContainText(formatBigUsd(BigInt(top.v2Data.volume)));
+  const rebates = await openTooltip(page, cells.nth(3).locator(".numbers").first(), "V1 rebates");
+  await expect(infoRow(rebates, "V1 rebates")).toContainText(formatUsd(rebate(top.v1Data), { fallbackToZero: true })!);
+  await expect(infoRow(rebates, "V2 rebates")).toContainText(formatUsd(rebate(top.v2Data), { fallbackToZero: true })!);
 
   // The discounts line appears only above $100.
   const tier = await readTier(liveAccounts, liveAccount.account);
@@ -159,7 +159,6 @@ test("15.11 15.13 live affiliate: top code volume, traders, rebates and discount
   const share = page
     .locator(".Modal-content")
     .filter({ has: page.getByText("Share your referral card", { exact: true }) });
-  test.fail(tier.discount === "0", "PRO-4494: a share that rounds to zero reads as 0.000% until #3108 lands");
   await expect(share).toContainText(`Save up to ${tier.discount}% on every`);
   const discounts = share.getByText(/^So far, my referrals have saved/);
   if (BigInt(top.discountUsd) >= 100n * 10n ** 30n)

@@ -1,6 +1,13 @@
 import { expect, type Page } from "@playwright/test";
 
+import { hideTopRightMessages } from "../fixtures/announcements";
 import { test } from "../fixtures/browser";
+
+// On a phone a top-right message spans the top of the screen and covers the market button.
+test.beforeEach(async ({ page }) => {
+  await hideTopRightMessages(page);
+});
+
 async function openSelector(page: Page) {
   await page.getByRole("button", { name: /\/USD/ }).first().click();
   await expect(page.getByPlaceholder("Search market", { exact: true })).toBeInViewport();

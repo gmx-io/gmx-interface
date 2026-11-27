@@ -4,7 +4,11 @@ import uniqueId from "lodash/uniqueId";
 import { USD_DECIMALS } from "config/factors";
 import { DecreasePositionSwapType, PositionOrderInfo } from "domain/synthetics/orders";
 import type { PositionInfo } from "domain/synthetics/positions";
-import { getTpSlLiqPriceWarning, isFullPositionCloseSizeDeltaUsd } from "domain/tpsl/utils";
+import {
+  FULL_POSITION_CLOSE_SIZE_DELTA_USD,
+  getTpSlLiqPriceWarning,
+  isFullPositionCloseSizeDeltaUsd,
+} from "domain/tpsl/utils";
 import { calculateDisplayDecimals, formatAmount, parseValue, removeTrailingZeros } from "lib/numbers";
 import { getCanSplitReceive } from "sdk/utils/trade/decreaseOutputs";
 
@@ -118,7 +122,7 @@ export function prepareInitialEntries({
       return 0;
     })
     .map((order) => {
-      const isFullClose = isFullPositionCloseSizeDeltaUsd(order.sizeDeltaUsd, positionSizeUsd);
+      const isFullClose = order.sizeDeltaUsd === FULL_POSITION_CLOSE_SIZE_DELTA_USD;
       const sizeDeltaUsd = isFullClose && positionSizeUsd !== undefined ? positionSizeUsd : order.sizeDeltaUsd;
       const entry: InitialEntry = {
         sizeUsd: getDefaultEntryField(USD_DECIMALS, { value: sizeDeltaUsd }),

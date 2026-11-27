@@ -354,26 +354,7 @@ export class LiveAccounts {
       const order = orders.find((o) => o.key === row.key && o.orderType === 3 && !o.isFrozen);
       return order ? { order } : undefined;
     }
-    if (profile === "tpsl") {
-      // Active traders replace TP/SL orders often, so any current one beside its open position qualifies.
-      const orders = (await fetchApiOrders(this, { address: row.account })).filter(
-        (o) =>
-          [5, 6].includes(o.orderType) && !o.isFrozen && !(o.uiFeeReceiver && decodeTwapUiFeeReceiver(o.uiFeeReceiver))
-      );
-      if (!orders.length) return;
-      const positions = await fetchApiPositionsInfo(this, { address: row.account });
-      for (const order of orders) {
-        const position = positions.find(
-          (p) =>
-            getAddress(p.marketAddress) === getAddress(order.marketAddress) &&
-            getAddress(p.collateralTokenAddress) === getAddress(order.initialCollateralTokenAddress) &&
-            p.isLong === order.isLong &&
-            p.sizeInUsd > 0n
-        );
-        if (position) return { key: order.key, order, position };
-      }
-      return;
-    }
+    if (profile === "tpsl") return this.currentTpsl(row.account);
     if (profile === "transfers") return this.verifyTransfers(row);
     if (profile === "fees") return this.verifyFees(row);
     if (profile === "affiliate") {
@@ -543,6 +524,27 @@ export class LiveAccounts {
     const open = executed([2, 3, 8]);
     const close = executed([4, 5, 6]);
     return open && close ? { trades: { open: open.id, close: close.id } } : undefined;
+  }
+
+  // Active traders replace TP/SL orders often, so any current one beside its open position qualifies.
+  async currentTpsl(account: Address, preferredKey?: string) {
+    const orders = (await fetchApiOrders(this, { address: account })).filter(
+      (o) =>
+        [5, 6].includes(o.orderType) && !o.isFrozen && !(o.uiFeeReceiver && decodeTwapUiFeeReceiver(o.uiFeeReceiver))
+    );
+    if (!orders.length) return;
+    const positions = await fetchApiPositionsInfo(this, { address: account });
+    const current = orders.flatMap((order) => {
+      const position = positions.find(
+        (p) =>
+          getAddress(p.marketAddress) === getAddress(order.marketAddress) &&
+          getAddress(p.collateralTokenAddress) === getAddress(order.initialCollateralTokenAddress) &&
+          p.isLong === order.isLong &&
+          p.sizeInUsd > 0n
+      );
+      return position ? [{ key: order.key, order, position }] : [];
+    });
+    return current.find((c) => c.key === preferredKey) ?? current[0];
   }
 
   positions(address: string) {
