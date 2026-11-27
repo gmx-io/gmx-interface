@@ -8,6 +8,7 @@ import {
   PublicClient,
 } from "viem";
 
+import { buildMarketTokensDataRequest, parseMarketTokenData } from "domain/synthetics/markets/marketTokensDataRequest";
 import { abis } from "sdk/abis";
 import { getAbi } from "sdk/abis/getAbi";
 import { GmxSdk } from "sdk/clients/v1";
@@ -18,7 +19,9 @@ import { ARBITRUM, getViemChain } from "sdk/configs/chains";
 import { getContract } from "sdk/configs/contracts";
 import { hashData } from "sdk/utils/hash";
 import type { MarketInfo, MarketsInfoData } from "sdk/utils/markets/types";
-import type { TokensData } from "sdk/utils/tokens/types";
+import { getContractMarketPrices } from "sdk/utils/markets/utils";
+import { expandDecimals } from "sdk/utils/numbers";
+import type { TokenData, TokensData } from "sdk/utils/tokens/types";
 
 // eslint-disable-next-line no-restricted-globals -- test-only helper, never bundled into the client
 const { PARITY_RPC_URL = "", PARITY_BLOCK } = process.env;
@@ -187,6 +190,80 @@ export function readDataStoreUint(ctx: ParityContext, key: string) {
 export function readReader<T>(ctx: ParityContext, functionName: string, args: readonly unknown[]): Promise<T> {
   return ctx.client.readContract({ address: readerAddress, abi: readerAbi, functionName, args } as never) as Promise<T>;
 }
+
+async function readMarketTokensData(ctx: ParityContext, isDeposit: boolean) {
+  const marketsAddresses = Object.keys(ctx.marketsInfoData);
+  const request = buildMarketTokensDataRequest(chainId, {
+    marketsAddresses,
+    marketsData: ctx.marketsInfoData,
+    tokensData: ctx.tokensData,
+    isDeposit,
+    account: undefined,
+  });
+  const res = await ctx.sdk.executeMulticall(request);
+  const entries = marketsAddresses.map((marketAddress): [string, TokenData | undefined] => [
+    marketAddress,
+    parseMarketTokenData(res, { chainId, srcChainId: undefined, account: undefined, marketAddress }),
+  ]);
+
+  return Object.fromEntries(entries);
+}
+
+const marketTokensRequests = new Map<string, ReturnType<typeof readMarketTokensData>>();
+
+/** The GM token as useMarketTokensData({ isDeposit }) loads it, undefined where the app drops the market */
+export async function loadMarketToken(ctx: ParityContext, market: MarketInfo, isDeposit: boolean) {
+  const requestKey = `${ctx.state} ${isDeposit}`;
+
+  if (!marketTokensRequests.has(requestKey)) {
+    marketTokensRequests.set(requestKey, readMarketTokensData(ctx, isDeposit));
+  }
+
+  const marketTokens = await marketTokensRequests.get(requestKey)!;
+
+  return marketTokens[market.marketTokenAddress];
+}
+
+export async function readExecutionPrice(
+  ctx: ParityContext,
+  market: MarketInfo,
+  p: {
+    positionSizeInUsd: bigint;
+    positionSizeInTokens: bigint;
+    sizeDeltaUsd: bigint;
+    pendingImpactAmount: bigint;
+    isLong: boolean;
+  }
+) {
+  const prices = getContractMarketPrices(ctx.tokensData, market)!;
+  const result = await readReader<{
+    priceImpactUsd: bigint;
+    executionPrice: bigint;
+    balanceWasImproved: boolean;
+    totalImpactUsd: bigint;
+    priceImpactDiffUsd: bigint;
+  }>(ctx, "getExecutionPrice", [
+    dataStoreAddress,
+    market.marketTokenAddress,
+    prices,
+    p.positionSizeInUsd,
+    p.positionSizeInTokens,
+    p.sizeDeltaUsd,
+    p.pendingImpactAmount,
+    p.isLong,
+  ]);
+  const pricePerTokenUnit = expandDecimals(1, market.indexToken.decimals);
+
+  // the Reader gives the price per index token unit, the app per whole token
+  return { ...result, executionPrice: result.executionPrice * pricePerTokenUnit };
+}
+
+/**
+ * The contract caps a negative total impact and moves the rest to priceImpactDiffUsd, the app keeps the whole impact
+ * in the total and shows the diff apart: the amount the trader gets is the same
+ */
+export const getUncappedTotalImpactUsd = (result: { totalImpactUsd: bigint; priceImpactDiffUsd: bigint }) =>
+  result.totalImpactUsd - result.priceImpactDiffUsd;
 
 // Only a decoded revert: viem also wraps node errors without revert data (-32603) as ContractFunctionRevertedError
 export function getRevertName(error: unknown): string | undefined {
