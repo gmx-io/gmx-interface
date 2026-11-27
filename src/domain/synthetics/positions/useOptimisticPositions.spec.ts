@@ -1,3 +1,4 @@
+// @vitest-shared-worker
 import { describe, expect, it } from "vitest";
 
 import { PositionIncreaseEvent, PendingPositionUpdate } from "context/SyntheticsEvents";
@@ -80,6 +81,23 @@ describe("applyOptimisticUpdates", () => {
     expect(positions[positionKey]?.sizeInUsd).toBe(100n);
     expect(positions[positionKey]?.increasedAtTime).toBe(1_700_000_000n);
     expect(positions[positionKey]?.pendingUpdate).toBeUndefined();
+  });
+
+  it.each([
+    ["no events were received", []],
+    ["only the increase event was received", [makeIncreaseEvent()]],
+  ])("does not bring back a closed position when %s PRO-4576", (_, positionIncreaseEvents) => {
+    const pendingUpdate = makePendingUpdate({ updatedAt: Date.now() - 61_000 });
+    const positions = applyOptimisticUpdates({
+      positionsData: {},
+      allPositionsKeys: [positionKey],
+      positionIncreaseEvents,
+      positionDecreaseEvents: [],
+      pendingPositionsUpdates: { [positionKey]: pendingUpdate },
+      createMockPosition: getPendingMockPosition,
+    });
+
+    expect(positions[positionKey]).toBeUndefined();
   });
 
   it("keeps the pending state when block coverage is unknown", () => {

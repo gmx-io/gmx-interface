@@ -1,4 +1,5 @@
-import { Trans, t } from "@lingui/macro";
+import { Trans, msg, t } from "@lingui/macro";
+import { useLingui } from "@lingui/react";
 import { ReactNode, useCallback, useMemo, useState } from "react";
 
 import { getContract } from "config/contracts";
@@ -9,12 +10,14 @@ import {
   usePositionsConstants,
   useTokensData,
   useUserReferralInfo,
+  useFeeDiscountFactor,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
   usePositionEditorPosition,
   usePositionEditorPositionState,
 } from "context/SyntheticsStateContext/hooks/positionEditorHooks";
 import { useSavedAllowedSlippage } from "context/SyntheticsStateContext/hooks/settingsHooks";
+import { selectIsExpressTransactionAvailable } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectBlockTimestampData,
   selectMarketsInfoData,
@@ -25,11 +28,13 @@ import {
   selectPositionEditorCollateralInputAmountAndUsd,
   selectPositionEditorDepositMode,
   selectPositionEditorDepositSwapAmounts,
+  selectPositionEditorIsBlockedByClosedMarket,
   selectPositionEditorIsCollateralTokenFromGmxAccount,
   selectPositionEditorIsDepositSwapPathMissing,
   selectPositionEditorIsDepositSwapUnfillable,
   selectPositionEditorMaxWithdrawAmount,
   selectPositionEditorRawMaxWithdrawAmount,
+  selectPositionEditorReplacingOrder,
   selectPositionEditorReplacingOrderKey,
   selectPositionEditorSelectedCollateralAddress,
   selectPositionEditorSelectedCollateralToken,
@@ -37,11 +42,13 @@ import {
   selectPositionEditorTriggerPrice,
 } from "context/SyntheticsStateContext/selectors/positionEditorSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import { ExpressTxnParams } from "domain/synthetics/express/types";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import {
-  getCanUseTokenPermits,
   getExpressParamsForSubmit,
+  getExpressTokenPermitBlockReason,
+  getGasPaymentTokenToApprove,
   reportMultichainExpressSubmitError,
 } from "domain/synthetics/express/validateMultichainExpressSubmit";
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
@@ -96,8 +103,8 @@ import {
 import { applySlippageToMinOut } from "sdk/utils/trade/trade";
 
 import { EmbeddedActionButton } from "components/Button/EmbeddedActionButton";
-import ExternalLink from "components/ExternalLink/ExternalLink";
 import { MarginDepositInsufficientMessage } from "components/MarginRemediation/MarginRemediationActions";
+import { TooltipAction, TooltipContent, TooltipReadMore, TooltipText } from "components/Tooltip/TooltipBlocks";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
@@ -131,11 +138,12 @@ export function usePositionEditorButtonState(
   const { provider } = useJsonRpcProvider(chainId);
   const { openConnectModal } = useConnectModal();
   const routerAddress = getContract(chainId, "SyntheticsRouter");
-  const { minCollateralUsd } = usePositionsConstants();
   const userReferralInfo = useUserReferralInfo();
+  const feeDiscountFactor = useFeeDiscountFactor();
   const hasOutdatedUi = useHasOutdatedUi();
   const multipleWalletExtensionsChainError = useMultipleWalletExtensionsChainError();
   const position = usePositionEditorPosition();
+  const { minCollateralUsd } = usePositionsConstants(position?.marketAddress);
   const localizedOperationLabels = useLocalizedMap(OPERATION_LABELS);
   const blockTimestampData = useSelector(selectBlockTimestampData);
   const selectedCollateralAddress = useSelector(selectPositionEditorSelectedCollateralAddress);
@@ -144,10 +152,13 @@ export function usePositionEditorButtonState(
   const setCollateralInputValue = useSelector(selectPositionEditorSetCollateralInputValue);
   const { collateralDeltaAmount, collateralDeltaUsd } = useSelector(selectPositionEditorCollateralInputAmountAndUsd);
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
+  const { isClassicEnabled: isClassicTokenPermitsEnabled, classicTokenPermits } = useTokenPermitsContext();
+  const isExpressTransactionAvailable = useSelector(selectIsExpressTransactionAvailable);
   const marketsInfoData = useSelector(selectMarketsInfoData);
   const depositMode = useSelector(selectPositionEditorDepositMode);
   const triggerPrice = useSelector(selectPositionEditorTriggerPrice);
   const replacingOrderKey = useSelector(selectPositionEditorReplacingOrderKey);
+  const replacingOrder = useSelector(selectPositionEditorReplacingOrder);
   const positionOrders = useSelector(makeSelectOrdersByPositionKey(editingPositionKey));
   const maxAutoCancelOrders = useSelector(selectMaxAutoCancelOrders);
   const depositSwapAmounts = useSelector(selectPositionEditorDepositSwapAmounts);
@@ -156,6 +167,7 @@ export function usePositionEditorButtonState(
 
   const isDeposit = operation === Operation.Deposit;
   const isAtPriceDeposit = isDeposit && depositMode === "atPrice";
+  const isBlockedByClosedMarket = useSelector(selectPositionEditorIsBlockedByClosedMarket);
 
   const { executionFee } = usePositionEditorFees({
     operation,
@@ -208,6 +220,7 @@ export function usePositionEditorButtonState(
         indexTokenAddress: position.indexToken.address,
         allowedSlippage,
         replacingOrderKey,
+        replacingOrder,
       });
     }
 
@@ -309,6 +322,7 @@ export function usePositionEditorButtonState(
     marketsInfoData,
     position,
     receiveUsd,
+    replacingOrder,
     replacingOrderKey,
     selectedCollateralAddress,
     selectedCollateralToken,
@@ -340,26 +354,28 @@ export function usePositionEditorButtonState(
       list.push({ tokenAddress: selectedCollateralAddress, amount: collateralDeltaAmount });
     }
 
-    if (expressParams?.gasPaymentParams) {
-      list.push({
-        tokenAddress: expressParams.gasPaymentParams.gasPaymentTokenAddress,
-        amount: expressParams.gasPaymentParams.gasPaymentTokenAmount,
-      });
+    const gasPaymentTokenToApprove = getGasPaymentTokenToApprove(expressParams);
+    if (gasPaymentTokenToApprove) {
+      list.push(gasPaymentTokenToApprove);
     }
 
     return list;
-  }, [isDeposit, selectedCollateralAddress, collateralDeltaAmount, expressParams?.gasPaymentParams]);
+  }, [isDeposit, selectedCollateralAddress, collateralDeltaAmount, expressParams]);
+
+  const permitBlockReason = getExpressTokenPermitBlockReason(expressParams);
 
   const {
     tokensToApprove,
     isAllowanceLoaded: isAllowanceLoadedRaw,
     isApproving,
     handleApprove,
+    approvalBatch,
   } = useTokenApproval({
     chainId,
     spenderAddress: routerAddress,
     tokens: approvalTokens,
-    allowPermit: getCanUseTokenPermits(expressParams),
+    allowPermit: permitBlockReason === undefined || isClassicTokenPermitsEnabled,
+    allowBatch: !isExpressTransactionAvailable,
     skip: isCollateralTokenFromGmxAccount,
     metric: {
       flow: "editCollateral",
@@ -367,11 +383,13 @@ export function usePositionEditorButtonState(
       isExpress1CT: Boolean(expressParams?.subaccount),
       gasPaymentTokenAddress: expressParams?.gasPaymentParams?.gasPaymentTokenAddress,
       payTokenAddress: isDeposit ? selectedCollateralAddress : undefined,
+      permitBlockReason,
     },
   });
 
   const isAllowanceLoaded =
     Boolean(selectedCollateralAddress && collateralDeltaAmount !== undefined) && isAllowanceLoadedRaw;
+  const isApprovalStepRequired = isAllowanceLoaded && tokensToApprove.length > 0 && approvalBatch === undefined;
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -399,12 +417,13 @@ export function usePositionEditorButtonState(
       position,
       minCollateralUsd,
       userReferralInfo,
+      feeDiscountFactor,
     });
 
     const requiredDepositUsd = minRequiredCollateralUsd - position.collateralUsd;
 
     return requiredDepositUsd > 0 ? requiredDepositUsd : undefined;
-  }, [isDeposit, minCollateralUsd, position, userReferralInfo]);
+  }, [isDeposit, minCollateralUsd, position, userReferralInfo, feeDiscountFactor]);
 
   const setMinDepositValue = useCallback(() => {
     if (minDepositUsd === undefined || !selectedCollateralToken) return;
@@ -503,31 +522,32 @@ export function usePositionEditorButtonState(
     isDepositSwapPathMissing,
   ]);
 
+  const { _ } = useLingui();
   const errorTooltipContent = useMemo(() => {
     if (validationResult.buttonTooltipMessage) {
       return validationResult.buttonTooltipMessage;
     }
 
     if (validationResult.buttonTooltipName === ValidationButtonTooltipName.liqPriceGtMarkPrice) {
-      return <Trans>Position would be liquidated immediately. Reduce the withdrawal amount.</Trans>;
+      return _(msg`Position would be liquidated immediately. Reduce the withdrawal amount.`);
     }
 
     if (validationResult.buttonTooltipName === ValidationButtonTooltipName.maxLeverage) {
       return (
-        <Trans>
-          Reduce withdrawal to match the max.{" "}
-          <ExternalLink href="https://docs.gmx.io/docs/trading/order-types/#max-leverage">Read more</ExternalLink>.
-          <br />
-          <br />
-          <EmbeddedActionButton onClick={setMaxWithdrawal}>
+        <TooltipContent>
+          <TooltipText>
+            <Trans>Reduce withdrawal to match the max.</Trans>
+          </TooltipText>
+          <TooltipAction onClick={setMaxWithdrawal}>
             <Trans>Set max withdrawal</Trans>
-          </EmbeddedActionButton>
-        </Trans>
+          </TooltipAction>
+          <TooltipReadMore href="https://docs.gmx.io/docs/trading/order-types/#max-leverage" />
+        </TooltipContent>
       );
     }
 
     return null;
-  }, [setMaxWithdrawal, validationResult.buttonTooltipMessage, validationResult.buttonTooltipName]);
+  }, [_, setMaxWithdrawal, validationResult.buttonTooltipMessage, validationResult.buttonTooltipName]);
 
   const errorBannerContent = useMemo(() => {
     if (validationResult.buttonTooltipName === ValidationButtonTooltipName.marginDepositAutoCancelLimit) {
@@ -564,7 +584,7 @@ export function usePositionEditorButtonState(
       return;
     }
 
-    if (isAllowanceLoaded && tokensToApprove.length && selectedCollateralToken) {
+    if (isApprovalStepRequired && selectedCollateralToken) {
       if (!chainId || isApproving) return;
 
       userAnalytics.pushEvent<TokenApproveClickEvent>({
@@ -594,7 +614,6 @@ export function usePositionEditorButtonState(
       selectedCollateralAddress,
       marketInfo: position?.marketInfo,
       collateralDeltaAmount,
-      // order events rebuild the metric id from the order's swap path, so a USDC deposit must carry its conversion
       swapPath: batchParams?.createOrderParams[0]?.orderPayload.addresses.swapPath,
       subaccount: expressParams?.subaccount,
       isExpress: Boolean(expressParams),
@@ -605,6 +624,7 @@ export function usePositionEditorButtonState(
       fastExpressParams,
       chainId: srcChainId ?? chainId,
       isCollateralFromMultichain: isCollateralTokenFromGmxAccount,
+      orderPayloads: batchParams?.createOrderParams.map((createOrderParams) => createOrderParams.orderPayload),
     });
 
     sendOrderSubmittedMetric(metricData.metricId);
@@ -646,6 +666,9 @@ export function usePositionEditorButtonState(
       provider,
       batchParams,
       expressParams: getExpressParamsForSubmit(fulfilledExpressParams),
+      tokenPermits: classicTokenPermits,
+      walletCallsBatch: approvalBatch,
+      batchFlow: isDeposit ? "editCollateral" : undefined,
       isGmxAccount: isCollateralTokenFromGmxAccount,
       simulationParams: shouldDisableValidationForTesting
         ? undefined
@@ -685,6 +708,17 @@ export function usePositionEditorButtonState(
     errorBannerContent,
     bannerErrorName: validationResult.bannerErrorName,
   };
+
+  if (isBlockedByClosedMarket) {
+    return {
+      ...commonParams,
+      text: t`Market closed`,
+      tooltipContent: null,
+      errorBannerContent: null,
+      bannerErrorName: undefined,
+      disabled: !shouldDisableValidationForTesting,
+    };
+  }
 
   if (multipleWalletExtensionsChainError.buttonErrorMessage) {
     return {
@@ -764,7 +798,7 @@ export function usePositionEditorButtonState(
     };
   }
 
-  if (isAllowanceLoaded && tokensToApprove.length && selectedCollateralToken) {
+  if (isApprovalStepRequired && selectedCollateralToken) {
     const { text, tooltipContent } = getApproveButtonState();
     return {
       text,

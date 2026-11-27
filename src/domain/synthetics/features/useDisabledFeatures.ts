@@ -43,18 +43,5 @@ export function useEnabledFeaturesRequest(chainId: ContractsChainId): EnabledFea
     },
   });
 
-  return useMemo(() => {
-    if (!data) {
-      return {
-        features: {
-          relayRouterEnabled: false,
-          subaccountRelayRouterEnabled: false,
-        },
-      };
-    }
-
-    return {
-      features: data,
-    };
-  }, [data]);
+  return useMemo(() => ({ features: data }), [data]);
 }

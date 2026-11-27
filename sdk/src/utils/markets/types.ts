@@ -1,3 +1,4 @@
+import type { GmsolMarketConfig } from "utils/gmsol/types";
 import type { TokenData } from "utils/tokens/types";
 
 export type PnlFactorType = "FOR_DEPOSITS" | "FOR_WITHDRAWALS" | "FOR_TRADERS";
@@ -27,8 +28,10 @@ export type MarketPoolTokens = {
   indexToken: TokenData;
 };
 
-export type MarketInfo = Market &
+export type MarketInfo = GmsolMarketConfig &
+  Market &
   MarketPoolTokens & {
+    useV221LiquidationImpact?: boolean;
     isDisabled: boolean;
 
     longPoolAmount: bigint;
@@ -133,6 +136,8 @@ export type MarketInfo = Market &
     swapImpactExponentFactor: bigint;
     withdrawalFeeFactorBalanceWasImproved?: bigint;
     withdrawalFeeFactorBalanceWasNotImproved?: bigint;
+    depositFeeFactorBalanceWasImproved?: bigint;
+    depositFeeFactorBalanceWasNotImproved?: bigint;
 
     borrowingFactorPerSecondForLongs: bigint;
     borrowingFactorPerSecondForShorts: bigint;
@@ -203,6 +208,7 @@ export type MarketValues = Pick<MarketInfo, (typeof MARKET_VALUES_KEYS)[number]>
  */
 export type MarketConfig = Pick<
   MarketInfo,
+  | keyof GmsolMarketConfig
   | "isDisabled"
   | "maxLongPoolUsdForDeposit"
   | "maxShortPoolUsdForDeposit"
@@ -266,6 +272,8 @@ export type MarketConfig = Pick<
   | "atomicSwapFeeFactor"
   | "withdrawalFeeFactorBalanceWasImproved"
   | "withdrawalFeeFactorBalanceWasNotImproved"
+  | "depositFeeFactorBalanceWasImproved"
+  | "depositFeeFactorBalanceWasNotImproved"
   | "virtualMarketId"
   | "virtualIndexTokenId"
   | "virtualLongTokenId"
@@ -278,7 +286,12 @@ export type MarketsData = {
 
 export type RawMarketInfo = Omit<
   MarketInfo,
-  "longToken" | "shortToken" | "indexToken" | "claimableFundingAmountLong" | "claimableFundingAmountShort"
+  | "longToken"
+  | "shortToken"
+  | "indexToken"
+  | "claimableFundingAmountLong"
+  | "claimableFundingAmountShort"
+  | "useV221LiquidationImpact"
 >;
 
 export type RawMarketsInfoData = {

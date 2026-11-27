@@ -12,6 +12,11 @@ import { watchMarketsApi } from "../fixtures/marketData";
 
 type ApyResponse = Record<"markets" | "glvs", Record<string, { baseApy: number }>>;
 
+// Trader PnL can take a nearly empty pool below zero: the list then prices its GM at $1 and its performance has no bound.
+const MIN_TVL_FOR_PERFORMANCE_BOUND = 10_000;
+// UNI/USD [WETH-USDC]: gmx-api returns annualized performance no GM price path can give.
+const TRD_172_MARKET = "0xD8471b9Ea126272E6d32B5e4782Ed76DB7E554a4";
+
 function poolTable(page: Page, type: "GM" | "GLV") {
   return page.getByRole("table").filter({
     has: page.getByRole("columnheader", { name: type === "GM" ? "POOL" : "VAULT", exact: true }),
@@ -30,13 +35,17 @@ async function forEachPoolPage(page: Page, type: "GM" | "GLV", check: () => Prom
     .filter({ has: page.getByText(type === "GM" ? "GM pools" : "GLV vaults", { exact: true }) })
     .filter({ has: poolTable(page, type) })
     .last();
-  const first = card.getByRole("button", { name: "1", exact: true });
-  if (await first.isVisible()) await first.click();
-  for (let pageNumber = 1; ; pageNumber++) {
+  const arrows = card.locator(".pagination button:has(svg)");
+  const [firstPage, nextPage] = [arrows.first(), arrows.nth(2)];
+  // Only the GM list has pages. The pager disappears for a moment when the app switches its oracle endpoint,
+  // so isEnabled, which waits for it, decides here and not isVisible.
+  const isPaged = type === "GM";
+  // The pager lists only the numbers around the current page, so a repeated pass has no "1" to click.
+  if (isPaged && (await firstPage.isEnabled())) await firstPage.click();
+  await check();
+  while (isPaged && (await nextPage.isEnabled())) {
+    await nextPage.click();
     await check();
-    const next = card.getByRole("button", { name: String(pageNumber + 1), exact: true });
-    if (!(await next.isVisible())) return;
-    await next.click();
   }
 }
 
@@ -166,8 +175,8 @@ test(
     await expect(poolRows(page, "GM").first()).toBeVisible();
     await expect.poll(() => api.config?.length ?? 0).toBeGreaterThan(0);
     const disabled = new Set(api.config!.filter((market) => market.isDisabled).map((m) => m.marketTokenAddress));
-    const sdkMarkets = MARKETS[chainId as keyof typeof MARKETS];
-    const expected = enabledUiMarkets(chainId).filter((address) => sdkMarkets[address] && !disabled.has(address));
+    const configured = new Set(configuredMarkets(chainId).map((market) => market.marketTokenAddress));
+    const expected = enabledUiMarkets(chainId).filter((address) => configured.has(address) && !disabled.has(address));
     // Rows re-sort while pool data loads, so a pass that skipped markets between pages is repeated.
     await expect(async () => {
       const shown = new Set<string>();
@@ -306,14 +315,17 @@ for (const type of ["GM", "GLV"] as const) {
     await page.goto("/pools");
     // The performance bound below is calibrated on 90d; 30d annualizes a new market's swings far past it.
     await page.getByRole("button", { name: "Last 90d", exact: true }).click();
-    await expect.poll(() => apys.has("90d")).toBe(true);
+    await expect.poll(() => apys.has("90d"), { timeout: 30_000 }).toBe(true);
     const rows = poolRows(page, type);
-    await expect(rows.first()).toBeVisible();
+    await expect(rows.first().getByRole("cell").nth(1)).toContainText("$", { timeout: 30_000 });
     const listed: string[] = [];
     const gmFeeApys: number[] = [];
+    const trd172: string[] = [];
     await forEachPoolPage(page, type, async () => {
+      let pageTrd172: string[] = [];
       await expect
         .poll(async () => {
+          pageTrd172 = [];
           const apy = apys.get("90d")![type === "GM" ? "markets" : "glvs"];
           const cells = await rows.evaluateAll((elements) =>
             elements.map((row) => ({
@@ -338,6 +350,7 @@ for (const type of ["GM", "GLV"] as const) {
                 : { name: "GLV", composition: shown.composition };
             const tvlUsd = displayedNumber(tvl[0]);
             const supply = displayedNumber(tvl[1] ?? "");
+            const performanceBound = tvlUsd < MIN_TVL_FOR_PERFORMANCE_BOUND ? Infinity : 1000;
             const expectedApy =
               (apy[address]?.baseApy ?? 0) +
               (chainId === 42161 ? usdgBoost(address, type, shown.composition ?? "") : 0);
@@ -347,20 +360,27 @@ for (const type of ["GM", "GLV"] as const) {
                 : labels?.hasLidoApr
                   ? /^[\d,.]+%$/.test(apyText)
                   : Math.abs(displayedNumber(apyText) - expectedApy * 100) <= 0.006;
+            // The app shows N/A for a pool without performance data for the period.
+            const performanceProblem =
+              !["-", "N/A"].includes(performance) &&
+              !(Math.abs(displayedNumber(performance)) < performanceBound) &&
+              `performance ${performance}`;
             const problems = [
               JSON.stringify(shown) !== JSON.stringify(expected) && `label ${JSON.stringify(shown)}`,
               !(tvlUsd > 0) && `tvl ${tvl[0]}`,
               !(supply >= 0 && new RegExp(`${type}\\)$`).test(tvl[1] ?? "")) && `supply ${tvl[1]}`,
               !apyOk && `apy ${apyText} vs ${expectedApy * 100}`,
-              // The app shows N/A for a pool without performance data for the period.
-              !["-", "N/A"].includes(performance) &&
-                !(Math.abs(displayedNumber(performance)) < 1000) &&
-                `performance ${performance}`,
+              performanceProblem,
             ].filter(Boolean);
+            if (address === TRD_172_MARKET && problems.length === 1 && performanceProblem) {
+              pageTrd172.push(`${address}: ${performanceProblem}`);
+              return [];
+            }
             return problems.length ? [`${address}: ${problems.join(", ")}`] : [];
           });
         })
         .toEqual([]);
+      trd172.push(...pageTrd172);
       if (type === "GM") {
         gmFeeApys.push(...(await rows.locator("td:nth-child(4)").allInnerTexts()).map(displayedNumber));
         return;
@@ -379,6 +399,9 @@ for (const type of ["GM", "GLV"] as const) {
     const median = known[Math.floor(known.length / 2)];
     expect(median).toBeGreaterThan(0.1);
     expect(median).toBeLessThan(100);
+    // Declared after every other check so that only TRD-172 can be the expected failure.
+    test.fail(trd172.length > 0, "TRD-172: /pools shows an impossible annualized performance for UNI/USD [WETH-USDC]");
+    expect(trd172).toEqual([]);
   });
 }
 

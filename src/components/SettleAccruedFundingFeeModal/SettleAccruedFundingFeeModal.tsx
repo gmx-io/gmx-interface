@@ -16,11 +16,12 @@ import {
   selectSettlementChainGasPaymentToken,
   selectUnavailableGasPaymentTokenAddresses,
 } from "context/SyntheticsStateContext/selectors/expressSelectors";
+import { selectClosedMarkets } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import {
-  getCanUseTokenPermits,
   getExpressParamsForSubmit,
+  getExpressTokenPermitBlockReason,
   reportMultichainExpressSubmitError,
 } from "domain/synthetics/express/validateMultichainExpressSubmit";
 import {
@@ -31,6 +32,7 @@ import {
 } from "domain/synthetics/fees";
 import { getNetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
 import { getTotalAccruedFundingUsd } from "domain/synthetics/markets";
+import { getIsMarketClosed } from "domain/synthetics/markets/utils";
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
@@ -48,6 +50,7 @@ import { getContract } from "sdk/configs/contracts";
 import { getNativeToken, getToken } from "sdk/configs/tokens";
 import { getIsConfirmedOutOfGasPaymentTokenBalance } from "sdk/utils/express";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
+import { getMarketPositionLimits } from "sdk/utils/markets";
 import { buildDecreaseOrderPayload, getBatchTotalExecutionFee } from "sdk/utils/orderTransactions";
 
 import { useActiveForm } from "components/ActiveFormScope/ActiveFormScope";
@@ -59,7 +62,7 @@ import Modal from "components/Modal/Modal";
 import { NetworkFeeRow } from "components/NetworkFeeRow/NetworkFeeRow";
 import { DeltaUsdValue } from "components/NumericValue/DeltaUsdValue";
 import { ButtonTooltipWrapper } from "components/Tooltip/ButtonTooltipWrapper";
-import Tooltip from "components/Tooltip/Tooltip";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
@@ -95,6 +98,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
   const isExpressAvailable = useSelector(selectIsExpressTransactionAvailable);
   const walletGasPaymentToken = useSelector(selectSettlementChainGasPaymentToken);
   const gmxAccountGasPaymentToken = useSelector(selectGmxAccountGasPaymentToken);
+  const closedMarkets = useSelector(selectClosedMarkets);
 
   const canUseGmxAccountFeeSource = chainId === ARBITRUM && srcChainId === undefined && isExpressAvailable;
   const preferGmxAccount = canUseGmxAccountFeeSource && (settings.receiveToGmxAccount ?? false);
@@ -119,14 +123,21 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
   }, [chainId, gasLimits, gasPrice, tokensData]);
 
   const positiveFeePositions = usePositiveFeePositionsSortedByUsd();
-  const { minCollateralUsd } = usePositionsConstants();
+  const positionConstants = usePositionsConstants();
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
 
   const preCheckedPositionKeys = useMemo(() => {
     return positiveFeePositions
-      .filter((position) => shouldPreSelectPosition(position, feeUsd ?? 0n, minCollateralUsd))
+      .filter((position) =>
+        shouldPreSelectPosition(
+          position,
+          feeUsd ?? 0n,
+          getMarketPositionLimits(position.marketInfo, positionConstants).minCollateralUsd,
+          getIsMarketClosed(closedMarkets, position.marketAddress)
+        )
+      )
       .map((position) => position.key);
-  }, [positiveFeePositions, feeUsd, minCollateralUsd]);
+  }, [positiveFeePositions, feeUsd, positionConstants, closedMarkets]);
 
   const [positionKeys, setPositionKeys] = useState<string[]>([]);
 
@@ -138,9 +149,15 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
   const selectedPositions = useMemo(
     () =>
       positiveFeePositions.filter(
-        (position) => positionKeys.includes(position.key) && getIsPositionSettleable(position, minCollateralUsd)
+        (position) =>
+          positionKeys.includes(position.key) &&
+          getIsPositionSettleable(
+            position,
+            getMarketPositionLimits(position.marketInfo, positionConstants).minCollateralUsd,
+            getIsMarketClosed(closedMarkets, position.marketAddress)
+          )
       ),
-    [minCollateralUsd, positionKeys, positiveFeePositions]
+    [positionConstants, positionKeys, positiveFeePositions, closedMarkets]
   );
   const selectedPositionKeys = useMemo(() => selectedPositions.map((position) => position.key), [selectedPositions]);
   const total = useMemo(() => getTotalAccruedFundingUsd(selectedPositions), [selectedPositions]);
@@ -262,6 +279,8 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
     ];
   }, [expressParams?.gasPaymentParams, isWalletOutOfGasPaymentToken]);
 
+  const permitBlockReason = getExpressTokenPermitBlockReason(expressParams);
+
   const {
     tokensToApprove,
     isAllowanceLoaded: isAllowanceLoadedRaw,
@@ -271,13 +290,14 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
     chainId,
     spenderAddress: getContract(chainId, "SyntheticsRouter"),
     tokens: approvalTokens,
-    allowPermit: getCanUseTokenPermits(expressParams),
+    allowPermit: permitBlockReason === undefined,
     skip: isGmxAccountFeeSource,
     metric: {
       flow: "settleFundingFees",
       isExpress: Boolean(expressParams),
       isExpress1CT: Boolean(expressParams?.subaccount),
       gasPaymentTokenAddress: expressParams?.gasPaymentParams?.gasPaymentTokenAddress,
+      permitBlockReason,
     },
   });
 
@@ -446,15 +466,6 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
     walletGasPaymentToken?.symbol,
   ]);
 
-  const renderTooltipContent = useCallback(
-    () => (
-      <span className="text-typography-primary">
-        <Trans>Accrued funding fees available for settlement</Trans>
-      </span>
-    ),
-    []
-  );
-
   return (
     <Modal
       activeFormId={formId}
@@ -478,11 +489,11 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
               <Trans>POSITION</Trans>
             </div>
             <div className="ClaimSettleModal-header-right">
-              <Tooltip
-                className="ClaimSettleModal-tooltip"
-                position="top-end"
+              <StandardTooltip
+                variant="iconStroke"
+                position="bottom-end"
                 handle={<Trans>FUNDING FEE</Trans>}
-                renderContent={renderTooltipContent}
+                content={t`Accrued funding fees available for settlement`}
               />
             </div>
           </div>
@@ -491,7 +502,11 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
               key={position.key}
               position={position}
               isMarketDisabled={position.marketInfo?.isDisabled ?? false}
-              blockReason={getSettlementBlockReason(position, minCollateralUsd)}
+              isMarketClosed={getIsMarketClosed(closedMarkets, position.marketAddress)}
+              blockReason={getSettlementBlockReason(
+                position,
+                getMarketPositionLimits(position.marketInfo, positionConstants).minCollateralUsd
+              )}
               isSelected={selectedPositionKeys.includes(position.key)}
               onCheckboxChange={handleRowCheckboxChange}
             />

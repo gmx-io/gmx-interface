@@ -1,3 +1,4 @@
+// @vitest-shared-worker
 import { EstimateGasExecutionError, ExecutionRevertedError, RpcRequestError } from "viem";
 import { describe, expect, it } from "vitest";
 

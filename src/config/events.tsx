@@ -49,6 +49,46 @@ export type EventData = {
 
 export const appEventsData: EventData[] = [
   {
+    id: "gt-airdrop-allocation",
+    type: "update",
+    isActive: true,
+    startDate: "12 Nov 2026, 09:00",
+    endDate: "19 Nov 2026, 09:00",
+    variant: "info",
+    chains: [ARBITRUM, AVALANCHE],
+    title: "GT airdrop: check your allocation",
+    summary: (
+      <>
+        GMX stakers can now see their GT airdrop amount. Find it under{" "}
+        <Link to="/earn/portfolio">Earn &gt; Portfolio</Link>. Selling into GT buybacks follows in a later update.
+      </>
+    ),
+    description: (
+      <span className="flex flex-col gap-12">
+        <span>
+          <span className="font-medium text-typography-primary">Who qualifies:</span> a daily average of at least 100
+          GMX staked on Arbitrum or Avalanche from 1 October to 1 November 2026 (00:00 UTC). Staked GMX on 1 November
+          must not be below that average. esGMX does not count.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Allocation:</span> 1 GT for each daily-average staked
+          GMX. The GT card shows the amount and its USD value. No GT card means no allocation.
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Buyback:</span> selling GT is not open yet, so the
+          buyback button on the GT card is disabled. Selling GT comes in a later update. No date is set yet.
+        </span>
+        <span>
+          Full rules in governance proposal GMLabs-002.{" "}
+          <ExternalLink href="https://gov.gmx.io/t/gmlabs-002-gt-airdrop-for-gmx-stakers-and-gt-buyback-season-2/5159">
+            Read more
+          </ExternalLink>
+          .
+        </span>
+      </span>
+    ),
+  },
+  {
     id: "glv-usdg-launch",
     type: "listing",
     isActive: true,

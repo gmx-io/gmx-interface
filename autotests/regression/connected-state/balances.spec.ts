@@ -4,6 +4,7 @@ import { zeroAddress } from "viem";
 import { test } from "../fixtures/accountState";
 import { chooseMode, inputNumber, selectMarket, selectTradeDirection } from "../fixtures/trade";
 import { configureClassicTrading } from "../fixtures/tradingForms";
+import { mockTradingMarket } from "../fixtures/tradingMarket";
 
 test.beforeEach(async ({ accountState }) => {
   accountState.balances.set(accountState.data.collateral.address, 1000n * 10n ** 6n);
@@ -70,8 +71,12 @@ for (const mode of ["Classic", "Express"] as const) {
 
 test("8.09 Classic withdraw editor blocks withdrawing more than position collateral", async ({
   page,
+  context,
+  chainId,
   accountState,
 }) => {
+  // A live ETH price below the mocked position's $1,900 liquidation price leaves nothing to withdraw.
+  await mockTradingMarket(context, chainId);
   accountState.positions = [accountState.data.position(true)];
   await accountState.connect(page);
   await configureClassicTrading(page);

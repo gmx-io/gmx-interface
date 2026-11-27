@@ -94,6 +94,11 @@ export type TpSlRemainingPositionEntry = {
   getDecreaseAmountsWithoutKeepLeverage: () => DecreasePositionAmounts | undefined;
 };
 
+// like Close: the contract reverts a partial close whose costs exceed both the collateral and the profit
+export function getIsTpSlCostUnpayable(decreaseAmounts: DecreasePositionAmounts | undefined) {
+  return decreaseAmounts !== undefined && !decreaseAmounts.isFullClose && decreaseAmounts.unpaidCostUsd > 0n;
+}
+
 export type TpSlRemainingPositionWarning = {
   isTakeProfitAboveMaxLeverage: boolean;
   isStopLossAboveMaxLeverage: boolean;
@@ -109,6 +114,7 @@ export function getTpSlRemainingPositionWarning(p: {
   minPositionSizeUsd: bigint | undefined;
   userReferralInfo: UserReferralInfo | undefined;
   proDiscountFactor?: bigint;
+  feeDiscountFactor?: bigint;
 }): TpSlRemainingPositionWarning | undefined {
   const { position, minCollateralUsd, minPositionSizeUsd } = p;
 
@@ -139,6 +145,7 @@ export function getTpSlRemainingPositionWarning(p: {
       minPositionSizeUsd,
       userReferralInfo: p.userReferralInfo,
       proDiscountFactor: p.proDiscountFactor,
+      feeDiscountFactor: p.feeDiscountFactor,
     });
 
     return marginState?.isLiquidatable === true;

@@ -1,5 +1,5 @@
 import { HttpClient, HttpError } from "./http";
-import { IHttp, ServedResult } from "./types";
+import { FetchJsonOptions, HttpResponseMetadata, IHttp, ServedResult } from "./types";
 
 const FAILURE_WINDOW_MS = 60_000;
 const FAILURES_BEFORE_ROTATION = 3;
@@ -29,11 +29,22 @@ export class HttpClientWithFallback implements IHttp {
     return this.clients[this.primaryIndex].url;
   }
 
-  async fetchJson<TResult>(
-    path: string,
-    opts?: { query?: Record<string, any>; transform?: (result: any) => TResult }
-  ): Promise<TResult> {
-    return this.withFallback((client) => client.fetchJson<TResult>(path, opts));
+  async fetchJson<TResult>(path: string, opts?: FetchJsonOptions<TResult>): Promise<TResult> {
+    let metadata: HttpResponseMetadata | undefined;
+    const result = await this.withFallback(
+      (client) =>
+        client.fetchJson<TResult>(path, {
+          ...opts,
+          onResponse: (response) => {
+            metadata = response;
+          },
+        }),
+      opts?.signal
+    );
+    if (metadata) {
+      opts?.onResponse?.(metadata);
+    }
+    return result;
   }
 
   async postJson<TResult>(
@@ -57,14 +68,14 @@ export class HttpClientWithFallback implements IHttp {
     return { result: opts?.transform ? opts.transform(served.result) : served.result, client: served.client };
   }
 
-  private async withFallback<T>(fn: (client: HttpClient) => Promise<T>): Promise<T> {
+  private async withFallback<T>(fn: (client: HttpClient) => Promise<T>, signal?: AbortSignal): Promise<T> {
     const order = this.getClientOrder();
 
     for (let i = 0; i < order.length; i++) {
       try {
         return await fn(order[i]);
       } catch (e) {
-        if (!isServerOrNetworkError(e) || i === order.length - 1) {
+        if (signal?.aborted || !isServerOrNetworkError(e) || i === order.length - 1) {
           throw e;
         }
 

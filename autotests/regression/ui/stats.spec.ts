@@ -69,7 +69,7 @@ test("18.06 18.08 stats market search finds ETH with pool TVLs matching /v1/mark
         const popup = await openTooltip(page, tvl);
         const [total, text] = [displayedNumber(await tvl.innerText()), await popup.innerText()];
         await page.mouse.move(0, 0);
-        const pools = [...text.matchAll(/(\S+\/USD)\s*\[([^\]]+)\]\s*:\s*(\$\s*[\d.,]+[kmbt]?)/g)].map(
+        const pools = [...text.matchAll(/(\S+\/USD)\s*\[([^\]]+)\]\s*(\$\s*[\d.,]+[kmbt]?)/g)].map(
           ([, index, pool, value]) => ({ name: `${index} [${pool}]`, value: displayedNumber(value) })
         );
         return (

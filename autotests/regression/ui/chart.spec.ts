@@ -53,9 +53,17 @@ test("20.12 chart context menu fills a trigger order at the clicked price", asyn
   );
   const canvas = chart.locator(".chart-gui-wrapper canvas").last();
   const bounds = (await canvas.boundingBox())!;
-  // The empty right margin avoids TradingView's candle-series menu.
-  await canvas.click({ button: "right", position: { x: bounds.width - 40, y: bounds.height * 0.35 }, delay: 100 });
   const action = chart.getByRole("cell", { name: /^Set long (Limit|Stop Market) @/ });
+  const menu = chart.getByRole("cell", { name: /^Copy price/ });
+  // The empty right margin avoids the candles, but a click within a few pixels of the last-price line opens
+  // TradingView's series menu ("Visual order", no app actions); the line cannot be at both heights.
+  for (const height of [0.35, 0.65]) {
+    await canvas.click({ button: "right", position: { x: bounds.width - 40, y: bounds.height * height }, delay: 100 });
+    await expect(menu).toBeVisible();
+    if (!(await chart.getByRole("cell", { name: /^Visual order/ }).isVisible())) break;
+    await page.keyboard.press("Escape");
+    await expect(menu).toBeHidden();
+  }
   await expect(action).toBeVisible();
   const label = (await action.textContent())!;
   const price = Number(label.split("@")[1].replace(/[^\d.]/g, ""));
@@ -74,6 +82,8 @@ test("20.02 20.11 changing market updates the chart symbol and its current price
   const chart = page.frameLocator('iframe[title="Financial Chart"]');
   const legend = chart.getByRole("region", { name: "Chart #1", exact: true }).getByRole("toolbar");
   await expect(legend).toContainText("ETH/USD");
+  // The market row's click leaves the pointer over the chart, and the legend then shows the hovered candle.
+  await page.mouse.move(0, 0);
   await expect
     .poll(async () => {
       const close = (await legend.innerText()).match(/C\s*([\d,]+(?:\.\d+)?)/)?.[1];

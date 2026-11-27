@@ -1,4 +1,4 @@
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, MEGAETH, type ContractsChainId } from "sdk/configs/chains";
+import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, MEGAETH, type NetworkId } from "sdk/configs/chains";
 
 /*
   A temporary solution before positions sorting logic is updated
@@ -7,7 +7,7 @@ import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, MEGAETH, type ContractsChainId } f
   When adding new markets, add them to the end of the list
   or update arrays based on marketInfo sorting in runtime
 */
-export const SORTED_MARKETS: Partial<Record<ContractsChainId, string[]>> = {
+export const SORTED_MARKETS: Partial<Record<NetworkId, string[]>> = {
   [ARBITRUM]: [
     "0x47c031236e19d024b42f8AE6780E44A573170703",
     "0x7C11F78Ce78768518D743E81Fdfa2F860C6b9A77",
@@ -138,6 +138,12 @@ export const SORTED_MARKETS: Partial<Record<ContractsChainId, string[]>> = {
     "0xc9ED746D613eEfC0F196658f6030e90482593004", // XRP/USD [USDG-USDG]
     "0x2CeEafcA180B07C9d1d2f1086f8f59AAFd282832", // ZEC/USD [USDG-USDG]
     "0x162C091263fBb3dfAf1D55DCC979533EB341DA5f", // HYPE/USD [USDG-USDG]
+    "0x71Dd0524F8e0aab8FE59E6B3888145A8ac117Aa3", // LINK/USD [USDG-USDG]
+    "0x1e5bf5390a75a6ab085bd4e7E63A00074C43B858", // PEPE/USD [USDG-USDG]
+    "0x2bDCC67868abA103406dCeb4F853B6BF2227AB14", // DOGE/USD [USDG-USDG]
+    "0x55556D4734DFA693F554985818dBcA07a0225986", // BNB/USD [USDG-USDG]
+    "0x460E90d682920E0Fe500aa180a45326d2089f18f", // SUI/USD [USDG-USDG]
+    "0x51C4C72263D705Ab2F78531Bd3c8a43D362CCB53", // XMR/USD [USDG-USDG]
   ],
   [AVALANCHE]: [
     "0x913C1F46b48b3eD35E7dc3Cf754d4ae8499F31CF",

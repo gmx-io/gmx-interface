@@ -1,5 +1,6 @@
 import { HIGH_PRICE_IMPACT_BPS } from "configs/factors";
 import { bigMath } from "utils/bigmath";
+import { getGmsolUsdAmount } from "utils/gmsol";
 import { getOpenInterestForBalance } from "utils/markets";
 import { MarketInfo } from "utils/markets/types";
 import { applyFactor, getBasisPoints, PRECISION } from "utils/numbers";
@@ -28,6 +29,10 @@ export function getSwapFee(
     factor = balanceWasImproved
       ? marketInfo.withdrawalFeeFactorBalanceWasImproved ?? marketInfo.swapFeeFactorForBalanceWasImproved
       : marketInfo.withdrawalFeeFactorBalanceWasNotImproved ?? marketInfo.swapFeeFactorForBalanceWasNotImproved;
+  } else if (swapPricingType === SwapPricingType.Deposit) {
+    factor = balanceWasImproved
+      ? marketInfo.depositFeeFactorBalanceWasImproved ?? marketInfo.swapFeeFactorForBalanceWasImproved
+      : marketInfo.depositFeeFactorBalanceWasNotImproved ?? marketInfo.swapFeeFactorForBalanceWasNotImproved;
   } else {
     factor = balanceWasImproved
       ? marketInfo.swapFeeFactorForBalanceWasImproved
@@ -43,13 +48,21 @@ export function getPositionFee(
   balanceWasImproved: boolean,
   referralInfo: { totalRebateFactor: bigint; discountFactor: bigint } | undefined,
   uiFeeFactor?: bigint,
-  proDiscountFactor?: bigint
+  proDiscountFactor?: bigint,
+  feeDiscountFactor?: bigint
 ) {
   const factor = balanceWasImproved
     ? marketInfo.positionFeeFactorForBalanceWasImproved
     : marketInfo.positionFeeFactorForBalanceWasNotImproved;
 
   let positionFeeUsd = applyFactor(sizeDeltaUsd, factor);
+  if (marketInfo.tradeMath === "gmsol") {
+    positionFeeUsd = getGmsolUsdAmount(positionFeeUsd);
+    const discountUsd = getGmsolUsdAmount(
+      applyFactor(positionFeeUsd, bigMath.min(PRECISION, bigMath.max(0n, feeDiscountFactor ?? 0n)))
+    );
+    return { positionFeeUsd: positionFeeUsd - discountUsd, discountUsd, totalRebateUsd: 0n, uiFeeUsd: 0n };
+  }
   const uiFeeUsd = applyFactor(sizeDeltaUsd, uiFeeFactor ?? 0n);
 
   const totalRebateUsd = referralInfo ? applyFactor(positionFeeUsd, referralInfo.totalRebateFactor) : 0n;

@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import { cssTransition, ToastContainer } from "react-toastify";
 import { zeroHash } from "viem";
 
@@ -12,6 +12,7 @@ import { useTheme } from "context/ThemeContext/ThemeContext";
 import { useMultichainFundingToast } from "domain/multichain/useMultichainFundingToast";
 import { isReferralCodeQueryParam } from "domain/referrals/utils/referralCode";
 import { SupportChatEvmAttributes, useSupportChat } from "domain/supportChat/useSupportChat";
+import { useSilentEmbeddedWalletOrderSigning } from "domain/synthetics/express/useSilentEmbeddedWalletOrderSigning";
 import { useChainId } from "lib/chains";
 import { useRealChainIdWarning } from "lib/chains/useRealChainIdWarning";
 import { dynamicActivate, locales } from "lib/i18n";
@@ -29,8 +30,8 @@ import { encodeReferralCode } from "sdk/utils/referrals";
 
 import { CloseToastButton } from "components/CloseToastButton/CloseToastButton";
 import { GmxAccountModal } from "components/GmxAccountModal/GmxAccountModal";
-import { NotifyModal } from "components/NotifyModal/NotifyModal";
 import { SettingsModal } from "components/SettingsModal/SettingsModal";
+import { closeAllTooltips } from "components/Tooltip/closeAllTooltips";
 import { WhatsNewToastContainer } from "components/WhatsNewToast/WhatsNewToastContainer";
 
 import { MainRoutes } from "./MainRoutes";
@@ -52,6 +53,7 @@ function EvmGlobalEffects() {
   useWalletConnectedUserAnalyticsEvent();
   useMultichainFundingToast();
   useSmartWalletSubaccountWarning();
+  useSilentEmbeddedWalletOrderSigning();
 
   return <SupportChatEvmAttributes />;
 }
@@ -69,6 +71,15 @@ export function AppRoutes() {
   useFreshnessMetricsControl();
 
   const query = useRouteQuery();
+
+  const { pathname } = useLocation();
+
+  useEffect(
+    function closeTooltipsOnPageChange() {
+      closeAllTooltips();
+    },
+    [pathname]
+  );
 
   useEffect(() => {
     const referralCode = query.get(REFERRAL_CODE_QUERY_PARAM);
@@ -154,7 +165,6 @@ export function AppRoutes() {
       {!isSolanaNetwork(networkId) && <EvmGlobalEffects />}
       <GmxAccountModal />
       <SettingsModal isSettingsVisible={isSettingsVisible} setIsSettingsVisible={setIsSettingsVisible} />
-      <NotifyModal />
     </>
   );
 }

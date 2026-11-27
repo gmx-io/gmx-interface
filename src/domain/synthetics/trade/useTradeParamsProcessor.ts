@@ -1,6 +1,6 @@
 import isMatch from "lodash/isMatch";
 import { useEffect, useRef } from "react";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory, useLocation, useParams } from "react-router-dom";
 import { useLatest } from "react-use";
 
 import { getNetworkFeatures } from "config/features";
@@ -94,6 +94,7 @@ export function useTradeParamsProcessor() {
   const markets = availableTokensOptions.sortedAllMarkets;
   const { chainId, networkId } = useChainId();
   const history = useHistory();
+  const { search } = useLocation();
   const params = useParams<{ tradeType?: string }>();
   const searchParams = useSearchParams<TradeSearchParams & { amount?: string }>();
   const { indexTokens, swapTokens } = availableTokensOptions;
@@ -129,7 +130,13 @@ export function useTradeParamsProcessor() {
 
     // One pending timer only: rescheduling on every effect pass would keep pushing the cleanup out.
     const scheduleSearchCleanup = () => {
-      if (cleanupTimerRef.current !== undefined || getCleanedTradeSearch(history.location.search) === undefined) {
+      // A pass can render the previous search while history already holds a newer link that isn't applied yet, e.g. one
+      // pushed while the page remounts after a network switch. The pass for that link decides.
+      if (
+        cleanupTimerRef.current !== undefined ||
+        history.location.search !== search ||
+        getCleanedTradeSearch(search) === undefined
+      ) {
         return;
       }
 
@@ -246,11 +253,12 @@ export function useTradeParamsProcessor() {
       setTradeConfig(tradeOptions);
     }
 
-    if (history.location.search && !toToken) {
+    if (search && !toToken) {
       scheduleSearchCleanup();
     }
   }, [
     params,
+    search,
     searchParams,
     markets,
     chainId,

@@ -16,6 +16,7 @@ import {
   getReservedUsd,
   getTokenPoolType,
 } from "sdk/utils/markets";
+import { ProgressiveTokenData } from "sdk/utils/tokens/types";
 import { convertToTokenAmountForIncrease } from "sdk/utils/tokens/utils";
 
 import { getCappedPositionImpactUsd } from "../fees";
@@ -23,7 +24,7 @@ import { JitLiquidityInfo, getJitMaxReservedUsd } from "../jit/utils";
 import { PositionInfo } from "../positions";
 import { convertToTokenAmount, convertToUsd, getMidPrice } from "../tokens";
 import { isGlvAddress, isGlvInfo } from "./glv";
-import { GlvInfo, GlvOrMarketInfo, MarketInfo } from "./types";
+import { ClosedMarkets, GlvInfo, GlvOrMarketInfo, MarketInfo } from "./types";
 import { TokenData, TokensData } from "../tokens/types";
 
 export * from "sdk/utils/markets";
@@ -436,6 +437,15 @@ export function marketTokenAmountToUsd(marketInfo: MarketInfo, marketToken: Toke
   return convertToUsd(amount, marketToken.decimals, price)!;
 }
 
+// GM/GLV price is pool value / supply: under one token of supply it blows up, and a non-positive price
+// falls back to $1 in useMarketTokensData, so anything derived from the price is meaningless
+export function getIsPoolTokenPriceInvalid(glvOrMarketInfo: GlvOrMarketInfo, poolToken: ProgressiveTokenData): boolean {
+  return (
+    glvOrMarketInfo.poolValueMin <= 0n ||
+    (poolToken.totalSupply !== undefined && poolToken.totalSupply < expandDecimals(1, poolToken.decimals))
+  );
+}
+
 export function getTotalGmInfo({
   tokensData,
   multichainMarketTokensBalances,
@@ -491,3 +501,7 @@ export function getTradeboxLeverageSliderMarks(maxAllowedLeverage: number) {
 }
 
 export const isMarketInfo = (market: GlvInfo | MarketInfo): market is MarketInfo => !isGlvInfo(market);
+
+export function getIsMarketClosed(closedMarkets: ClosedMarkets | undefined, marketAddress: string | undefined) {
+  return marketAddress !== undefined && closedMarkets?.[marketAddress] === true;
+}

@@ -1,11 +1,9 @@
 import { t } from "@lingui/macro";
 import noop from "lodash/noop";
 import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { toast } from "react-toastify";
 import { useLatest } from "react-use";
 
 import { ContractsChainId } from "config/chains";
-import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import { useTokensBalancesUpdates } from "context/TokensBalancesContext/TokensBalancesContextProvider";
@@ -16,17 +14,14 @@ import {
 } from "context/WebsocketContext/subscribeToEvents";
 import { MultichainTransferProgress } from "domain/multichain/progress/MultichainTransferProgress";
 import { useMultichainTransferProgressView } from "domain/multichain/progress/MultichainTransferProgressView";
-import { getPossiblyInsufficientPayTokens } from "domain/synthetics/express/insufficientPayTokens";
 import { MarketsInfoData, useMarketsInfoRequest } from "domain/synthetics/markets";
 import { isGlvEnabled } from "domain/synthetics/markets/glv";
 import { useGlvMarketsInfo } from "domain/synthetics/markets/useGlvMarkets";
 import {
-  DecreasePositionSwapType,
   isDecreaseOrderType,
   isIncreaseOrderType,
   isLiquidationOrderType,
   isMarketOrderType,
-  isSwapOrderType,
   OrderTxnType,
 } from "domain/synthetics/orders";
 import { getPositionKey } from "domain/synthetics/positions";
@@ -44,29 +39,22 @@ import { TokenBalanceType } from "domain/tokens";
 import type { PendingTpSlOrderBatch } from "domain/tpsl/types";
 import { useChainId } from "lib/chains";
 import { pushErrorNotification, pushSuccessNotification } from "lib/contracts";
-import { ErrorLike, parseError } from "lib/errors";
-import {
-  getIsInsufficientExecutionFeeError,
-  getIsInvalidSignatureError,
-  getIsOutdatedSubaccountApprovalError,
-} from "lib/errors/customErrors";
+import { ErrorLike } from "lib/errors";
 import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
 import {
-  getGLVSwapMetricId,
-  getGMSwapMetricId,
-  getPositionOrderMetricId,
-  getShiftGMMetricId,
-  getSwapOrderMetricId,
-  sendOrderCancelledMetric,
-  sendOrderCreatedMetric,
-  sendOrderExecutedMetric,
-  sendTxnErrorMetric,
+  getDepositCreationKey,
+  getGlvDepositCreationKey,
+  getOrderCreationKey,
+  getShiftCreationKey,
+  getWithdrawalCreationKey,
+  sendTrackedOrderCancelledMetric,
+  sendTrackedOrderCreatedMetric,
+  sendTrackedOrderExecutedMetric,
 } from "lib/metrics/utils";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { deleteByKey, getByKey, setByKey, updateByKey } from "lib/objects";
 import { getProvider } from "lib/rpc";
-import { sleep } from "lib/sleep";
 import type { RelayTaskOutcome } from "lib/transactions/relayTaskStatus";
 import { waitForRelayTaskOutcome } from "lib/transactions/relayTaskStatus";
 import { useHasLostFocus } from "lib/useHasPageLostFocus";
@@ -77,25 +65,15 @@ import { getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tok
 import { StatusCode } from "sdk/utils/express";
 import { decodeOrderTwapParams } from "sdk/utils/twap/uiFeeReceiver";
 
-import {
-  getDebugErrorMessage,
-  getInsufficientBalanceToastBanner,
-  getInsufficientBalanceToastContent,
-  getInsufficientExecutionFeeToastContent,
-  getOutdatedSubaccountApprovalToastContent,
-  InvalidSignatureToastContent,
-} from "components/Errors/errorToasts";
 import { FeesSettlementStatusNotification } from "components/StatusNotification/FeesSettlementStatusNotification";
 import { GmStatusNotification } from "components/StatusNotification/GmStatusNotification";
 import { OrdersStatusNotificiation } from "components/StatusNotification/OrderStatusNotification";
 
 import {
   ApprovalStatuses,
-  DepositCreatedEventData,
   DepositStatuses,
   EventLogData,
   EventTxnParams,
-  GLVDepositCreatedEventData,
   OrderCreatedEventData,
   OrderStatuses,
   PendingDepositData,
@@ -110,16 +88,23 @@ import {
   PositionDecreaseEvent,
   PositionIncreaseEvent,
   RelayTaskStatus,
-  ShiftCreatedEventData,
   ShiftStatuses,
   SyntheticsEventsContextType,
-  WithdrawalCreatedEventData,
   WithdrawalStatuses,
 } from "./types";
 import { useExecutedTokenPermits } from "./useExecutedTokenPermits";
 import { useMultichainEvents } from "./useMultichainEvents";
+import { usePendingExpressTxnNotifications } from "./usePendingExpressTxnNotifications";
 import { useTransitRouteEvents } from "./useTransitRouteEvents";
-import { extractRelayTaskError, getPendingOrderKey } from "./utils";
+import {
+  getPendingOrderKey,
+  parseDepositCreatedEventData,
+  parseGlvDepositCreatedEventData,
+  parseGlvWithdrawalCreatedEventData,
+  parseOrderCreatedEventData,
+  parseShiftCreatedEventData,
+  parseWithdrawalCreatedEventData,
+} from "./utils";
 
 const SyntheticsEventsContext = createContext({});
 
@@ -132,10 +117,9 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const { account: currentAccount } = useWallet();
   const provider = getProvider(undefined, chainId);
   const { hasV2LostFocus, hasPageLostFocus } = useHasLostFocus();
-  const { executionFeeBufferBps, setIsSettingsVisible } = useSettings();
 
   const { removeTokenPermits } = useTokenPermitsContext();
-  const { refreshSubaccountData, invalidateSubaccountApproval } = useSubaccountContext();
+  const { refreshSubaccountData } = useSubaccountContext();
   const { tokensData } = useTokensDataRequest(chainId, srcChainId);
   const { marketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
 
@@ -166,12 +150,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   const [withdrawalStatuses, setWithdrawalStatuses] = useState<WithdrawalStatuses>({});
   const [shiftStatuses, setShiftStatuses] = useState<ShiftStatuses>({});
 
-  const {
-    setWebsocketTokenBalancesUpdates,
-    setOptimisticTokensBalancesUpdates,
-    optimisticTokensBalancesUpdates,
-    websocketTokenBalancesUpdates,
-  } = useTokensBalancesUpdates();
+  const { setWebsocketTokenBalancesUpdates, setOptimisticTokensBalancesUpdates } = useTokensBalancesUpdates();
   const [approvalStatuses, setApprovalStatuses] = useState<ApprovalStatuses>({});
 
   const [pendingTpSlOrderBatches, setPendingTpSlOrderBatches] = useState<PendingTpSlOrderBatch[]>([]);
@@ -226,45 +205,17 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     OrderCreated: (eventData: EventLogData, txnParams: EventTxnParams) => {
       updateNativeTokenBalance();
 
-      const uiFeeReceiver = eventData.addressItems.items.uiFeeReceiver;
-      const twapParams = decodeOrderTwapParams(eventData.bytes32Items.arrayItems.dataList, uiFeeReceiver);
-
-      const data: OrderCreatedEventData = {
-        account: eventData.addressItems.items.account,
-        receiver: eventData.addressItems.items.receiver,
-        callbackContract: eventData.addressItems.items.callbackContract,
-        marketAddress: eventData.addressItems.items.market,
-        initialCollateralTokenAddress: eventData.addressItems.items.initialCollateralToken,
-        swapPath: eventData.addressItems.arrayItems.swapPath,
-        sizeDeltaUsd: eventData.uintItems.items.sizeDeltaUsd,
-        initialCollateralDeltaAmount: eventData.uintItems.items.initialCollateralDeltaAmount,
-        contractTriggerPrice: eventData.uintItems.items.triggerPrice,
-        contractAcceptablePrice: eventData.uintItems.items.acceptablePrice,
-        executionFee: eventData.uintItems.items.executionFee,
-        callbackGasLimit: eventData.uintItems.items.callbackGasLimit,
-        minOutputAmount: eventData.uintItems.items.minOutputAmount,
-        updatedAtBlock: eventData.uintItems.items.updatedAtBlock,
-        orderType: Number(eventData.uintItems.items.orderType),
-        decreasePositionSwapType: Number(
-          eventData.uintItems.items.decreasePositionSwapType ?? DecreasePositionSwapType.NoSwap
-        ) as DecreasePositionSwapType,
-        isLong: eventData.boolItems.items.isLong,
-        shouldUnwrapNativeToken: eventData.boolItems.items.shouldUnwrapNativeToken,
-        isFrozen: eventData.boolItems.items.isFrozen,
-        uiFeeReceiver: uiFeeReceiver,
-        externalSwapQuote: undefined,
-        key: eventData.bytes32Items.items.key,
-        isTwap: twapParams !== undefined,
-      };
+      const data = parseOrderCreatedEventData(eventData);
 
       if (data.account !== currentAccount) {
         return;
       }
 
-      const metricId = isSwapOrderType(data.orderType) ? getSwapOrderMetricId(data) : getPositionOrderMetricId(data);
-      sendOrderCreatedMetric(metricId);
+      const metricId = sendTrackedOrderCreatedMetric(getOrderCreationKey(data), data.key);
 
-      if (!isMarketOrderType(data.orderType)) {
+      if (metricId && !isMarketOrderType(data.orderType)) {
+        const twapParams = decodeOrderTwapParams(eventData.bytes32Items.arrayItems.dataList, data.uiFeeReceiver);
+
         sendUserAnalyticsOrderResultEvent(
           chainId,
           metricId,
@@ -350,16 +301,10 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       const key = eventData.bytes32Items.items.key;
 
       const order = orderStatuses[key]?.data;
+      const metricId = sendTrackedOrderExecutedMetric(key);
 
-      if (order) {
-        const metricId = isSwapOrderType(order.orderType)
-          ? getSwapOrderMetricId(order)
-          : getPositionOrderMetricId(order);
-
-        sendOrderExecutedMetric(metricId);
-        if (!order.isTwap) {
-          sendUserAnalyticsOrderResultEvent(chainId, metricId, true);
-        }
+      if (metricId && order && !order.isTwap) {
+        sendUserAnalyticsOrderResultEvent(chainId, metricId, true);
       }
 
       setOrderStatuses((old) => {
@@ -412,13 +357,9 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       setAwaitingBackfillOrders((old) => old.filter((awaitingOrder) => awaitingOrder.orderKey !== key));
 
       const order = orderStatuses[key]?.data;
+      const metricId = sendTrackedOrderCancelledMetric(key, eventData);
 
-      if (order) {
-        const metricId = isSwapOrderType(order.orderType)
-          ? getSwapOrderMetricId(order)
-          : getPositionOrderMetricId(order);
-
-        sendOrderCancelledMetric(metricId, eventData);
+      if (metricId) {
         sendUserAnalyticsOrderResultEvent(chainId, metricId, false);
       }
 
@@ -435,35 +376,13 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     GlvDepositCreated: (eventData: EventLogData, txnParams: EventTxnParams) => {
       updateNativeTokenBalance();
 
-      const depositData: GLVDepositCreatedEventData = {
-        account: eventData.addressItems.items.account,
-        receiver: eventData.addressItems.items.receiver,
-        callbackContract: eventData.addressItems.items.callbackContract,
-        glvAddress: eventData.addressItems.items.glv,
-        marketAddress: eventData.addressItems.items.market,
-        initialLongTokenAddress: eventData.addressItems.items.initialLongToken,
-        initialShortTokenAddress: eventData.addressItems.items.initialShortToken,
-        longTokenSwapPath: eventData.addressItems.arrayItems.longTokenSwapPath,
-        shortTokenSwapPath: eventData.addressItems.arrayItems.shortTokenSwapPath,
-        initialLongTokenAmount: eventData.uintItems.items.initialLongTokenAmount,
-        initialShortTokenAmount: eventData.uintItems.items.initialShortTokenAmount,
-        initialMarketTokenAmount: eventData.uintItems.items.marketTokenAmount,
-        minMarketTokens: eventData.uintItems.items.minGlvTokens,
-        updatedAtBlock: eventData.uintItems.items.updatedAtBlock,
-        executionFee: eventData.uintItems.items.executionFee,
-        callbackGasLimit: eventData.uintItems.items.callbackGasLimit,
-        shouldUnwrapNativeToken: eventData.boolItems.items.shouldUnwrapNativeToken,
-        key: eventData.bytes32Items.items.key,
-        isGlvDeposit: true,
-      };
+      const depositData = parseGlvDepositCreatedEventData(eventData);
 
       if (depositData.account !== currentAccount) {
         return;
       }
 
-      const metricId = getGLVSwapMetricId(depositData);
-
-      sendOrderCreatedMetric(metricId);
+      sendTrackedOrderCreatedMetric(getGlvDepositCreationKey(depositData), depositData.key);
 
       setDepositStatuses((old) =>
         setByKey(old, depositData.key, {
@@ -478,33 +397,13 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     DepositCreated: (eventData: EventLogData, txnParams: EventTxnParams) => {
       updateNativeTokenBalance();
 
-      const depositData: DepositCreatedEventData = {
-        account: eventData.addressItems.items.account,
-        receiver: eventData.addressItems.items.receiver,
-        callbackContract: eventData.addressItems.items.callbackContract,
-        marketAddress: eventData.addressItems.items.market,
-        initialLongTokenAddress: eventData.addressItems.items.initialLongToken,
-        initialShortTokenAddress: eventData.addressItems.items.initialShortToken,
-        longTokenSwapPath: eventData.addressItems.arrayItems.longTokenSwapPath,
-        shortTokenSwapPath: eventData.addressItems.arrayItems.shortTokenSwapPath,
-        initialLongTokenAmount: eventData.uintItems.items.initialLongTokenAmount,
-        initialShortTokenAmount: eventData.uintItems.items.initialShortTokenAmount,
-        minMarketTokens: eventData.uintItems.items.minMarketTokens,
-        updatedAtBlock: eventData.uintItems.items.updatedAtBlock,
-        executionFee: eventData.uintItems.items.executionFee,
-        callbackGasLimit: eventData.uintItems.items.callbackGasLimit,
-        shouldUnwrapNativeToken: eventData.boolItems.items.shouldUnwrapNativeToken,
-        key: eventData.bytes32Items.items.key,
-        isGlvDeposit: false,
-      };
+      const depositData = parseDepositCreatedEventData(eventData);
 
       if (depositData.account !== currentAccount) {
         return;
       }
 
-      const metricId = getGMSwapMetricId(depositData);
-
-      sendOrderCreatedMetric(metricId);
+      sendTrackedOrderCreatedMetric(getDepositCreationKey(depositData), depositData.key);
 
       setDepositStatuses((old) =>
         setByKey(old, depositData.key, {
@@ -520,12 +419,13 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       updateNativeTokenBalance();
 
       const key = eventData.bytes32Items.items.key;
-      if (depositStatuses[key]?.data) {
-        const metricId = getGLVSwapMetricId(depositStatuses[key].data! as GLVDepositCreatedEventData);
+      const metricId = sendTrackedOrderExecutedMetric(key);
 
-        sendOrderExecutedMetric(metricId);
+      if (metricId) {
         sendUserAnalyticsOrderResultEvent(chainId, metricId, true);
+      }
 
+      if (depositStatuses[key]?.data) {
         setDepositStatuses((old) => updateByKey(old, key, { executedTxnHash: txnParams.transactionHash }));
       }
     },
@@ -534,12 +434,13 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       updateNativeTokenBalance();
 
       const key = eventData.bytes32Items.items.key;
+      const metricId = sendTrackedOrderExecutedMetric(key);
+
+      if (metricId) {
+        sendUserAnalyticsOrderResultEvent(chainId, metricId, true);
+      }
 
       if (depositStatuses[key]?.data) {
-        const metricId = getGMSwapMetricId(depositStatuses[key].data!);
-
-        sendOrderExecutedMetric(metricId);
-        sendUserAnalyticsOrderResultEvent(chainId, metricId, true);
         setDepositStatuses((old) => updateByKey(old, key, { executedTxnHash: txnParams.transactionHash }));
       }
     },
@@ -548,12 +449,13 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       updateNativeTokenBalance();
 
       const key = eventData.bytes32Items.items.key;
+      const metricId = sendTrackedOrderCancelledMetric(key, eventData);
+
+      if (metricId) {
+        sendUserAnalyticsOrderResultEvent(chainId, metricId, false);
+      }
 
       if (depositStatuses[key]?.data) {
-        const metricId = getGMSwapMetricId(depositStatuses[key].data!);
-
-        sendOrderCancelledMetric(metricId, eventData);
-        sendUserAnalyticsOrderResultEvent(chainId, metricId, false);
         setDepositStatuses((old) => updateByKey(old, key, { cancelledTxnHash: txnParams.transactionHash }));
       }
     },
@@ -562,13 +464,13 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       updateNativeTokenBalance();
 
       const key = eventData.bytes32Items.items.key;
+      const metricId = sendTrackedOrderCancelledMetric(key, eventData);
+
+      if (metricId) {
+        sendUserAnalyticsOrderResultEvent(chainId, metricId, false);
+      }
 
       if (depositStatuses[key]?.data) {
-        const metricId = getGLVSwapMetricId(depositStatuses[key].data! as GLVDepositCreatedEventData);
-
-        sendOrderCancelledMetric(metricId, eventData);
-        sendUserAnalyticsOrderResultEvent(chainId, metricId, false);
-
         setDepositStatuses((old) => updateByKey(old, key, { cancelledTxnHash: txnParams.transactionHash }));
       }
     },
@@ -576,31 +478,13 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     WithdrawalCreated: (eventData: EventLogData, txnParams: EventTxnParams) => {
       updateNativeTokenBalance();
 
-      const data: WithdrawalCreatedEventData = {
-        account: eventData.addressItems.items.account,
-        receiver: eventData.addressItems.items.receiver,
-        callbackContract: eventData.addressItems.items.callbackContract,
-        marketAddress: eventData.addressItems.items.market,
-        marketTokenAmount: eventData.uintItems.items.marketTokenAmount,
-        minLongTokenAmount: eventData.uintItems.items.minLongTokenAmount,
-        minShortTokenAmount: eventData.uintItems.items.minShortTokenAmount,
-        updatedAtBlock: eventData.uintItems.items.updatedAtBlock,
-        executionFee: eventData.uintItems.items.executionFee,
-        callbackGasLimit: eventData.uintItems.items.callbackGasLimit,
-        shouldUnwrapNativeToken: eventData.boolItems.items.shouldUnwrapNativeToken,
-        key: eventData.bytes32Items.items.key,
-      };
+      const data = parseWithdrawalCreatedEventData(eventData);
 
       if (data.account !== currentAccount) {
         return;
       }
 
-      const metricId = getGMSwapMetricId({
-        marketAddress: data.marketAddress,
-        executionFee: data.executionFee,
-      });
-
-      sendOrderCreatedMetric(metricId);
+      sendTrackedOrderCreatedMetric(getWithdrawalCreationKey(data), data.key);
 
       setWithdrawalStatuses((old) =>
         setByKey(old, data.key, {
@@ -615,31 +499,13 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     GlvWithdrawalCreated: (eventData: EventLogData, txnParams: EventTxnParams) => {
       updateNativeTokenBalance();
 
-      const data: WithdrawalCreatedEventData = {
-        account: eventData.addressItems.items.account,
-        receiver: eventData.addressItems.items.receiver,
-        callbackContract: eventData.addressItems.items.callbackContract,
-        marketAddress: eventData.addressItems.items.glv,
-        marketTokenAmount: eventData.uintItems.items.glvTokenAmount,
-        minLongTokenAmount: eventData.uintItems.items.minLongTokenAmount,
-        minShortTokenAmount: eventData.uintItems.items.minShortTokenAmount,
-        updatedAtBlock: eventData.uintItems.items.updatedAtBlock,
-        executionFee: eventData.uintItems.items.executionFee,
-        callbackGasLimit: eventData.uintItems.items.callbackGasLimit,
-        shouldUnwrapNativeToken: eventData.boolItems.items.shouldUnwrapNativeToken,
-        key: eventData.bytes32Items.items.key,
-      };
+      const data = parseGlvWithdrawalCreatedEventData(eventData);
 
       if (data.account !== currentAccount) {
         return;
       }
 
-      const metricId = getGLVSwapMetricId({
-        glvAddress: data.marketAddress,
-        executionFee: data.executionFee,
-      });
-
-      sendOrderCreatedMetric(metricId);
+      sendTrackedOrderCreatedMetric(getWithdrawalCreationKey(data), data.key);
 
       setWithdrawalStatuses((old) =>
         setByKey(old, data.key, {
@@ -655,14 +521,9 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       updateNativeTokenBalance();
 
       const key = eventData.bytes32Items.items.key;
+      sendTrackedOrderExecutedMetric(key);
 
       if (withdrawalStatuses[key]?.data) {
-        const metricId = getGMSwapMetricId({
-          marketAddress: withdrawalStatuses[key].data!.marketAddress,
-          executionFee: withdrawalStatuses[key].data!.executionFee,
-        });
-        sendOrderExecutedMetric(metricId);
-
         setWithdrawalStatuses((old) => updateByKey(old, key, { executedTxnHash: txnParams.transactionHash }));
       }
     },
@@ -671,13 +532,9 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       updateNativeTokenBalance();
 
       const key = eventData.bytes32Items.items.key;
-      if (withdrawalStatuses[key]?.data) {
-        const metricId = getGLVSwapMetricId({
-          glvAddress: withdrawalStatuses[key].data!.marketAddress,
-          executionFee: withdrawalStatuses[key].data!.executionFee,
-        });
-        sendOrderExecutedMetric(metricId);
+      sendTrackedOrderExecutedMetric(key);
 
+      if (withdrawalStatuses[key]?.data) {
         setWithdrawalStatuses((old) => updateByKey(old, key, { executedTxnHash: txnParams.transactionHash }));
       }
     },
@@ -686,14 +543,9 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       updateNativeTokenBalance();
 
       const key = eventData.bytes32Items.items.key;
+      sendTrackedOrderCancelledMetric(key, eventData);
 
       if (withdrawalStatuses[key]?.data) {
-        const metricId = getGLVSwapMetricId({
-          glvAddress: withdrawalStatuses[key].data!.marketAddress,
-          executionFee: withdrawalStatuses[key].data!.executionFee,
-        });
-        sendOrderCancelledMetric(metricId, eventData);
-
         setWithdrawalStatuses((old) => updateByKey(old, key, { cancelledTxnHash: txnParams.transactionHash }));
       }
     },
@@ -702,43 +554,21 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       updateNativeTokenBalance();
 
       const key = eventData.bytes32Items.items.key;
+      sendTrackedOrderCancelledMetric(key, eventData);
 
       if (withdrawalStatuses[key]?.data) {
-        const metricId = getGMSwapMetricId({
-          marketAddress: withdrawalStatuses[key].data!.marketAddress,
-          executionFee: withdrawalStatuses[key].data!.executionFee,
-        });
-        sendOrderCancelledMetric(metricId, eventData);
-
         setWithdrawalStatuses((old) => updateByKey(old, key, { cancelledTxnHash: txnParams.transactionHash }));
       }
     },
 
     ShiftCreated: (eventData: EventLogData, txnParams: EventTxnParams) => {
-      const data: ShiftCreatedEventData = {
-        key: eventData.bytes32Items.items.key,
-        account: eventData.addressItems.items.account,
-        receiver: eventData.addressItems.items.receiver,
-        callbackContract: eventData.addressItems.items.callbackContract,
-        fromMarket: eventData.addressItems.items.fromMarket,
-        toMarket: eventData.addressItems.items.toMarket,
-        marketTokenAmount: eventData.uintItems.items.marketTokenAmount,
-        minMarketTokens: eventData.uintItems.items.minMarketTokens,
-        updatedAtTime: eventData.uintItems.items.updatedAtTime,
-        executionFee: eventData.uintItems.items.executionFee,
-      };
+      const data = parseShiftCreatedEventData(eventData);
 
       if (data.account !== currentAccount) {
         return;
       }
 
-      const metricId = getShiftGMMetricId({
-        fromMarketAddress: data.fromMarket,
-        toMarketAddress: data.toMarket,
-        executionFee: data.executionFee,
-      });
-
-      sendOrderCreatedMetric(metricId);
+      sendTrackedOrderCreatedMetric(getShiftCreationKey(data), data.key);
 
       setShiftStatuses((old) =>
         setByKey(old, data.key, {
@@ -754,16 +584,9 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       updateNativeTokenBalance();
 
       const key = eventData.bytes32Items.items.key;
+      sendTrackedOrderExecutedMetric(key);
 
       if (shiftStatuses[key]?.data) {
-        const metricId = getShiftGMMetricId({
-          fromMarketAddress: shiftStatuses[key].data!.fromMarket,
-          toMarketAddress: shiftStatuses[key].data!.toMarket,
-          executionFee: shiftStatuses[key].data!.executionFee,
-        });
-
-        sendOrderExecutedMetric(metricId);
-
         setShiftStatuses((old) => updateByKey(old, key, { executedTxnHash: txnParams.transactionHash }));
       }
     },
@@ -772,16 +595,9 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       updateNativeTokenBalance();
 
       const key = eventData.bytes32Items.items.key;
+      sendTrackedOrderCancelledMetric(key, eventData);
 
-      if (shiftStatuses[key].data) {
-        const metricId = getShiftGMMetricId({
-          fromMarketAddress: shiftStatuses[key].data!.fromMarket,
-          toMarketAddress: shiftStatuses[key].data!.toMarket,
-          executionFee: shiftStatuses[key].data!.executionFee,
-        });
-
-        sendOrderCancelledMetric(metricId, eventData);
-
+      if (shiftStatuses[key]?.data) {
         setShiftStatuses((old) => updateByKey(old, key, { cancelledTxnHash: txnParams.transactionHash }));
       }
     },
@@ -1109,193 +925,15 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
   useExecutedTokenPermits({ chainId, pendingExpressTxns: pendingExpressTxnParams, relayTaskStatuses });
 
-  useEffect(
-    function notifyPendingExpressTxn() {
-      Object.values(pendingExpressTxnParams).forEach((pendingExpressTxn) => {
-        if (pendingExpressTxn.sendFailed && pendingExpressTxn.key && !pendingExpressTxn.isViewed) {
-          setPendingExpressTxnParams((old) => updateByKey(old, pendingExpressTxn.key!, { isViewed: true }));
-          setOptimisticTokensBalancesUpdates((old) => {
-            const newState = { ...old };
-            Object.keys(pendingExpressTxn.payAmounts ?? {}).forEach((tokenAddress) => {
-              delete newState[tokenAddress];
-            });
-            return newState;
-          });
-          setPendingPositionsUpdates({});
-          return;
-        }
-
-        if (pendingExpressTxn.taskId && pendingExpressTxn.key && relayTaskStatuses[pendingExpressTxn.taskId]) {
-          const status = relayTaskStatuses[pendingExpressTxn.taskId].statusCode;
-
-          if (status === StatusCode.Success && pendingExpressTxn.successMessage && !pendingExpressTxn.isViewed) {
-            helperToast.success(pendingExpressTxn.successMessage);
-            setPendingExpressTxnParams((old) => updateByKey(old, pendingExpressTxn.key!, { isViewed: true }));
-          }
-
-          if (status === StatusCode.Reverted || status === StatusCode.Rejected) {
-            let isRelayerMetricSent = false;
-            let isViewed = false;
-            const relayError = extractRelayTaskError(relayTaskStatuses[pendingExpressTxn.taskId]);
-
-            if (pendingExpressTxn.metricId && !pendingExpressTxn.isRelayerMetricSent) {
-              sendTxnErrorMetric(pendingExpressTxn.metricId, relayError, "relayer");
-
-              const executionFeeErrorParams = getIsInsufficientExecutionFeeError(relayError);
-
-              if (executionFeeErrorParams.isErrorMatched) {
-                const totastContent = getInsufficientExecutionFeeToastContent({
-                  minExecutionFee: executionFeeErrorParams.args.minExecutionFee,
-                  executionFee: executionFeeErrorParams.args.executionFee,
-                  chainId,
-                  executionFeeBufferBps,
-                  isExpress: true,
-                  estimatedExecutionFee: pendingExpressTxn.estimatedExecutionFee,
-                  estimatedExecutionGasLimit: pendingExpressTxn.estimatedExecutionGasLimit,
-                  estimatedOrders: pendingExpressTxn.estimatedOrders,
-                  txUrl: undefined,
-                  errorMessage: executionFeeErrorParams.errorData.errorMessage,
-                  shouldOfferExpress: false,
-                  setIsSettingsVisible,
-                });
-
-                // Wait to ensure there is no race condition with the pending order toast
-                sleep(500).then(() => {
-                  toast.dismiss(pendingOrderToastIdRef.current);
-                  helperToast.error(totastContent, {
-                    tradingErrorInfo: {
-                      actionName: "Express Order",
-                      errorData: executionFeeErrorParams.errorData,
-                      metricId: pendingExpressTxn.metricId,
-                    },
-                  });
-                });
-                isViewed = true;
-              }
-
-              const invalidSignatureErrorParams = getIsInvalidSignatureError(relayError);
-
-              if (invalidSignatureErrorParams.isErrorMatched) {
-                // Wait to ensure there is no race condition with the pending order toast
-                sleep(500).then(() => {
-                  toast.dismiss(pendingOrderToastIdRef.current);
-                  helperToast.error(<InvalidSignatureToastContent />, {
-                    tradingErrorInfo: {
-                      actionName: "Express Order",
-                      errorData: invalidSignatureErrorParams.errorData,
-                      metricId: pendingExpressTxn.metricId,
-                    },
-                  });
-                });
-                isViewed = true;
-              }
-
-              isRelayerMetricSent = true;
-            }
-
-            // not gated on isViewed: the order status toast marks a new order's txn viewed before the relay answers
-            if (pendingExpressTxn.subaccountApproval && !pendingExpressTxn.isSubaccountApprovalErrorChecked) {
-              setPendingExpressTxnParams((old) =>
-                updateByKey(old, pendingExpressTxn.key!, { isSubaccountApprovalErrorChecked: true })
-              );
-
-              if (
-                getIsOutdatedSubaccountApprovalError(relayError) &&
-                invalidateSubaccountApproval(pendingExpressTxn.subaccountApproval)
-              ) {
-                // Wait to ensure there is no race condition with the pending order toast
-                sleep(500).then(() => {
-                  toast.dismiss(pendingOrderToastIdRef.current);
-                  helperToast.error(getOutdatedSubaccountApprovalToastContent());
-                });
-                isViewed = true;
-              }
-            }
-
-            const relayErrorData = parseError(relayError);
-            const payAmounts = pendingExpressTxn.payAmounts ?? {};
-            const balanceBanner = getInsufficientBalanceToastBanner({
-              chainId,
-              errorData: relayErrorData,
-              expressTxn: pendingExpressTxn.gasPaymentTokenAddress
-                ? {
-                    gasPaymentTokenAddress: pendingExpressTxn.gasPaymentTokenAddress,
-                    isGmxAccount: Boolean(pendingExpressTxn.isGmxAccount),
-                    payTokenAddresses: Object.keys(payAmounts),
-                    possiblyInsufficientTokenAddresses: getPossiblyInsufficientPayTokens({
-                      payAmounts,
-                      tokensData,
-                      optimisticUpdates: optimisticTokensBalancesUpdates,
-                      websocketUpdates: websocketTokenBalancesUpdates,
-                      balanceType: pendingExpressTxn.isGmxAccount
-                        ? TokenBalanceType.GmxAccount
-                        : TokenBalanceType.Wallet,
-                    }),
-                  }
-                : undefined,
-            });
-
-            if (balanceBanner && !isViewed && !pendingExpressTxn.isViewed) {
-              const balanceToastContent = getInsufficientBalanceToastContent({
-                chainId,
-                banner: balanceBanner,
-                debugErrorMessage: getDebugErrorMessage(relayErrorData),
-              });
-
-              sleep(500).then(() => {
-                toast.dismiss(pendingOrderToastIdRef.current);
-                helperToast.error(balanceToastContent, {
-                  tradingErrorInfo: {
-                    actionName: "Express Order",
-                    errorData: relayErrorData,
-                    metricId: pendingExpressTxn.metricId,
-                  },
-                });
-              });
-              isViewed = true;
-            }
-
-            if (pendingExpressTxn.errorMessage && !pendingExpressTxn.isViewed && !isViewed) {
-              helperToast.error(pendingExpressTxn.errorMessage, {
-                tradingErrorInfo: {
-                  actionName: "Express Order",
-                  metricId: pendingExpressTxn.metricId,
-                },
-              });
-              isViewed = true;
-            }
-
-            if (isViewed || isRelayerMetricSent) {
-              setPendingExpressTxnParams((old) =>
-                updateByKey(old, pendingExpressTxn.key!, { isViewed, isRelayerMetricSent })
-              );
-              setOptimisticTokensBalancesUpdates((old) => {
-                const newState = { ...old };
-                Object.keys(pendingExpressTxn.payAmounts ?? {}).forEach((tokenAddress) => {
-                  delete newState[tokenAddress];
-                });
-                return newState;
-              });
-              setPendingPositionsUpdates({});
-            }
-          }
-        }
-      });
-    },
-    [
-      chainId,
-      executionFeeBufferBps,
-      invalidateSubaccountApproval,
-      relayTaskStatuses,
-      pendingExpressTxnParams,
-      provider,
-      setIsSettingsVisible,
-      setOptimisticTokensBalancesUpdates,
-      tokensData,
-      optimisticTokensBalancesUpdates,
-      websocketTokenBalancesUpdates,
-    ]
-  );
+  usePendingExpressTxnNotifications({
+    chainId,
+    pendingExpressTxns: pendingExpressTxnParams,
+    setPendingExpressTxns: setPendingExpressTxnParams,
+    relayTaskStatuses,
+    tokensData,
+    setPendingPositionsUpdates,
+    pendingOrderToastIdRef,
+  });
 
   const multichainEventsState = useMultichainEvents({
     hasPageLostFocus,

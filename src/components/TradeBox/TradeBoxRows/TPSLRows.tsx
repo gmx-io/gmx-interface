@@ -1,8 +1,10 @@
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
+import cx from "classnames";
 import { useCallback, useMemo } from "react";
 
 import {
   selectTradeboxAdvancedOptions,
+  selectTradeboxIsPositionLiquidatedBeforeTrigger,
   selectTradeboxIsTPSLEnabled,
   selectTradeboxSetAdvancedOptions,
   selectTradeboxTradeFlags,
@@ -12,7 +14,7 @@ import { useSidecarEntries } from "domain/synthetics/sidecarOrders/useSidecarEnt
 import { useSidecarOrders } from "domain/synthetics/sidecarOrders/useSidecarOrders";
 
 import { ExpandableRow } from "components/ExpandableRow";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 
 import { SideOrderEntry } from "../components/SideOrderEntry";
 
@@ -44,6 +46,7 @@ export function TPSLGroup() {
   const setOptions = useSelector(selectTradeboxSetAdvancedOptions);
   const { isTrigger, isSwap } = useSelector(selectTradeboxTradeFlags);
   const isTpSlEnabled = useSelector(selectTradeboxIsTPSLEnabled);
+  const isPositionLiquidatedBeforeTrigger = useSelector(selectTradeboxIsPositionLiquidatedBeforeTrigger);
 
   const showTPSL = !isTrigger && !isSwap;
 
@@ -81,19 +84,15 @@ export function TPSLGroup() {
 
   return (
     <ExpandableRow
+      className={cx({ hidden: isPositionLiquidatedBeforeTrigger })}
       open={isTpSlVisible}
       title={
-        <TooltipWithPortal
+        <StandardTooltip
           handle={<Trans>Take-Profit / Stop-Loss</Trans>}
           variant="iconStroke"
-          position="top"
+          position="bottom"
           disableClickToggle
-          content={
-            <Trans>
-              Create basic TP/SL orders that fully close your position. For advanced TP/SL setup, use the positions list
-              after opening a position.
-            </Trans>
-          }
+          content={t`Create basic TP/SL orders that fully close your position. For advanced TP/SL setup, use the positions list after opening a position.`}
         />
       }
       hasError={hasError}

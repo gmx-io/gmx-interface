@@ -15,9 +15,9 @@ import "./App.scss";
 import { isSolanaNetwork } from "config/chains";
 import { ChainContextProvider } from "context/ChainContext/ChainContext";
 import { ConnectModalProvider } from "context/ConnectModalContext/ConnectModalContext";
-import { GlobalStateProvider } from "context/GlobalContext/GlobalContextProvider";
 import { GmxAccountContextProvider } from "context/GmxAccountContext/GmxAccountContext";
 import { GmxSdkProvider } from "context/GmxSdkContext/GmxSdkContext";
+import { NotificationsContextProvider } from "context/NotificationsContext/NotificationsContextProvider";
 import { PendingTxnsContextProvider } from "context/PendingTxnsContext/PendingTxnsContext";
 import { SettingsContextProvider } from "context/SettingsContext/SettingsContextProvider";
 import { SorterContextProvider } from "context/SorterContext/SorterContextProvider";
@@ -29,11 +29,13 @@ import { DisabledSyntheticsEventsProvider, SyntheticsEventsProvider } from "cont
 import { TokenPermitsContextProvider } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import { TokensBalancesContextProvider } from "context/TokensBalancesContext/TokensBalancesContextProvider";
 import { TokensFavoritesContextProvider } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
+import { useNotificationTaps } from "domain/notifications/useNotificationTaps";
 import { completeAppStartup } from "lib/appStartup";
 import { useChainId } from "lib/chains";
 
 import ErrorBoundary from "components/Errors/ErrorBoundary";
 import SEO from "components/Seo/SEO";
+import { TooltipGroup } from "components/Tooltip/TooltipGroup";
 
 import { AppRoutes } from "./AppRoutes";
 import { SWRConfigProp } from "./swrConfig";
@@ -45,9 +47,9 @@ if (window?.ethereum?.autoRefreshOnNetworkChange) {
 }
 
 function SWRConfigWithKey({ children }: { children: React.ReactNode }) {
-  const { chainId } = useChainId();
+  const { networkId } = useChainId();
   return (
-    <SWRConfig key={chainId} value={SWRConfigProp}>
+    <SWRConfig key={networkId} value={SWRConfigProp}>
       {children}
     </SWRConfig>
   );
@@ -73,6 +75,11 @@ function EvmProviders({ children }: { children: React.ReactNode }) {
   );
 }
 
+function NotificationTaps({ children }: { children: React.ReactNode }) {
+  useNotificationTaps();
+  return <>{children}</>;
+}
+
 function App() {
   useEffect(completeAppStartup, []);
 
@@ -82,6 +89,7 @@ function App() {
       {app}
     </ErrorBoundary>
   );
+  app = <TooltipGroup>{app}</TooltipGroup>;
   app = <SorterContextProvider>{app}</SorterContextProvider>;
   app = <TokensFavoritesContextProvider>{app}</TokensFavoritesContextProvider>;
   app = <EvmProviders>{app}</EvmProviders>;
@@ -90,10 +98,14 @@ function App() {
   app = <SEO>{app}</SEO>;
   app = <ConnectModalProvider>{app}</ConnectModalProvider>;
   app = <I18nProvider i18n={i18n as any}>{app}</I18nProvider>;
-  app = <PendingTxnsContextProvider>{app}</PendingTxnsContextProvider>;
+  // The networkId key remounts this subtree. Pending txns live above it so the poller can pause on
+  // Solana and resume on EVM without dropping receipt or replacement tracking.
   app = <SWRConfigWithKey>{app}</SWRConfigWithKey>;
+  // Above the networkId key, so a tap that switches the network still has its route after the remount.
+  app = <NotificationTaps>{app}</NotificationTaps>;
+  app = <PendingTxnsContextProvider>{app}</PendingTxnsContextProvider>;
+  app = <NotificationsContextProvider>{app}</NotificationsContextProvider>;
   app = <SettingsContextProvider>{app}</SettingsContextProvider>;
-  app = <GlobalStateProvider>{app}</GlobalStateProvider>;
   app = <ChainContextProvider>{app}</ChainContextProvider>;
   app = <GmxAccountContextProvider>{app}</GmxAccountContextProvider>;
   app = <GmxSdkProvider>{app}</GmxSdkProvider>;

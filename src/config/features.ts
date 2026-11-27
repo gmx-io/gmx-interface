@@ -8,6 +8,11 @@ export function getIsExpressSupported(chainId: number) {
   return [AVALANCHE, ARBITRUM, ARBITRUM_SEPOLIA, MEGAETH].includes(chainId);
 }
 
+// a wallet batch is simulated with eth_simulateV1, which the Avalanche and default MegaETH RPCs reject
+export function getIsWalletBatchingSupported(chainId: number) {
+  return [ARBITRUM, ARBITRUM_SEPOLIA].includes(chainId);
+}
+
 export type NetworkFeature =
   | "gmxAccount"
   | "express"
@@ -17,7 +22,13 @@ export type NetworkFeature =
   | "swap"
   | "collateralDeposit"
   | "collateralWithdrawal"
-  | "evmOnlyPages";
+  | "evmOnlyPages"
+  // Positive funding waits for a claim in Claims; gmsol pays it out with the position's next order.
+  | "fundingClaims"
+  // Open price impact is stored on the position until close; gmsol applies it when the position opens.
+  | "pendingPriceImpact"
+  // Lifetime fees of an open position come from the subsquid indexer, which has no Solana data.
+  | "positionFeeHistory";
 
 const SOLANA_FEATURES: Record<NetworkFeature, boolean> = {
   gmxAccount: false,
@@ -29,6 +40,9 @@ const SOLANA_FEATURES: Record<NetworkFeature, boolean> = {
   collateralDeposit: false,
   collateralWithdrawal: false,
   evmOnlyPages: false,
+  fundingClaims: false,
+  pendingPriceImpact: false,
+  positionFeeHistory: false,
 };
 
 /** Solana is off for every listed feature. On EVM, Express and One-Click follow `getIsExpressSupported`; the rest stay available. */
@@ -49,5 +63,8 @@ export function getNetworkFeatures(networkId: number): Record<NetworkFeature, bo
     collateralDeposit: true,
     collateralWithdrawal: true,
     evmOnlyPages: true,
+    fundingClaims: true,
+    pendingPriceImpact: true,
+    positionFeeHistory: true,
   };
 }

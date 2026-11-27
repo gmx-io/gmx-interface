@@ -1,13 +1,15 @@
 import { bigMath } from "utils/bigmath";
 import { getProportionalPendingImpactValues } from "utils/fees";
+import { getGmsolUsdAmount } from "utils/gmsol";
 import { getMarketInfoWithOpenInterestDelta, getOpenInterestUsd, getPriceForPnl } from "utils/markets";
 import { MarketInfo } from "utils/markets/types";
 import { applyFactor } from "utils/numbers";
 import { getPositionPnlUsd } from "utils/positions";
+import type { PositionInfoLoaded } from "utils/positions/types";
 import { UserReferralInfo } from "utils/referrals/types";
-import { convertToTokenAmount, convertToUsd } from "utils/tokens";
+import { convertToUsd } from "utils/tokens";
 import { TokenData } from "utils/tokens/types";
-import { getCollateralDeltaAmountAfterPriceImpactDiff, getIsProfitKeptInPnlToken } from "utils/trade/decrease";
+import { getCollateralDeltaAmountAfterPriceImpactDiff, getDecreasePositionAmounts } from "utils/trade/decrease";
 
 import {
   getMarketInfoAtIndexPrice,
@@ -19,6 +21,7 @@ import { DecreasePositionAmounts } from "./types";
 
 export type DecreasePositionMarginState = PositionMarginState & {
   isCollateralWithdrawalCancelled: boolean;
+  collateralDeltaAmount: bigint;
 };
 
 export type DecreaseResultingPositionMarginStateParams = {
@@ -40,6 +43,7 @@ export type DecreaseResultingPositionMarginStateParams = {
   minPositionSizeUsd: bigint;
   userReferralInfo: UserReferralInfo | undefined;
   proDiscountFactor?: bigint;
+  feeDiscountFactor?: bigint;
   indexPriceForEvaluation?: bigint;
 };
 
@@ -58,16 +62,26 @@ export function getDecreaseResultingPositionMarginState(
     sizeDeltaInTokens,
     payedRemainingCollateralAmount,
     priceImpactDiffUsd,
-    minCollateralUsd,
-    minPositionSizeUsd,
+    minCollateralUsd: suppliedMinCollateralUsd,
+    minPositionSizeUsd: suppliedMinPositionSizeUsd,
     userReferralInfo,
     proDiscountFactor,
+    feeDiscountFactor,
   } = p;
+  const minCollateralUsd =
+    p.marketInfo.tradeMath === "gmsol"
+      ? p.marketInfo.minCollateralUsd ?? suppliedMinCollateralUsd
+      : suppliedMinCollateralUsd;
+  const minPositionSizeUsd =
+    p.marketInfo.tradeMath === "gmsol"
+      ? p.marketInfo.minPositionSizeUsd ?? suppliedMinPositionSizeUsd
+      : suppliedMinPositionSizeUsd;
 
   const { marketInfo, collateralToken } = getMarketInfoAtIndexPrice({
     marketInfo: p.marketInfo,
     collateralToken: p.collateralToken,
     indexPrice: p.indexPriceForEvaluation,
+    isLong,
   });
 
   const { indexToken } = marketInfo;
@@ -98,7 +112,9 @@ export function getDecreaseResultingPositionMarginState(
     isLong,
   });
 
-  const estimatedRealizedPnlUsd = bigMath.mulDiv(estimatedPositionPnlUsd, sizeDeltaUsd, position.sizeInUsd);
+  const proportionalPnlUsd = bigMath.mulDiv(estimatedPositionPnlUsd, sizeDeltaUsd, position.sizeInUsd);
+  const estimatedRealizedPnlUsd =
+    marketInfo.tradeMath === "gmsol" ? getGmsolUsdAmount(proportionalPnlUsd) : proportionalPnlUsd;
   const estimatedRemainingPnlUsd = estimatedPositionPnlUsd - estimatedRealizedPnlUsd;
 
   const nextSizeInUsd = position.sizeInUsd - sizeDeltaUsd;
@@ -121,19 +137,30 @@ export function getDecreaseResultingPositionMarginState(
     getOpenInterestUsd(marketInfo, isLong) - sizeDeltaUsd,
     minCollateralFactorMultiplier
   );
+  if (marketInfo.tradeMath === "gmsol") {
+    minCollateralFactorForOpenInterest = getGmsolUsdAmount(minCollateralFactorForOpenInterest);
+  }
 
   if (marketInfo.minCollateralFactor > minCollateralFactorForOpenInterest) {
     minCollateralFactorForOpenInterest = marketInfo.minCollateralFactor;
   }
 
-  const minCollateralUsdForOpenInterest = applyFactor(nextSizeInUsd, minCollateralFactorForOpenInterest);
+  let minCollateralUsdForOpenInterest = applyFactor(nextSizeInUsd, minCollateralFactorForOpenInterest);
+  if (marketInfo.tradeMath === "gmsol") {
+    minCollateralUsdForOpenInterest = getGmsolUsdAmount(minCollateralUsdForOpenInterest);
+  }
 
   const willCollateralBeSufficient =
     estimatedRemainingCollateralUsd >= 0n && estimatedRemainingCollateralUsd >= minCollateralUsdForOpenInterest;
 
   let isCollateralWithdrawalCancelled = false;
+  const isBelowMinCollateralUsd = estimatedRemainingCollateralUsd + estimatedRemainingPnlUsd < minCollateralUsd;
 
-  if (!willCollateralBeSufficient || estimatedRemainingCollateralUsd + estimatedRemainingPnlUsd < minCollateralUsd) {
+  if (
+    !willCollateralBeSufficient ||
+    // gmsol cancels the withdrawal only for leverage, a partial close below its dollar minimum closes in full
+    (isBelowMinCollateralUsd && (p.marketInfo.tradeMath !== "gmsol" || sizeDeltaUsd === 0n))
+  ) {
     if (sizeDeltaUsd === 0n) {
       return {
         isLiquidatable: true,
@@ -142,6 +169,7 @@ export function getDecreaseResultingPositionMarginState(
         minCollateralUsd,
         minCollateralUsdForLeverage: minCollateralUsdForOpenInterest,
         isCollateralWithdrawalCancelled: false,
+        collateralDeltaAmount: 0n,
       };
     }
 
@@ -200,10 +228,11 @@ export function getDecreaseResultingPositionMarginState(
     isLong,
     userReferralInfo,
     proDiscountFactor,
+    feeDiscountFactor,
     shouldValidateMinCollateralUsd: false,
   });
 
-  return { ...marginState, isCollateralWithdrawalCancelled };
+  return { ...marginState, isCollateralWithdrawalCancelled, collateralDeltaAmount };
 }
 
 export type TriggerDecreaseRemainingPositionMarginStateParams = {
@@ -217,6 +246,7 @@ export type TriggerDecreaseRemainingPositionMarginStateParams = {
   minPositionSizeUsd: bigint;
   userReferralInfo: UserReferralInfo | undefined;
   proDiscountFactor?: bigint;
+  feeDiscountFactor?: bigint;
 };
 
 /**
@@ -233,17 +263,6 @@ export function getTriggerDecreaseRemainingPositionMarginState(
     return undefined;
   }
 
-  const isProfitKeptInPnlToken = getIsProfitKeptInPnlToken({
-    pnlToken: isLong ? marketInfo.longToken : marketInfo.shortToken,
-    collateralToken,
-    decreaseSwapType: decreaseAmounts.decreaseSwapType,
-  });
-
-  const costsPaidFromProfitAmount = isProfitKeptInPnlToken
-    ? convertToTokenAmount(decreaseAmounts.payedOutputUsd, collateralToken.decimals, decreaseAmounts.collateralPrice) ??
-      0n
-    : 0n;
-
   return getDecreaseResultingPositionMarginState({
     marketInfo,
     collateralToken,
@@ -252,15 +271,68 @@ export function getTriggerDecreaseRemainingPositionMarginState(
     sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
     sizeDeltaInTokens: decreaseAmounts.sizeDeltaInTokens,
     collateralDeltaAmount: p.collateralDeltaAmount,
-    payedRemainingCollateralAmount: bigMath.min(
-      decreaseAmounts.payedRemainingCollateralAmount + costsPaidFromProfitAmount,
-      position.collateralAmount
-    ),
+    payedRemainingCollateralAmount: decreaseAmounts.payedRemainingCollateralAmount,
     priceImpactDiffUsd: decreaseAmounts.priceImpactDiffUsd,
     minCollateralUsd: p.minCollateralUsd,
     minPositionSizeUsd: p.minPositionSizeUsd,
     userReferralInfo: p.userReferralInfo,
     proDiscountFactor: p.proDiscountFactor,
+    feeDiscountFactor: p.feeDiscountFactor,
     indexPriceForEvaluation: triggerPrice,
   });
+}
+
+export function getStoredTriggerDecreaseQuote(
+  p: Omit<
+    Parameters<typeof getDecreasePositionAmounts>[0],
+    "validatedCollateralWithdrawalAmount" | "storedCollateralDeltaAmount" | "keepLeverage"
+  > & {
+    position: PositionInfoLoaded;
+    triggerPrice: bigint;
+    storedCollateralDeltaAmount: bigint;
+  }
+): { decreaseAmounts: DecreasePositionAmounts; marginState?: DecreasePositionMarginState } {
+  // getDecreasePositionAmounts settles a storedCollateralDeltaAmount itself, these quotes take the validated one
+  const { storedCollateralDeltaAmount, ...quoteParams } = p;
+  const { marketInfo, collateralToken } = getMarketInfoAtIndexPrice({
+    marketInfo: p.marketInfo,
+    collateralToken: p.collateralToken,
+    indexPrice: p.triggerPrice,
+    isLong: p.isLong,
+  });
+  const params = {
+    ...quoteParams,
+    marketInfo,
+    collateralToken,
+    keepLeverage: false,
+    validatedCollateralWithdrawalAmount: 0n,
+  };
+  const decreaseAmounts = getDecreasePositionAmounts(params);
+  if (decreaseAmounts.isFullClose || decreaseAmounts.sizeDeltaUsd <= 0n) {
+    return { decreaseAmounts };
+  }
+
+  const marginState = getDecreaseResultingPositionMarginState({
+    ...params,
+    sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
+    sizeDeltaInTokens: decreaseAmounts.sizeDeltaInTokens,
+    collateralDeltaAmount: storedCollateralDeltaAmount,
+    payedRemainingCollateralAmount: decreaseAmounts.payedRemainingCollateralAmount,
+    priceImpactDiffUsd: decreaseAmounts.priceImpactDiffUsd,
+  });
+
+  if (!marginState) {
+    return { decreaseAmounts: getDecreasePositionAmounts({ ...params, closeSizeUsd: p.position.sizeInUsd }) };
+  }
+
+  return {
+    decreaseAmounts:
+      marginState.collateralDeltaAmount > 0n
+        ? getDecreasePositionAmounts({
+            ...params,
+            validatedCollateralWithdrawalAmount: marginState.collateralDeltaAmount,
+          })
+        : decreaseAmounts,
+    marginState,
+  };
 }

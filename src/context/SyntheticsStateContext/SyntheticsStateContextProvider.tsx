@@ -2,7 +2,9 @@ import { ReactNode, useCallback, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getAddress, isAddress } from "viem";
 
+import { isUiApiSupported } from "config/api";
 import type { ContractsChainId, SourceChainId } from "config/chains";
+import { isSolanaNetwork } from "config/chains";
 import { getKeepLeverageKey } from "config/localStorage";
 import { PoolsDetailsState, usePoolsDetailsState } from "context/PoolsDetailsContext/PoolsDetailsContext";
 import { SettingsContextType, useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -29,6 +31,7 @@ import { FeaturesSettings, useEnabledFeaturesRequest } from "domain/synthetics/f
 import { L1ExpressOrderGasReference, useGasLimits, useGasPrice } from "domain/synthetics/fees";
 import { useProDiscountFactorRequest } from "domain/synthetics/fees/useProDiscountFactor";
 import { RebateInfoItem, useRebatesInfoRequest } from "domain/synthetics/fees/useRebatesInfo";
+import { useSwapFeeReceiverFactorRequest } from "domain/synthetics/fees/useSwapFeeReceiverFactor";
 import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
 import { useJitLiquidityRequest } from "domain/synthetics/jit/useJitLiquidityRequest";
 import { JitLiquidityData } from "domain/synthetics/jit/utils";
@@ -39,7 +42,10 @@ import {
   useMarketsInfoRequest,
   useMarketTokensDataRequest,
 } from "domain/synthetics/markets";
+import { useClosedMarketsWithDebug } from "domain/synthetics/markets/debugClosedMarkets";
 import { isGlvEnabled } from "domain/synthetics/markets/glv";
+import type { ClosedMarkets } from "domain/synthetics/markets/types";
+import { useClosedMarketsRequest } from "domain/synthetics/markets/useClosedMarketsRequest";
 import { useGlvMarketsInfo } from "domain/synthetics/markets/useGlvMarkets";
 import { OrderEditorState, useOrderEditorState } from "domain/synthetics/orders/useOrderEditorState";
 import { AggregatedOrdersDataResult, useOrdersInfoRequest } from "domain/synthetics/orders/useOrdersInfo";
@@ -56,6 +62,7 @@ import {
   useTokensAllowanceData,
   useTokensDataRequest,
 } from "domain/synthetics/tokens";
+import type { PriceDelta } from "domain/synthetics/tokens/priceDelta";
 import { ConfirmationBoxState, useConfirmationBoxState } from "domain/synthetics/trade/useConfirmationBoxState";
 import { PositionEditorState, usePositionEditorState } from "domain/synthetics/trade/usePositionEditorState";
 import {
@@ -65,6 +72,7 @@ import {
 } from "domain/synthetics/trade/usePositionSellerState";
 import { TradeboxState, useTradeboxState } from "domain/synthetics/trade/useTradeboxState";
 import useIsFirstOrder from "domain/synthetics/tradeHistory/useIsFirstOrder";
+import { getIsExpressAvailable } from "domain/synthetics/uiFlags/uiFlags";
 import { UiFlags, useUiFlagsRequest } from "domain/synthetics/uiFlags/useUiFlagsRequest";
 import { UsdgBoostAprResult, useUsdgBoostAprRequest } from "domain/synthetics/usdgLaunchBoost/useUsdgBoostAprRequest";
 import { useMarketsInfoWithDebugInstantLimit } from "domain/synthetics/usdgPools/debugInstantLimit";
@@ -74,6 +82,8 @@ import {
   useAccountWhitelistsRequest,
 } from "domain/synthetics/whitelists/useAccountWhitelistsRequest";
 import { ProgressiveTokensData } from "domain/tokens";
+import type { CandlesFetcher } from "domain/tradingview/DataFeed";
+import type { ChartTradesFetcher } from "domain/tradingview/types";
 import { useChainId } from "lib/chains";
 import { getTimePeriodsInSeconds } from "lib/dates";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
@@ -104,6 +114,14 @@ export type SyntheticsPageType =
   | "referrals"
   | "rpcDebug";
 
+export type ChartDataProvider = {
+  tradesFetcher?: ChartTradesFetcher;
+  candlesFetcher: CandlesFetcher;
+  getChartSymbol?: (tokenAddress: string) => string;
+  fetch24hPriceDeltas: () => Promise<Partial<Record<string, PriceDelta>>>;
+  fetch24hVolumes: () => Promise<Record<string, bigint>>;
+};
+
 export type SyntheticsState = {
   pageType: SyntheticsPageType;
   globals: {
@@ -118,8 +136,11 @@ export type SyntheticsState = {
     ordersInfo: AggregatedOrdersDataResult;
     positionsConstants: PositionsConstantsResult["positionsConstants"];
     uiFeeFactor: bigint;
+    swapFeeReceiverFactor?: bigint;
     userReferralInfo: UserReferralInfo | undefined;
     proDiscountFactor: bigint | undefined;
+    feeDiscountFactor?: bigint;
+    feeDiscountError?: Error;
     depositMarketTokensData: TokensData | undefined;
     progressiveDepositMarketTokensData: ProgressiveTokensData | undefined;
     multichainMarketTokensBalancesResult: ReturnType<typeof useMultichainMarketTokensBalancesRequest>;
@@ -151,9 +172,12 @@ export type SyntheticsState = {
     oracleSettings: OracleSettingsData | undefined;
 
     jitLiquidityData: JitLiquidityData;
+    closedMarkets: ClosedMarkets | undefined;
 
     accountWhitelistsResult: AccountWhitelistsResult;
     usdgBoostAprResult: UsdgBoostAprResult;
+
+    chartDataProvider?: ChartDataProvider;
   };
   claims: {
     accruedPositionPriceImpactFees: RebateInfoItem[];
@@ -190,7 +214,7 @@ export function SyntheticsStateContextProvider({
   pageType: SyntheticsPageType;
   overrideChainId?: ContractsChainId;
 }) {
-  const { chainId: selectedChainId, srcChainId } = useChainId();
+  const { chainId: selectedChainId, srcChainId, networkId: selectedNetworkId } = useChainId();
 
   const { account: walletAccount, signer } = useWallet();
 
@@ -209,6 +233,7 @@ export function SyntheticsStateContextProvider({
   const account = isAccountPage ? checkSummedAccount : walletAccount;
   const leaderboard = useLeaderboardState(account, isLeaderboardPage);
   const chainId = isLeaderboardPage ? leaderboard.chainId : overrideChainId ?? selectedChainId;
+  const networkId = overrideChainId !== undefined || isLeaderboardPage ? chainId : selectedNetworkId;
 
   const markets = useMarkets(chainId);
   const tokensDataResult = useTokensDataRequest(chainId, srcChainId);
@@ -252,6 +277,7 @@ export function SyntheticsStateContextProvider({
 
   const { positionsConstants } = usePositionsConstantsRequest(chainId);
   const { uiFeeFactor } = useUiFeeFactorRequest(chainId);
+  const swapFeeReceiverFactor = useSwapFeeReceiverFactorRequest(chainId);
   const userReferralInfo = useUserReferralInfoRequest(chainId, account, skipLocalReferralCode);
   const proDiscountFactor = useProDiscountFactorRequest(chainId, account);
   const [closingPositionKeyRaw, setClosingPositionKeyRaw] = useState<string>();
@@ -273,13 +299,17 @@ export function SyntheticsStateContextProvider({
 
   const oracleSettings = useOracleSettingsData();
   const jitLiquidityData = useJitLiquidityRequest(chainId, { enabled: isTradePage || isAccountPage });
+  const closedMarkets = useClosedMarketsWithDebug(
+    useClosedMarketsRequest(chainId, { enabled: !isSolanaNetwork(networkId) }),
+    marketsInfo.marketsInfoData
+  );
 
   const [missedCoinsModalPlace, setMissedCoinsModalPlace] = useState<MissedCoinsPlace>();
 
   const settings = useSettings();
   const subaccountState = useSubaccountContext();
   const { features } = useEnabledFeaturesRequest(chainId);
-  const { uiFlags } = useUiFlagsRequest();
+  const { uiFlags } = useUiFlagsRequest(chainId);
   const accountWhitelistsResult = useAccountWhitelistsRequest(chainId, account, { enabled: pageType === "pools" });
   const usdgBoostAprResult = useUsdgBoostAprRequest(chainId, { enabled: pageType === "pools" });
 
@@ -304,6 +334,7 @@ export function SyntheticsStateContextProvider({
   });
 
   const tradeboxState = useTradeboxState(chainId, isTradePage, {
+    networkId,
     marketsInfoData: marketsInfo.marketsInfoData,
     marketsData: markets.marketsData,
     tokensData: tokensDataResult.tokensData,
@@ -343,7 +374,8 @@ export function SyntheticsStateContextProvider({
   const positionSellerState = usePositionSellerState(
     chainId,
     positionsInfoData?.[closingPositionKey ?? ""],
-    closingPositionOrderOption
+    closingPositionOrderOption,
+    networkId
   );
   const positionEditorState = usePositionEditorState(chainId, srcChainId);
   const confirmationBoxState = useConfirmationBoxState();
@@ -355,13 +387,19 @@ export function SyntheticsStateContextProvider({
     marketsInfoData: marketsInfo.marketsInfoData,
     account,
     multichainMarketTokensBalancesResult,
+    // Relay router flags still loading count as on, so Express users don't see the wallet on every page load
+    isExpressAvailable:
+      settings.expressOrdersEnabled &&
+      isUiApiSupported(chainId) &&
+      getIsExpressAvailable(uiFlags) &&
+      features?.relayRouterEnabled !== false,
   });
 
   const gasLimits = useGasLimits(chainId);
   const gasPrice = useGasPrice(chainId);
   const l1ExpressOrderGasReference = useL1ExpressOrderGasReference();
 
-  const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(getKeepLeverageKey(chainId), true);
+  const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(getKeepLeverageKey(networkId), true);
 
   useCollectSyntheticsMetrics({
     tokensDataResult,
@@ -420,6 +458,7 @@ export function SyntheticsStateContextProvider({
         },
         tokensDataResult,
         uiFeeFactor,
+        swapFeeReceiverFactor,
         userReferralInfo,
         proDiscountFactor,
         depositMarketTokensData,
@@ -451,6 +490,7 @@ export function SyntheticsStateContextProvider({
         oracleSettings,
 
         jitLiquidityData,
+        closedMarkets,
 
         accountWhitelistsResult,
         usdgBoostAprResult,
@@ -497,6 +537,7 @@ export function SyntheticsStateContextProvider({
     isCandlesLoaded,
     isFirstOrder,
     jitLiquidityData,
+    closedMarkets,
     accountWhitelistsResult,
     usdgBoostAprResult,
     isLargeAccount,
@@ -522,6 +563,7 @@ export function SyntheticsStateContextProvider({
     tokenPermitsState,
     tokensDataResult,
     uiFeeFactor,
+    swapFeeReceiverFactor,
     userReferralInfo,
     proDiscountFactor,
     multichainMarketTokensBalancesResult,

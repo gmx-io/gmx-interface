@@ -1,14 +1,17 @@
 import { gql } from "@apollo/client";
 import { t } from "@lingui/macro";
-import { CSSProperties, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { CSSProperties, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useLatest, useLocalStorage, useMedia } from "react-use";
 import { type Address } from "viem";
 
+import { isSolanaNetwork } from "config/chains";
 import { colors } from "config/colors";
 import { WAS_TV_CHART_OVERRIDDEN_KEY } from "config/localStorage";
 import { type TradingViewResolution, RESOLUTION_TO_SECONDS, SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
+import { useOptionalGmxSdk } from "context/GmxSdkContext/GmxSdkContext";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSyntheticsEvents } from "context/SyntheticsEvents/SyntheticsEventsProvider";
+import { selectChartDataProvider } from "context/SyntheticsStateContext/selectors/chartDataSelectors";
 import { selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { selectChartDynamicLines } from "context/SyntheticsStateContext/selectors/chartSelectors/selectChartDynamicLines";
 import {
@@ -23,12 +26,16 @@ import { getPositionKey } from "domain/synthetics/positions";
 import { parseContractPrice } from "domain/synthetics/tokens";
 import { processRawTradeActions } from "domain/synthetics/tradeHistory/processTradeActions";
 import { fetchRawTradeActions } from "domain/synthetics/tradeHistory/useTradeHistory";
+import { API_UI_FLAGS, useIsApiSdkEnabled } from "domain/synthetics/uiFlags/useIsApiSdkEnabled";
 import { TokenPrices } from "domain/tokens";
 import { DataFeed } from "domain/tradingview/DataFeed";
+import { useChartCandlesFetcher } from "domain/tradingview/useChartCandlesFetcher";
 import { getObjectKeyFromValue, getSymbolName } from "domain/tradingview/utils";
+import { useChainId } from "lib/chains";
 import { getSubsquidGraphClient } from "lib/indexers/clients";
 import { formatUsd, calculateDisplayDecimals } from "lib/numbers";
 import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
+import { useSolanaWalletSession } from "lib/wallets/solanaWalletSession";
 import useWallet from "lib/wallets/useWallet";
 import { ContractsChainId } from "sdk/configs/chains";
 import { isChartAvailableForToken, getTokenBySymbolSafe } from "sdk/configs/tokens";
@@ -143,6 +150,11 @@ export default function TVChartContainer({
   const { theme } = useTheme();
 
   const oracleKeeperFetcher = useOracleKeeperFetcher(chainId as ContractsChainId);
+  const candlesFetcher = useChartCandlesFetcher(oracleKeeperFetcher);
+  const sdk = useOptionalGmxSdk(chainId as ContractsChainId);
+  const { networkId } = useChainId();
+  const wsCandlesFlag = useIsApiSdkEnabled(API_UI_FLAGS.wsCandles, chainId as ContractsChainId);
+  const wsCandlesEnabled = !isSolanaNetwork(networkId) && wsCandlesFlag;
 
   const [datafeed, setDatafeed] = useState<DataFeed | null>(null);
   const { positionIncreaseEvents, positionDecreaseEvents } = useSyntheticsEvents();
@@ -151,7 +163,24 @@ export default function TVChartContainer({
   const positionsInfoData = useSelector(selectPositionsInfoData);
   const { chartToken: selectedChartToken } = useSelector(selectChartToken);
   const dynamicChartLines = useSelector(selectChartDynamicLines);
-  const { account } = useWallet();
+  const isSolana = isSolanaNetwork(networkId);
+  const { account: evmAccount } = useWallet();
+  const { address: solanaAccount } = useSolanaWalletSession();
+  const account = isSolana ? solanaAccount : evmAccount;
+  const chartDataProvider = useSelector(selectChartDataProvider);
+  const solanaPositionsKey = useMemo(
+    () =>
+      isSolana
+        ? Object.values(positionsInfoData ?? {})
+            .map(
+              (p) =>
+                `${p.contractKey}:${p.sizeInUsd}:${p.collateralAmount}:${p.increasedAtTime}:${p.decreasedAtTime}:${p.tradeId}:${p.updatedAtSlot}`
+            )
+            .sort()
+            .join(",")
+        : "",
+    [isSolana, positionsInfoData]
+  );
 
   const openPositionKeySet = useMemo(() => {
     const set = new Set<string>();
@@ -179,7 +208,7 @@ export default function TVChartContainer({
   const [openedAtByContractKey, setOpenedAtByContractKey] = useState<Map<string, number>>(() => new Map());
 
   useEffect(() => {
-    if (!account || buySellIconsMode !== "current" || openContractKeys.length === 0) {
+    if (isSolana || !account || buySellIconsMode !== "current" || openContractKeys.length === 0) {
       setOpenedAtByContractKey((prev) => (prev.size === 0 ? prev : new Map()));
       return;
     }
@@ -196,7 +225,7 @@ export default function TVChartContainer({
       cancelled = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, account, buySellIconsMode, openContractKeysKey]);
+  }, [chainId, isSolana, account, buySellIconsMode, openContractKeysKey]);
 
   const openedAtByKey = useMemo(() => {
     const map = new Map<string, number>();
@@ -224,7 +253,12 @@ export default function TVChartContainer({
     visualMultiplier,
     chainId,
     account,
+    sdk,
     buySellIconsMode,
+    isSolana,
+    positionsInfoData,
+    chartDataProvider,
+    solanaPositionsKey,
   });
   const marksHistoryCacheRef = useRef<{
     key?: string;
@@ -263,14 +297,21 @@ export default function TVChartContainer({
     });
   }, [chartReady, wasChartOverridden, setWasChartOverridden, theme]);
 
-  useEffect(() => {
-    const newDatafeed = new DataFeed(chainId, oracleKeeperFetcher);
+  const createDatafeed = useCallback(() => {
+    if (!candlesFetcher) {
+      return;
+    }
+
+    const newDatafeed = new DataFeed(chainId, candlesFetcher);
     newDatafeed.setTokenPriceGetter((symbol) => {
       const data = marksStateRef.current.tokensData;
       if (!data) return undefined;
       const token = Object.values(data).find((t) => t.symbol === symbol);
       return token?.prices?.minPrice;
     });
+    newDatafeed.setCandleStreamFactory((symbol, timeframe) =>
+      marksStateRef.current.sdk?.watchCandles({ symbol, timeframe })
+    );
     newDatafeed.setMarksGetter(async (_symbolInfo, from, to, resolution) => {
       const {
         positionIncreaseEvents: inc,
@@ -284,6 +325,10 @@ export default function TVChartContainer({
         chainId: cid,
         account: acc,
         buySellIconsMode: mode,
+        isSolana,
+        positionsInfoData,
+        chartDataProvider,
+        solanaPositionsKey,
       } = marksStateRef.current;
       if (mode === "off") {
         return [];
@@ -296,7 +341,9 @@ export default function TVChartContainer({
       if (!periodSeconds) {
         return [];
       }
-      const wrappedSelected = convertTokenAddress(cid as ContractsChainId, selToken.address, "wrapped");
+      const getWrappedAddress = (address: string) =>
+        isSolana ? address : convertTokenAddress(cid as ContractsChainId, address, "wrapped");
+      const wrappedSelected = getWrappedAddress(selToken.address);
       if (!acc || !markets || !tokensData) {
         return [];
       }
@@ -313,7 +360,7 @@ export default function TVChartContainer({
         if (!market) {
           return null;
         }
-        const marketIndexWrapped = convertTokenAddress(cid as ContractsChainId, market.indexTokenAddress, "wrapped");
+        const marketIndexWrapped = getWrappedAddress(market.indexTokenAddress);
         if (!isSameAddress(marketIndexWrapped, wrappedSelected)) {
           return null;
         }
@@ -353,6 +400,38 @@ export default function TVChartContainer({
           minSize: 12,
         };
       };
+
+      if (isSolana) {
+        try {
+          if (!chartDataProvider?.tradesFetcher) return [];
+          const chartMarkets = Object.fromEntries(
+            Object.entries(markets).filter(([, market]) => isSameAddress(market.indexTokenAddress, wrappedSelected))
+          );
+          const trades = await chartDataProvider.tradesFetcher({
+            account: acc,
+            markets: chartMarkets,
+            positions: positionsInfoData,
+            mode,
+            from,
+            to: Math.min(to, Math.floor(Date.now() / 1000)),
+          });
+          const latest = marksStateRef.current;
+          if (
+            !latest.isSolana ||
+            latest.account !== acc ||
+            latest.selectedChartToken?.address !== selToken.address ||
+            latest.buySellIconsMode !== mode ||
+            (mode === "current" && latest.solanaPositionsKey !== solanaPositionsKey)
+          ) {
+            return [];
+          }
+          return trades.map(makeMark).filter((mark): mark is Mark => mark !== null);
+        } catch (err) {
+          // eslint-disable-next-line no-console
+          console.error("Error fetching Solana trade history marks:", err);
+          return [];
+        }
+      }
 
       const combinations = [
         {
@@ -564,13 +643,8 @@ export default function TVChartContainer({
         }
       });
     }
-    setDatafeed(newDatafeed);
-
-    // TradingView unsubscribes bars when its iframe unloads. destroy() removes the visibilitychange listener the datafeed adds.
-    return () => {
-      newDatafeed.destroy();
-    };
-  }, [chainId, oracleKeeperFetcher, setIsCandlesLoaded, marksStateRef]);
+    return newDatafeed;
+  }, [chainId, candlesFetcher, setIsCandlesLoaded, marksStateRef]);
 
   const isMobile = useMedia("(max-width: 550px)");
   const symbolRef = useRef(chartToken.symbol);
@@ -696,6 +770,10 @@ export default function TVChartContainer({
   }, [tokensData, datafeed]);
 
   useEffect(() => {
+    datafeed?.setCandleStreamEnabled(wsCandlesEnabled);
+  }, [datafeed, wsCandlesEnabled]);
+
+  useEffect(() => {
     if (
       !chartReady ||
       !tvWidgetRef.current ||
@@ -818,15 +896,31 @@ export default function TVChartContainer({
     buySellIconsMode,
     openPositionsKey,
     openedAtByContractKey,
+    isSolana,
+    solanaPositionsKey,
   ]);
 
   useEffect(() => {
-    if (!datafeed) return;
+    if (!chartReady || !isSolana || !account || buySellIconsMode === "off") return;
+    // Solana fills are indexed asynchronously and do not emit EVM position events.
+    let timeout: number;
+    const refresh = () => {
+      tvWidgetRef.current?.activeChart().refreshMarks();
+      timeout = window.setTimeout(refresh, 15_000);
+    };
+    timeout = window.setTimeout(refresh, 15_000);
+    return () => window.clearTimeout(timeout);
+  }, [chartReady, isSolana, account, buySellIconsMode]);
+
+  useEffect(() => {
+    const widgetDatafeed = createDatafeed();
+    setDatafeed(widgetDatafeed ?? null);
+    if (!widgetDatafeed) return;
 
     const widgetOptions: ChartingLibraryWidgetOptions = {
       debug: false,
       symbol: symbolRef.current && getSymbolName(symbolRef.current, visualMultiplier), // Using ref to avoid unnecessary re-renders on symbol change and still have access to the latest symbol
-      datafeed,
+      datafeed: widgetDatafeed,
       theme: theme,
       container: chartContainerRef.current!,
       library_path: defaultChartProps.library_path,
@@ -972,13 +1066,14 @@ export default function TVChartContainer({
       window.removeEventListener("pagehide", onPageHide);
       window.removeEventListener("pageshow", onPageShow);
       tvWidgetRef.current = null;
+      widgetDatafeed.destroy();
       widget.remove();
       setChartReady(false);
       setChartDataLoading(true);
     };
     // We don't want to re-initialize the chart when the symbol changes. This will make the chart flicker.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, datafeed, theme]);
+  }, [createDatafeed, theme]);
 
   const style = useMemo<CSSProperties>(
     () => ({ visibility: !chartDataLoading ? "visible" : "hidden" }),

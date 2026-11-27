@@ -21,8 +21,8 @@ import {
 import type { UnstakeRequestsData } from "domain/stake/useUnstakeRequests";
 import { useGovTokenAmount } from "domain/synthetics/governance/useGovTokenAmount";
 import { useGovTokenDelegates } from "domain/synthetics/governance/useGovTokenDelegates";
-import { useTokensAllowanceData } from "domain/synthetics/tokens";
 import { approveTokens } from "domain/tokens";
+import { useTokenApproval } from "domain/tokens/useTokenApproval";
 import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
 import { callContract } from "lib/contracts";
 import { formatDateTime } from "lib/dates";
@@ -50,7 +50,8 @@ import { SwitchToSettlementChainButtons } from "components/SwitchToSettlementCha
 import { SwitchToSettlementChainWarning } from "components/SwitchToSettlementChain/SwitchToSettlementChainWarning";
 import Tabs from "components/Tabs/Tabs";
 import { ButtonTooltipWrapper } from "components/Tooltip/ButtonTooltipWrapper";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipContent, TooltipText } from "components/Tooltip/TooltipBlocks";
 
 import AlertIcon from "img/ic_alert.svg?react";
 
@@ -147,12 +148,6 @@ export function StakeModal(props: {
   const stakeTitle = t`Stake ${tokenSymbol}`;
   const unstakeTitle = t`Unstake GMX and esGMX`;
 
-  const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
-    spenderAddress: stakeFarmAddress,
-    tokenAddresses: [stakeTokenAddress].filter(Boolean),
-  });
-  const tokenAllowance = tokensAllowanceData?.[stakeTokenAddress];
-
   useEffect(() => {
     setStakeValue("");
     setUnstakeValue("");
@@ -163,11 +158,20 @@ export function StakeModal(props: {
     setIsResetAcknowledged(false);
   }, [unstakeValue]);
 
-  const needApproval =
-    stakeFarmAddress !== zeroAddress &&
-    tokenAllowance !== undefined &&
-    stakeAmount !== undefined &&
-    stakeAmount > tokenAllowance;
+  const stakeApprovalTokens = useMemo(
+    () => [{ tokenAddress: stakeTokenAddress, amount: stakeAmount }],
+    [stakeAmount, stakeTokenAddress]
+  );
+  const { needsApproval, isAllowanceLoaded, approvalBatch } = useTokenApproval({
+    chainId,
+    spenderAddress: stakeFarmAddress,
+    tokens: stakeApprovalTokens,
+    allowBatch: true,
+    skip: stakeFarmAddress === zeroAddress,
+    metric: { flow: "stake" },
+  });
+  // with a batch the approval goes in the stake's own confirmation, so there is no separate Approve step
+  const needApproval = isAllowanceLoaded && needsApproval && approvalBatch === undefined;
 
   const stakeBonusPercentage = useMemo(() => {
     return calculateStakeBonusPercentage({
@@ -279,6 +283,8 @@ export function StakeModal(props: {
         failMsg: t`Stake failed`,
         setPendingTxns,
         hideErrorMsg: true,
+        walletCallsBatch: approvalBatch,
+        batchFlow: "stake",
       });
       sendStakingActionMetric({ action: "stake", tokenSymbol, chainId });
       setIsVisible(false);
@@ -290,6 +296,7 @@ export function StakeModal(props: {
     }
   }, [
     needApproval,
+    approvalBatch,
     signer,
     stakeTokenAddress,
     stakeFarmAddress,
@@ -501,7 +508,7 @@ export function StakeModal(props: {
                 />
               </div>
               <div className="flex justify-between text-12">
-                <TooltipWithPortal
+                <StandardTooltip
                   handleClassName={cx(
                     "font-medium",
                     exceedsLimit ? "text-red-500" : isApproachingLimit ? "text-yellow-300" : "text-typography-secondary"
@@ -512,23 +519,23 @@ export function StakeModal(props: {
                     </Trans>
                   }
                   content={
-                    <div className="flex flex-col gap-8">
-                      <div>
+                    <TooltipContent>
+                      <TooltipText>
                         <Trans>
                           Unstaking more than 20% of your max historical staked GMX or esGMX will reset your accrued
                           rewards.
                         </Trans>
-                      </div>
-                      <div>
+                      </TooltipText>
+                      <TooltipText>
                         <Trans>
                           Current safe limit:{" "}
-                          <span className="text-typography-primary numbers">
+                          <span className="numbers">
                             {numberWithCommas(formatAmountFree(safeUnstakeLimit!, 18, 5))}
                           </span>{" "}
                           combined.
                         </Trans>
-                      </div>
-                    </div>
+                      </TooltipText>
+                    </TooltipContent>
                   }
                 />
                 <span

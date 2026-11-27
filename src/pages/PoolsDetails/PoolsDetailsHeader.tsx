@@ -19,6 +19,7 @@ import { GlvOrMarketInfo } from "domain/synthetics/markets/types";
 import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
 import { PoolsTimeRange } from "domain/synthetics/markets/usePoolsTimeRange";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
+import { getIsPoolTokenPriceInvalid } from "domain/synthetics/markets/utils";
 import { convertToUsd, TokenData } from "domain/synthetics/tokens";
 import type { UsdgLaunchBoost } from "domain/synthetics/usdgLaunchBoost/utils";
 import { useChainId } from "lib/chains";
@@ -94,7 +95,12 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken, timeRange, la
   const apy = getByKey(apyData, marketToken?.address);
   const incentiveApr = getByKey(incentiveAprData, marketToken?.address);
   const lidoApr = getByKey(marketsTokensLidoAprData, marketToken?.address);
-  const shouldShowApy = (apy !== undefined && apy !== 0n) || launchBoost !== undefined || isApyLoading;
+  const isPriceInvalid =
+    glvOrMarketInfo !== undefined &&
+    marketToken !== undefined &&
+    getIsPoolTokenPriceInvalid(glvOrMarketInfo, marketToken);
+  const shouldShowApy =
+    !isPriceInvalid && ((apy !== undefined && apy !== 0n) || launchBoost !== undefined || isApyLoading);
 
   const { isMobile } = useBreakpoints();
 

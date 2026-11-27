@@ -26,6 +26,8 @@ export type Position = {
   pendingImpactAmount: bigint;
   positionValueInUsd: bigint;
   data: string;
+  tradeId?: bigint;
+  updatedAtSlot?: bigint;
 };
 
 export type PositionInfo = Position & {
@@ -64,6 +66,7 @@ export type PositionInfo = Position & {
   uiFeeUsd: bigint;
   pendingFundingFeesUsd: bigint;
   pendingClaimableFundingFeesUsd: bigint;
+  fundingSettlement?: "nextOrder";
 };
 
 export type PositionInfoLoaded = PositionInfo & { marketInfo: MarketInfo };

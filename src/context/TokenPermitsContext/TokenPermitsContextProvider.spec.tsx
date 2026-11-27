@@ -3,8 +3,13 @@ import { SWRConfig } from "swr";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import "lib/monkeyPatching";
-import { IS_TOKEN_PERMITS_EOA_ENABLED_UI_FLAG, type UiFlags } from "domain/synthetics/uiFlags/uiFlags";
+import {
+  IS_CLASSIC_TOKEN_PERMITS_ENABLED_UI_FLAG,
+  IS_TOKEN_PERMITS_EOA_ENABLED_UI_FLAG,
+  type UiFlags,
+} from "domain/synthetics/uiFlags/uiFlags";
 import { PERMIT_WALLET_CHANGED_ERROR } from "lib/errors/customErrors";
+import type { WalletSigner } from "lib/wallets";
 import type { SignedTokenPermit } from "sdk/utils/tokens/types";
 
 import { TokenPermitsContextProvider, TokenPermitsState, useTokenPermitsContext } from "./TokenPermitsContextProvider";
@@ -21,17 +26,21 @@ const mocks = vi.hoisted(() => ({
   accountType: "eoa" as string,
   account: "0x0000000000000000000000000000000000000001",
   hasProvider: true,
+  hasSigner: true,
   createAndSignTokenPermit: vi.fn(),
   isPermitSignatureValid: true,
 }));
 
 vi.mock("lib/chains", () => ({ useChainId: () => ({ chainId: CHAIN_ID }) }));
 vi.mock("lib/wallets/useWallet", () => ({
-  default: () => ({ signer: { address: mocks.account, provider: mocks.hasProvider ? {} : undefined } }),
+  default: () => ({
+    account: mocks.account,
+    signer: mocks.hasSigner ? { address: mocks.account, provider: mocks.hasProvider ? {} : undefined } : undefined,
+  }),
 }));
 vi.mock("lib/wallets/walletConfig", () => ({ getPublicClientWithRpc: () => ({}) }));
 vi.mock("domain/synthetics/uiFlags/useUiFlagsRequest", () => ({
-  useUiFlagsRequest: () => ({ uiFlags: mocks.uiFlags }),
+  useUiFlagsRequest: () => ({ uiFlags: mocks.uiFlags, isLoaded: mocks.uiFlags !== undefined }),
 }));
 vi.mock("context/SettingsContext/SettingsContextProvider", () => ({
   useSettings: () => ({ isTokenPermitsQaOverrideEnabled: false }),
@@ -112,6 +121,7 @@ describe("TokenPermitsContextProvider", () => {
     mocks.account = ACCOUNT;
     mocks.isPermitSignatureValid = true;
     mocks.hasProvider = true;
+    mocks.hasSigner = true;
   });
 
   afterEach(() => {
@@ -127,6 +137,40 @@ describe("TokenPermitsContextProvider", () => {
     expect(state.tokenPermits.map((p) => p.token)).toEqual([USDC]);
     expect(state.getIsPermitAvailable(USDC)).toBe(true);
     expect(state.getIsPermitAvailable(LINK)).toBe(false);
+    expect(state.getPermitUnavailableReason(USDC)).toBeUndefined();
+    expect(state.getPermitUnavailableReason(LINK)).toBe("tokenNotAllowed");
+  });
+
+  it("tells why an allowlisted token can't use a permit yet", async () => {
+    mocks.uiFlags = undefined;
+    await setup();
+
+    expect(state.getIsPermitAvailable(USDC)).toBe(false);
+    expect(state.getPermitUnavailableReason(USDC)).toBe("flagNotLoaded");
+  });
+
+  it.each([
+    { name: "only the account type's flag is on", classicFlag: false, isClassicEnabled: false },
+    { name: "the Classic flag is on too", classicFlag: true, isClassicEnabled: true },
+  ])("offers permits in wallet transactions when $name", async ({ classicFlag, isClassicEnabled }) => {
+    mocks.uiFlags = {
+      ...flag(IS_TOKEN_PERMITS_EOA_ENABLED_UI_FLAG, true),
+      ...flag(IS_CLASSIC_TOKEN_PERMITS_ENABLED_UI_FLAG, classicFlag),
+    };
+    storePermits([permit(USDC)]);
+
+    await setup();
+
+    expect(state.isClassicEnabled).toBe(isClassicEnabled);
+    expect(state.classicTokenPermits.map((p) => p.token)).toEqual(isClassicEnabled ? [USDC] : []);
+  });
+
+  it("keeps permits out of wallet transactions while the account type's flag is off, whatever the Classic flag", async () => {
+    mocks.uiFlags = flag(IS_CLASSIC_TOKEN_PERMITS_ENABLED_UI_FLAG, true);
+
+    await setup();
+
+    expect(state.isClassicEnabled).toBe(false);
   });
 
   it("sends a token whose permit failed back to approvals without touching other tokens", async () => {
@@ -136,6 +180,7 @@ describe("TokenPermitsContextProvider", () => {
     act(() => state.disableTokenPermits([USDC]));
 
     expect(state.getIsPermitAvailable(USDC)).toBe(false);
+    expect(state.getPermitUnavailableReason(USDC)).toBe("tokenDisabled");
     expect(state.getIsPermitAvailable(WETH)).toBe(true);
     expect(state.tokenPermits.map((p) => p.token)).toEqual([WETH]);
   });
@@ -261,6 +306,19 @@ describe("TokenPermitsContextProvider", () => {
     expect(
       JSON.parse(localStorage.getItem(JSON.stringify([CHAIN_ID, mocks.account, "token-permits"])) ?? "[]")
     ).toEqual([]);
+  });
+
+  it("signs with a passed signer while the wallet's own one reloads after a network switch", async () => {
+    const { rerender } = await setup();
+    mocks.hasSigner = false;
+    rerender();
+    mocks.createAndSignTokenPermit.mockResolvedValue({ permit: permit(USDC) });
+
+    await act(async () => {
+      await state.addTokenPermit(USDC, ROUTER, 100n, { signer: { address: ACCOUNT, provider: {} } as WalletSigner });
+    });
+
+    expect(readStoredTokens()).toEqual([USDC]);
   });
 
   it("fails instead of reporting a signed permit when the wallet isn't ready", async () => {

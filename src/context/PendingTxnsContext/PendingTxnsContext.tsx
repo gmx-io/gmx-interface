@@ -15,6 +15,7 @@ import { useLatest, useMountedState } from "react-use";
 import type { ReplacementReturnType } from "viem";
 
 import { getExplorerUrl, isSolanaNetwork } from "config/chains";
+import { getIsSolanaNetworkSelected } from "config/solanaNetwork";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useChainId } from "lib/chains";
 import { parseError } from "lib/errors";
@@ -46,7 +47,9 @@ export type PendingTransaction = {
   data?: PendingTransactionData;
   actionName?: TradingActionName;
   onError?: () => void;
-  chainId?: number;
+  onSuccess?: () => void;
+  // The chain the txn was sent on. Pending txns outlive chain switches, so the poller cannot assume the current one.
+  chainId: number;
   onReplaced?: (transactionHash: string) => void;
 };
 
@@ -109,14 +112,47 @@ export function PendingTxnsContextProvider({ children }: { children: ReactNode }
   const { networkId } = useChainId();
   const isSolana = isSolanaNetwork(networkId);
   const [pendingTxns, setPendingTxns] = useState<PendingTransaction[]>([]);
+  const latestPendingTxns = useLatest(pendingTxns);
+  const isMounted = useMountedState();
 
   // Solana does not poll EVM receipts, so pending EVM txns left from before the switch must not block reloads there
   useBlockAutoReload(pendingTxns.length > 0 && !isSolana);
+
+  // The poller unmounts on Solana. SWR keeps the in-flight receipt promise, so this callback has to
+  // belong to the provider or a later speed-up / cancel no-ops on the old poller's isMounted().
+  const handleReplacement = useCallback(
+    (pendingTxn: PendingTransaction, replacement: ReplacementReturnType) => {
+      if (!isMounted() || !latestPendingTxns.current.includes(pendingTxn)) return;
+
+      const hash = replacement.transactionReceipt.transactionHash;
+      if (replacement.reason === "repriced") {
+        pendingTxn.onReplaced?.(hash);
+        setPendingTxns((txns) => txns.map((txn) => (txn === pendingTxn ? { ...txn, hash } : txn)));
+      } else {
+        pendingTxn.onError?.();
+        setPendingTxns((txns) => txns.filter((txn) => txn !== pendingTxn));
+        helperToast.error(
+          getPendingTxnFailureToastContent({ txUrl: getExplorerUrl(pendingTxn.chainId) + "tx/" + hash })
+        );
+      }
+    },
+    [isMounted, latestPendingTxns, setPendingTxns]
+  );
 
   const state = useMemo(() => ({ pendingTxns, setPendingTxns }), [pendingTxns, setPendingTxns]);
 
   return (
     <PendingTxnsContext.Provider value={state}>
+      {pendingTxns.map((transaction) =>
+        transaction.onReplaced ? (
+          <PendingTxnReplacementTracker
+            key={`${transaction.chainId}:${transaction.hash}`}
+            transaction={transaction}
+            chainId={transaction.chainId}
+            onReplaced={handleReplacement}
+          />
+        ) : null
+      )}
       {!isSolana && <PendingTxnsPoller pendingTxns={pendingTxns} setPendingTxns={setPendingTxns} />}
       {children}
     </PendingTxnsContext.Provider>
@@ -132,29 +168,10 @@ function PendingTxnsPoller({
 }) {
   const { chainId } = useChainId();
   const { provider } = useJsonRpcProvider(chainId);
-  const { setIsSettingsVisible, executionFeeBufferBps } = useSettings();
+  const { setIsSettingsVisible, executionFeeBufferBps, expressOrdersEnabled } = useSettings();
   const latestPendingTxns = useLatest(pendingTxns);
   const isMounted = useMountedState();
   const isPolling = useRef(false);
-
-  const handleReplacement = useCallback(
-    (pendingTxn: PendingTransaction, replacement: ReplacementReturnType) => {
-      if (!isMounted() || !latestPendingTxns.current.includes(pendingTxn)) return;
-
-      const hash = replacement.transactionReceipt.transactionHash;
-      if (replacement.reason === "repriced") {
-        pendingTxn.onReplaced?.(hash);
-        setPendingTxns((txns) => txns.map((txn) => (txn === pendingTxn ? { ...txn, hash } : txn)));
-      } else {
-        pendingTxn.onError?.();
-        setPendingTxns((txns) => txns.filter((txn) => txn !== pendingTxn));
-        helperToast.error(
-          getPendingTxnFailureToastContent({ txUrl: getExplorerUrl(pendingTxn.chainId ?? chainId) + "tx/" + hash })
-        );
-      }
-    },
-    [chainId, isMounted, latestPendingTxns, setPendingTxns]
-  );
 
   useEffect(() => {
     const checkPendingTxns = async () => {
@@ -168,9 +185,11 @@ function PendingTxnsPoller({
         for (let i = 0; i < pendingTxns.length; i++) {
           const pendingTxn = pendingTxns[i];
           if (!isMounted() || !latestPendingTxns.current.includes(pendingTxn)) continue;
+          // This provider sits above EvmProviders, so a poll can still be running when Solana gets selected.
+          if (getIsSolanaNetworkSelected()) break;
 
-          const txnChainId = pendingTxn.chainId ?? chainId;
-          const txnProvider = pendingTxn.chainId ? getProvider(undefined, txnChainId) : provider;
+          const txnChainId = pendingTxn.chainId;
+          const txnProvider = txnChainId === chainId ? provider : getProvider(undefined, txnChainId);
           const receipt = await txnProvider.getTransactionReceipt(pendingTxn.hash).catch(() => null);
           if (!isMounted() || !latestPendingTxns.current.includes(pendingTxn)) continue;
 
@@ -204,7 +223,8 @@ function PendingTxnsPoller({
                   estimatedOrders: pendingTxn.data?.estimatedOrders,
                   txUrl,
                   errorMessage: errorData?.errorMessage,
-                  shouldOfferExpress: true,
+                  shouldOfferExpress: !expressOrdersEnabled,
+                  expressOrdersEnabled,
                   setIsSettingsVisible,
                 });
               } else {
@@ -226,6 +246,10 @@ function PendingTxnsPoller({
                 sendTxnErrorMetric(pendingTxn.metricId, onchainError, "minting");
                 sendUserAnalyticsOrderResultEvent(txnChainId, pendingTxn.metricId, false);
               }
+            }
+
+            if (receipt.status === 1) {
+              pendingTxn.onSuccess?.();
             }
 
             if (receipt.status === 1 && pendingTxn.message) {
@@ -260,23 +284,11 @@ function PendingTxnsPoller({
     chainId,
     setIsSettingsVisible,
     executionFeeBufferBps,
+    expressOrdersEnabled,
     isMounted,
     latestPendingTxns,
     setPendingTxns,
   ]);
 
-  return (
-    <>
-      {pendingTxns.map((transaction) =>
-        transaction.onReplaced && transaction.chainId !== undefined ? (
-          <PendingTxnReplacementTracker
-            key={`${transaction.chainId}:${transaction.hash}`}
-            transaction={transaction}
-            chainId={transaction.chainId}
-            onReplaced={handleReplacement}
-          />
-        ) : null
-      )}
-    </>
-  );
+  return null;
 }

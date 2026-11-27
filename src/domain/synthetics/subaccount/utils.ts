@@ -35,6 +35,7 @@ import {
 import { nowInSeconds } from "sdk/utils/time";
 
 import { getGelatoRelayRouterDomain } from "../express";
+import { getIsLegacySubaccountConfig } from "./subaccountConfigStorage";
 import { SubaccountOnchainData } from "./useSubaccountOnchainData";
 import { getMultichainInfoFromSigner, getOrderRelayRouterAddress } from "../express/expressOrderUtils";
 
@@ -50,6 +51,7 @@ export function getSubaccountValidations({
   return {
     isExpired: getIsSubaccountExpired(subaccount),
     isActionsExceeded: getIsSubaccountActionsExceeded(subaccount, requiredActions),
+    isNonceExpired: getIsSubaccountNonceExpired(subaccount),
     isApprovalInvalid: getIsSubaccountApprovalInvalid({
       chainId: subaccount.chainId,
       signerChainId: subaccount.signerChainId,
@@ -72,6 +74,19 @@ export function getIsSubaccountActive(subaccount: {
   }
 
   return active;
+}
+
+export function getCanReuseSubaccount(
+  subaccount: Subaccount | undefined,
+  config: SubaccountSerializedConfig | undefined
+): boolean {
+  return Boolean(
+    config &&
+      !getIsLegacySubaccountConfig(config) &&
+      subaccount &&
+      !getIsSubaccountExpired(subaccount) &&
+      !getIsSubaccountActionsExceeded(subaccount, 1)
+  );
 }
 
 export function getSubaccountSigner(config: SubaccountSerializedConfig, account: string, provider?: ethers.Provider) {
@@ -183,6 +198,41 @@ export function getIsSubaccountNonceExpired({
   return signedNonce !== onChainNonce;
 }
 
+export function getIsLegacySubaccountRemovalRequired({
+  chainId,
+  subaccountAddress,
+  isListed,
+  onchainData,
+  pendingApprovals,
+}: {
+  chainId: ContractsChainId;
+  subaccountAddress: string;
+  isListed: boolean | undefined;
+  onchainData: SubaccountOnchainData | undefined;
+  pendingApprovals: SignedSubaccountApproval[];
+}): boolean {
+  if (isListed !== false) {
+    return true;
+  }
+
+  if (!isContractsV2_2_1(chainId)) {
+    return false;
+  }
+
+  const now = BigInt(nowInSeconds());
+
+  return pendingApprovals.some(
+    (signedApproval) =>
+      signedApproval.subaccount === subaccountAddress &&
+      (signedApproval.subaccountRouterAddress === getContract(chainId, "SubaccountGelatoRelayRouter") ||
+        signedApproval.subaccountRouterAddress === getContract(chainId, "MultichainSubaccountRouter")) &&
+      signedApproval.deadline > now &&
+      (!onchainData ||
+        (!isSubaccountApprovalRevoked(signedApproval, onchainData.revocationCounter) &&
+          !getIsSubaccountNonceExpired({ chainId, onchainData, signedApproval })))
+  );
+}
+
 /**
  * Returns false for empty subaccount approval
  */
@@ -282,6 +332,7 @@ export function getIsInvalidSubaccount({
   subaccountRouterAddress: string;
 }): boolean {
   const isExpired = getIsSubaccountExpired(subaccount);
+  const isNonceExpired = getIsSubaccountNonceExpired(subaccount);
   const actionsExceeded = getIsSubaccountActionsExceeded(subaccount, requiredActions);
   const isApprovalInvalid = getIsSubaccountApprovalInvalid({
     chainId: subaccount.chainId,
@@ -291,7 +342,7 @@ export function getIsInvalidSubaccount({
     onchainData: subaccount.onchainData,
   });
 
-  return isExpired || actionsExceeded || isApprovalInvalid;
+  return isExpired || isNonceExpired || actionsExceeded || isApprovalInvalid;
 }
 
 function getEmptySubaccountApproval(chainId: ContractsChainId, subaccountAddress: string): SignedSubaccountApproval {
@@ -325,34 +376,44 @@ function getIsEmptySubaccountApproval(subaccountApproval: SignedSubaccountApprov
   );
 }
 
+export type SubaccountLimits = { remainingActions: bigint; remainingSeconds: bigint };
+
 export async function getInitialSubaccountApproval({
   chainId,
   signer,
   provider,
   subaccountAddress,
   isGmxAccount,
+  remainingSeconds,
+  remainingActions = BigInt(DEFAULT_ONE_CLICK_SESSION_MAX_ACTIONS),
 }: {
   chainId: ContractsChainId;
   signer: WalletSigner;
   provider: Provider;
   subaccountAddress: string;
   isGmxAccount: boolean;
+  remainingSeconds?: bigint;
+  remainingActions?: bigint;
 }) {
+  if (remainingActions <= 0n || (remainingSeconds !== undefined && remainingSeconds <= 0n)) {
+    throw new Error("One-Click limits must be positive");
+  }
+
   const onchainData = await getSubaccountOnchainData({ chainId, signer, provider, subaccountAddress });
 
-  const defaultExpiresAt = BigInt(nowInSeconds() + DEFAULT_ONE_CLICK_SESSION_DURATION);
+  const defaultExpiresAt = BigInt(nowInSeconds()) + (remainingSeconds ?? BigInt(DEFAULT_ONE_CLICK_SESSION_DURATION));
 
   let expiresAt = getSubaccountExpiresAt({
     onchainData,
     signedApproval: undefined,
   });
 
-  if (expiresAt < defaultExpiresAt) {
+  // a time limit the user set wins over a longer expiry left on chain by an earlier session of this address
+  if (remainingSeconds !== undefined || expiresAt < defaultExpiresAt) {
     expiresAt = defaultExpiresAt;
   }
 
-  const defaultMaxAllowedCount = BigInt(DEFAULT_ONE_CLICK_SESSION_MAX_ACTIONS);
-  const maxAllowedCount = onchainData.currentActionsCount + defaultMaxAllowedCount;
+  const maxAllowedCount = onchainData.currentActionsCount + remainingActions;
 
   const defaultSubaccountApproval = await createAndSignSubaccountApproval(
     chainId,
@@ -400,11 +461,16 @@ function getIsSubaccountApprovalSynced(params: {
 }): boolean {
   const { signedApproval, onchainData } = params;
 
-  /**
-   * If nonce is expired or the subaccount was revoked, we believe a newer settings have been applied in some other way e.g. different browser
-   */
-  if (getIsSubaccountNonceExpired(params) || getIsSubaccountRevoked(params)) {
+  if (getIsSubaccountRevoked(params)) {
     return true;
+  }
+
+  /**
+   * If nonce is expired, we believe a newer settings have been applied in some other way e.g. different browser.
+   * An address the contract has never seen keeps its approval, so the UI can ask to re-sign it
+   */
+  if (getIsSubaccountNonceExpired(params)) {
+    return onchainData.expiresAt > 0n;
   }
 
   return (
@@ -534,7 +600,7 @@ async function getSubaccountApprovalNonceForProvider(
   });
 }
 
-async function getSubaccountOnchainData({
+export async function getSubaccountOnchainData({
   chainId,
   signer,
   provider,

@@ -6,12 +6,16 @@ import {
   usePositionEditorOpenAtPrice,
   usePositionEditorOpenDepositNow,
 } from "context/SyntheticsStateContext/hooks/positionEditorHooks";
+import { selectClosedMarkets } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { useSelector } from "context/SyntheticsStateContext/utils";
+import { getIsMarketClosed } from "domain/synthetics/markets/utils";
 import { parsePositionKey } from "domain/synthetics/positions";
 import { useChainId } from "lib/chains";
 import useWallet from "lib/wallets/useWallet";
 import { isSameAddress } from "sdk/utils/address";
 
 import { EmbeddedActionButton } from "components/Button/EmbeddedActionButton";
+import { TooltipAction } from "components/Tooltip/TooltipBlocks";
 
 const remediationActionStyle = {
   color: "var(--colorful-banner-accent-color, inherit)",
@@ -28,34 +32,41 @@ function useRemediablePositionKey(positionKey: string | undefined): string | und
   return isRemediable ? positionKey : undefined;
 }
 
-export function DepositMarginNowAction({
+export function DepositMarginAction({
   positionKey,
+  isTooltipLine,
   children,
-}: PropsWithChildren<{ positionKey: string | undefined }>) {
+}: PropsWithChildren<{ positionKey: string | undefined; isTooltipLine?: boolean }>) {
   const { networkId } = useChainId();
   const openDepositNow = usePositionEditorOpenDepositNow();
+  const openAtPrice = usePositionEditorOpenAtPrice();
   const remediablePositionKey = useRemediablePositionKey(positionKey);
+  const closedMarkets = useSelector(selectClosedMarkets);
+  const isMarketClosed =
+    remediablePositionKey !== undefined &&
+    getIsMarketClosed(closedMarkets, parsePositionKey(remediablePositionKey).marketAddress);
 
   if (!getNetworkFeatures(networkId).collateralDeposit || remediablePositionKey === undefined) {
-    return <>{children}</>;
+    return isTooltipLine ? null : <>{children}</>;
   }
 
+  const openDeposit = isMarketClosed
+    ? () => openAtPrice({ positionKey: remediablePositionKey })
+    : () => openDepositNow(remediablePositionKey);
+
   return (
-    <EmbeddedActionButton
-      className="font-medium"
-      style={remediationActionStyle}
-      onClick={() => openDepositNow(remediablePositionKey)}
-    >
+    <RemediationAction isTooltipLine={isTooltipLine} onClick={openDeposit}>
       {children}
-    </EmbeddedActionButton>
+    </RemediationAction>
   );
 }
 
 export function ReplaceMarginDepositAction({
   positionKey,
   orderKey,
+  isTooltipLine,
   children,
-}: PropsWithChildren<{ positionKey: string | undefined; orderKey: string | undefined }>) {
+}: PropsWithChildren<{ positionKey: string | undefined; orderKey: string | undefined; isTooltipLine?: boolean }>) {
   const { networkId } = useChainId();
   const openAtPrice = usePositionEditorOpenAtPrice();
   const remediablePositionKey = useRemediablePositionKey(positionKey);
@@ -65,15 +76,30 @@ export function ReplaceMarginDepositAction({
     remediablePositionKey === undefined ||
     orderKey === undefined
   ) {
-    return <>{children}</>;
+    return isTooltipLine ? null : <>{children}</>;
   }
 
   return (
-    <EmbeddedActionButton
-      className="font-medium"
-      style={remediationActionStyle}
+    <RemediationAction
+      isTooltipLine={isTooltipLine}
       onClick={() => openAtPrice({ positionKey: remediablePositionKey, replacingOrderKey: orderKey })}
     >
+      {children}
+    </RemediationAction>
+  );
+}
+
+function RemediationAction({
+  isTooltipLine,
+  onClick,
+  children,
+}: PropsWithChildren<{ isTooltipLine: boolean | undefined; onClick: () => void }>) {
+  if (isTooltipLine) {
+    return <TooltipAction onClick={onClick}>{children}</TooltipAction>;
+  }
+
+  return (
+    <EmbeddedActionButton className="font-medium" style={remediationActionStyle} onClick={onClick}>
       {children}
     </EmbeddedActionButton>
   );
@@ -83,8 +109,7 @@ export function LiquidatableIncreaseMessage({ positionKey }: { positionKey: stri
   return (
     <Trans>
       Order may not execute: the resulting position would be liquidatable at the trigger price.{" "}
-      <DepositMarginNowAction positionKey={positionKey}>Deposit margin</DepositMarginNowAction> or reduce the order
-      size.
+      <DepositMarginAction positionKey={positionKey}>Deposit margin</DepositMarginAction> or reduce the order size.
     </Trans>
   );
 }

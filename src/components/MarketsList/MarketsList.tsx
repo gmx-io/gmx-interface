@@ -20,15 +20,13 @@ import usePagination, { DEFAULT_PAGE_SIZE } from "components/Pagination/usePagin
 import SearchInput from "components/SearchInput/SearchInput";
 import { MarketListSkeleton } from "components/Skeleton/Skeleton";
 import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
-import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipRow, TooltipRows } from "components/Tooltip/TooltipBlocks";
 
 import { renderNetFeeHeaderTooltipContent } from "./NetFeeHeaderTooltipContent";
 import { NetFeeTooltip } from "./NetFeeTooltip";
-
-import "./MarketsList.scss";
 
 export function MarketsList() {
   const { chainId } = useChainId();
@@ -96,8 +94,9 @@ function MarketsListDesktop({ chainId, indexTokensStats }: { chainId: number; in
                 </Sorter>
               </TableTh>
               <TableTh>
-                <TooltipWithPortal
+                <StandardTooltip
                   handle={<Trans>NET RATE / 1H</Trans>}
+                  variant="iconStroke"
                   renderContent={renderNetFeeHeaderTooltipContent}
                 />
               </TableTh>
@@ -227,71 +226,62 @@ function MarketsListDesktopItem({ stats }: { stats: IndexTokenStat }) {
         <UsdPriceValue price={stats.token.prices?.minPrice} visualMultiplier={stats.token.visualMultiplier} />
       </TableTd>
       <TableTd>
-        <TooltipWithPortal
-          className="nowrap"
+        <StandardTooltip
           handle={
             <AmountHumanValue amount={stats.totalPoolValue} decimals={USD_DECIMALS} showDollar displayDecimals={2} />
           }
           handleClassName="numbers"
           content={
-            <>
+            <TooltipRows>
               {stats.marketsStats.map(({ marketInfo, poolValueUsd }) => (
-                <StatsTooltipRow
+                <TooltipRow
                   key={marketInfo.marketTokenAddress}
-                  showDollar={false}
-                  showColon
                   label={
                     <div className="inline-flex items-start">
                       <span>{getMarketIndexName(marketInfo)}</span>
-                      <span className="subtext leading-1">[{getMarketPoolName(marketInfo)}]</span>:
+                      <span className="subtext leading-1">[{getMarketPoolName(marketInfo)}]</span>
                     </div>
                   }
                   value={
                     <AmountHumanValue amount={poolValueUsd} decimals={USD_DECIMALS} showDollar displayDecimals={2} />
                   }
-                  valueClassName="numbers"
                 />
               ))}
-            </>
+            </TooltipRows>
           }
         />
       </TableTd>
       <TableTd>
-        <TooltipWithPortal
-          className="nowrap"
+        <StandardTooltip
           handle={
             <AmountHumanValue amount={stats.totalMaxLiquidity} decimals={USD_DECIMALS} showDollar displayDecimals={2} />
           }
           handleClassName="numbers"
           content={
-            <>
+            <TooltipRows>
               {stats.marketsStats.map(({ marketInfo, maxLiquidity }) => (
-                <StatsTooltipRow
+                <TooltipRow
                   key={marketInfo.marketTokenAddress}
-                  showDollar={false}
-                  showColon
                   label={
                     <div className="inline-flex items-start">
                       <span>{getMarketIndexName(marketInfo)}</span>
-                      <span className="subtext leading-1">[{getMarketPoolName(marketInfo)}]</span>:
+                      <span className="subtext leading-1">[{getMarketPoolName(marketInfo)}]</span>
                     </div>
                   }
                   value={
                     <AmountHumanValue amount={maxLiquidity} decimals={USD_DECIMALS} showDollar displayDecimals={2} />
                   }
-                  valueClassName="numbers"
                 />
               ))}
-            </>
+            </TooltipRows>
           }
         />
       </TableTd>
       <TableTd>
-        <TooltipWithPortal
-          tooltipClassName="MarketList-netfee-tooltip"
+        <StandardTooltip
           handle={`${formatRatePercentage(netFeePerHourLong)} / ${formatRatePercentage(netFeePerHourShort)}`}
           handleClassName="numbers"
-          maxAllowedWidth={510}
+          size="wide"
           position="bottom-end"
           renderContent={() => <NetFeeTooltip marketStats={stats.marketsStats} />}
         />

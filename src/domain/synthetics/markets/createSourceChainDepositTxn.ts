@@ -16,6 +16,7 @@ import { convertTokenAddress } from "sdk/configs/tokens";
 import { quoteFromNativeFee } from "sdk/utils/multichain/sendParams";
 
 import { estimateSourceChainDepositFees, SourceChainDepositFees } from "./feeEstimation/estimateSourceChainDepositFees";
+import { assertPositiveMinOutputAmount } from "./lpMinOutput";
 import { signCreateDeposit } from "./signCreateDeposit";
 
 export async function createSourceChainDepositTxn({
@@ -46,6 +47,8 @@ export async function createSourceChainDepositTxn({
       globalExpressParams: GlobalExpressParams;
     }
 )): Promise<WalletTxnResult> {
+  assertPositiveMinOutputAmount(params.minMarketTokens);
+
   const ensuredFees = fees
     ? fees
     : await estimateSourceChainDepositFees({
@@ -97,6 +100,7 @@ export async function createSourceChainDepositTxn({
     amountLD,
     composeGas: ensuredFees.txnEstimatedComposeGas,
     isToGmx: true,
+    isManualGas: true,
     action,
     nativeDropAmount: relayParams.fee.feeAmount,
   });

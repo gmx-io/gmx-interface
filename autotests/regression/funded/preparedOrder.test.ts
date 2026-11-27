@@ -154,6 +154,10 @@ test("rejects a tampered fee, collateral, receiver, chain, router or slippage", 
       p.payload.batchParams.createOrderParams[0].orderPayload.numbers.acceptablePrice = 10n ** 70n;
       rebuildTypedData(p);
     },
+    (p: PrepareOrderResponse) => {
+      p.payload.relayParams.eip6492SignatureWrapperHash = `0x${"ab".repeat(32)}`;
+      rebuildTypedData(p);
+    },
   ]) {
     const prepared = preparedOrder();
     change(prepared);

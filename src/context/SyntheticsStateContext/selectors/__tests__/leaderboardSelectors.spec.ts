@@ -1,3 +1,4 @@
+// @vitest-shared-worker
 import { describe, expect, it } from "vitest";
 
 import { LeaderboardAccount, LeaderboardPositionBase } from "domain/synthetics/leaderboard";

@@ -21,16 +21,43 @@ export function isMultichainExpressSubmitBlocked(
   return isGmxAccount && (!expressParams || !getIsValidExpressParams(expressParams));
 }
 
+export type ExpressTokenPermitBlockReason = "noExpressParams" | "gmxAccount" | "notEnoughGasToken";
+
 /**
  * A permit travels inside the relay call, so it can stand in for an approval only when the order is
- * going to be relayed. Missing gas token approval doesn't count against it: a permit can cover that too.
+ * going to be relayed. Missing gas token approval doesn't count against it: a permit can cover that too,
+ * and neither does a gas token balance that is still loading.
  */
-export function getCanUseTokenPermits(expressParams: ExpressTxnParams | undefined): boolean {
-  return (
-    expressParams !== undefined &&
-    !expressParams.isGmxAccount &&
-    !expressParams.gasPaymentValidations.isOutGasTokenBalance
-  );
+export function getExpressTokenPermitBlockReason(
+  expressParams: ExpressTxnParams | undefined
+): ExpressTokenPermitBlockReason | undefined {
+  if (expressParams === undefined) {
+    return "noExpressParams";
+  }
+
+  if (expressParams.isGmxAccount) {
+    return "gmxAccount";
+  }
+
+  if (getIsConfirmedOutOfGasPaymentTokenBalance(expressParams.gasPaymentValidations)) {
+    return "notEnoughGasToken";
+  }
+
+  return undefined;
+}
+
+// a wallet short of the gas payment token falls back to a Classic transaction, which doesn't spend it
+export function getGasPaymentTokenToApprove(
+  expressParams: ExpressTxnParams | undefined
+): { tokenAddress: string; amount: bigint } | undefined {
+  if (!expressParams || getIsConfirmedOutOfGasPaymentTokenBalance(expressParams.gasPaymentValidations)) {
+    return undefined;
+  }
+
+  return {
+    tokenAddress: expressParams.gasPaymentParams.gasPaymentTokenAddress,
+    amount: expressParams.gasPaymentParams.gasPaymentTokenAmount,
+  };
 }
 
 export function getExpressParamsForSubmit(expressParams: ExpressTxnParams | undefined): ExpressTxnParams | undefined {
@@ -84,25 +111,28 @@ export function reportMultichainExpressSubmitError({
   }
 
   const expressError = getExpressError({ expressParams, tokensData });
+  const isGasPaymentTokenBalanceUnknown =
+    expressParams !== undefined && !expressParams.gasPaymentValidations.isGasPaymentTokenBalanceLoaded;
 
-  const content =
-    expressParams && expressError.bannerErrorName ? (
-      <InsufficientGmxAccountGasTokenBalanceMessage
-        chainId={expressParams.chainId as ContractsChainId}
-        gasPaymentTokenAddress={expressParams.gasPaymentParams.gasPaymentTokenAddress}
-      />
-    ) : unavailableGasPaymentToken ? (
-      getGasPaymentTokenUnavailableMessage({
-        fromSymbol: unavailableGasPaymentToken.symbol,
-        toSymbol: undefined,
-        isGmxAccount: true,
-      })
-    ) : (
-      t`Express is unavailable right now, so this GMX Account action can't be sent`
-    );
+  const content = isGasPaymentTokenBalanceUnknown ? (
+    t`Network fee unavailable`
+  ) : expressParams && expressError.bannerErrorName ? (
+    <InsufficientGmxAccountGasTokenBalanceMessage
+      chainId={expressParams.chainId as ContractsChainId}
+      gasPaymentTokenAddress={expressParams.gasPaymentParams.gasPaymentTokenAddress}
+    />
+  ) : unavailableGasPaymentToken ? (
+    getGasPaymentTokenUnavailableMessage({
+      fromSymbol: unavailableGasPaymentToken.symbol,
+      toSymbol: undefined,
+      isGmxAccount: true,
+    })
+  ) : (
+    t`Express is unavailable right now, so this GMX Account action can't be sent`
+  );
 
   helperToast.error(content, {
-    autoClose: expressError.bannerErrorName ? false : undefined,
+    autoClose: expressError.bannerErrorName && !isGasPaymentTokenBalanceUnknown ? false : undefined,
     tradingErrorInfo: {
       actionName,
       collateral,

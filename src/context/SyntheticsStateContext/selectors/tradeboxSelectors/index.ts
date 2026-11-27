@@ -68,6 +68,7 @@ import { MEGAETH } from "sdk/configs/chains";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress, getWrappedToken } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
+import { getOrderPositionKey } from "sdk/utils/orders";
 import { ExternalSwapStrategy } from "sdk/utils/swap/types";
 import { convertToTokenAmount, getIsEquivalentTokens } from "sdk/utils/tokens";
 import { TokenBalanceType } from "sdk/utils/tokens/types";
@@ -93,11 +94,12 @@ import {
   selectJitLiquidityMap,
   selectMarketsInfoData,
   selectOrdersInfoData,
-  selectPositionConstants,
+  makeSelectPositionConstants,
   selectPositionsInfoData,
   selectSubaccountForChainAction,
   selectTokensData,
   selectUiFeeFactor,
+  selectFeeDiscountFactor,
   selectUserReferralInfo,
 } from "../globalSelectors";
 import {
@@ -116,6 +118,7 @@ import {
   makeSelectMaxLiquidityPath,
   makeSelectNextPositionValuesForDecrease,
   makeSelectNextPositionValuesForIncrease,
+  selectDisabledSwapMarkets,
   selectExternalSwapQuoteParams,
 } from "../tradeSelectors";
 import { selectTradeboxGetMaxLongShortLiquidityPool } from "./selectTradeboxGetMaxLongShortLiquidityPool";
@@ -517,6 +520,7 @@ const selectExternalSwapInputsByLeverageSize = createSelector((q) => {
     leverage,
     isLong: tradeFlags.isLong,
     userReferralInfo,
+    feeDiscountFactor: q(selectFeeDiscountFactor),
     chainId,
     marketsInfoData,
   });
@@ -729,12 +733,16 @@ export const selectTradeboxFormState = createSelector((q) => {
   };
 });
 
-export const selectTradeboxIsTPSLEnabled = createSelector((q) => {
+export const selectTradeboxIsTPSLToggledOn = createSelector((q) => {
   const { limitOrTPSL } = q(selectTradeboxAdvancedOptions);
   const { isSwap, isTrigger, isTwap } = q(selectTradeboxTradeFlags);
 
   return limitOrTPSL && !isSwap && !isTrigger && !isTwap;
 });
+
+export const selectTradeboxIsTPSLEnabled = createSelector(
+  (q) => q(selectTradeboxIsTPSLToggledOn) && !q(selectTradeboxIsPositionLiquidatedBeforeTrigger)
+);
 
 export const selectTradeboxIsWrapOrUnwrap = createSelector((q) => {
   const fromToken = q(selectTradeboxFromToken);
@@ -982,6 +990,7 @@ export const selectTradeboxRawInternalSwapAmounts = createSelector((q) => {
     : undefined;
 
   const debugSwapMarketsConfig = IS_DEVELOPMENT ? q(selectDebugSwapMarketsConfig) : undefined;
+  const disabledMarkets = q(selectDisabledSwapMarkets);
 
   const { markRatio, triggerRatio } = q(selectTradeboxTradeRatios);
 
@@ -1005,7 +1014,7 @@ export const selectTradeboxRawInternalSwapAmounts = createSelector((q) => {
       chainId,
       externalSwapQuoteParams,
       allowSameTokenSwap: tradeFlags.isSwap,
-      disabledMarkets: debugSwapMarketsConfig?.disabledSwapMarkets,
+      disabledMarkets,
       manualPath: debugSwapMarketsConfig?.manualPath,
     });
   } else {
@@ -1023,7 +1032,7 @@ export const selectTradeboxRawInternalSwapAmounts = createSelector((q) => {
       chainId,
       externalSwapQuoteParams,
       allowSameTokenSwap: tradeFlags.isSwap,
-      disabledMarkets: debugSwapMarketsConfig?.disabledSwapMarkets,
+      disabledMarkets,
       manualPath: debugSwapMarketsConfig?.manualPath,
     });
 
@@ -1588,6 +1597,7 @@ export const selectTradeboxFees = createSelector(function selectTradeboxFees(q) 
         : undefined;
 
       return getTradeFees({
+        tradeMath: q(selectTradeboxMarketInfo)?.tradeMath,
         sizeInUsd: selectedPosition?.sizeInUsd || 0n,
         initialCollateralUsd: increaseAmounts.initialCollateralUsd,
         collateralDeltaUsd: increaseAmounts.initialCollateralUsd, // pay token amount in usd
@@ -1601,8 +1611,8 @@ export const selectTradeboxFees = createSelector(function selectTradeboxFees(q) 
         priceImpactDiffUsd: increaseAmounts.potentialPriceImpactDiffUsd,
         totalPendingImpactDeltaUsd: 0n,
         proportionalPendingImpactDeltaUsd: 0n,
-        borrowingFeeUsd: 0n,
-        fundingFeeUsd: 0n,
+        borrowingFeeUsd: q(selectTradeboxMarketInfo)?.tradeMath === "gmsol" ? increaseAmounts.borrowingFeeUsd : 0n,
+        fundingFeeUsd: q(selectTradeboxMarketInfo)?.tradeMath === "gmsol" ? increaseAmounts.fundingFeeUsd : 0n,
         feeDiscountUsd: increaseAmounts.feeDiscountUsd,
         swapProfitFeeUsd: 0n,
         swapProfitUsdIn: 0n,
@@ -1626,6 +1636,7 @@ export const selectTradeboxFees = createSelector(function selectTradeboxFees(q) 
       const collateralDeltaUsd = bigMath.mulDiv(position.collateralUsd, sizeReductionBps, BASIS_POINTS_DIVISOR_BIGINT);
 
       return getTradeFees({
+        tradeMath: q(selectTradeboxMarketInfo)?.tradeMath,
         sizeInUsd: selectedPosition?.sizeInUsd || 0n,
         initialCollateralUsd: selectedPosition?.collateralUsd || 0n,
         collateralDeltaUsd,
@@ -1811,7 +1822,7 @@ export const selectTradeboxOffHoursLiqRisk = createSelector((q) => {
   }
 
   const nextPositionValues = q(selectTradeboxNextPositionValues);
-  const { minCollateralUsd } = q(selectPositionConstants);
+  const { minCollateralUsd } = q(makeSelectPositionConstants(marketInfo?.marketTokenAddress));
 
   const shouldWarn = isTradeboxOffHoursLiqRisk({
     chainId,
@@ -1905,6 +1916,10 @@ export const selectTradeboxExistingOrder = createSelector((q) => {
   return q(selectTradeboxExistingOrders)
     .filter((order) => !isSwapOrderType(order.orderType))
     .find((order) => {
+      if (q(selectTradeboxMarketInfo)?.tradeMath === "gmsol") {
+        return getOrderPositionKey(order) === selectedPositionKey;
+      }
+
       const positionKey = getPositionKey(
         order.account,
         order.marketAddress,
@@ -1934,6 +1949,10 @@ const selectTradeboxExistingLimitOrder = createSelector((q) => {
   return q(selectTradeboxExistingOrders)
     .filter((order) => isLimitOrderType(order.orderType))
     .find((order) => {
+      if (q(selectTradeboxMarketInfo)?.tradeMath === "gmsol") {
+        return getOrderPositionKey(order) === selectedPositionKey;
+      }
+
       const positionKey = getPositionKey(
         order.account,
         order.marketAddress,
@@ -2190,10 +2209,16 @@ const selectTradeboxSwapFeesPercentage = createSelector((q) => {
 });
 
 export const selectTradeboxFeesPercentage = createSelector((q) => {
-  const { isSwap } = q(selectTradeboxTradeFlags);
+  const { isSwap, isIncrease } = q(selectTradeboxTradeFlags);
 
   if (isSwap) {
     return q(selectTradeboxSwapFeesPercentage);
+  }
+
+  if (q(selectTradeboxMarketInfo)?.tradeMath === "gmsol") {
+    const amounts = isIncrease ? q(selectTradeboxIncreasePositionAmounts) : q(selectTradeboxDecreasePositionAmounts);
+    if (!amounts) return undefined;
+    return amounts.sizeDeltaUsd > 0n ? -bigMath.mulDiv(amounts.positionFeeUsd, PRECISION, amounts.sizeDeltaUsd) : 0n;
   }
 
   const fees = q(selectTradeboxFees);

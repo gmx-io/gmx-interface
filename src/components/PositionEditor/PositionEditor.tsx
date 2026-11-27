@@ -37,6 +37,7 @@ import {
   selectPositionEditorDepositMaxInstantAmount,
   selectPositionEditorDepositRestInstantAmountOut,
   selectPositionEditorIsDepositSwapUnfillable,
+  selectPositionEditorIsMarketClosed,
   selectPositionEditorMaxWithdrawAmount,
   selectPositionEditorOpenDepositNow,
   selectPositionEditorSelectedCollateralToken,
@@ -86,6 +87,7 @@ import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import { EmbeddedActionButton } from "components/Button/EmbeddedActionButton";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
+import { MarketClosedBanner } from "components/MarketClosedBanner/MarketClosedBanner";
 import { MaxActions } from "components/MaxActions/MaxActions";
 import Modal from "components/Modal/Modal";
 import NumberInput from "components/NumberInput/NumberInput";
@@ -93,10 +95,11 @@ import { NumericValue } from "components/NumericValue/NumericValue";
 import { UsdPriceValue } from "components/NumericValue/UsdPriceValue";
 import { UsdValue } from "components/NumericValue/UsdValue";
 import Tabs from "components/Tabs/Tabs";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
 import { MarginPercentageSlider } from "components/TradeboxMarginFields/MarginPercentageSlider";
 import { TradeInputBox } from "components/TradeboxMarginFields/TradeInputBox";
 import { TradeInputField } from "components/TradeboxMarginFields/TradeInputField";
+import { FundingPayoutRow } from "components/TradeFeesRow/FundingPayoutRow";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import InfoIcon from "img/ic_info_circle_stroke.svg?react";
@@ -123,6 +126,16 @@ export function PositionEditor() {
   const tokensData = useTokensData();
   const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
   const position = usePositionEditorPosition();
+  const fundingPayout = useMemo(
+    () =>
+      position?.marketInfo?.tradeMath === "gmsol"
+        ? {
+            longTokenAmount: position.claimableLongTokenAmount,
+            shortTokenAmount: position.claimableShortTokenAmount,
+          }
+        : undefined,
+    [position]
+  );
   const localizedOperationLabels = useLocalizedMap(OPERATION_LABELS);
   const localizedDepositModeLabels = useLocalizedMap(DEPOSIT_MODE_LABELS);
 
@@ -159,6 +172,7 @@ export function PositionEditor() {
   const [atPriceOpenRequest, clearAtPriceOpenRequest] = usePositionEditorAtPriceOpenRequest();
   const replacingOrder = usePositionEditorReplacingOrder();
   const isAtPriceDeposit = isDeposit && depositMode === "atPrice";
+  const isMarketClosed = useSelector(selectPositionEditorIsMarketClosed);
 
   const [selectedCollateralAddress, setSelectedCollateralAddress] = usePositionEditorSelectedCollateralAddress();
   const [isCollateralTokenFromGmxAccount, setIsCollateralTokenFromGmxAccount] =
@@ -598,13 +612,13 @@ export function PositionEditor() {
   );
 
   const button = submitButtonState.tooltipContent ? (
-    <TooltipWithPortal
+    <StandardTooltip
       className="w-full"
       content={submitButtonState.tooltipContent}
       isHandlerDisabled={submitButtonState.disabled}
       handle={buttonContent}
       handleClassName="w-full"
-      position="top"
+      position="bottom"
       variant="none"
     />
   ) : (
@@ -850,6 +864,8 @@ export function PositionEditor() {
                 onAfterAction={onClose}
               />
 
+              {isMarketClosed && isAtPriceDeposit && <MarketClosedBanner state="limitWaits" />}
+
               {isConversionTooLarge ? (
                 <>
                   <AlertInfoCard type="warning" hideClose>
@@ -925,6 +941,8 @@ export function PositionEditor() {
                   }
                 />
               )}
+
+              <FundingPayoutRow fundingPayout={fundingPayout} marketInfo={position.marketInfo} />
 
               <SyntheticsInfoRow
                 label={t`Liquidation price`}

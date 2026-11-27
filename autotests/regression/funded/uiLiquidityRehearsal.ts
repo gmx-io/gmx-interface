@@ -5,13 +5,11 @@ import {
   erc20Abi,
   getAddress,
   type Abi,
+  type AbiFunction,
   type Hex,
   type TransactionReceipt,
 } from "viem";
-import SyntheticsReader from "../../../sdk/src/abis/SyntheticsReader";
-import GlvReader from "../../../sdk/src/abis/GlvReader";
-import GlvRouter from "../../../sdk/src/abis/GlvRouter";
-import ExchangeRouter from "../../../sdk/src/abis/ExchangeRouter";
+import { getAbi } from "../../../sdk/src/abis/getAbi";
 import { getContract } from "../../../sdk/src/configs/contracts";
 import type { TokenData } from "../../../sdk/src/utils/tokens/types";
 import type { AccountState } from "../fixtures/accountState";
@@ -19,6 +17,9 @@ import fixture from "../fixtures/markets/arbitrum.json";
 import { fundedOrderReceipt } from "./fundedReceipt";
 import { USD } from "./economy";
 import type { UiTransaction } from "./uiOrderGuard";
+
+const syntheticsReader = getAbi(42161, "SyntheticsReader") as Abi;
+const glvReader = getAbi(42161, "GlvReader") as Abi;
 
 export function uiLiquidityRehearsal(state: AccountState, usdc: TokenData, weth: TokenData) {
   const glv = "0x528A5bac7E746C9A509A1f4F6dF58A03d44279F9";
@@ -51,9 +52,14 @@ export function uiLiquidityRehearsal(state: AccountState, usdc: TokenData, weth:
     },
     contractRead(target: string, data: Hex): Hex | undefined {
       if (target === getAddress(getContract(42161, "SyntheticsReader"))) {
-        const call = decodeFunctionData({ abi: SyntheticsReader, data });
-        if (call.functionName === "getMarketTokenPrice" && getAddress(call.args[1].marketToken) === gm) {
-          const fn = SyntheticsReader.find((item) => item.type === "function" && item.name === "getMarketTokenPrice")!;
+        const call = decodeFunctionData({ abi: syntheticsReader, data });
+        if (
+          call.functionName === "getMarketTokenPrice" &&
+          getAddress((call.args![1] as { marketToken: string }).marketToken) === gm
+        ) {
+          const fn = syntheticsReader.find(
+            (item): item is AbiFunction => item.type === "function" && item.name === "getMarketTokenPrice"
+          )!;
           const info = Object.fromEntries(
             (fn.outputs[1] as { components: readonly { name: string }[] }).components.map((c) => [
               c.name,
@@ -61,7 +67,7 @@ export function uiLiquidityRehearsal(state: AccountState, usdc: TokenData, weth:
             ])
           );
           return encodeFunctionResult({
-            abi: SyntheticsReader as Abi,
+            abi: syntheticsReader,
             functionName: call.functionName,
             result: [2n * USD, info],
           });
@@ -73,7 +79,7 @@ export function uiLiquidityRehearsal(state: AccountState, usdc: TokenData, weth:
           return encodeFunctionResult({ abi: erc20Abi, functionName: call.functionName, result: supply });
       }
       if (target !== getAddress(getContract(42161, "GlvReader"))) return;
-      const call = decodeFunctionData({ abi: GlvReader as Abi, data });
+      const call = decodeFunctionData({ abi: glvReader, data });
       const result =
         call.functionName === "getGlvInfoList"
           ? glvs
@@ -83,11 +89,11 @@ export function uiLiquidityRehearsal(state: AccountState, usdc: TokenData, weth:
               ? BigInt(pool.poolValueMax)
               : undefined;
       if (result !== undefined)
-        return encodeFunctionResult({ abi: GlvReader as Abi, functionName: call.functionName, result });
+        return encodeFunctionResult({ abi: glvReader, functionName: call.functionName, result });
     },
     transact(tx: UiTransaction, key: Hex): TransactionReceipt | undefined {
       const isGlv = getAddress(tx.to) === getAddress(getContract(42161, "GlvRouter"));
-      const abi = (isGlv ? GlvRouter : ExchangeRouter) as Abi;
+      const abi = getAbi(42161, isGlv ? "GlvRouter" : "ExchangeRouter") as Abi;
       const root = decodeFunctionData({ abi, data: tx.data });
       if (root.functionName !== "multicall") return;
       const calls = (root.args![0] as Hex[]).map((data) => decodeFunctionData({ abi, data }));

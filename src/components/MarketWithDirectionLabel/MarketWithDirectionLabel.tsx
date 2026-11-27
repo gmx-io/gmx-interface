@@ -7,19 +7,13 @@ export function MarketWithDirectionLabel({
   indexName,
   isLong,
   tokenSymbol,
-  bordered,
 }: {
   indexName: string;
   isLong: boolean;
   tokenSymbol: string;
-  bordered?: boolean;
 }) {
   return (
-    <div
-      className={cx("inline-flex items-center gap-4 leading-base", {
-        "cursor-help": bordered,
-      })}
-    >
+    <div className="inline-flex items-center gap-4 leading-base">
       <TokenIcon className="size-20 !align-[-3px]" displaySize={20} symbol={tokenSymbol} />
       <span className="font-medium text-typography-primary">{indexName}</span>
       <span className={cx(isLong ? "text-green-500" : "text-red-500")}>{isLong ? t`Long` : t`Short`}</span>

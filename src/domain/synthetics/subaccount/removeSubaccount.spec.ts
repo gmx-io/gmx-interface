@@ -1,4 +1,4 @@
-import { decodeFunctionData, type Hex } from "viem";
+import { decodeFunctionData, type Hex, zeroHash } from "viem";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { ARBITRUM, SOURCE_BASE_MAINNET } from "config/chains";
@@ -6,7 +6,7 @@ import { GMX_SIMULATION_ORIGIN } from "config/dataStore";
 import type { ExpressTxnParams, GlobalExpressParams } from "domain/synthetics/express";
 import { MOCK_GAS_LIMITS, MOCK_GAS_PRICE } from "domain/testUtils/mockChainData";
 import { ETH_ADDRESS, ETH_TOKEN } from "domain/testUtils/mockTokens";
-import { abis } from "sdk/abis";
+import { getAbi } from "sdk/abis/getAbi";
 import { getContract } from "sdk/configs/contracts";
 import {
   buildGlobalExpressParams,
@@ -38,6 +38,7 @@ const { mocks } = vi.hoisted(() => ({
     getArbitraryRelayParamsAndPayload: vi.fn(),
     readContract: vi.fn(),
     estimateGas: vi.fn(),
+    waitForTransactionReceipt: vi.fn(),
   },
 }));
 
@@ -60,7 +61,11 @@ vi.mock("lib/wallets/signing", () => ({
 }));
 
 vi.mock("lib/wallets/walletConfig", () => ({
-  getPublicClientWithRpc: () => ({ readContract: mocks.readContract, estimateGas: mocks.estimateGas }),
+  getPublicClientWithRpc: () => ({
+    readContract: mocks.readContract,
+    estimateGas: mocks.estimateGas,
+    waitForTransactionReceipt: mocks.waitForTransactionReceipt,
+  }),
 }));
 
 vi.mock("domain/synthetics/express", async (importOriginal) => ({
@@ -95,6 +100,7 @@ const RELAY_PARAMS_PAYLOAD = {
   userNonce: 0n,
   deadline: 0n,
   desChainId: BigInt(CHAIN_ID),
+  eip6492SignatureWrapperHash: zeroHash,
 };
 
 const ENCODED_TRUE = `0x${"1".padStart(64, "0")}`;
@@ -156,6 +162,7 @@ function mockExpressEstimation({ isOutGasTokenBalance }: { isOutGasTokenBalance:
 describe("removeSubaccountWalletTxn", () => {
   beforeEach(() => {
     mocks.callContract.mockResolvedValue({ wait: vi.fn(async () => ({})) });
+    mocks.readContract.mockResolvedValue(true);
   });
 
   afterEach(() => {
@@ -173,16 +180,68 @@ describe("removeSubaccountWalletTxn", () => {
     expect(wait).toHaveBeenCalledTimes(1);
   });
 
-  it("resolves once the subaccount is gone on-chain even if the receipt never arrives", async () => {
-    mocks.callContract.mockResolvedValue({ wait: () => new Promise(() => undefined) });
-    mocks.readContract.mockResolvedValue(false);
+  it.each([
+    {
+      name: "a listed address resolves once it leaves the list, without any receipt",
+      mockIsListed: () => mocks.readContract.mockResolvedValueOnce(true).mockResolvedValue(false),
+      receipt: undefined,
+      replacedReason: undefined,
+      isRejected: false,
+    },
+    {
+      name: "an unlisted address resolves on its mined receipt",
+      mockIsListed: () => mocks.readContract.mockResolvedValue(false),
+      receipt: { status: "success" },
+      replacedReason: undefined,
+      isRejected: false,
+    },
+    {
+      name: "an address with an unreadable list state resolves on its mined receipt",
+      mockIsListed: () => mocks.readContract.mockRejectedValue(new Error("rpc error")),
+      receipt: { status: "success" },
+      replacedReason: undefined,
+      isRejected: false,
+    },
+    {
+      name: "an unlisted address whose removal reverted is rejected",
+      mockIsListed: () => mocks.readContract.mockResolvedValue(false),
+      receipt: { status: "reverted" },
+      replacedReason: undefined,
+      isRejected: true,
+    },
+    {
+      name: "an unlisted address whose removal was cancelled in the wallet is rejected",
+      mockIsListed: () => mocks.readContract.mockResolvedValue(false),
+      receipt: { status: "success" },
+      replacedReason: "cancelled",
+      isRejected: true,
+    },
+  ])("$name", async ({ mockIsListed, receipt, replacedReason, isRejected }) => {
+    const hash = `0x${"ab".repeat(32)}`;
+    mocks.callContract.mockResolvedValue({ hash, wait: () => new Promise(() => undefined) });
+    mockIsListed();
+    mocks.waitForTransactionReceipt.mockImplementation(async ({ onReplaced }) => {
+      if (replacedReason) {
+        onReplaced({ reason: replacedReason });
+      }
 
-    await removeSubaccountWalletTxn(CHAIN_ID, makeSigner(makeProvider(ENCODED_TRUE)), SUBACCOUNT_ADDRESS);
+      return receipt ?? new Promise(() => undefined);
+    });
 
-    expect(mocks.readContract).toHaveBeenCalled();
+    const removal = removeSubaccountWalletTxn(CHAIN_ID, makeSigner(makeProvider(ENCODED_TRUE)), SUBACCOUNT_ADDRESS);
+
+    if (isRejected) {
+      await expect(removal).rejects.toThrow(hash);
+    } else {
+      await expect(removal).resolves.toBeUndefined();
+    }
+
+    if (receipt) {
+      expect(mocks.waitForTransactionReceipt).toHaveBeenCalledWith(expect.objectContaining({ hash }));
+    }
   });
 
-  it("does not re-check the on-chain state — whether a removal is due is decided by the caller", async () => {
+  it("always sends the removal: whether it is due is decided by the caller", async () => {
     const provider = makeProvider(ENCODED_FALSE);
 
     await removeSubaccountWalletTxn(CHAIN_ID, makeSigner(provider), SUBACCOUNT_ADDRESS);
@@ -456,7 +515,7 @@ describe("estimateSettlementChainRemoveSubaccountExpressParams", () => {
     expect(account).toBe(GMX_SIMULATION_ORIGIN);
     expect(to).toBe(RELAY_ROUTER_ADDRESS);
 
-    const { functionName, args } = decodeFunctionData({ abi: abis.SubaccountGelatoRelayRouter, data });
+    const { functionName, args } = decodeFunctionData({ abi: getAbi(CHAIN_ID, "SubaccountGelatoRelayRouter"), data });
     expect(functionName).toBe("removeSubaccount");
     expect(args).toEqual([expect.objectContaining({ signature: "0x" }), ACCOUNT, SUBACCOUNT_ADDRESS]);
 
@@ -536,11 +595,12 @@ describe("removeSubaccountSettlementChainExpressTxn", () => {
       expect.objectContaining({
         types: {
           RemoveSubaccount: [
+            { name: "account", type: "address" },
             { name: "subaccount", type: "address" },
             { name: "relayParams", type: "bytes32" },
           ],
         },
-        typedData: { subaccount: SUBACCOUNT_ADDRESS, relayParams: "0xhash" },
+        typedData: { account: ACCOUNT, subaccount: SUBACCOUNT_ADDRESS, relayParams: "0xhash" },
         domain: {
           name: "GmxBaseGelatoRelayRouter",
           version: "1",
@@ -556,7 +616,7 @@ describe("removeSubaccountSettlementChainExpressTxn", () => {
     expect(txnData.to).toBe(RELAY_ROUTER_ADDRESS);
 
     const { functionName, args } = decodeFunctionData({
-      abi: abis.SubaccountGelatoRelayRouter,
+      abi: getAbi(CHAIN_ID, "SubaccountGelatoRelayRouter"),
       data: txnData.callData as Hex,
     });
     expect(functionName).toBe("removeSubaccount");

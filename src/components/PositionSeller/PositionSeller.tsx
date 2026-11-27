@@ -1,6 +1,7 @@
 import { Plural, t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import { useKey, useLatest } from "react-use";
 
 import { ARBITRUM, GMX_ACCOUNT_PSEUDO_CHAIN_ID } from "config/chains";
@@ -22,6 +23,7 @@ import {
 } from "context/SyntheticsStateContext/hooks/positionSellerHooks";
 import {
   selectBlockTimestampData,
+  selectClosedMarkets,
   selectMarketsInfoData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { makeSelectOrdersByPositionKey } from "context/SyntheticsStateContext/selectors/orderSelectors";
@@ -46,12 +48,14 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useInitCollateralCloseDestination } from "domain/synthetics/express/useInitCollateralCloseDestination";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import {
-  getCanUseTokenPermits,
   getExpressParamsForSubmit,
+  getExpressTokenPermitBlockReason,
+  getGasPaymentTokenToApprove,
   getNetworkFeeGasPaymentParams,
   reportMultichainExpressSubmitError,
 } from "domain/synthetics/express/validateMultichainExpressSubmit";
 import { getNetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
+import { getIsMarketClosed } from "domain/synthetics/markets/utils";
 import { OrderType } from "domain/synthetics/orders";
 import { getMarginDepositCancelOrderParams } from "domain/synthetics/orders/marginDeposit";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
@@ -76,13 +80,19 @@ import { getApproveButtonText, getGasPaymentTokenApprovalTooltip } from "domain/
 import { useTokenApproval } from "domain/tokens/useTokenApproval";
 import { useChainId } from "lib/chains";
 import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
-import { useDebouncedInputValue } from "lib/debounce/useDebouncedInputValue";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { reportHandledRejection } from "lib/metrics/reportHandledRejection";
 import { initDecreaseOrderMetricData, sendOrderSubmittedMetric, sendTxnValidationErrorMetric } from "lib/metrics/utils";
-import { expandDecimals, formatDeltaUsdParts, formatPercentage, formatTokenAmount, parseValue } from "lib/numbers";
+import {
+  expandDecimals,
+  formatAmountFree,
+  formatDeltaUsdParts,
+  formatPercentage,
+  formatTokenAmount,
+  parseValue,
+} from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
@@ -112,10 +122,10 @@ import { EmbeddedActionButton } from "components/Button/EmbeddedActionButton";
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 import {
   DecreaseReceiveOutputDisplay,
+  getTokenDisplaySymbol,
   SplitReceiveTokensLabel,
 } from "components/DecreaseReceiveOutput/DecreaseReceiveOutput";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
-import ExternalLink from "components/ExternalLink/ExternalLink";
 import { MarginDestinationSelector } from "components/MarginDestinationSelector/MarginDestinationSelector";
 import Modal from "components/Modal/Modal";
 import { DeltaUsdValue } from "components/NumericValue/DeltaUsdValue";
@@ -125,9 +135,11 @@ import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import { ButtonTooltipWrapper } from "components/Tooltip/ButtonTooltipWrapper";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import StandardTooltip from "components/Tooltip/StandardTooltip";
+import { TooltipContent, TooltipReadMore, TooltipText } from "components/Tooltip/TooltipBlocks";
 import { MarginPercentageSlider } from "components/TradeboxMarginFields/MarginPercentageSlider";
 import { TradeInputField, DisplayMode } from "components/TradeboxMarginFields/TradeInputField";
+import { FundingPayoutRow } from "components/TradeFeesRow/FundingPayoutRow";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import InfoCircleIcon from "img/ic_info_circle_stroke.svg?react";
@@ -165,6 +177,8 @@ export function PositionSeller() {
   const hasOutdatedUi = useHasOutdatedUi();
   const multipleWalletExtensionsChainError = useMultipleWalletExtensionsChainError();
   const position = useSelector(selectPositionSellerPosition);
+  const closedMarkets = useSelector(selectClosedMarkets);
+  const isMarketClosed = getIsMarketClosed(closedMarkets, position?.marketAddress);
   const toToken = position?.indexToken;
   const submitButtonRef = useRef<HTMLButtonElement>(null);
   const settings = useSettings();
@@ -205,13 +219,13 @@ export function PositionSeller() {
 
   const {
     allowedSlippage,
-    closeUsdInputValue: closeUsdInputValueRaw,
+    closeUsdInputValue,
     defaultTriggerAcceptablePriceImpactBps,
     isSubmitting,
     orderOption,
     handleSetOrderOption,
     receiveTokenAddress,
-    setCloseUsdInputValue: setCloseUsdInputValueRaw,
+    setCloseUsdInputValue,
     setDefaultTriggerAcceptablePriceImpactBps,
     setIsSubmitting,
     setReceiveTokenAddress,
@@ -234,15 +248,19 @@ export function PositionSeller() {
     indexTokenDecimals: position?.indexToken?.decimals ?? 18,
     indexTokenSymbol: position?.indexToken?.symbol ?? "",
     initialPercentage: 100,
-    onCloseSizeUsdChange: setCloseUsdInputValueRaw,
   });
+
+  const fieldCloseUsdInputValue = formatAmountFree(closeSize.closeSizeUsd, USD_DECIMALS);
+
+  useEffect(() => {
+    if (closeUsdInputValue !== fieldCloseUsdInputValue) {
+      setCloseUsdInputValue(fieldCloseUsdInputValue);
+    }
+  }, [closeUsdInputValue, fieldCloseUsdInputValue, setCloseUsdInputValue]);
 
   const tradeMode = ORDER_OPTION_TO_TRADE_MODE[orderOption];
   const tradeType = position ? (position.isLong ? TradeType.Long : TradeType.Short) : undefined;
 
-  const [closeUsdInputValue] = useDebouncedInputValue(closeUsdInputValueRaw, setCloseUsdInputValueRaw);
-
-  const [isWaitingForDebounceBeforeSubmit, setIsWaitingForDebounceBeforeSubmit] = useState(false);
   const [isTwapBannerDismissed, setIsTwapBannerDismissed] = useState(false);
 
   const isMarket = orderOption === OrderOption.Market;
@@ -309,7 +327,8 @@ export function PositionSeller() {
     () => getDecreaseReceiveOutputs({ decreaseAmounts: splitReceiveDecreaseAmounts, tokensData }),
     [splitReceiveDecreaseAmounts, tokensData]
   );
-  const isSplitReceiveAvailable = getIsSplitReceiveAvailable(position, splitReceiveOutputs);
+  const isTwap = orderOption === OrderOption.Twap;
+  const isSplitReceiveAvailable = getIsSplitReceiveAvailable(position, splitReceiveOutputs, { isTwap });
 
   const receiveTokenAmount = useMemo(() => {
     if (swapAmounts?.amountOut !== undefined) return swapAmounts.amountOut;
@@ -370,10 +389,9 @@ export function PositionSeller() {
 
   const slippageInputId = useId();
 
-  const isTwap = orderOption === OrderOption.Twap;
   const splitReceiveSwapProfitFeeWarning = getSplitReceiveSwapProfitFeeWarning({
     shouldShow: !isTwap && isSplitReceiveAvailable && !isReceiveSeparated,
-    receiveToken,
+    receiveTokenSymbol: getTokenDisplaySymbol(receiveToken),
     profitToken: position?.pnlToken,
     collateralToken: position?.collateralToken,
     swapProfitFee: fees?.swapProfitFee,
@@ -381,7 +399,7 @@ export function PositionSeller() {
 
   const twapSplitReceiveSwapProfitFeeWarning = getSplitReceiveSwapProfitFeeWarning({
     shouldShow: isTwap && isSplitReceiveAvailable && !isReceiveSeparated && getIsHighSwapProfitFee(fees?.swapProfitFee),
-    receiveToken: position?.collateralToken,
+    receiveTokenSymbol: getTokenDisplaySymbol(position?.collateralToken),
     profitToken: position?.pnlToken,
     collateralToken: position?.collateralToken,
     swapProfitFee: fees?.swapProfitFee,
@@ -433,7 +451,7 @@ export function PositionSeller() {
       marketAddress: position.marketAddress,
       indexTokenAddress: position.indexToken.address,
       collateralTokenAddress: position.collateralTokenAddress,
-      collateralDeltaAmount: isTwap && decreaseAmounts.isFullClose ? 0n : decreaseAmounts.collateralDeltaAmount ?? 0n,
+      collateralDeltaAmount: isTwap ? 0n : decreaseAmounts.collateralDeltaAmount ?? 0n,
       receiveTokenAddress: receiveToken.address,
       swapPath,
       sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
@@ -467,7 +485,6 @@ export function PositionSeller() {
     decreaseAmounts?.acceptablePrice,
     decreaseAmounts?.collateralDeltaAmount,
     decreaseAmounts?.decreaseSwapType,
-    decreaseAmounts?.isFullClose,
     decreaseAmounts?.sizeDeltaInTokens,
     decreaseAmounts?.sizeDeltaUsd,
     duration,
@@ -505,14 +522,11 @@ export function PositionSeller() {
   });
 
   const approvalTokens = useMemo(() => {
-    if (!expressParams?.gasPaymentParams) return [];
-    return [
-      {
-        tokenAddress: expressParams.gasPaymentParams.gasPaymentTokenAddress,
-        amount: expressParams.gasPaymentParams.gasPaymentTokenAmount,
-      },
-    ];
-  }, [expressParams?.gasPaymentParams]);
+    const gasPaymentTokenToApprove = getGasPaymentTokenToApprove(expressParams);
+    return gasPaymentTokenToApprove ? [gasPaymentTokenToApprove] : [];
+  }, [expressParams]);
+
+  const permitBlockReason = getExpressTokenPermitBlockReason(expressParams);
 
   const {
     tokensToApprove,
@@ -523,13 +537,14 @@ export function PositionSeller() {
     chainId,
     spenderAddress: getContract(chainId, "SyntheticsRouter"),
     tokens: approvalTokens,
-    allowPermit: getCanUseTokenPermits(expressParams),
+    allowPermit: permitBlockReason === undefined,
     skip: srcChainId !== undefined || effectiveIsReceiveToGmxAccount,
     metric: {
       flow: "closePosition",
       isExpress: Boolean(expressParams),
       isExpress1CT: Boolean(expressParams?.subaccount),
       gasPaymentTokenAddress: expressParams?.gasPaymentParams?.gasPaymentTokenAddress,
+      permitBlockReason,
     },
   });
 
@@ -538,6 +553,10 @@ export function PositionSeller() {
   const { error, bannerErrorName, errorDescription } = useMemo(() => {
     if (!position) {
       return {};
+    }
+
+    if (isMarketClosed) {
+      return { error: t`Market closed` };
     }
 
     const commonError = getCommonError({
@@ -581,6 +600,7 @@ export function PositionSeller() {
     decreaseError,
     expressParams,
     hasOutdatedUi,
+    isMarketClosed,
     isUsdcReceiveUnfillable,
     isSubmitting,
     position,
@@ -622,7 +642,6 @@ export function PositionSeller() {
       collateralToken: position?.collateralToken,
       decreaseAmounts,
       hasExistingPosition: true,
-      swapPath: params?.orderPayload.addresses.swapPath,
       executionFee,
       orderType: params?.orderPayload.orderType,
       hasReferralCode: Boolean(userReferralInfo?.referralCodeForTxn),
@@ -647,6 +666,7 @@ export function PositionSeller() {
       expressParams,
       chainId: srcChainId ?? chainId,
       isCollateralFromMultichain: srcChainId !== undefined,
+      orderPayloads: batchParams?.createOrderParams.map((createOrderParams) => createOrderParams.orderPayload),
     });
 
     sendOrderSubmittedMetric(metricData.metricId);
@@ -738,37 +758,6 @@ export function PositionSeller() {
       rememberReceiveToken();
     });
   }
-
-  const latestOnSubmit = useLatest(onSubmit);
-
-  useKey(
-    "Enter",
-    () => {
-      if (isVisible && !error) {
-        submitButtonRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
-        if (closeUsdInputValue === closeUsdInputValueRaw) {
-          latestOnSubmit.current();
-        } else {
-          setIsWaitingForDebounceBeforeSubmit(true);
-        }
-      }
-    },
-    {},
-    [isVisible, error, closeUsdInputValue, closeUsdInputValueRaw, latestOnSubmit]
-  );
-
-  useEffect(() => {
-    if (isWaitingForDebounceBeforeSubmit && closeUsdInputValue === closeUsdInputValueRaw) {
-      setIsWaitingForDebounceBeforeSubmit(false);
-      latestOnSubmit.current();
-    }
-  }, [isWaitingForDebounceBeforeSubmit, latestOnSubmit, closeUsdInputValue, closeUsdInputValueRaw]);
-
-  useEffect(() => {
-    if (!isVisible) {
-      setIsWaitingForDebounceBeforeSubmit(false);
-    }
-  }, [isVisible]);
 
   useEffect(
     function initReceiveToken() {
@@ -920,13 +909,15 @@ export function PositionSeller() {
   const keepLeverageText = <Trans>Keep leverage at {keepLeverageAtValue}</Trans>;
 
   const keepLeverageTextElem = leverageCheckboxDisabledByCollateral ? (
-    <TooltipWithPortal
+    <StandardTooltip
       handle={keepLeverageText}
       content={
-        <Trans>
-          Position exceeds max allowed leverage.{" "}
-          <ExternalLink href="https://docs.gmx.io/docs/trading/order-types/#max-leverage">Read more</ExternalLink>.
-        </Trans>
+        <TooltipContent>
+          <TooltipText>
+            <Trans>Position exceeds max allowed leverage.</Trans>
+          </TooltipText>
+          <TooltipReadMore href="https://docs.gmx.io/docs/trading/order-types/#max-leverage" />
+        </TooltipContent>
       }
     />
   ) : (
@@ -949,7 +940,7 @@ export function PositionSeller() {
         shouldHidePnlPercentage ? (
           <ValueTransition
             from={
-              <TooltipWithPortal
+              <StandardTooltip
                 handle={<DeltaUsdValue deltaUsd={position.pnl} percentage={position.pnlPercentage} hidePercentage />}
                 content={
                   <span className={position.pnl > 0n ? "text-green-500" : "text-red-500"}>
@@ -959,7 +950,7 @@ export function PositionSeller() {
               />
             }
             to={
-              <TooltipWithPortal
+              <StandardTooltip
                 handle={
                   <DeltaUsdValue
                     deltaUsd={nextPositionValues?.nextPnl}
@@ -992,6 +983,13 @@ export function PositionSeller() {
   );
 
   const buttonState = useMemo(() => {
+    if (isMarketClosed) {
+      return {
+        text: t`Market closed`,
+        disabled: !shouldDisableValidationForTesting,
+      };
+    }
+
     if (!isAllowanceLoaded) {
       return {
         text: t`Loading...`,
@@ -1068,6 +1066,7 @@ export function PositionSeller() {
     isAllowanceLoaded,
     isApproving,
     isExpressLoading,
+    isMarketClosed,
     isMultichainSubmitDisabled,
     localizedTradeModeLabels,
     localizedTradeTypeLabels,
@@ -1077,6 +1076,48 @@ export function PositionSeller() {
     tradeType,
     tokensToApprove,
   ]);
+
+  const latestSubmit = useLatest({
+    onSubmit,
+    error,
+    isButtonDisabled: buttonState.disabled,
+    closeUsdInputValue,
+    fieldCloseUsdInputValue,
+  });
+
+  const syncCloseSizeWithField = useCallback(() => {
+    const { closeUsdInputValue: stateValue, fieldCloseUsdInputValue: fieldValue } = latestSubmit.current;
+
+    if (stateValue !== fieldValue) {
+      flushSync(() => setCloseUsdInputValue(fieldValue));
+    }
+  }, [latestSubmit, setCloseUsdInputValue]);
+
+  const handleSubmitClick = useCallback(() => {
+    syncCloseSizeWithField();
+
+    if (!latestSubmit.current.isButtonDisabled) {
+      latestSubmit.current.onSubmit();
+    }
+  }, [latestSubmit, syncCloseSizeWithField]);
+
+  useKey(
+    "Enter",
+    () => {
+      if (!isVisible) {
+        return;
+      }
+
+      syncCloseSizeWithField();
+
+      if (!latestSubmit.current.error) {
+        submitButtonRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+        latestSubmit.current.onSubmit();
+      }
+    },
+    {},
+    [isVisible, latestSubmit, syncCloseSizeWithField]
+  );
 
   return (
     <div className="text-body-medium">
@@ -1251,7 +1292,7 @@ export function PositionSeller() {
                   </AlertInfoCard>
                 )}
 
-                {twapRecommendation && !isTwapBannerDismissed && (
+                {twapRecommendation && !isTwapBannerDismissed && !isMarketClosed && (
                   <ColorfulBanner color="blue" icon={InfoCircleIcon} onClose={() => setIsTwapBannerDismissed(true)}>
                     <div className="flex flex-col gap-8">
                       <span>
@@ -1274,7 +1315,7 @@ export function PositionSeller() {
                     className="w-full"
                     variant="primary-action"
                     disabled={buttonState.disabled}
-                    onClick={onSubmit}
+                    onClick={handleSubmitClick}
                     buttonRef={submitButtonRef}
                     qa="confirm-button"
                   >
@@ -1293,6 +1334,8 @@ export function PositionSeller() {
                 )}
 
                 <PositionSellerPriceImpactFeesRow />
+
+                <FundingPayoutRow fundingPayout={decreaseAmounts?.fundingPayout} marketInfo={position?.marketInfo} />
 
                 <PositionSellerAdvancedRows
                   triggerPriceInputValue={triggerPriceInputValue}

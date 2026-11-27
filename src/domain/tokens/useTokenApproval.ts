@@ -1,25 +1,32 @@
 import noop from "lodash/noop";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLatest } from "react-use";
-import { isAddressEqual, type Address } from "viem";
+import { isAddressEqual, maxUint256, type Address, type Hex } from "viem";
 
 import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
 import { useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
+import type { ExpressTokenPermitBlockReason } from "domain/synthetics/express/validateMultichainExpressSubmit";
 import { getNeedTokenApprove, useTokensAllowanceData } from "domain/synthetics/tokens";
 import { helperToast } from "lib/helperToast";
-import type { TokenApprovalMetricParams } from "lib/metrics";
+import type { TokenApprovalMetricParams, TokenPermitSkipReason } from "lib/metrics";
 import { EMPTY_ARRAY } from "lib/objects";
+import type { WalletCallsBatch } from "lib/transactions/sendWalletCalls";
 import type { WalletSigner } from "lib/wallets";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 import type { AnyChainId } from "sdk/configs/chains";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
+import { buildErc20ApproveTxn } from "sdk/utils/balances/api";
 
 import { wrapChainAction } from "components/GmxAccountModal/wrapChainAction";
 
 import { approveTokens } from "./approveTokens";
 import { getIsGasPaymentTokenApproval } from "./gasPaymentTokenApproval";
 import { getInsufficientApprovalToastContent } from "./insufficientApproval";
+import { getIsPermitExpired, WALLET_TXN_PERMIT_DEADLINE_MARGIN_SECONDS } from "./permitUtils";
+import { sendTokenApprovalMetric } from "./tokenApprovalMetric";
+import type { TokenPermitUnavailableReason } from "./tokenPermitsEligibility";
+import { useWalletBatching } from "./useWalletBatching";
 
 interface TokenToApprove {
   tokenAddress: string;
@@ -33,12 +40,16 @@ interface UseTokenApprovalParams {
   skip?: boolean;
   approveAmount?: bigint;
   allowPermit?: boolean;
+  /** Only for actions the wallet sends itself: the approvals can then go in the same confirmation */
+  allowBatch?: boolean;
   metric: TokenApprovalMetricContext;
 }
 
-type TokenApprovalMetricContext = Omit<TokenApprovalMetricParams, "isGasPaymentToken"> & {
+type TokenApprovalMetricContext = Omit<TokenApprovalMetricParams, "isGasPaymentToken" | "permitSkipReason"> & {
   gasPaymentTokenAddress?: string;
   payTokenAddress?: string;
+  // why the flow passes allowPermit: false right now
+  permitBlockReason?: ExpressTokenPermitBlockReason;
 };
 
 export interface HandleApproveOptions {
@@ -59,6 +70,25 @@ interface UseTokenApprovalReturn {
   handleApprove: (options?: HandleApproveOptions) => void;
   /** Whether approving the token would sign a permit instead of sending a transaction */
   getIsPermitApproval: (tokenAddress: string) => boolean;
+  /** Set when the approvals should go in the same wallet confirmation as the action, instead of the Approve step */
+  approvalBatch: WalletCallsBatch | undefined;
+}
+
+function getTokenPermitSkipReason({
+  allowPermit,
+  permitBlockReason,
+  permitUnavailableReason,
+}: {
+  allowPermit: boolean;
+  permitBlockReason: ExpressTokenPermitBlockReason | undefined;
+  permitUnavailableReason: TokenPermitUnavailableReason | undefined;
+}): TokenPermitSkipReason | undefined {
+  // only a token a permit could have covered needs a reason for its approval transaction
+  if (permitUnavailableReason === "tokenNotAllowed") {
+    return undefined;
+  }
+
+  return allowPermit ? permitUnavailableReason : permitBlockReason ?? "notInFlow";
 }
 
 export function useTokenApproval({
@@ -68,12 +98,19 @@ export function useTokenApproval({
   skip,
   approveAmount,
   allowPermit = false,
+  allowBatch = false,
   metric,
 }: UseTokenApprovalParams): UseTokenApprovalReturn {
   const [approvingToken, setApprovingToken] = useState<string | undefined>();
   const [minedApproval, setMinedApproval] = useState<MinedApproval | undefined>();
-  const { tokenPermits, addTokenPermit, disableTokenPermits, getIsPermitAvailable, accountType } =
-    useTokenPermitsContext();
+  const {
+    tokenPermits,
+    addTokenPermit,
+    disableTokenPermits,
+    getIsPermitAvailable,
+    getPermitUnavailableReason,
+    accountType,
+  } = useTokenPermitsContext();
   const [, setSettlementChainId] = useGmxAccountSettlementChainId();
   const latestMetric = useLatest(metric);
 
@@ -112,19 +149,111 @@ export function useTokenApproval({
     [allowPermit, spenderAddress, tokenPermits]
   );
 
-  const tokensToApprove = useMemo(
-    () =>
-      skip
-        ? EMPTY_ARRAY
-        : mergedTokens
-            .filter((token) =>
-              getNeedTokenApprove(tokensAllowanceData, token.tokenAddress, token.amount, permitsOrEmpty)
-            )
-            .map((token) => token.tokenAddress),
-    [skip, mergedTokens, tokensAllowanceData, permitsOrEmpty]
+  // the same choice handleApprove makes, so callers can tell a free signature from a paid transaction
+  const getIsPermitApproval = useCallback(
+    (tokenAddress: string) => allowPermit && getIsPermitAvailable(tokenAddress),
+    [allowPermit, getIsPermitAvailable]
   );
 
+  const tokensToApprove = useMemo(() => {
+    if (skip) {
+      return EMPTY_ARRAY;
+    }
+
+    // only a wallet-sent action (`allowBatch`) can outlive the deadline; checked here rather than in permitsOrEmpty
+    // so the clock is read again whenever the amount changes
+    const coveringPermits = allowBatch
+      ? permitsOrEmpty.filter((permit) => !getIsPermitExpired(permit, WALLET_TXN_PERMIT_DEADLINE_MARGIN_SECONDS))
+      : permitsOrEmpty;
+
+    const tokenAddresses = mergedTokens
+      .filter((token) => getNeedTokenApprove(tokensAllowanceData, token.tokenAddress, token.amount, coveringPermits))
+      .map((token) => token.tokenAddress);
+
+    // permits first: they cost a signature, not a transaction, and the tokens left can then share one batch
+    return [
+      ...tokenAddresses.filter(getIsPermitApproval),
+      ...tokenAddresses.filter((tokenAddress) => !getIsPermitApproval(tokenAddress)),
+    ];
+  }, [skip, allowBatch, mergedTokens, tokensAllowanceData, permitsOrEmpty, getIsPermitApproval]);
+
   const needsApproval = tokensToApprove.length > 0;
+
+  const { isAvailable: isBatchAvailable, atomicStatus } = useWalletBatching({
+    chainId,
+    enabled: allowBatch && needsApproval,
+  });
+
+  // a smart account approves in the action's own confirmation; any other account would first get the upgrade
+  // prompt, so a free permit signature goes first there
+  const isPermitFirst = atomicStatus !== "supported" && tokensToApprove.some(getIsPermitApproval);
+
+  const approvalBatch = useMemo((): WalletCallsBatch | undefined => {
+    if (
+      !isBatchAvailable ||
+      isPermitFirst ||
+      !isAllowanceLoaded ||
+      !needsApproval ||
+      !spenderAddress ||
+      chainId === undefined
+    ) {
+      return undefined;
+    }
+
+    const amount = approveAmount ?? maxUint256;
+    // a batch replaces the approval transaction, so the permit skip reason doesn't apply
+    const { gasPaymentTokenAddress, payTokenAddress, permitBlockReason: _, ...metricParams } = latestMetric.current;
+
+    return {
+      calls: tokensToApprove.map((tokenAddress) => {
+        const call = buildErc20ApproveTxn({ tokenAddress, spender: spenderAddress, amount });
+        return { to: call.to as Address, data: call.data as Hex, value: call.value };
+      }),
+      flow: metricParams.flow,
+      atomicStatus,
+      onOutcome: (outcome, error) => {
+        // a batch with an unknown status can still land, so it's no failed approval
+        if (outcome === "sent" || outcome === "statusUnknown") {
+          return;
+        }
+
+        tokensToApprove.forEach((tokenAddress) =>
+          sendTokenApprovalMetric({
+            metric: {
+              ...metricParams,
+              isGasPaymentToken:
+                gasPaymentTokenAddress !== undefined
+                  ? getIsGasPaymentTokenApproval({ tokenAddress, gasPaymentTokenAddress, payTokenAddress })
+                  : undefined,
+            },
+            method: "batch",
+            outcome:
+              outcome === "confirmed"
+                ? "accepted"
+                : outcome === "rejected" || outcome === "upgradeRejected"
+                  ? "rejected"
+                  : "failed",
+            chainId,
+            tokenAddress,
+            spender: spenderAddress,
+            isUnlimited: amount === maxUint256,
+            error,
+          })
+        );
+      },
+    };
+  }, [
+    approveAmount,
+    atomicStatus,
+    chainId,
+    isAllowanceLoaded,
+    isBatchAvailable,
+    isPermitFirst,
+    latestMetric,
+    needsApproval,
+    spenderAddress,
+    tokensToApprove,
+  ]);
   const isApproving = approvingToken !== undefined && tokensToApprove[0] === approvingToken;
 
   useEffect(() => {
@@ -183,21 +312,20 @@ export function useTokenApproval({
     []
   );
 
-  // the same choice handleApprove makes, so callers can tell a free signature from a paid transaction
-  const getIsPermitApproval = useCallback(
-    (tokenAddress: string) => allowPermit && getIsPermitAvailable(tokenAddress),
-    [allowPermit, getIsPermitAvailable]
-  );
-
   const handleApprove = useCallback(
     async (options?: HandleApproveOptions) => {
       const tokenAddress = tokensToApprove[0];
       if (!chainId || isApproving || !tokenAddress || !spenderAddress) return;
 
-      const permitParams = getIsPermitApproval(tokenAddress)
-        ? { addTokenPermit, disableTokenPermits, accountType }
-        : undefined;
-      const { gasPaymentTokenAddress, payTokenAddress, ...metricParams } = latestMetric.current;
+      const isPermit = getIsPermitApproval(tokenAddress);
+      const { gasPaymentTokenAddress, payTokenAddress, permitBlockReason, ...metricParams } = latestMetric.current;
+      const permitSkipReason = isPermit
+        ? undefined
+        : getTokenPermitSkipReason({
+            allowPermit,
+            permitBlockReason,
+            permitUnavailableReason: getPermitUnavailableReason(tokenAddress),
+          });
 
       const doApprove = async (signerToUse: WalletSigner) => {
         setApprovingToken(tokenAddress);
@@ -207,10 +335,20 @@ export function useTokenApproval({
           tokenAddress,
           spender: spenderAddress,
           chainId,
-          permitParams,
+          permitParams: isPermit
+            ? {
+                // wrapChainAction may have just switched the wallet to this chain, and the signer from the last render
+                // stays bound to the previous one
+                addTokenPermit: (token, spender, value, permitOptions) =>
+                  addTokenPermit(token, spender, value, { ...permitOptions, signer: signerToUse }),
+                disableTokenPermits,
+                accountType,
+              }
+            : undefined,
           approveAmount,
           metric: {
             ...metricParams,
+            permitSkipReason,
             isGasPaymentToken:
               gasPaymentTokenAddress !== undefined
                 ? getIsGasPaymentTokenApproval({ tokenAddress, gasPaymentTokenAddress, payTokenAddress })
@@ -237,10 +375,12 @@ export function useTokenApproval({
     [
       accountType,
       addTokenPermit,
+      allowPermit,
       approveAmount,
       chainId,
       disableTokenPermits,
       getIsPermitApproval,
+      getPermitUnavailableReason,
       isApproving,
       latestMetric,
       setSettlementChainId,
@@ -258,5 +398,6 @@ export function useTokenApproval({
     isApproving,
     handleApprove,
     getIsPermitApproval,
+    approvalBatch,
   };
 }

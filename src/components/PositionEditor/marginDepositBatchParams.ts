@@ -1,7 +1,12 @@
 import type { ContractsChainId } from "config/chains";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { OrderType } from "domain/synthetics/orders";
-import { BatchOrderTxnParams, buildIncreaseOrderPayload } from "sdk/utils/orderTransactions";
+import {
+  BatchOrderTxnParams,
+  buildIncreaseOrderPayload,
+  getOrderPayoutAddresses,
+  OrderPayoutAddresses,
+} from "sdk/utils/orderTransactions";
 
 export type MarginDepositBatchParams = {
   chainId: ContractsChainId;
@@ -19,6 +24,7 @@ export type MarginDepositBatchParams = {
   allowedSlippage: number;
   /** Cancelled in the same batch when replacing an existing deposit. */
   replacingOrderKey: string | undefined;
+  replacingOrder: OrderPayoutAddresses | undefined;
 };
 
 /** A Limit Increase with zero size and mandatory auto-cancel; a replaced order is cancelled in the same batch. */
@@ -52,6 +58,9 @@ export function buildMarginDepositBatchParams(p: MarginDepositBatchParams): Batc
   return {
     createOrderParams: [createOrderParams],
     updateOrderParams: [],
-    cancelOrderParams: p.replacingOrderKey !== undefined ? [{ orderKey: p.replacingOrderKey }] : [],
+    cancelOrderParams:
+      p.replacingOrderKey !== undefined
+        ? [{ orderKey: p.replacingOrderKey, ...getOrderPayoutAddresses(p.replacingOrder) }]
+        : [],
   };
 }

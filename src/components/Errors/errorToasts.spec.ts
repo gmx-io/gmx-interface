@@ -8,16 +8,32 @@ import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import { ARBITRUM, SOURCE_BASE_MAINNET, SOURCE_ETHEREUM_MAINNET } from "config/chains";
 import { ValidationBannerErrorName } from "domain/synthetics/trade/utils/validation";
 import { CustomError, extendError, parseError } from "lib/errors";
+import { getIsRelayUnavailableError } from "lib/errors/customErrors";
 import { expandDecimals } from "lib/numbers";
 import { TxErrorType } from "sdk/utils/errors/transactionsErrors";
+import { GmxRelayError } from "sdk/utils/express";
 
-import { getDebugErrorMessage, getInsufficientBalanceToastBanner, getTxnErrorToast } from "./errorToasts";
+import {
+  getDebugErrorMessage,
+  getInsufficientBalanceToastBanner,
+  getInsufficientExecutionFeeToastContent,
+  getTxnErrorToast,
+} from "./errorToasts";
 import { InsufficientNativeTokenBalanceMessage, InsufficientSourceChainNativeTokenBalanceMessage } from "./gasErrors";
 
 const ACCOUNT = "0x1111111111111111111111111111111111111111";
 const USDC = "0xaf88d065e77c8cC2239327C5EDb3A432268e5831";
 const WETH = "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1";
 const GM_TOKEN = "0x70d95587d40A2caf56bd97485aB3Eec10Bee6336";
+
+const renderText = (content: ReactNode) => render(createElement(I18nProvider, { i18n }, content)).container.textContent;
+
+beforeAll(() => {
+  i18n.load("en", {});
+  i18n.activate("en");
+});
+
+afterEach(cleanup);
 
 describe("getDebugErrorMessage", () => {
   it("carries the taskId so the user can copy it out of a failure", () => {
@@ -256,16 +272,6 @@ describe("getTxnErrorToast wallet errors", () => {
       payload: { id: 3, jsonrpc: "2.0", method: "eth_sendTransaction", params: [] },
     });
 
-  const renderText = (content: ReactNode) =>
-    render(createElement(I18nProvider, { i18n }, content)).container.textContent;
-
-  beforeAll(() => {
-    i18n.load("en", {});
-    i18n.activate("en");
-  });
-
-  afterEach(cleanup);
-
   it("explains a wallet request that expired before it was confirmed PRO-3577", () => {
     const walletError = sendTransactionError({ message: "Request expired. Please try again." });
 
@@ -336,5 +342,110 @@ describe("getTxnErrorToast wallet errors", () => {
 
     expect(text).toContain(shows);
     expect(text).not.toContain(hides);
+  });
+});
+
+describe("getTxnErrorToast relay failures", () => {
+  it.each([
+    {
+      name: "relay down, order update paid from the wallet",
+      error: new GmxRelayError("GMX Relay /v1/relay/submit failed: Internal Server Error", 503),
+      isGmxAccount: false,
+      defaultMessage: "Order update failed",
+      shows:
+        "Order update failedExpress relayer is temporarily unavailable.Try again shortly or switch to Classic Trading in settings",
+    },
+    {
+      name: "relay unreachable, order paid from GMX Account",
+      error: new GmxRelayError("GMX Relay request failed: Failed to fetch"),
+      isGmxAccount: true,
+      shows: "Express relayer is temporarily unavailable. Try again shortly",
+      hides: "Classic",
+    },
+    {
+      name: "relay refuses the order",
+      error: new GmxRelayError("GMX Relay /v1/relay/submit failed: The relay rejected this operation.", 400),
+      isGmxAccount: false,
+      shows: "Transaction failed",
+      hides: "relayer",
+    },
+  ])("names a relayer outage: $name PRO-4548", ({ error, isGmxAccount, defaultMessage, shows, hides }) => {
+    const { errorContent } = getTxnErrorToast(ARBITRUM, parseError(error), {
+      defaultMessage,
+      isRelayUnavailable: getIsRelayUnavailableError(error),
+      setIsSettingsVisible: vi.fn(),
+      expressTxn: { gasPaymentTokenAddress: USDC, isGmxAccount },
+    });
+
+    const text = renderText(errorContent);
+
+    expect(text).toContain(shows);
+    expect(text).toContain("Show error");
+
+    if (hides) {
+      expect(text).not.toContain(hides);
+    }
+  });
+});
+
+describe("getInsufficientExecutionFeeToastContent", () => {
+  const renderToast = (p: {
+    minExecutionFee: bigint;
+    executionFee: bigint;
+    gasLimit: bigint | undefined;
+    executionFeeBufferBps: number;
+    expressOrdersEnabled: boolean;
+  }) =>
+    renderText(
+      getInsufficientExecutionFeeToastContent({
+        minExecutionFee: p.minExecutionFee,
+        executionFee: p.executionFee,
+        chainId: ARBITRUM,
+        executionFeeBufferBps: p.executionFeeBufferBps,
+        isExpress: false,
+        estimatedExecutionFee: p.gasLimit === undefined ? undefined : p.executionFee,
+        estimatedExecutionGasLimit: p.gasLimit,
+        txUrl: undefined,
+        errorMessage: undefined,
+        shouldOfferExpress: !p.expressOrdersEnabled,
+        expressOrdersEnabled: p.expressOrdersEnabled,
+        setIsSettingsVisible: vi.fn(),
+      })
+    )?.replace(/\s+/g, " ");
+
+  // reverted Arbitrum wallet transactions; the contract accepts the fee at the suggested buffer
+  it.each([
+    {
+      name: "Express on, the fee carries its extra 10%",
+      minExecutionFee: 542809832108922n,
+      executionFee: 322046945539200n,
+      gasLimit: 4126014n,
+      executionFeeBufferBps: 13000,
+      expressOrdersEnabled: true,
+      shows: "buffer to 402%",
+    },
+    {
+      name: "Express off",
+      minExecutionFee: 443001007262658n,
+      executionFee: 231509167336200n,
+      gasLimit: 4122417n,
+      executionFeeBufferBps: 3000,
+      expressOrdersEnabled: false,
+      shows: "buffer to 290%",
+    },
+  ])("suggests a buffer that covers the failed transaction: $name TRD-37", ({ shows, ...p }) => {
+    expect(renderToast(p)).toContain(shows);
+  });
+
+  it("shows no empty buffer value without the fee estimate TRD-37", () => {
+    const text = renderToast({
+      minExecutionFee: 542809832108922n,
+      executionFee: 322046945539200n,
+      gasLimit: undefined,
+      executionFeeBufferBps: 3000,
+      expressOrdersEnabled: true,
+    });
+
+    expect(text).toContain("Increase the max network fee buffer in settings");
   });
 });

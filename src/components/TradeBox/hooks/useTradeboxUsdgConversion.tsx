@@ -48,7 +48,11 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/tradeboxUsdgConversionSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
-import { getExpressParamsForSubmit } from "domain/synthetics/express/validateMultichainExpressSubmit";
+import {
+  getExpressParamsForSubmit,
+  getExpressTokenPermitBlockReason,
+  getGasPaymentTokenToApprove,
+} from "domain/synthetics/express/validateMultichainExpressSubmit";
 import { estimateExecuteSwapOrderGasLimit, estimateOrderOraclePriceCount } from "domain/synthetics/fees";
 import { OrderType } from "domain/synthetics/orders";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
@@ -60,6 +64,7 @@ import {
   type ConfirmedUsdgOrder,
   getConvertedOrderStatus,
   getConvertedSizeFit,
+  getIsTypedSizeUnchanged,
   getTpSlSetupKey,
 } from "domain/synthetics/usdgPools/orderAutoSubmit";
 import { formatMaxInstantAmount } from "domain/synthetics/usdgPools/usdcConversion";
@@ -252,21 +257,21 @@ export function useTradeboxUsdgConversion({
       list.push({ tokenAddress: usdcAddress, amount: fromTokenAmount });
     }
 
-    if (expressParams?.gasPaymentParams) {
-      list.push({
-        tokenAddress: expressParams.gasPaymentParams.gasPaymentTokenAddress,
-        amount: expressParams.gasPaymentParams.gasPaymentTokenAmount,
-      });
+    const gasPaymentTokenToApprove = getGasPaymentTokenToApprove(expressParams);
+    if (gasPaymentTokenToApprove) {
+      list.push(gasPaymentTokenToApprove);
     }
 
     return list;
-  }, [expressParams?.gasPaymentParams, fromTokenAmount, isConvertFirst, usdcAddress]);
+  }, [expressParams, fromTokenAmount, isConvertFirst, usdcAddress]);
+
+  const permitBlockReason = getExpressTokenPermitBlockReason(expressParams);
 
   const { tokensToApprove, isAllowanceLoaded, isApproving, handleApprove } = useTokenApproval({
     chainId,
     spenderAddress: getContract(chainId, "SyntheticsRouter"),
     tokens: approvalTokens,
-    allowPermit: Boolean(expressParams),
+    allowPermit: permitBlockReason === undefined,
     skip: isFromTokenGmxAccount || !isConvertFirst,
     metric: {
       flow: "trade",
@@ -274,6 +279,7 @@ export function useTradeboxUsdgConversion({
       isExpress1CT: Boolean(expressParams?.subaccount),
       gasPaymentTokenAddress: expressParams?.gasPaymentParams?.gasPaymentTokenAddress,
       payTokenAddress: usdcAddress,
+      permitBlockReason,
     },
   });
 
@@ -303,6 +309,7 @@ export function useTradeboxUsdgConversion({
   const latestMarketAddress = useLatest(marketAddress);
   const latestOrderSetupKey = useLatest(orderSetupKey);
   const latestToTokenInputValue = useLatest(toTokenInputValue);
+  const latestSizeDeltaUsd = useLatest(increaseAmounts?.sizeDeltaUsd);
 
   const resetConversion = useCallback(() => {
     updateUsdgConversionSession((current) => ({
@@ -504,7 +511,11 @@ export function useTradeboxUsdgConversion({
           const isOrderSetupUnchanged =
             latestOrderSetupKey.current === confirmedOrder.setupKey &&
             (confirmedOrder.sizeInputValue === undefined ||
-              latestToTokenInputValue.current === confirmedOrder.sizeInputValue);
+              getIsTypedSizeUnchanged({
+                confirmedOrder,
+                sizeInputValue: latestToTokenInputValue.current,
+                sizeDeltaUsd: latestSizeDeltaUsd.current,
+              }));
 
           updateUsdgConversionSession((current) => ({
             ...current,
@@ -529,6 +540,7 @@ export function useTradeboxUsdgConversion({
       chainId,
       latestMarketAddress,
       latestOrderSetupKey,
+      latestSizeDeltaUsd,
       latestToTokenInputValue,
       marketAddress,
       orderStatuses,
@@ -803,7 +815,11 @@ export function useTradeboxUsdgConversion({
     fromToken?.address === collateralTokenAddress &&
     lastConversion.marketAddress === marketAddress &&
     (isTypedSizeKept
-      ? toTokenInputValue === confirmedOrder?.sizeInputValue
+      ? getIsTypedSizeUnchanged({
+          confirmedOrder,
+          sizeInputValue: toTokenInputValue,
+          sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
+        })
       : fromTokenAmount === lastConversion.amountOut);
 
   const orderAutoSubmitArmedAt = orderAutoSubmitArm?.armedAt;

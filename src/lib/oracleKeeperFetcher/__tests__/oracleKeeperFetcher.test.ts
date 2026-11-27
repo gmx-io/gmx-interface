@@ -27,9 +27,12 @@ describe("OracleKeeperFetcher Fallback Logic", () => {
     vi.useFakeTimers();
     localStorage.clear();
     vi.clearAllMocks();
+    NetworkStatusObserver._instance = undefined;
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, json: async () => [{ tokenAddress: "0xeth" }] }));
   });
 
   afterEach(() => {
+    vi.unstubAllGlobals();
     vi.useRealTimers();
     vi.restoreAllMocks();
   });
@@ -113,8 +116,8 @@ describe("OracleKeeperFetcher tickers completeness", () => {
     tokenSymbol: tokenAddress,
     minPrice: "1",
     maxPrice: "1",
-    oracleDecimals: 30,
     updatedAt: 0,
+    timestamp: 0,
   });
 
   const ETH = "0xeth";
