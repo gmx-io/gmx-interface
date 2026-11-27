@@ -26,7 +26,10 @@ export function PromoCard({ title, subtitle, imgSrc, imgClassName, onClose }: Pr
       <div className="relative z-10">
         <div className="flex items-start justify-between gap-8">
           <div className="min-w-0 flex-1">
-            <div className="text-body-medium mb-2 font-medium text-typography-primary">{title}</div>
+            {/* Room for the close X, so a long title wraps before it */}
+            <div className={cx("text-body-medium mb-2 font-medium text-typography-primary", { "pr-16": onClose })}>
+              {title}
+            </div>
             <div className="text-body-small text-typography-secondary">{subtitle}</div>
           </div>
         </div>
