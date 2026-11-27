@@ -7,6 +7,7 @@ import BellIcon from "img/ic_bell.svg?react";
 
 import { getIsPwaInstallUiEnabled } from "./pwaPlatform";
 import { usePwaState } from "./pwaStore";
+import { usePwaTesterOtherNetworkNote } from "./tester/pwaTester"; // rewards-tester
 
 /**
  * Notifications cover Arbitrum only. On the trade page, when they're on and the person looks at their positions on
@@ -24,7 +25,8 @@ export function OtherNetworkNotificationsNote({
 }) {
   const { notifications } = usePwaState();
 
-  const isVisible = notifications === "on" && chainId !== ARBITRUM && hasPositions;
+  let isVisible = notifications === "on" && chainId !== ARBITRUM && hasPositions;
+  isVisible = usePwaTesterOtherNetworkNote(isVisible, chainId !== ARBITRUM); // rewards-tester
 
   if (!getIsPwaInstallUiEnabled() || !isVisible) {
     return null;

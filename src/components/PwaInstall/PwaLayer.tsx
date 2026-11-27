@@ -21,6 +21,7 @@ import {
   usePwaState,
 } from "./pwaStore";
 import { useIsToastVisible } from "./useIsToastVisible";
+import { PwaTesterPanel } from "./tester/PwaTesterPanel"; // rewards-tester
 import { usePwaEnvironment } from "./usePwaEnvironment";
 
 /** The welcome card waits this long on first launch, so a restored wallet doesn't flip it between card and line. */
@@ -130,6 +131,7 @@ function PwaLayerContent() {
         isVisible={state.isInstallSheetOpen}
         setIsVisible={setIsInstallSheetOpen}
       />
+      <PwaTesterPanel env={env} /> {/* rewards-tester */}
     </>
   );
 }

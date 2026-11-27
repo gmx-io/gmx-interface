@@ -1,6 +1,7 @@
 import { openBrowserInstallDialog } from "./installPrompt";
 import { PwaPlatform } from "./pwaPlatform";
 import { getDismissedNudge, setPwaState } from "./pwaStore";
+import { pwaTesterHandlesBrowserDialog, pwaTesterHandlesPermission } from "./tester/pwaTester"; // rewards-tester
 
 /** "Install app" in the menu and the button on the install card both start here. */
 export async function startInstall(platform: PwaPlatform, source: "menu" | "card") {
@@ -14,6 +15,7 @@ export async function startInstall(platform: PwaPlatform, source: "menu" | "card
   }
 
   if (platform === "android-chrome" || platform === "desktop-chromium") {
+    if (pwaTesterHandlesBrowserDialog(source)) return; // rewards-tester
     const outcome = await openBrowserInstallDialog();
 
     if (outcome === "dismissed" && source === "card") {
@@ -63,6 +65,7 @@ export function closeNotificationsOnCard() {
  * - "turnOnFailed" or "limitReached": open Settings on the Notifications tab, where those states and "Try again" live.
  */
 export function turnOnNotifications() {
+  if (pwaTesterHandlesPermission()) return; // rewards-tester
   setPwaState({ notifications: "on", isNotificationsOnCardVisible: true, isNudgeDoneThisSession: true });
 }
 
