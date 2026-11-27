@@ -7,6 +7,7 @@ import { format } from "date-fns/format";
 import { useCallback, useMemo } from "react";
 import {
   CartesianGrid,
+  type DotProps,
   Line,
   LineChart,
   ResponsiveContainer,
@@ -17,22 +18,30 @@ import {
 } from "recharts";
 
 import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/chartSelectors";
-import { selectTradeboxMarketInfo } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { selectMarketsInfoError } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectTradeboxMarketAddress } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import {
+  borrowingRateToProjectedPercent,
+  buildRateChartData,
+  type ChartDataPoint,
+  hourlyRateToProjectedPercent,
+  RATE_SNAPSHOT_INTERVAL_SECONDS,
+  type RateProjection,
+  rateToProjectedPercent,
+  type RateType,
+} from "domain/synthetics/markets/rateChartData";
 import { RateTimeframe, useRateSnapshots } from "domain/synthetics/markets/useRateSnapshots";
 import { useLocalizedMap } from "lib/i18n";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { bigintToNumber, PRECISION_DECIMALS } from "lib/numbers";
 import { RatesSnapshot } from "sdk/utils/rates/types";
 
+import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 import Loader from "components/Loader/Loader";
 import { PoolsTabs } from "components/PoolsTabs/PoolsTabs";
 
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 import MinusCircleIcon from "img/ic_minus_circle.svg?react";
-
-type RateType = "netRate" | "borrowingRate" | "fundingRate";
-type RateProjection = "1h" | "8h" | "24h" | "1y";
 
 const RATE_TYPES: RateType[] = ["netRate", "borrowingRate", "fundingRate"];
 const RATE_TYPE_LABELS: Record<RateType, MessageDescriptor> = {
@@ -56,12 +65,7 @@ const PROJECTION_LABELS: Record<RateProjection, MessageDescriptor> = {
   "1y": msg`1y`,
 };
 
-const PROJECTION_MULTIPLIERS: Record<RateProjection, number> = {
-  "1h": 3600,
-  "8h": 28800,
-  "24h": 86400,
-  "1y": 31536000,
-};
+const TIMEFRAME_SECONDS: Record<RateTimeframe, number> = { "1d": 86400, "7d": 604800, "30d": 2592000 };
 
 const LIVE_DASH_ARRAY = "4 4";
 
@@ -82,37 +86,6 @@ const X_AXIS_DOMAIN: ["dataMin", "dataMax"] = ["dataMin", "dataMax"];
 
 const LONG_ACTIVE_DOT = { r: 4, strokeWidth: 2, stroke: LONG_COLOR, fill: "var(--color-slate-900)" };
 const SHORT_ACTIVE_DOT = { r: 4, strokeWidth: 2, stroke: SHORT_COLOR, fill: "var(--color-slate-900)" };
-
-function getRateFields(rateType: RateType): { longKey: keyof RatesSnapshot; shortKey: keyof RatesSnapshot } {
-  switch (rateType) {
-    case "netRate":
-      return { longKey: "netRateLong", shortKey: "netRateShort" };
-    case "borrowingRate":
-      return { longKey: "borrowingRateLong", shortKey: "borrowingRateShort" };
-    case "fundingRate":
-      return { longKey: "fundingRateLong", shortKey: "fundingRateShort" };
-  }
-}
-
-function rateToProjectedPercent(rateString: string, projection: RateProjection): number {
-  const rate = BigInt(rateString);
-  const multiplier = BigInt(PROJECTION_MULTIPLIERS[projection]);
-  return bigintToNumber(rate * multiplier * 100n, PRECISION_DECIMALS);
-}
-
-function hourlyRateToProjectedPercent(rateHourly: bigint, projection: RateProjection): number {
-  const projectionHours = PROJECTION_MULTIPLIERS[projection] / PROJECTION_MULTIPLIERS["1h"];
-  return bigintToNumber(rateHourly * BigInt(projectionHours) * 100n, PRECISION_DECIMALS);
-}
-
-/**
- * API stores borrowing rate as a positive cost magnitude. To match the convention used in the
- * rest of the UI (header, MarketNetFee tooltip — where borrowing is shown as a negative number
- * representing the cost the trader pays), we negate it for display.
- */
-function borrowingRateToProjectedPercent(rateString: string, projection: RateProjection): number {
-  return -rateToProjectedPercent(rateString, projection);
-}
 
 function getProjectionDisplayDecimals(projection: RateProjection): number {
   switch (projection) {
@@ -153,16 +126,6 @@ function getRateDirectionLabel(rateType: RateType, direction: "long" | "short"):
   }
 }
 
-type ChartDataPoint = {
-  timestamp: Date;
-  timestampMs: number;
-  longRate: number | null;
-  shortRate: number | null;
-  longRateLive: number | null;
-  shortRateLive: number | null;
-  raw: RatesSnapshot | null;
-};
-
 type SnapshotChartDataPoint = ChartDataPoint & {
   longRate: number;
   shortRate: number;
@@ -198,24 +161,6 @@ function isLiveChartDataPoint(value: unknown): value is LiveChartDataPoint {
   );
 }
 
-function buildChartData(snapshots: RatesSnapshot[], rateType: RateType, projection: RateProjection): ChartDataPoint[] {
-  const { longKey, shortKey } = getRateFields(rateType);
-  const convert = rateType === "borrowingRate" ? borrowingRateToProjectedPercent : rateToProjectedPercent;
-
-  return snapshots.map((snapshot) => {
-    const timestamp = new Date(snapshot.timestamp * 1000);
-    return {
-      timestamp,
-      timestampMs: timestamp.getTime(),
-      longRate: convert(String(snapshot[longKey]), projection),
-      shortRate: convert(String(snapshot[shortKey]), projection),
-      longRateLive: null,
-      shortRateLive: null,
-      raw: snapshot,
-    };
-  });
-}
-
 type LiveRateHourly = { long: bigint; short: bigint };
 
 function getLiveHourlyRate(info: ReturnType<typeof selectChartHeaderInfo>, rateType: RateType): LiveRateHourly | null {
@@ -235,8 +180,8 @@ export function NetRateChart() {
   const rateTypeLabels = useLocalizedMap(RATE_TYPE_LABELS);
   const timeframeLabels = useLocalizedMap(TIMEFRAME_LABELS);
 
-  const marketInfo = useSelector(selectTradeboxMarketInfo);
-  const marketAddress = marketInfo?.marketTokenAddress;
+  const marketAddress = useSelector(selectTradeboxMarketAddress);
+  const marketsInfoError = useSelector(selectMarketsInfoError);
 
   const [rateType, setRateType] = useLocalStorageSerializeKey<RateType>("net-rate-chart-type", "netRate");
   const [timeframe, setTimeframe] = useLocalStorageSerializeKey<RateTimeframe>("net-rate-chart-timeframe", "7d");
@@ -246,7 +191,7 @@ export function NetRateChart() {
   const activeTimeframe = timeframe || "7d";
   const activeProjection = projection || "1h";
 
-  const { snapshots, isLoading, error } = useRateSnapshots({
+  const { snapshots, isLoading, isUnavailable, error } = useRateSnapshots({
     marketAddress,
     timeframe: activeTimeframe,
   });
@@ -254,39 +199,54 @@ export function NetRateChart() {
   const headerInfo = useSelector(selectChartHeaderInfo);
 
   const liveRates = useMemo(() => {
-    const hourly = getLiveHourlyRate(headerInfo, activeRateType);
+    const hourly = marketsInfoError ? null : getLiveHourlyRate(headerInfo, activeRateType);
     if (!hourly) return null;
     return {
       longRate: hourlyRateToProjectedPercent(hourly.long, activeProjection),
       shortRate: hourlyRateToProjectedPercent(hourly.short, activeProjection),
     };
-  }, [headerInfo, activeRateType, activeProjection]);
+  }, [headerInfo, marketsInfoError, activeRateType, activeProjection]);
 
-  const chartData = useMemo(() => {
-    if (!snapshots || snapshots.length === 0) return [];
+  const chartData = useMemo(
+    () =>
+      buildRateChartData({
+        snapshots: snapshots ?? [],
+        rateType: activeRateType,
+        projection: activeProjection,
+        liveRates: error ? undefined : liveRates ?? undefined,
+      }),
+    [snapshots, activeRateType, activeProjection, liveRates, error]
+  );
 
-    const base = buildChartData(snapshots, activeRateType, activeProjection);
+  const historyStartDate = useMemo(() => {
+    const first = snapshots?.[0];
+    const requestedStart =
+      Math.floor((Date.now() / 1000 - TIMEFRAME_SECONDS[activeTimeframe]) / RATE_SNAPSHOT_INTERVAL_SECONDS) *
+      RATE_SNAPSHOT_INTERVAL_SECONDS;
+    return first && first.timestamp > requestedStart
+      ? format(new Date(first.timestamp * 1000), "MMM dd, yyyy, HH:mm")
+      : undefined;
+  }, [snapshots, activeTimeframe]);
+  const historyUnavailable = error || isUnavailable || (!marketAddress && marketsInfoError);
 
-    if (!liveRates) return base;
-
-    const lastIdx = base.length - 1;
-    const enriched = base.map((point, i) =>
-      i === lastIdx ? { ...point, longRateLive: point.longRate, shortRateLive: point.shortRate } : point
-    );
-
-    const now = new Date();
-    enriched.push({
-      timestamp: now,
-      timestampMs: now.getTime(),
-      longRate: null,
-      shortRate: null,
-      longRateLive: liveRates.longRate,
-      shortRateLive: liveRates.shortRate,
-      raw: null,
-    });
-
-    return enriched;
-  }, [snapshots, activeRateType, activeProjection, liveRates]);
+  const isolatedTimestamps = useMemo(
+    () =>
+      new Set(
+        chartData
+          .filter((point, i) => point.raw && !chartData[i - 1]?.raw && !chartData[i + 1]?.raw)
+          .map((point) => point.timestampMs)
+      ),
+    [chartData]
+  );
+  const renderSnapshotDot = useCallback(
+    (props: DotProps & { payload?: ChartDataPoint }) =>
+      props.payload && isolatedTimestamps.has(props.payload.timestampMs) ? (
+        <circle key={props.payload.timestampMs} cx={props.cx} cy={props.cy} r={2} fill={props.stroke} />
+      ) : (
+        <g key={props.payload?.timestampMs} />
+      ),
+    [isolatedTimestamps]
+  );
 
   const decimals = getProjectionDisplayDecimals(activeProjection);
 
@@ -347,7 +307,7 @@ export function NetRateChart() {
   );
 
   return (
-    <div className="flex h-full w-full flex-col gap-8 p-8">
+    <div className="flex min-h-0 w-full flex-1 flex-col gap-8 p-8">
       <div className="flex flex-wrap items-center justify-between gap-8 pb-8 pt-4">
         <PoolsTabs tabs={rateTypeTabs} selected={activeRateType} setSelected={setRateType} />
         <div className="flex flex-wrap items-center gap-8">
@@ -371,12 +331,23 @@ export function NetRateChart() {
         </span>
       </div>
 
-      <div className="w-full grow">
-        {isLoading ? (
+      {error && chartData.length > 0 && (
+        <ColorfulBanner color="yellow">
+          <Trans>Unable to refresh rate history. Showing previously loaded data.</Trans>
+        </ColorfulBanner>
+      )}
+      {historyStartDate && (
+        <p className="px-4 text-12 text-typography-secondary">
+          <Trans>Rate history available from {historyStartDate}.</Trans>
+        </p>
+      )}
+
+      <div className="min-h-0 w-full flex-1">
+        {isLoading && !historyUnavailable ? (
           <div className="flex h-full items-center justify-center">
             <Loader />
           </div>
-        ) : error && chartData.length === 0 ? (
+        ) : historyUnavailable && chartData.length === 0 ? (
           <div className="flex h-full flex-col items-center justify-center gap-8 px-16 text-center">
             <MinusCircleIcon className="size-24 text-typography-secondary" />
             <p className="text-body-medium font-bold text-typography-primary">
@@ -430,7 +401,7 @@ export function NetRateChart() {
                 dataKey="longRate"
                 stroke={LONG_COLOR}
                 strokeWidth={2}
-                dot={false}
+                dot={isolatedTimestamps.size > 0 ? renderSnapshotDot : false}
                 activeDot={LONG_ACTIVE_DOT}
                 isAnimationActive={false}
               />
@@ -449,7 +420,7 @@ export function NetRateChart() {
                 dataKey="shortRate"
                 stroke={SHORT_COLOR}
                 strokeWidth={2}
-                dot={false}
+                dot={isolatedTimestamps.size > 0 ? renderSnapshotDot : false}
                 activeDot={SHORT_ACTIVE_DOT}
                 isAnimationActive={false}
               />

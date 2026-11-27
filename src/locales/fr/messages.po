@@ -8732,6 +8732,9 @@ msgstr "Symbole (A à Z)"
 msgid "Choose which buy/sell marks appear on the chart: all your past trades, only your current open position, or none"
 msgstr "Choisissez quelles marques d'achat/vente apparaissent sur le graphique : toutes vos transactions passées, uniquement votre position ouverte actuelle, ou aucune"
 
+#: src/components/NetRateChart/NetRateChart.tsx
+msgid "Unable to refresh rate history. Showing previously loaded data."
+msgstr "Impossible d’actualiser l’historique des taux. Les données précédemment chargées sont affichées."
 #: src/components/SettingsModal/NotificationsSettings.tsx
 msgid "Tap the icon to the left of the address bar → Permissions → Notifications"
 msgstr "Touchez l'icône à gauche de la barre d'adresse → Autorisations → Notifications"
@@ -8877,6 +8880,10 @@ msgstr "12 derniers mois"
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Off"
 msgstr "Désactivé"
+
+#: src/components/NetRateChart/NetRateChart.tsx
+msgid "Rate history available from {historyStartDate}."
+msgstr "L’historique des taux est disponible à partir du {historyStartDate}."
 
 #: src/components/TradeBox/TradeBox.tsx
 msgid "per"

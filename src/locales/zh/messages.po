@@ -8732,6 +8732,9 @@ msgstr "代码（A 到 Z）"
 msgid "Choose which buy/sell marks appear on the chart: all your past trades, only your current open position, or none"
 msgstr "选择图表上显示哪些买入/卖出标记：您的所有历史交易、仅您当前的开仓，或不显示"
 
+#: src/components/NetRateChart/NetRateChart.tsx
+msgid "Unable to refresh rate history. Showing previously loaded data."
+msgstr "无法刷新费率历史记录。当前显示的是之前加载的数据。"
 #: src/components/SettingsModal/NotificationsSettings.tsx
 msgid "Tap the icon to the left of the address bar → Permissions → Notifications"
 msgstr "点按地址栏左侧的图标 →“权限”→“通知”"
@@ -8877,6 +8880,10 @@ msgstr "近一年"
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Off"
 msgstr "关闭"
+
+#: src/components/NetRateChart/NetRateChart.tsx
+msgid "Rate history available from {historyStartDate}."
+msgstr "费率历史记录自 {historyStartDate} 起可用。"
 
 #: src/components/TradeBox/TradeBox.tsx
 msgid "per"
