@@ -19,6 +19,7 @@ import { OrderType, SwapPricingType } from "utils/orders/types";
 import {
   getCollateralPriceAtIndexPrice,
   getEntryPrice,
+  getExecutionPriceForIncrease,
   getLeverage,
   getLiquidationPrice,
   getPositionPnlUsd,
@@ -901,13 +902,6 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
     });
   }
 
-  values.sizeDeltaInTokens = convertToTokenAmountForIncrease(
-    values.sizeDeltaUsd,
-    indexToken.decimals,
-    values.indexPrice,
-    isLong
-  )!;
-
   const impactMarketInfo =
     marketInfo.tradeMath === "gmsol" && evaluationPrice !== undefined
       ? {
@@ -915,15 +909,15 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
           indexToken: { ...marketInfo.indexToken, prices: { minPrice: evaluationPrice, maxPrice: evaluationPrice } },
         }
       : marketInfo;
-  const acceptablePriceInfo = getAcceptablePriceInfo({
+  const { sizeDeltaInTokens, acceptablePriceInfo } = getExecutionPriceForIncrease({
     marketInfo: impactMarketInfo,
-    isIncrease: true,
     isLimit,
     isLong,
     indexPrice: values.indexPrice,
     sizeDeltaUsd: values.sizeDeltaUsd,
-    sizeDeltaInTokens: values.sizeDeltaInTokens,
   });
+
+  values.sizeDeltaInTokens = sizeDeltaInTokens;
 
   values.positionPriceImpactDeltaUsd = acceptablePriceInfo.priceImpactDeltaUsd;
   values.potentialPriceImpactDiffUsd =
