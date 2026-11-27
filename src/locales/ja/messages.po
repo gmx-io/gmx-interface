@@ -4314,6 +4314,10 @@ msgstr "すべてのオープンポジションからの未払い借入手数料
 msgid "Market closed. This order executes only after the market reopens. The reopen price may differ from the last price."
 msgstr "マーケット休止中。この注文はマーケットの再開後にのみ執行されます。再開時の価格は直近の価格と異なる場合があります。"
 
+#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
+msgid "Closing is unavailable while the market is closed. TP/SL orders can still be created, but execute only after the market reopens."
+msgstr "マーケット休止中はクローズできません。TP/SL注文は引き続き作成できますが、執行はマーケットの再開後になります。"
+
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "Remove endpoint"
 msgstr "エンドポイントを削除"
@@ -6789,6 +6793,7 @@ msgstr "手数料が支払い額を超えています"
 msgid "Real onchain revenue, paid in stablecoins, every time someone trades through you"
 msgstr "誰かがあなたを通じて取引するたびに、ステーブルコインで支払われる実際のオンチェーン収益"
 
+#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Set TP/SL"
 msgstr "TP/SLを設定"
@@ -10849,6 +10854,10 @@ msgstr "{networkLabel}上の{addressLabel}"
 msgid "Loading fees..."
 msgstr "手数料を読み込み中..."
 
+#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
+msgid "This market is closed. Withdraw after the market reopens."
+msgstr "このマーケットは休止中です。マーケットの再開後に出金してください。"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Jones DAO"
 msgstr "Jones DAO"
@@ -13509,6 +13518,10 @@ msgstr "許容する価格への影響が高く設定されています。現在
 msgid "Swap"
 msgstr "スワップ"
 
+#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
+msgid "Switch to At price"
+msgstr "「指定価格」に切り替える"
+
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "Where do GMX staking rewards come from?"
 msgstr "GMXステーキング報酬の原資は何ですか？"
@@ -13564,6 +13577,10 @@ msgstr "{minutes}分<0>ごと</0>{0}"
 #: src/components/SideNav/LanguageNavItem.tsx
 msgid "Language"
 msgstr "言語"
+
+#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
+msgid "\"Now\" deposits are unavailable while the market is closed. \"At price\" deposits can still be created, but execute only after the market reopens."
+msgstr "マーケット休止中は「今すぐ」入金を利用できません。「指定価格」入金は引き続き作成できますが、執行はマーケットの再開後になります。"
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "{idleSeconds}s"

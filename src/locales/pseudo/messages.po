@@ -4314,6 +4314,10 @@ msgstr ""
 msgid "Market closed. This order executes only after the market reopens. The reopen price may differ from the last price."
 msgstr ""
 
+#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
+msgid "Closing is unavailable while the market is closed. TP/SL orders can still be created, but execute only after the market reopens."
+msgstr ""
+
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "Remove endpoint"
 msgstr ""
@@ -6789,6 +6793,7 @@ msgstr ""
 msgid "Real onchain revenue, paid in stablecoins, every time someone trades through you"
 msgstr ""
 
+#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Set TP/SL"
 msgstr ""
@@ -10849,6 +10854,10 @@ msgstr ""
 msgid "Loading fees..."
 msgstr ""
 
+#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
+msgid "This market is closed. Withdraw after the market reopens."
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Jones DAO"
 msgstr ""
@@ -13509,6 +13518,10 @@ msgstr ""
 msgid "Swap"
 msgstr ""
 
+#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
+msgid "Switch to At price"
+msgstr ""
+
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "Where do GMX staking rewards come from?"
 msgstr ""
@@ -13563,6 +13576,10 @@ msgstr ""
 #: src/components/SideNav/BottomMenuSection.tsx
 #: src/components/SideNav/LanguageNavItem.tsx
 msgid "Language"
+msgstr ""
+
+#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
+msgid "\"Now\" deposits are unavailable while the market is closed. \"At price\" deposits can still be created, but execute only after the market reopens."
 msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx

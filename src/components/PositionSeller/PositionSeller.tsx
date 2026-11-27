@@ -127,6 +127,7 @@ import {
 } from "components/DecreaseReceiveOutput/DecreaseReceiveOutput";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import { MarginDestinationSelector } from "components/MarginDestinationSelector/MarginDestinationSelector";
+import { MarketClosedPositionBanner } from "components/MarketClosedBanner/MarketClosedBanner";
 import Modal from "components/Modal/Modal";
 import { DeltaUsdValue } from "components/NumericValue/DeltaUsdValue";
 import { UsdValue } from "components/NumericValue/UsdValue";
@@ -160,7 +161,7 @@ import "./PositionSeller.scss";
 const PNL_TOOLTIP_THRESHOLD = expandDecimals(10000, USD_DECIMALS);
 const ORDER_OPTIONS = [{ value: OrderOption.Market }, { value: OrderOption.Twap }];
 
-export function PositionSeller() {
+export function PositionSeller({ onOpenTpSl }: { onOpenTpSl?: (positionKey: string) => void } = {}) {
   const [, setClosingPositionKey] = useClosingPositionKeyState();
 
   const onClose = useCallback(() => {
@@ -1206,6 +1207,7 @@ export function PositionSeller() {
                     sizeUsd={decreaseAmounts?.sizeDeltaUsd}
                     marketInfo={position.marketInfo}
                     type="decrease"
+                    isSummaryHidden={isMarketClosed}
                   />
                 </div>
               )}
@@ -1270,7 +1272,7 @@ export function PositionSeller() {
                   </AlertInfoCard>
                 )}
 
-                {marginDepositCancelParams.length > 0 && (
+                {marginDepositCancelParams.length > 0 && !isMarketClosed && (
                   <AlertInfoCard hideClose>
                     <Plural
                       value={marginDepositCancelParams.length}
@@ -1308,6 +1310,20 @@ export function PositionSeller() {
                       </span>
                     </div>
                   </ColorfulBanner>
+                )}
+
+                {isMarketClosed && (
+                  <MarketClosedPositionBanner
+                    action="close"
+                    onAction={
+                      onOpenTpSl
+                        ? () => {
+                            onClose();
+                            onOpenTpSl(position.key);
+                          }
+                        : undefined
+                    }
+                  />
                 )}
 
                 <ButtonTooltipWrapper content={buttonState.errorDescription} isHandlerDisabled={buttonState.disabled}>

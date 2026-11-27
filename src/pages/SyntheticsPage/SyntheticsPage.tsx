@@ -659,7 +659,9 @@ export function SyntheticsPage(p: Props) {
           initialTab={ordersModalState.initialTab}
         />
       )}
-      <PositionSeller />
+      <PositionSeller
+        onOpenTpSl={(positionKey) => setOrdersModalState({ isVisible: true, positionKey, initialView: "add" })}
+      />
       <PositionEditor />
       {shareSuccessTradeAction ? (
         <ShareClosedPosition

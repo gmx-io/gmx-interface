@@ -4314,6 +4314,10 @@ msgstr "Frais d'emprunt en attente sur toutes les positions ouvertes"
 msgid "Market closed. This order executes only after the market reopens. The reopen price may differ from the last price."
 msgstr "Marché fermé. Cet ordre ne sera exécuté qu'après la réouverture du marché. Le prix à la réouverture peut différer du dernier prix."
 
+#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
+msgid "Closing is unavailable while the market is closed. TP/SL orders can still be created, but execute only after the market reopens."
+msgstr "La fermeture est indisponible tant que le marché est fermé. Les ordres TP/SL peuvent toujours être créés, mais ne sont exécutés qu'après la réouverture du marché."
+
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "Remove endpoint"
 msgstr "Supprimer le point de terminaison"
@@ -6789,6 +6793,7 @@ msgstr "Les frais dépassent le montant du paiement"
 msgid "Real onchain revenue, paid in stablecoins, every time someone trades through you"
 msgstr "De vrais revenus onchain, payés en stablecoins, chaque fois que quelqu'un trade par votre intermédiaire"
 
+#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Set TP/SL"
 msgstr "Définir TP/SL"
@@ -10849,6 +10854,10 @@ msgstr "{addressLabel} sur {networkLabel}"
 msgid "Loading fees..."
 msgstr "Chargement des frais..."
 
+#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
+msgid "This market is closed. Withdraw after the market reopens."
+msgstr "Ce marché est fermé. Retirez après la réouverture du marché."
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Jones DAO"
 msgstr "Jones DAO"
@@ -13509,6 +13518,10 @@ msgstr "Impact sur le prix acceptable défini à un niveau élevé. Impact actue
 msgid "Swap"
 msgstr "Échanger"
 
+#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
+msgid "Switch to At price"
+msgstr "Passer à \"Au prix\""
+
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "Where do GMX staking rewards come from?"
 msgstr "D’où proviennent les récompenses de staking GMX ?"
@@ -13564,6 +13577,10 @@ msgstr "<0>Toutes les</0> {minutes} minutes{0}"
 #: src/components/SideNav/LanguageNavItem.tsx
 msgid "Language"
 msgstr "Langue"
+
+#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
+msgid "\"Now\" deposits are unavailable while the market is closed. \"At price\" deposits can still be created, but execute only after the market reopens."
+msgstr "Les dépôts \"Maintenant\" sont indisponibles tant que le marché est fermé. Les dépôts \"Au prix\" peuvent toujours être créés, mais ne sont exécutés qu'après la réouverture du marché."
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "{idleSeconds}s"

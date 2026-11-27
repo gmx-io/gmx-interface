@@ -4314,6 +4314,10 @@ msgstr "所有未平倉倉位的待結算借貸費用"
 msgid "Market closed. This order executes only after the market reopens. The reopen price may differ from the last price."
 msgstr "市場已休市。此訂單僅在市場重新開放後執行。重新開放時的價格可能與最後價格不同。"
 
+#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
+msgid "Closing is unavailable while the market is closed. TP/SL orders can still be created, but execute only after the market reopens."
+msgstr "市場休市期間無法平倉。止盈/止損訂單仍可建立，但僅在市場重新開放後執行。"
+
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "Remove endpoint"
 msgstr "移除端點"
@@ -6789,6 +6793,7 @@ msgstr "費用超過支付金額"
 msgid "Real onchain revenue, paid in stablecoins, every time someone trades through you"
 msgstr "每當有人透過你交易，都能獲得以穩定幣支付的真實鏈上收入"
 
+#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Set TP/SL"
 msgstr "設定 TP/SL"
@@ -10849,6 +10854,10 @@ msgstr "{networkLabel} 上的 {addressLabel}"
 msgid "Loading fees..."
 msgstr "正在載入費用..."
 
+#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
+msgid "This market is closed. Withdraw after the market reopens."
+msgstr "此市場已休市。請在市場重新開放後提取。"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Jones DAO"
 msgstr "Jones DAO"
@@ -13509,6 +13518,10 @@ msgstr "設定了較高的可接受價格影響。目前影響：{0}。"
 msgid "Swap"
 msgstr "兌換"
 
+#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
+msgid "Switch to At price"
+msgstr "切換為「指定價格」"
+
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "Where do GMX staking rewards come from?"
 msgstr "GMX 質押獎勵從何而來？"
@@ -13564,6 +13577,10 @@ msgstr "<0>每隔</0> {minutes} 分鐘{0}"
 #: src/components/SideNav/LanguageNavItem.tsx
 msgid "Language"
 msgstr "語言"
+
+#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
+msgid "\"Now\" deposits are unavailable while the market is closed. \"At price\" deposits can still be created, but execute only after the market reopens."
+msgstr "市場休市期間，「立即」存入無法使用。「指定價格」存入仍可建立，但僅在市場重新開放後執行。"
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "{idleSeconds}s"

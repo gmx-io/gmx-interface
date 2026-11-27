@@ -87,7 +87,7 @@ import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import { EmbeddedActionButton } from "components/Button/EmbeddedActionButton";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
-import { MarketClosedBanner } from "components/MarketClosedBanner/MarketClosedBanner";
+import { MarketClosedBanner, MarketClosedPositionBanner } from "components/MarketClosedBanner/MarketClosedBanner";
 import { MaxActions } from "components/MaxActions/MaxActions";
 import Modal from "components/Modal/Modal";
 import NumberInput from "components/NumberInput/NumberInput";
@@ -173,6 +173,34 @@ export function PositionEditor() {
   const replacingOrder = usePositionEditorReplacingOrder();
   const isAtPriceDeposit = isDeposit && depositMode === "atPrice";
   const isMarketClosed = useSelector(selectPositionEditorIsMarketClosed);
+
+  useEffect(
+    // a closed market takes only "At price" deposits, so the window opens there; "Now" stays one tap away
+    function openAtPriceWhileMarketClosed() {
+      if (!isVisible || editingPositionKey === prevEditingPositionKey || !isMarketClosed) {
+        return;
+      }
+
+      if (canDeposit && operation !== Operation.Deposit) {
+        setOperation(Operation.Deposit);
+      }
+
+      if (depositMode === "now") {
+        setDepositMode("atPrice");
+      }
+    },
+    [
+      canDeposit,
+      depositMode,
+      editingPositionKey,
+      isMarketClosed,
+      isVisible,
+      operation,
+      prevEditingPositionKey,
+      setDepositMode,
+      setOperation,
+    ]
+  );
 
   const [selectedCollateralAddress, setSelectedCollateralAddress] = usePositionEditorSelectedCollateralAddress();
   const [isCollateralTokenFromGmxAccount, setIsCollateralTokenFromGmxAccount] =
@@ -865,6 +893,12 @@ export function PositionEditor() {
               />
 
               {isMarketClosed && isAtPriceDeposit && <MarketClosedBanner state="limitWaits" />}
+              {isMarketClosed && !isAtPriceDeposit && (
+                <MarketClosedPositionBanner
+                  action={isDeposit ? "depositNow" : "withdraw"}
+                  onAction={isDeposit ? () => setDepositMode("atPrice") : undefined}
+                />
+              )}
 
               {isConversionTooLarge ? (
                 <>
