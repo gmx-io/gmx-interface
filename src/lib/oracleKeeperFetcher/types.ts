@@ -15,6 +15,11 @@ export type ApiMarket = {
   listingDate?: string;
 };
 
+export type ApiMarketState = {
+  marketToken: string;
+  isMarketClosed: boolean;
+};
+
 export type EventPayload = {
   isError: boolean;
   version: string;
@@ -140,16 +145,21 @@ export interface OracleFetcher {
   fetchPerformanceSnapshots(period: PerformancePeriod, address?: string): Promise<PerformanceSnapshotsResponse>;
   fetchUiFlags(): Promise<Record<string, UiFlag>>;
   fetchMarkets(): Promise<ApiMarket[]>;
+  fetchMarketsState(): Promise<ApiMarketState[]>;
   handleFailure(method: string, endpoint?: string): void;
 }
 
 export type TickersResponse = {
+  /** Contract price format: USD * 10^(30 - token decimals) */
   minPrice: string;
+  /** Contract price format: USD * 10^(30 - token decimals) */
   maxPrice: string;
-  oracleDecimals: number;
   tokenSymbol: string;
   tokenAddress: string;
+  /** Update time in milliseconds */
   updatedAt: number;
+  /** Price time in seconds */
+  timestamp: number;
 }[];
 
 export type DayPriceCandle = {

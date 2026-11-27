@@ -23,6 +23,7 @@ import {
 } from "context/SyntheticsStateContext/hooks/positionSellerHooks";
 import {
   selectBlockTimestampData,
+  selectClosedMarkets,
   selectMarketsInfoData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { makeSelectOrdersByPositionKey } from "context/SyntheticsStateContext/selectors/orderSelectors";
@@ -54,6 +55,7 @@ import {
   reportMultichainExpressSubmitError,
 } from "domain/synthetics/express/validateMultichainExpressSubmit";
 import { getNetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
+import { getIsMarketClosed } from "domain/synthetics/markets/utils";
 import { OrderType } from "domain/synthetics/orders";
 import { getMarginDepositCancelOrderParams } from "domain/synthetics/orders/marginDeposit";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
@@ -120,6 +122,7 @@ import { EmbeddedActionButton } from "components/Button/EmbeddedActionButton";
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 import {
   DecreaseReceiveOutputDisplay,
+  getTokenDisplaySymbol,
   SplitReceiveTokensLabel,
 } from "components/DecreaseReceiveOutput/DecreaseReceiveOutput";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
@@ -174,6 +177,8 @@ export function PositionSeller() {
   const hasOutdatedUi = useHasOutdatedUi();
   const multipleWalletExtensionsChainError = useMultipleWalletExtensionsChainError();
   const position = useSelector(selectPositionSellerPosition);
+  const closedMarkets = useSelector(selectClosedMarkets);
+  const isMarketClosed = getIsMarketClosed(closedMarkets, position?.marketAddress);
   const toToken = position?.indexToken;
   const submitButtonRef = useRef<HTMLButtonElement>(null);
   const settings = useSettings();
@@ -386,7 +391,7 @@ export function PositionSeller() {
 
   const splitReceiveSwapProfitFeeWarning = getSplitReceiveSwapProfitFeeWarning({
     shouldShow: !isTwap && isSplitReceiveAvailable && !isReceiveSeparated,
-    receiveToken,
+    receiveTokenSymbol: getTokenDisplaySymbol(receiveToken),
     profitToken: position?.pnlToken,
     collateralToken: position?.collateralToken,
     swapProfitFee: fees?.swapProfitFee,
@@ -394,7 +399,7 @@ export function PositionSeller() {
 
   const twapSplitReceiveSwapProfitFeeWarning = getSplitReceiveSwapProfitFeeWarning({
     shouldShow: isTwap && isSplitReceiveAvailable && !isReceiveSeparated && getIsHighSwapProfitFee(fees?.swapProfitFee),
-    receiveToken: position?.collateralToken,
+    receiveTokenSymbol: getTokenDisplaySymbol(position?.collateralToken),
     profitToken: position?.pnlToken,
     collateralToken: position?.collateralToken,
     swapProfitFee: fees?.swapProfitFee,
@@ -550,6 +555,10 @@ export function PositionSeller() {
       return {};
     }
 
+    if (isMarketClosed) {
+      return { error: t`Market closed` };
+    }
+
     const commonError = getCommonError({
       chainId,
       isConnected: Boolean(account),
@@ -591,6 +600,7 @@ export function PositionSeller() {
     decreaseError,
     expressParams,
     hasOutdatedUi,
+    isMarketClosed,
     isUsdcReceiveUnfillable,
     isSubmitting,
     position,
@@ -973,6 +983,13 @@ export function PositionSeller() {
   );
 
   const buttonState = useMemo(() => {
+    if (isMarketClosed) {
+      return {
+        text: t`Market closed`,
+        disabled: !shouldDisableValidationForTesting,
+      };
+    }
+
     if (!isAllowanceLoaded) {
       return {
         text: t`Loading...`,
@@ -1049,6 +1066,7 @@ export function PositionSeller() {
     isAllowanceLoaded,
     isApproving,
     isExpressLoading,
+    isMarketClosed,
     isMultichainSubmitDisabled,
     localizedTradeModeLabels,
     localizedTradeTypeLabels,
@@ -1274,7 +1292,7 @@ export function PositionSeller() {
                   </AlertInfoCard>
                 )}
 
-                {twapRecommendation && !isTwapBannerDismissed && (
+                {twapRecommendation && !isTwapBannerDismissed && !isMarketClosed && (
                   <ColorfulBanner color="blue" icon={InfoCircleIcon} onClose={() => setIsTwapBannerDismissed(true)}>
                     <div className="flex flex-col gap-8">
                       <span>

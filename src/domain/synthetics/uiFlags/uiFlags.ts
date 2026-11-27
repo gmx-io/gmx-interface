@@ -17,6 +17,9 @@ export function getIsV2JitLiquidityInfoEnabled(uiFlags: UiFlags | undefined): bo
   return uiFlags?.[IS_V2_JIT_LIQUIDITY_INFO_ENABLED_UI_FLAG]?.enabled !== false;
 }
 
+// Enable per chain once /v1/orders reflects receive-mode changes from OrderUpdated.
+export const ORDER_EDITOR_RECEIVE_MODE_FLAG = "isOrderEditorReceiveModeEnabled";
+
 export const IS_EXPRESS_AVAILABLE_UI_FLAG = "isExpressAvailable";
 
 /** Fail-open: only an explicit `false` disables express — an unreachable keeper or an unpublished flag must not. */
@@ -26,6 +29,20 @@ export function getIsExpressAvailable(uiFlags: UiFlags | undefined): boolean {
 
 export const IS_TOKEN_PERMITS_EOA_ENABLED_UI_FLAG = "isTokenPermitsEoaEnabled";
 export const IS_TOKEN_PERMITS_EIP7702_ENABLED_UI_FLAG = "isTokenPermitsEip7702Enabled";
+
+export const IS_WALLET_BATCHING_ENABLED_UI_FLAG = "isWalletBatchingEnabled";
+
+/** Fail-closed: approvals stay separate transactions until the keeper turns batching on */
+export function getIsWalletBatchingEnabled(uiFlags: UiFlags | undefined): boolean {
+  return uiFlags?.[IS_WALLET_BATCHING_ENABLED_UI_FLAG]?.enabled === true;
+}
+
+export const IS_CLASSIC_TOKEN_PERMITS_ENABLED_UI_FLAG = "isClassicTokenPermitsEnabled";
+
+/** Fail-closed, on top of the account-type flags: permits inside wallet transactions roll out separately */
+export function getIsClassicTokenPermitsEnabled(uiFlags: UiFlags | undefined): boolean {
+  return uiFlags?.[IS_CLASSIC_TOKEN_PERMITS_ENABLED_UI_FLAG]?.enabled === true;
+}
 
 const PERSISTED_API_FLAG_KEYS = [
   "apiMarkets",

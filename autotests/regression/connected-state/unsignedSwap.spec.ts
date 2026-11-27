@@ -3,6 +3,7 @@ import { formatUnits, getAddress, parseUnits, zeroAddress } from "viem";
 
 import { getNativeToken, getTokenBySymbol } from "../../../sdk/src/configs/tokens";
 import { fundTrading, test } from "../fixtures/accountState";
+import { openTooltip } from "../fixtures/marketData";
 import { configureClassicTrading } from "../fixtures/tradingForms";
 import { inspectRejectedCreateOrder } from "../fixtures/walletReview";
 import { displayedNumbers, infoRow, selectTradeMode } from "../fixtures/trade";
@@ -28,8 +29,12 @@ for (const mode of ["Market", "Limit"] as const) {
     const minimumReceive = (await displayedNumbers(infoRow(tradebox, "Minimum receive")))[0];
     await tradebox.getByRole("button", { name: "Execution details", exact: true }).click();
     const readMaxNetworkFee = async () => {
-      await infoRow(tradebox, "Network fee").locator(".Tooltip-handle").last().hover();
-      const maxFee = page.locator(".Tooltip-popup .Tooltip-row").filter({ hasText: "Max network fee" });
+      const tooltip = await openTooltip(
+        page,
+        infoRow(tradebox, "Network fee").locator(".Tooltip-handle").last(),
+        "Max network fee"
+      );
+      const maxFee = infoRow(tooltip, "Max network fee");
       await expect(maxFee).toContainText(getNativeToken(chainId).symbol);
       const value = (await displayedNumbers(maxFee))[0];
       await page.getByRole("banner").hover();

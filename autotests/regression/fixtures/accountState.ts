@@ -12,6 +12,7 @@ import { mockWalletBalances, type WalletAllowances } from "./walletBalances";
 import { zeroAddress, toHex, getAddress, type Hex } from "viem";
 import type { ContractsChainId } from "../../../sdk/src/configs/chains";
 import { getContract } from "../../../sdk/src/configs/contracts";
+import { getOracleKeeperFallbackUrls } from "../../../sdk/src/configs/oracleKeeper";
 
 import { unsignedTransactionReview } from "./unsignedTransactions";
 import { mockTradingMarket } from "./tradingMarket";
@@ -115,6 +116,12 @@ export const test = browserTest.extend<{
     };
     const review = unsignedReviewMode ? unsignedTransactionReview(chainId as ContractsChainId, address) : undefined;
     if (unsignedReviewMode) await mockTradingMarket(context, chainId);
+    // The app follows whichever oracle keeper answers its tickers probe fastest, and a switch re-keys every price, so
+    // positions drop out and forms opened from them close (app bug). A failing probe keeps the fallbacks unpicked.
+    const oracleFallbacks = getOracleKeeperFallbackUrls(chainId).map((url) => new URL(url).host);
+    await context.route(/\/prices\/tickers(?:\?|$)/, (route) =>
+      oracleFallbacks.includes(new URL(route.request().url()).host) ? route.fulfill({ status: 503 }) : route.fallback()
+    );
     await mockWalletBalances(
       context,
       address,

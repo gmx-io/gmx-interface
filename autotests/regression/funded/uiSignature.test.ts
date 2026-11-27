@@ -1,8 +1,8 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { encodeFunctionData, getAddress, hashTypedData } from "viem";
+import { encodeFunctionData, getAddress, hashTypedData, zeroHash } from "viem";
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
-import MultichainTransferRouter from "../../../sdk/src/abis/MultichainTransferRouter";
+import { getAbi } from "../../../sdk/src/abis/getAbi";
 import { getContract } from "../../../sdk/src/configs/contracts";
 import { getBridgeOutTypedData } from "../../../sdk/src/utils/express/utils/bridgeOutUtils";
 import { getGelatoRelayRouterDomain } from "../../../sdk/src/utils/express/utils/relayParamsUtils";
@@ -36,15 +36,22 @@ test("bridge minified signature binds a decoded bounded UI simulation and the su
     },
     fee: { feeToken: usdc.address, feeAmount: 100_000n, feeSwapPath: [] },
     userNonce: 1n,
+    eip6492SignatureWrapperHash: zeroHash,
     signature: "0x" as `0x${string}`,
   };
   const params = bridgeReturnParams(usdc.address);
-  const typed = getBridgeOutTypedData({ chainId: 42161, srcChainId: 8453, params, relayParams: relay as never });
+  const typed = getBridgeOutTypedData({
+    chainId: 42161,
+    srcChainId: 8453,
+    params,
+    relayParams: relay as never,
+    account: signer.address,
+  });
   const minified = minifiedUiTypedData(typed);
   const request = { method: "eth_signTypedData_v4", params: [signer.address, minified] };
   const to = getAddress(getContract(42161, "MultichainTransferRouter"));
   const data = encodeFunctionData({
-    abi: MultichainTransferRouter,
+    abi: getAbi(42161, "MultichainTransferRouter"),
     functionName: "bridgeOut",
     args: [relay as never, signer.address, 8453n, params],
   });
@@ -59,7 +66,7 @@ test("bridge minified signature binds a decoded bounded UI simulation and the su
   const signature = await signer.signTypedData(minified as never);
   const encode = (amount = params.amount) =>
     encodeFunctionData({
-      abi: MultichainTransferRouter,
+      abi: getAbi(42161, "MultichainTransferRouter"),
       functionName: "bridgeOut",
       args: [{ ...relay, signature } as never, signer.address, 8453n, { ...params, amount }],
     });
@@ -99,6 +106,8 @@ test("1CT removal signatures are always refused without signing, and unexpected 
     expiresAt: 1n,
     maxAllowedCount: 100n,
     nonce: 0n,
+    account: signer.address,
+    revocationCounter: 0n,
   });
   const expected = [
     request(minified),

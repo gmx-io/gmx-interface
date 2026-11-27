@@ -2,6 +2,7 @@ import { expect, type Page } from "@playwright/test";
 
 import type { ApiPositionInfo } from "../../../sdk/src/utils/positions/types";
 import { test, type AccountState } from "../fixtures/accountState";
+import { displayedNumber } from "../fixtures/displayedNumber";
 import { inputNumber } from "../fixtures/trade";
 
 const USD = 10n ** 30n;
@@ -81,7 +82,11 @@ test(
         await expect(cells.nth(3)).toContainText(/^\$\s*240\.00\s*\(240\.00\sUSDC\)$/);
         await expect(cells.nth(4)).toHaveText(/^\$\s*2,500\.00$/);
         await expect(cells.nth(5)).toHaveText(/^\$\s*2,600\.00$/);
-        await expect(cells.nth(6)).toHaveText(isLong ? /^\$\s*1,900\.00$/ : /^\$\s*3,100\.00$/);
+        // On 2.2.1 the app recomputes the liquidation price: it lies between entry and where the $240 margin
+        // is gone ($500 away on 0.48 ETH), so the mocked $1,900 / $3,100 must not show.
+        const liquidation = () => cells.nth(6).innerText().then(displayedNumber);
+        await expect.poll(liquidation).toBeGreaterThan(isLong ? 2000 : 2500);
+        await expect.poll(liquidation).toBeLessThan(isLong ? 2500 : 3000);
         if (isLong) {
           await expect(cells.nth(7)).toContainText(/3,000\.00\s*\$?\s*2,100\.00/);
           await expect(cells.nth(7).getByRole("button", { name: "Set" })).toHaveCount(0);

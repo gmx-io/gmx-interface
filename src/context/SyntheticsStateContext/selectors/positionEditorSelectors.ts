@@ -2,6 +2,7 @@ import type { Address } from "viem";
 
 import { USD_DECIMALS } from "config/factors";
 import { getUsdgConversionTokenAddress } from "config/usdgPools";
+import { getIsMarketClosed } from "domain/synthetics/markets/utils";
 import { getIsPositionInfoLoaded, parsePositionKey, substractMaxLeverageSlippage } from "domain/synthetics/positions";
 import { convertToUsd, getBalanceByBalanceType } from "domain/synthetics/tokens";
 import { getMaxWithdrawAmount } from "domain/synthetics/trade";
@@ -19,6 +20,7 @@ import { SyntheticsState } from "../SyntheticsStateContextProvider";
 import { createSelector } from "../utils";
 import {
   selectChainId,
+  selectClosedMarkets,
   selectMarketsInfoData,
   selectOrdersInfoData,
   makeSelectPositionConstants,
@@ -154,6 +156,18 @@ export const selectPositionEditorSetTriggerPriceInputValue = (state: SyntheticsS
   state.positionEditor.setTriggerPriceInputValue;
 
 export const selectPositionEditorReplacingOrderKey = (state: SyntheticsState) => state.positionEditor.replacingOrderKey;
+
+export const selectPositionEditorIsMarketClosed = createSelector((q) =>
+  getIsMarketClosed(q(selectClosedMarkets), q(selectPositionEditorPosition)?.marketAddress)
+);
+
+export const selectPositionEditorIsBlockedByClosedMarket = createSelector((q) => {
+  if (!q(selectPositionEditorIsMarketClosed)) {
+    return false;
+  }
+
+  return !(q(selectPositionEditorOperation) === Operation.Deposit && q(selectPositionEditorDepositMode) === "atPrice");
+});
 export const selectPositionEditorSetReplacingOrderKey = (state: SyntheticsState) =>
   state.positionEditor.setReplacingOrderKey;
 

@@ -9,23 +9,9 @@ import {
   useEditingOrderState,
 } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
 import { usePositionOrdersWithErrors } from "context/SyntheticsStateContext/hooks/orderHooks";
-import {
-  selectExpressGlobalParams,
-  selectUnavailableExpressFeeToken,
-} from "context/SyntheticsStateContext/selectors/expressSelectors";
-import {
-  selectChainId,
-  selectSrcChainId,
-  selectSubaccountForChainAction,
-  selectUserReferralInfo,
-} from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectChainId, selectUserReferralInfo } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { useEstimateBatchExpressParamsWithApprovedGasToken } from "domain/synthetics/express/useGasPaymentTokenFallback";
-import {
-  getExpressParamsForSubmit,
-  reportMultichainExpressSubmitError,
-} from "domain/synthetics/express/validateMultichainExpressSubmit";
 import {
   isIncreaseOrderType,
   isLimitDecreaseOrderType,
@@ -33,8 +19,7 @@ import {
   isTwapOrder,
   PositionOrderInfo,
 } from "domain/synthetics/orders";
-import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
-import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
+import { useSendCancelOrdersTxn } from "domain/synthetics/orders/useSendCancelOrdersTxn";
 import {
   PositionInfo,
   getEstimatedLiquidationTimeInHours,
@@ -43,9 +28,7 @@ import {
 import type { TokenData } from "domain/synthetics/tokens";
 import { usePendingTpSlOrders } from "domain/tpsl/usePendingTpSlOrders";
 import { reportHandledRejection } from "lib/metrics/reportHandledRejection";
-import { useJsonRpcProvider } from "lib/rpc";
 import { useBreakpoints } from "lib/useBreakpoints";
-import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import { getMarketIndexName } from "sdk/utils/markets";
 import { getOrderKeys } from "sdk/utils/orders";
 
@@ -100,16 +83,9 @@ export function OrdersModal({
   const isMobile = isTablet;
 
   const chainId = useSelector(selectChainId);
-  const srcChainId = useSelector(selectSrcChainId);
-  const signer = useEthersSigner();
-  const { provider } = useJsonRpcProvider(chainId);
   const [, setCancellingOrdersKeys] = useCancellingOrdersKeysState();
   const [editingOrderState, setEditingOrderState] = useEditingOrderState();
-  const { makeOrderTxnCallback } = useOrderTxnCallbacks();
-  const globalExpressParams = useSelector(selectExpressGlobalParams);
-  const unavailableGasPaymentToken = useSelector(selectUnavailableExpressFeeToken);
-  const estimateExpressParams = useEstimateBatchExpressParamsWithApprovedGasToken();
-  const subaccount = useSelector(selectSubaccountForChainAction);
+  const sendCancelOrdersTxn = useSendCancelOrdersTxn();
 
   const effectivePositionKey = position?.key ?? positionKeyProp;
   const effectiveIsLong = position?.isLong ?? isLongProp;
@@ -208,77 +184,23 @@ export function OrdersModal({
   );
 
   const handleCancelAll = useCallback(async () => {
-    if (!signer || !provider || displayedOrders.length === 0) return;
+    if (displayedOrders.length === 0) return;
 
     setIsCancellingAll(true);
 
     const orderKeys = displayedOrders.flatMap((order) => getOrderKeys(order));
     setCancellingOrdersKeys((prev) => [...new Set([...prev, ...orderKeys])]);
 
-    const batchParams = {
-      createOrderParams: [],
-      updateOrderParams: [],
-      cancelOrderParams: orderKeys.map((k) => ({ orderKey: k })),
-    };
-
     try {
-      const expressParams = globalExpressParams
-        ? await estimateExpressParams({
-            signer,
-            chainId,
-            batchParams,
-            globalExpressParams,
-            requireValidations: false,
-            provider,
-            isGmxAccount: srcChainId !== undefined,
-            subaccount,
-          })
-        : undefined;
-
-      if (
-        reportMultichainExpressSubmitError({
-          isGmxAccount: srcChainId !== undefined,
-          expressParams,
-          tokensData: undefined,
-          unavailableGasPaymentToken,
-          actionName: "Cancel Order",
-          collateral: position?.collateralToken.symbol,
-        })
-      ) {
-        return;
-      }
-
-      await sendBatchOrderTxn({
-        chainId,
-        signer,
-        batchParams,
-        expressParams: getExpressParamsForSubmit(expressParams),
-        simulationParams: undefined,
-        callback: makeOrderTxnCallback({
-          actionName: "Cancel Order",
-          collateralSymbol: position?.collateralToken.symbol,
-        }),
-        provider,
-        isGmxAccount: srcChainId !== undefined,
+      await sendCancelOrdersTxn({
+        orders: displayedOrders,
+        collateralSymbol: position?.collateralToken.symbol,
       }).catch(reportHandledRejection("ordersModal.cancelAll"));
     } finally {
       setIsCancellingAll(false);
       setCancellingOrdersKeys((prev) => prev.filter((k) => !orderKeys.includes(k)));
     }
-  }, [
-    signer,
-    provider,
-    displayedOrders,
-    setCancellingOrdersKeys,
-    estimateExpressParams,
-    globalExpressParams,
-    unavailableGasPaymentToken,
-    chainId,
-    srcChainId,
-    subaccount,
-    makeOrderTxnCallback,
-    position?.collateralToken.symbol,
-  ]);
+  }, [displayedOrders, setCancellingOrdersKeys, sendCancelOrdersTxn, position?.collateralToken.symbol]);
 
   useEffect(() => {
     if (isVisible) {

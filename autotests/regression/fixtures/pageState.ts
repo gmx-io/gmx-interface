@@ -16,10 +16,7 @@ async function attachFullPageScreenshot(page: Page, testInfo: TestInfo, name: st
   const height = await page.evaluate(() =>
     Math.max(
       document.documentElement.scrollHeight,
-      ...Array.from(
-        document.querySelectorAll<HTMLElement>(".scrollbar-gutter-stable"),
-        (element) => element.scrollHeight
-      )
+      ...Array.from(document.querySelectorAll<HTMLElement>("[data-page-scroller]"), (element) => element.scrollHeight)
     )
   );
   await page.setViewportSize({ width: viewport.width, height: Math.min(height, 8000) });

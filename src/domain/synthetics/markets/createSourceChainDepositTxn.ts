@@ -100,6 +100,7 @@ export async function createSourceChainDepositTxn({
     amountLD,
     composeGas: ensuredFees.txnEstimatedComposeGas,
     isToGmx: true,
+    isManualGas: true,
     action,
     nativeDropAmount: relayParams.fee.feeAmount,
   });

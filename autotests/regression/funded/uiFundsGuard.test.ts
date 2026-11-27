@@ -1,11 +1,11 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { encodeFunctionData, getAddress, zeroAddress, zeroHash, type Hex } from "viem";
-import ExchangeRouter from "../../../sdk/src/abis/ExchangeRouter";
-import MultichainTransferRouter from "../../../sdk/src/abis/MultichainTransferRouter";
+import { getAbi } from "../../../sdk/src/abis/getAbi";
 import IStargate from "../../../sdk/src/abis/IStargate";
 import RewardRouterV3 from "../../../sdk/src/abis/RewardRouterV3";
 import { getContract } from "../../../sdk/src/configs/contracts";
+import { getEmptyBridgeFeeParams } from "../../../sdk/src/utils/multichain/api";
 import { getMultichainTransferSendParams } from "../../../sdk/src/utils/multichain/sendParams";
 import { address, usdc, weth } from "./fundedQuote";
 import { inspectUiAccount } from "./uiAccount";
@@ -20,6 +20,8 @@ import type { FundedSession } from "./session";
 const market = getAddress("0x70d95587d40A2caf56bd97485aB3Eec10Bee6336");
 const vault = getContract(42161, "DepositVault");
 const fee = 100_000_000_000_000n;
+const exchangeRouter = getAbi(42161, "ExchangeRouter");
+const multichainTransferRouter = getAbi(42161, "MultichainTransferRouter");
 
 test("staking cannot reset an existing stake, power, or reward entitlement", async () => {
   const empty = { currentStaked: 0n, cumulativePower: 0n, projectedRewardShare: 0n };
@@ -37,16 +39,16 @@ test("staking cannot reset an existing stake, power, or reward entitlement", asy
 test("account UI guard binds amount, receiver, vault and operation", () => {
   const calls = [
     encodeFunctionData({
-      abi: MultichainTransferRouter,
+      abi: multichainTransferRouter,
       functionName: "sendTokens",
       args: [usdc.address, getContract(42161, "MultichainVault"), 1_000_000n],
     }),
-    encodeFunctionData({ abi: MultichainTransferRouter, functionName: "bridgeIn", args: [address, usdc.address] }),
+    encodeFunctionData({ abi: multichainTransferRouter, functionName: "bridgeIn", args: [address, usdc.address] }),
   ];
   const tx = {
     to: getContract(42161, "MultichainTransferRouter"),
     value: 0n,
-    data: encodeFunctionData({ abi: MultichainTransferRouter, functionName: "multicall", args: [calls] }),
+    data: encodeFunctionData({ abi: multichainTransferRouter, functionName: "multicall", args: [calls] }),
   };
   assert.deepEqual(inspectUiAccount(tx, address, usdc.address, 1_000_000n, false), { extraFeeUsd: 0n });
   for (const changed of [
@@ -55,13 +57,13 @@ test("account UI guard binds amount, receiver, vault and operation", () => {
     {
       ...tx,
       data: encodeFunctionData({
-        abi: MultichainTransferRouter,
+        abi: multichainTransferRouter,
         functionName: "multicall",
         args: [
           [
             calls[0],
             encodeFunctionData({
-              abi: MultichainTransferRouter,
+              abi: multichainTransferRouter,
               functionName: "bridgeIn",
               args: [weth.address, usdc.address],
             }),
@@ -73,6 +75,34 @@ test("account UI guard binds amount, receiver, vault and operation", () => {
     assert.throws(() => inspectUiAccount(changed, address, usdc.address, 1_000_000n, false));
   assert.throws(() => inspectUiAccount(tx, address, usdc.address, 2_000_000n, false));
   assert.throws(() => inspectUiAccount(tx, address, usdc.address, 1_000_000n, true));
+  const withdrawal = (bridgeFee = getEmptyBridgeFeeParams()) => ({
+    to: getContract(42161, "MultichainTransferRouter"),
+    value: 0n,
+    data: encodeFunctionData({
+      abi: multichainTransferRouter,
+      functionName: "transferOut",
+      args: [
+        {
+          token: usdc.address,
+          amount: 1_000_000n,
+          minAmountOut: 1_000_000n,
+          provider: zeroAddress,
+          data: "0x",
+          bridgeFee,
+        },
+      ],
+    }),
+  });
+  assert.deepEqual(inspectUiAccount(withdrawal(), address, usdc.address, 1_000_000n, true), { extraFeeUsd: 0n });
+  assert.throws(() =>
+    inspectUiAccount(
+      withdrawal({ feeToken: usdc.address, feeAmount: 1n, feeSwapPath: [], minOutputAmount: 0n }),
+      address,
+      usdc.address,
+      1_000_000n,
+      true
+    )
+  );
 });
 
 test("claim UI guard permits only the bounded WETH claim flags and no ETH conversion", () => {
@@ -137,17 +167,17 @@ function liquidity() {
     to: getContract(42161, "ExchangeRouter"),
     value: fee,
     data: encodeFunctionData({
-      abi: ExchangeRouter,
+      abi: exchangeRouter,
       functionName: "multicall",
       args: [
         [
-          encodeFunctionData({ abi: ExchangeRouter, functionName: "sendWnt", args: [vault, fee] }),
+          encodeFunctionData({ abi: exchangeRouter, functionName: "sendWnt", args: [vault, fee] }),
           encodeFunctionData({
-            abi: ExchangeRouter,
+            abi: exchangeRouter,
             functionName: "sendTokens",
             args: [usdc.address, vault, intent.amount],
           }),
-          encodeFunctionData({ abi: ExchangeRouter, functionName: "createDeposit", args: [p] }),
+          encodeFunctionData({ abi: exchangeRouter, functionName: "createDeposit", args: [p] }),
           ...additional,
         ],
       ],
@@ -172,7 +202,7 @@ test("LP guard rejects diverted proceeds, excess approval routing, callbacks and
   assert.throws(() =>
     inspectUiLiquidity(
       encode(params, [
-        encodeFunctionData({ abi: ExchangeRouter, functionName: "sendTokens", args: [usdc.address, address, 1n] }),
+        encodeFunctionData({ abi: exchangeRouter, functionName: "sendTokens", args: [usdc.address, address, 1n] }),
       ]),
       intent
     )

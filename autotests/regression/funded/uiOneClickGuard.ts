@@ -7,12 +7,12 @@ import {
   isAddressEqual,
   recoverTypedDataAddress,
   zeroAddress,
+  zeroHash,
   maxUint256,
   type Address,
   type Hex,
 } from "viem";
-import ExchangeRouter from "../../../sdk/src/abis/ExchangeRouter";
-import SubaccountGelatoRelayRouter from "../../../sdk/src/abis/SubaccountGelatoRelayRouter";
+import { getAbi } from "../../../sdk/src/abis/getAbi";
 import { getContract } from "../../../sdk/src/configs/contracts";
 import { getSubaccountApprovalTypedData } from "../../../sdk/src/utils/subaccount/getSubaccountApprovalTypedData";
 import { getEmptySubaccountApproval } from "../../../sdk/src/utils/subaccount/getEmptySubaccountApproval";
@@ -59,6 +59,7 @@ export function inspectUiRelayFees(relay: RelayParamsPayload, state: Awaited<Ret
   assert.equal(BigInt(relay.desChainId), 42161n);
   assert.ok(BigInt(relay.deadline) > now && BigInt(relay.deadline) <= now + 3600n);
   assert.deepEqual(relay.tokenPermits, [], "Unexpected token permit");
+  assert.equal(relay.eip6492SignatureWrapperHash, zeroHash, "Unexpected EIP-6492 signature wrapper");
   for (const value of Object.values(relay.externalCalls)) assert.deepEqual(value, [], "Unexpected external call");
   const token = [state.usdc, state.weth].find((t) => getAddress(t.address) === getAddress(relay.fee.feeToken));
   assert.ok(token);
@@ -79,7 +80,7 @@ export async function inspectUiOneClickRelay(
   const inventory = session.active.inventory!;
   assert.ok(inventory.subaccount && inventory.uiSubaccountApprovalHash);
   assert.equal(getAddress(payload.to), getAddress(getContract(42161, "SubaccountGelatoRelayRouter")));
-  const call = decodeFunctionData({ abi: SubaccountGelatoRelayRouter, data: payload.data });
+  const call = decodeFunctionData({ abi: getAbi(42161, "SubaccountGelatoRelayRouter"), data: payload.data });
   assert.equal(call.functionName, "batch");
   if (call.functionName !== "batch") throw new Error("Expected 1CT batch");
   const [relay, approval, account, subaccount, batch] = call.args;
@@ -93,6 +94,7 @@ export async function inspectUiOneClickRelay(
     });
     assert.ok(await session.subaccountActive(subaccount));
   } else {
+    assert.ok("revocationCounter" in approval, "1CT approval lacks the revocation counter");
     const td = getSubaccountApprovalTypedData({
       chainId: 42161,
       subaccountAddress: approval.subaccount,
@@ -100,10 +102,15 @@ export async function inspectUiOneClickRelay(
       expiresAt: approval.expiresAt,
       maxAllowedCount: approval.maxAllowedCount,
       nonce: approval.nonce,
+      account: session.address,
+      revocationCounter: approval.revocationCounter,
     });
     assert.equal(hashTypedData(td as never), inventory.uiSubaccountApprovalHash);
     const { signature, ...unsigned } = approval;
-    assert.equal(hashTypedData({ ...td, message: unsigned } as never), inventory.uiSubaccountApprovalHash);
+    assert.equal(
+      hashTypedData({ ...td, message: { ...unsigned, account: session.address } } as never),
+      inventory.uiSubaccountApprovalHash
+    );
     assert.equal(
       getAddress(await recoverTypedDataAddress({ ...minifiedUiTypedData(td), signature } as never)),
       session.address
@@ -116,7 +123,7 @@ export async function inspectUiOneClickRelay(
     relayRouterAddress: payload.to,
     account,
     relayParams: relay as unknown as RelayParamsPayload,
-    subaccountApprovalHash: hashSubaccountApproval(approval),
+    subaccountApprovalHash: hashSubaccountApproval(42161, approval),
     batchParams: {
       createOrderParams: batch.createOrderParamsList.map((orderPayload) => ({ orderPayload })),
       updateOrderParams: [],
@@ -133,6 +140,7 @@ export async function inspectUiOneClickRelay(
     getAddress(subaccount)
   );
   // Normalize only for the common guard. The original UI relay payload is what gets sent.
+  const exchangeRouter = getAbi(42161, "ExchangeRouter");
   const calls: Hex[] = [];
   let value = 0n;
   for (const order of batch.createOrderParamsList) {
@@ -140,7 +148,7 @@ export async function inspectUiOneClickRelay(
     value += order.numbers.executionFee;
     calls.push(
       encodeFunctionData({
-        abi: ExchangeRouter,
+        abi: exchangeRouter,
         functionName: "sendTokens",
         args: [
           order.addresses.initialCollateralToken,
@@ -151,7 +159,7 @@ export async function inspectUiOneClickRelay(
     );
     calls.push(
       encodeFunctionData({
-        abi: ExchangeRouter,
+        abi: exchangeRouter,
         functionName: "createOrder",
         args: [{ ...order, addresses: { ...order.addresses, receiver: session.address } }],
       })
@@ -160,17 +168,17 @@ export async function inspectUiOneClickRelay(
   if (value)
     calls.unshift(
       encodeFunctionData({
-        abi: ExchangeRouter,
+        abi: exchangeRouter,
         functionName: "sendWnt",
         args: [getContract(42161, "OrderVault"), value],
       })
     );
   for (const key of batch.cancelOrderKeys)
-    calls.push(encodeFunctionData({ abi: ExchangeRouter, functionName: "cancelOrder", args: [key] }));
+    calls.push(encodeFunctionData({ abi: exchangeRouter, functionName: "cancelOrder", args: [key] }));
   const checked = inspectUiOrder(
     {
       to: getContract(42161, "ExchangeRouter"),
-      data: encodeFunctionData({ abi: ExchangeRouter, functionName: "multicall", args: [calls] }),
+      data: encodeFunctionData({ abi: exchangeRouter, functionName: "multicall", args: [calls] }),
       value,
     },
     intent,

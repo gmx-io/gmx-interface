@@ -126,6 +126,7 @@ function confirmed(key: string, pending = tp): PositionOrderInfo {
     data: [],
     uiFeeFactor: undefined,
     validFromTime: 0n,
+    srcChainId: 0n,
     marketInfo: position.marketInfo!,
     indexToken: position.indexToken,
     initialCollateralToken: position.collateralToken,
