@@ -257,6 +257,7 @@ async function estimateSourceChainDepositInitialTxFees({
     amountLD,
     composeGas: initialComposeGas,
     isToGmx: true,
+    isManualGas: true,
     action,
     nativeDropAmount: fullWntFee,
   });

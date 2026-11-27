@@ -59,6 +59,7 @@ export function getPositionOrderError({
   marginDepositNextLiqPrice,
   resultingPositionMarginState,
   isResultingPositionCheckBlocking,
+  isCostUnpayable,
   decreasePositionSwapType,
 }: {
   positionOrder: PositionOrderInfo;
@@ -72,6 +73,7 @@ export function getPositionOrderError({
   marginDepositNextLiqPrice?: bigint;
   resultingPositionMarginState?: PositionMarginState;
   isResultingPositionCheckBlocking?: boolean;
+  isCostUnpayable?: boolean;
   decreasePositionSwapType?: DecreasePositionSwapType;
 }): string | undefined {
   const isMarginDeposit = isMarginDepositOrder(positionOrder);
@@ -146,7 +148,7 @@ export function getPositionOrderError({
       return t`Max close amount exceeded`;
     }
 
-    // Beyond-liq trigger price surfaces as a non-blocking warning (getTpSlLiqPriceWarning), not a block here.
+    // a beyond-liq trigger alone only warns (getTpSlLiqPriceWarning); unpayable costs below still block
 
     const markPriceError = getTriggerDecreaseMarkPriceError({
       orderType: positionOrder.orderType,
@@ -157,6 +159,10 @@ export function getPositionOrderError({
 
     if (markPriceError) {
       return markPriceError;
+    }
+
+    if (isCostUnpayable) {
+      return t`Insufficient collateral to cover order costs`;
     }
   }
 

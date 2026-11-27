@@ -30,7 +30,6 @@ import { encodeReferralCode } from "sdk/utils/referrals";
 
 import { CloseToastButton } from "components/CloseToastButton/CloseToastButton";
 import { GmxAccountModal } from "components/GmxAccountModal/GmxAccountModal";
-import { NotifyModal } from "components/NotifyModal/NotifyModal";
 import { SettingsModal } from "components/SettingsModal/SettingsModal";
 import { closeAllTooltips } from "components/Tooltip/closeAllTooltips";
 import { WhatsNewToastContainer } from "components/WhatsNewToast/WhatsNewToastContainer";
@@ -166,7 +165,6 @@ export function AppRoutes() {
       {!isSolanaNetwork(networkId) && <EvmGlobalEffects />}
       <GmxAccountModal />
       <SettingsModal isSettingsVisible={isSettingsVisible} setIsSettingsVisible={setIsSettingsVisible} />
-      <NotifyModal />
     </>
   );
 }

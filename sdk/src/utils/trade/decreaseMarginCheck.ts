@@ -7,13 +7,9 @@ import { applyFactor } from "utils/numbers";
 import { getPositionPnlUsd } from "utils/positions";
 import type { PositionInfoLoaded } from "utils/positions/types";
 import { UserReferralInfo } from "utils/referrals/types";
-import { convertToTokenAmount, convertToUsd } from "utils/tokens";
+import { convertToUsd } from "utils/tokens";
 import { TokenData } from "utils/tokens/types";
-import {
-  getCollateralDeltaAmountAfterPriceImpactDiff,
-  getDecreasePositionAmounts,
-  getIsProfitKeptInPnlToken,
-} from "utils/trade/decrease";
+import { getCollateralDeltaAmountAfterPriceImpactDiff, getDecreasePositionAmounts } from "utils/trade/decrease";
 
 import {
   getMarketInfoAtIndexPrice,
@@ -267,17 +263,6 @@ export function getTriggerDecreaseRemainingPositionMarginState(
     return undefined;
   }
 
-  const isProfitKeptInPnlToken = getIsProfitKeptInPnlToken({
-    pnlToken: isLong ? marketInfo.longToken : marketInfo.shortToken,
-    collateralToken,
-    decreaseSwapType: decreaseAmounts.decreaseSwapType,
-  });
-
-  const costsPaidFromProfitAmount = isProfitKeptInPnlToken
-    ? convertToTokenAmount(decreaseAmounts.payedOutputUsd, collateralToken.decimals, decreaseAmounts.collateralPrice) ??
-      0n
-    : 0n;
-
   return getDecreaseResultingPositionMarginState({
     marketInfo,
     collateralToken,
@@ -286,10 +271,7 @@ export function getTriggerDecreaseRemainingPositionMarginState(
     sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
     sizeDeltaInTokens: decreaseAmounts.sizeDeltaInTokens,
     collateralDeltaAmount: p.collateralDeltaAmount,
-    payedRemainingCollateralAmount: bigMath.min(
-      decreaseAmounts.payedRemainingCollateralAmount + costsPaidFromProfitAmount,
-      position.collateralAmount
-    ),
+    payedRemainingCollateralAmount: decreaseAmounts.payedRemainingCollateralAmount,
     priceImpactDiffUsd: decreaseAmounts.priceImpactDiffUsd,
     minCollateralUsd: p.minCollateralUsd,
     minPositionSizeUsd: p.minPositionSizeUsd,
@@ -301,19 +283,30 @@ export function getTriggerDecreaseRemainingPositionMarginState(
 }
 
 export function getStoredTriggerDecreaseQuote(
-  p: Omit<Parameters<typeof getDecreasePositionAmounts>[0], "validatedCollateralWithdrawalAmount" | "keepLeverage"> & {
+  p: Omit<
+    Parameters<typeof getDecreasePositionAmounts>[0],
+    "validatedCollateralWithdrawalAmount" | "storedCollateralDeltaAmount" | "keepLeverage"
+  > & {
     position: PositionInfoLoaded;
     triggerPrice: bigint;
     storedCollateralDeltaAmount: bigint;
   }
 ): { decreaseAmounts: DecreasePositionAmounts; marginState?: DecreasePositionMarginState } {
+  // getDecreasePositionAmounts settles a storedCollateralDeltaAmount itself, these quotes take the validated one
+  const { storedCollateralDeltaAmount, ...quoteParams } = p;
   const { marketInfo, collateralToken } = getMarketInfoAtIndexPrice({
     marketInfo: p.marketInfo,
     collateralToken: p.collateralToken,
     indexPrice: p.triggerPrice,
     isLong: p.isLong,
   });
-  const params = { ...p, marketInfo, collateralToken, keepLeverage: false, validatedCollateralWithdrawalAmount: 0n };
+  const params = {
+    ...quoteParams,
+    marketInfo,
+    collateralToken,
+    keepLeverage: false,
+    validatedCollateralWithdrawalAmount: 0n,
+  };
   const decreaseAmounts = getDecreasePositionAmounts(params);
   if (decreaseAmounts.isFullClose || decreaseAmounts.sizeDeltaUsd <= 0n) {
     return { decreaseAmounts };
@@ -323,7 +316,7 @@ export function getStoredTriggerDecreaseQuote(
     ...params,
     sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
     sizeDeltaInTokens: decreaseAmounts.sizeDeltaInTokens,
-    collateralDeltaAmount: p.storedCollateralDeltaAmount,
+    collateralDeltaAmount: storedCollateralDeltaAmount,
     payedRemainingCollateralAmount: decreaseAmounts.payedRemainingCollateralAmount,
     priceImpactDiffUsd: decreaseAmounts.priceImpactDiffUsd,
   });

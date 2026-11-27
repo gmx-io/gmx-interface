@@ -94,8 +94,11 @@ export async function createAndSignTokenPermit(
   };
 }
 
-export function getIsPermitExpired(permit: SignedTokenPermit) {
-  return Number(permit.deadline) < nowInSeconds();
+// the wallet can hold a transaction for minutes before it's mined, and an expired permit reverts the whole call
+export const WALLET_TXN_PERMIT_DEADLINE_MARGIN_SECONDS = 10 * 60;
+
+export function getIsPermitExpired(permit: SignedTokenPermit, marginSeconds = 0) {
+  return Number(permit.deadline) < nowInSeconds() + marginSeconds;
 }
 
 export function getIsSameTokenPermit(a: SignedTokenPermit, b: SignedTokenPermit) {
@@ -114,7 +117,7 @@ export function getPermitsExpiryTimeoutMs(permits: SignedTokenPermit[], now: num
 }
 
 /**
- * Each permit costs relay gas and only Router permits are accepted, so a relay call carries just
+ * Each permit costs gas and only Router permits are accepted, so a relay call or wallet transaction carries just
  * the permits for tokens it spends. GMX Account routers reject permits entirely.
  */
 export function getRelayTokenPermits({

@@ -2,6 +2,7 @@ import { expect, test } from "@playwright/test";
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
+import { BlockNotFoundError } from "viem";
 
 import { readRegressionIndexers } from "../fixtures/deploymentConfig";
 import { productionChains, publicClient, readProductionEndpoints } from "../fixtures/productionChains";
@@ -11,6 +12,19 @@ const { source, endpoints } = readRegressionIndexers();
 
 const sha256 = (text: string) => createHash("sha256").update(text).digest("hex");
 const qaStartRoot = process.env.REGRESSION_QA_START_ROOT;
+
+// The public RPC balances requests across nodes, and the one answering can trail the squid by a few blocks.
+async function getIndexedBlock(chainId: number, blockNumber: bigint) {
+  const client = publicClient(chainId);
+  for (let attempt = 1; ; attempt++) {
+    try {
+      return await client.getBlock({ blockNumber });
+    } catch (error) {
+      if (!(error instanceof BlockNotFoundError) || attempt === 10) throw error;
+      await new Promise((resolve) => setTimeout(resolve, 2_000));
+    }
+  }
+}
 
 if (qaStartRoot) {
   test("0.01 indexer config is unchanged since the QA pass started", async ({}, testInfo) => {
@@ -56,7 +70,7 @@ for (const { keys, url } of readProductionEndpoints().filter(({ file }) => file 
     let timestamp: number;
     if (isSquid) {
       const chain = productionChains.find((chain) => chain.configKey === configKey)!;
-      const block = await publicClient(chain.id).getBlock({ blockNumber: BigInt(body.data.squidStatus.height) });
+      const block = await getIndexedBlock(chain.id, BigInt(body.data.squidStatus.height));
       timestamp = Number(block.timestamp);
     } else {
       expect(body.data._meta.hasIndexingErrors).toBe(false);

@@ -2,7 +2,9 @@ import { expect } from "@playwright/test";
 
 import { getTokenBySymbol } from "../../../sdk/src/configs/tokens";
 import { test } from "../fixtures/browser";
-import { relativeDiff, watchTickerPrices } from "../fixtures/quoteDetails";
+import { displayedNumber } from "../fixtures/displayedNumber";
+import { displayedSumMatches, infoRowValue } from "../fixtures/marketData";
+import { relativeDiff, usdText, watchTickerPrices } from "../fixtures/quoteDetails";
 import { inputNumber, labelledInput, selectTradeMode } from "../fixtures/trade";
 
 let price: ReturnType<typeof watchTickerPrices>;
@@ -95,7 +97,14 @@ test("TWAP swap calculates the size of each part", async ({ page }) => {
   await parts.fill("5");
   await parts.press("Tab");
   await expect(parts).toHaveValue("5");
-  await expect(box.getByText("Size per part", { exact: true }).locator("..")).toContainText(/\$\s*20\.00/);
+  // Each part is a fifth of the pay amount's USD value, which follows the USDC price.
+  await expect
+    .poll(async () => {
+      const pay = displayedNumber(await usdText(page.getByTestId("pay")).innerText());
+      const perPart = displayedNumber(await infoRowValue(box, "Size per part").innerText());
+      return relativeDiff(pay, 100) < 0.01 && displayedSumMatches(pay, Array(5).fill(perPart));
+    })
+    .toBe(true);
   await expect(box.getByText("Frequency", { exact: true })).toBeVisible();
   await expect(page.getByTestId("confirm-trade-button")).toHaveText("Connect wallet");
 });

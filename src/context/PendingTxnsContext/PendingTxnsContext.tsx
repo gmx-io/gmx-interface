@@ -47,6 +47,7 @@ export type PendingTransaction = {
   data?: PendingTransactionData;
   actionName?: TradingActionName;
   onError?: () => void;
+  onSuccess?: () => void;
   // The chain the txn was sent on. Pending txns outlive chain switches, so the poller cannot assume the current one.
   chainId: number;
   onReplaced?: (transactionHash: string) => void;
@@ -167,7 +168,7 @@ function PendingTxnsPoller({
 }) {
   const { chainId } = useChainId();
   const { provider } = useJsonRpcProvider(chainId);
-  const { setIsSettingsVisible, executionFeeBufferBps } = useSettings();
+  const { setIsSettingsVisible, executionFeeBufferBps, expressOrdersEnabled } = useSettings();
   const latestPendingTxns = useLatest(pendingTxns);
   const isMounted = useMountedState();
   const isPolling = useRef(false);
@@ -222,7 +223,8 @@ function PendingTxnsPoller({
                   estimatedOrders: pendingTxn.data?.estimatedOrders,
                   txUrl,
                   errorMessage: errorData?.errorMessage,
-                  shouldOfferExpress: true,
+                  shouldOfferExpress: !expressOrdersEnabled,
+                  expressOrdersEnabled,
                   setIsSettingsVisible,
                 });
               } else {
@@ -244,6 +246,10 @@ function PendingTxnsPoller({
                 sendTxnErrorMetric(pendingTxn.metricId, onchainError, "minting");
                 sendUserAnalyticsOrderResultEvent(txnChainId, pendingTxn.metricId, false);
               }
+            }
+
+            if (receipt.status === 1) {
+              pendingTxn.onSuccess?.();
             }
 
             if (receipt.status === 1 && pendingTxn.message) {
@@ -278,6 +284,7 @@ function PendingTxnsPoller({
     chainId,
     setIsSettingsVisible,
     executionFeeBufferBps,
+    expressOrdersEnabled,
     isMounted,
     latestPendingTxns,
     setPendingTxns,

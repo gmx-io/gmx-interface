@@ -49,10 +49,14 @@ jobs:
         run: |
           max_gwei="${{ vars.GMX_TEST_MAX_GAS_GWEI || '0.1' }}"
 
-          hex=$(curl -sS --max-time 20 -X POST "$GMX_TEST_RPC_URL" \
+          response=$(curl -sS --max-time 20 -X POST "$GMX_TEST_RPC_URL" \
             -H 'content-type: application/json' \
-            -d '{"jsonrpc":"2.0","id":1,"method":"eth_gasPrice","params":[]}' \
-            | python3 -c 'import json,sys; print(json.load(sys.stdin)["result"])')
+            -d '{"jsonrpc":"2.0","id":1,"method":"eth_gasPrice","params":[]}')
+          hex=$(jq -r '.result // empty' <<< "$response" 2>/dev/null || true)
+          if [ -z "$hex" ]; then
+            echo "::error::GMX_TEST_RPC_URL returned no gas price, check the secret: $(head -c 300 <<< "$response")"
+            exit 1
+          fi
 
           wei=$((hex))
           max_wei=$(python3 -c "print(int(float('$max_gwei') * 10**9))")

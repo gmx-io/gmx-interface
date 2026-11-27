@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client";
 import { t } from "@lingui/macro";
-import { CSSProperties, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { CSSProperties, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useLatest, useLocalStorage, useMedia } from "react-use";
 import { type Address } from "viem";
 
@@ -297,7 +297,7 @@ export default function TVChartContainer({
     });
   }, [chartReady, wasChartOverridden, setWasChartOverridden, theme]);
 
-  useEffect(() => {
+  const createDatafeed = useCallback(() => {
     if (!candlesFetcher) {
       return;
     }
@@ -643,12 +643,7 @@ export default function TVChartContainer({
         }
       });
     }
-    setDatafeed(newDatafeed);
-
-    // TradingView unsubscribes bars when its iframe unloads. destroy() removes the visibilitychange listener the datafeed adds.
-    return () => {
-      newDatafeed.destroy();
-    };
+    return newDatafeed;
   }, [chainId, candlesFetcher, setIsCandlesLoaded, marksStateRef]);
 
   const isMobile = useMedia("(max-width: 550px)");
@@ -918,12 +913,14 @@ export default function TVChartContainer({
   }, [chartReady, isSolana, account, buySellIconsMode]);
 
   useEffect(() => {
-    if (!datafeed) return;
+    const widgetDatafeed = createDatafeed();
+    setDatafeed(widgetDatafeed ?? null);
+    if (!widgetDatafeed) return;
 
     const widgetOptions: ChartingLibraryWidgetOptions = {
       debug: false,
       symbol: symbolRef.current && getSymbolName(symbolRef.current, visualMultiplier), // Using ref to avoid unnecessary re-renders on symbol change and still have access to the latest symbol
-      datafeed,
+      datafeed: widgetDatafeed,
       theme: theme,
       container: chartContainerRef.current!,
       library_path: defaultChartProps.library_path,
@@ -1069,13 +1066,14 @@ export default function TVChartContainer({
       window.removeEventListener("pagehide", onPageHide);
       window.removeEventListener("pageshow", onPageShow);
       tvWidgetRef.current = null;
+      widgetDatafeed.destroy();
       widget.remove();
       setChartReady(false);
       setChartDataLoading(true);
     };
     // We don't want to re-initialize the chart when the symbol changes. This will make the chart flicker.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, datafeed, theme]);
+  }, [createDatafeed, theme]);
 
   const style = useMemo<CSSProperties>(
     () => ({ visibility: !chartDataLoading ? "visible" : "hidden" }),

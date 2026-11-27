@@ -3,7 +3,7 @@ import { test } from "node:test";
 import { encodeFunctionData, maxUint256, type Hex } from "viem";
 
 import { encodeOrderDataListMetadata } from "../../../sdk/src/utils/twap/uiFeeReceiver";
-import ExchangeRouter from "../../../sdk/src/abis/ExchangeRouter";
+import { getAbi } from "../../../sdk/src/abis/getAbi";
 import { getContract } from "../../../sdk/src/configs/contracts";
 import { address, marketAddress, usdc, weth, intent, preparedOrder } from "./fundedQuote";
 import { inspectUiOrder } from "./uiOrderGuard";
@@ -11,11 +11,12 @@ import type { OrderIntent } from "./preparedOrder";
 
 const context = { address, marketAddress, usdc, weth, ownedOrderKeys: [] as string[] };
 const vault = getContract(42161, "OrderVault");
+const exchangeRouter = getAbi(42161, "ExchangeRouter");
 function batch(calls: Hex[], value = 0n) {
   return {
     to: getContract(42161, "ExchangeRouter"),
     value,
-    data: encodeFunctionData({ abi: ExchangeRouter, functionName: "multicall", args: [calls as `0x${string}`[]] }),
+    data: encodeFunctionData({ abi: exchangeRouter, functionName: "multicall", args: [calls as `0x${string}`[]] }),
   };
 }
 function fixture() {
@@ -23,13 +24,13 @@ function fixture() {
   const build = (extra: Hex[] = []) =>
     batch(
       [
-        encodeFunctionData({ abi: ExchangeRouter, functionName: "sendWnt", args: [vault, order.numbers.executionFee] }),
+        encodeFunctionData({ abi: exchangeRouter, functionName: "sendWnt", args: [vault, order.numbers.executionFee] }),
         encodeFunctionData({
-          abi: ExchangeRouter,
+          abi: exchangeRouter,
           functionName: "sendTokens",
           args: [usdc.address, vault, intent.collateralAmount],
         }),
-        encodeFunctionData({ abi: ExchangeRouter, functionName: "createOrder", args: [order] }),
+        encodeFunctionData({ abi: exchangeRouter, functionName: "createOrder", args: [order] }),
         ...extra,
       ],
       order.numbers.executionFee
@@ -84,7 +85,7 @@ test("UI order guard rejects excessive slippage, wrong direction, extra transfer
   assert.throws(() => inspectUiOrder(build(), intent, context));
   order.isLong = true;
   const extra = encodeFunctionData({
-    abi: ExchangeRouter,
+    abi: exchangeRouter,
     functionName: "sendTokens",
     args: [usdc.address, vault, 1n],
   });
@@ -96,7 +97,7 @@ test("UI order guard rejects excessive slippage, wrong direction, extra transfer
 
 test("UI order guard cancels only the exact recorded owned order", () => {
   const key = `0x${"12".repeat(32)}` as `0x${string}`;
-  const tx = batch([encodeFunctionData({ abi: ExchangeRouter, functionName: "cancelOrder", args: [key] })]);
+  const tx = batch([encodeFunctionData({ abi: exchangeRouter, functionName: "cancelOrder", args: [key] })]);
   const cancel: OrderIntent = { kind: "cancel", keys: [key] };
   assert.throws(() => inspectUiOrder(tx, cancel, context), /unowned/);
   assert.equal(inspectUiOrder(tx, cancel, { ...context, ownedOrderKeys: [key] }).createdCount, 0);
@@ -114,17 +115,19 @@ test("UI order update binds size, trigger, acceptable price, and order ownership
     autoCancel: true,
     minOutputAmount: 0n,
     validFromTime: 0n,
+    decreasePositionSwapType: 0,
   };
   const tx = batch([
     encodeFunctionData({
-      abi: ExchangeRouter,
+      abi: exchangeRouter,
       functionName: "updateOrder",
-      args: [key, edit.sizeUsd, edit.acceptablePrice, edit.triggerPrice, 0n, 0n, true],
+      args: [key, edit.sizeUsd, edit.acceptablePrice, edit.triggerPrice, 0n, 0n, 0, true],
     }),
   ]);
   const owned = { ...context, ownedOrderKeys: [key] };
   assert.doesNotThrow(() => inspectUiOrder(tx, edit, owned));
   assert.throws(() => inspectUiOrder(tx, { ...edit, triggerPrice: edit.triggerPrice + 1n }, owned));
+  assert.throws(() => inspectUiOrder(tx, { ...edit, decreasePositionSwapType: 1 }, owned));
   assert.throws(() => inspectUiOrder(tx, edit, context), /unowned/);
 });
 
@@ -150,8 +153,8 @@ test("UI close permits long PnL conversion into USDC, with no additional token p
   const build = () =>
     batch(
       [
-        encodeFunctionData({ abi: ExchangeRouter, functionName: "sendWnt", args: [vault, order.numbers.executionFee] }),
-        encodeFunctionData({ abi: ExchangeRouter, functionName: "createOrder", args: [order] }),
+        encodeFunctionData({ abi: exchangeRouter, functionName: "sendWnt", args: [vault, order.numbers.executionFee] }),
+        encodeFunctionData({ abi: exchangeRouter, functionName: "createOrder", args: [order] }),
       ],
       order.numbers.executionFee
     );
@@ -181,8 +184,8 @@ test("UI margin withdrawal binds the amount and minimum USD output", () => {
   const build = () =>
     batch(
       [
-        encodeFunctionData({ abi: ExchangeRouter, functionName: "sendWnt", args: [vault, order.numbers.executionFee] }),
-        encodeFunctionData({ abi: ExchangeRouter, functionName: "createOrder", args: [order] }),
+        encodeFunctionData({ abi: exchangeRouter, functionName: "sendWnt", args: [vault, order.numbers.executionFee] }),
+        encodeFunctionData({ abi: exchangeRouter, functionName: "createOrder", args: [order] }),
       ],
       order.numbers.executionFee
     );

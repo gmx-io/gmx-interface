@@ -2,8 +2,7 @@ import assert from "node:assert/strict";
 import { expect, type BrowserContext } from "@playwright/test";
 import { decodeFunctionData, erc20Abi, getAddress, toHex, zeroAddress, type Hex, type TransactionReceipt } from "viem";
 
-import ExchangeRouter from "../../../sdk/src/abis/ExchangeRouter";
-import MultichainTransferRouter from "../../../sdk/src/abis/MultichainTransferRouter";
+import { getAbi } from "../../../sdk/src/abis/getAbi";
 import { getTokenBySymbol } from "../../../sdk/src/configs/tokens";
 import { getContract } from "../../../sdk/src/configs/contracts";
 import type { TokenData } from "../../../sdk/src/utils/tokens/types";
@@ -94,11 +93,7 @@ export async function createUiRehearsal(context: BrowserContext, state: AccountS
     rpcUrl: "https://arb1.arbitrum.io/rpc",
     journal,
     save: async () => undefined,
-    signUiMessage: async (message: Hex) => {
-      const signature = await state.rehearsalSigner!.signMessage({ message: { raw: message as `0x${string}` } });
-      oneClick.generated(signature);
-      return signature;
-    },
+    followUiSubaccount: (subaccount: string) => oneClick.generated(subaccount),
     signUiTypedData: (data: never) => state.rehearsalSigner!.signTypedData(data),
     relayUiTransaction: async (
       url: string,
@@ -240,9 +235,10 @@ export async function createUiRehearsal(context: BrowserContext, state: AccountS
       } else if (getAddress(tx.to) === getAddress(getContract(42161, "RewardRouterV3"))) {
         earn.transact(tx.data);
       } else if (getAddress(tx.to) === getAddress(getContract(42161, "MultichainTransferRouter"))) {
-        const root = decodeFunctionData({ abi: MultichainTransferRouter, data: tx.data });
+        const router = getAbi(42161, "MultichainTransferRouter");
+        const root = decodeFunctionData({ abi: router, data: tx.data });
         if (root.functionName === "multicall") {
-          const transfer = decodeFunctionData({ abi: MultichainTransferRouter, data: root.args[0][0] });
+          const transfer = decodeFunctionData({ abi: router, data: root.args[0][0] });
           if (transfer.functionName !== "sendTokens" && transfer.functionName !== "sendWnt")
             throw new Error("Expected UI account transfer");
           const native = transfer.functionName === "sendWnt";
@@ -262,15 +258,16 @@ export async function createUiRehearsal(context: BrowserContext, state: AccountS
         const liquidityReceipt = lp.transact(tx, hash);
         if (liquidityReceipt) receipt = liquidityReceipt;
         else {
-          const root = decodeFunctionData({ abi: ExchangeRouter, data: tx.data });
+          const exchangeRouter = getAbi(42161, "ExchangeRouter");
+          const root = decodeFunctionData({ abi: exchangeRouter, data: tx.data });
           if (root.functionName !== "multicall") throw new Error("Expected UI multicall");
-          const calls = root.args[0].map((data) => decodeFunctionData({ abi: ExchangeRouter, data }));
+          const calls = root.args[0].map((data) => decodeFunctionData({ abi: exchangeRouter, data }));
           const logs: TransactionReceipt["logs"] = [];
           let ordinal = 0;
           for (const call of calls) {
             if (call.functionName === "sendTokens" || call.functionName === "sendWnt") continue;
             if (call.functionName === "updateOrder") {
-              const [key, size, acceptable, trigger, minOutput, validFrom, autoCancel] = call.args;
+              const [key, size, acceptable, trigger, minOutput, validFrom, swapType, autoCancel] = call.args;
               const order = state.orders.find((o) => o.key === key)!;
               expect(order).toBeDefined();
               Object.assign(order, {
@@ -279,6 +276,7 @@ export async function createUiRehearsal(context: BrowserContext, state: AccountS
                 triggerPrice: trigger,
                 minOutputAmount: minOutput,
                 validFromTime: validFrom,
+                decreasePositionSwapType: swapType,
                 autoCancel,
               });
               continue;

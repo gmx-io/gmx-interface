@@ -34,7 +34,6 @@ import { useLocalizedMap } from "lib/i18n";
 import { getAccountUrl, useENS } from "lib/legacy";
 import { useLocalStorageByChainId } from "lib/localStorage";
 import { metrics } from "lib/metrics";
-import { useNotifyModalState } from "lib/useNotifyModalState";
 import { userAnalytics } from "lib/userAnalytics";
 import { DisconnectWalletEvent } from "lib/userAnalytics/types";
 import { shortenAddressOrEns, switchNetwork } from "lib/wallets";
@@ -428,11 +427,10 @@ function MenuList({ account }: { account: string }) {
   const chainId = srcChainId ?? settlementChainId;
   const isSolanaSelected = isSolanaNetwork(networkId);
   const history = useHistory();
-  const { openNotifyModal } = useNotifyModalState();
-  const { setIsSettingsVisible } = useSettings();
+  const { setIsSettingsVisible, openSettingsTab } = useSettings();
 
   const handleNotificationsClick = () => {
-    openNotifyModal();
+    openSettingsTab("notifications", "gmxAccountModal");
     setTimeout(() => {
       setIsVisible(false);
     }, MODAL_ANIMATION_DURATION_MS);

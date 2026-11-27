@@ -35,10 +35,7 @@ import {
   TwapIncreaseSequentialMarginState,
 } from "sdk/utils/trade/twapIncreaseMarginCheck";
 
-import {
-  DepositMarginNowAction,
-  ReplaceMarginDepositAction,
-} from "components/MarginRemediation/MarginRemediationActions";
+import { DepositMarginAction, ReplaceMarginDepositAction } from "components/MarginRemediation/MarginRemediationActions";
 
 import { getMarginDepositProjections, getMarginDepositRiskLevel, isMarginDepositOrder } from "./marginDeposit";
 import { getFeeItem, getIsHighPriceImpact, getPriceImpactByAcceptablePrice } from "../fees";
@@ -198,9 +195,9 @@ function getMarginDepositOrderErrors(p: {
 
 function getIncreasePositionMarginAction(positionKey: string | undefined) {
   return (
-    <DepositMarginNowAction positionKey={positionKey} isTooltipLine>
+    <DepositMarginAction positionKey={positionKey} isTooltipLine>
       <Trans>Increase the position's margin</Trans>
-    </DepositMarginNowAction>
+    </DepositMarginAction>
   );
 }
 
@@ -243,9 +240,9 @@ function getResultingLiquidatableOrderError(positionKey: string | undefined): Or
       </Trans>
     ),
     action: (
-      <DepositMarginNowAction positionKey={positionKey} isTooltipLine>
+      <DepositMarginAction positionKey={positionKey} isTooltipLine>
         <Trans context="Margin remediation action">Deposit margin</Trans>
-      </DepositMarginNowAction>
+      </DepositMarginAction>
     ),
   };
 }
@@ -905,7 +902,7 @@ export function getOrderDecreaseRemainingPositionMarginState({
   proDiscountFactor?: bigint;
   feeDiscountFactor?: bigint;
   isSetAcceptablePriceImpactEnabled: boolean;
-}): DecreasePositionMarginState | undefined {
+}): (DecreasePositionMarginState & { unpaidCostUsd: bigint }) | undefined {
   if (
     !position ||
     !isTriggerDecreaseOrderType(order.orderType) ||
@@ -940,7 +937,7 @@ export function getOrderDecreaseRemainingPositionMarginState({
 
   if (!decreaseAmounts) return undefined;
 
-  return getTriggerDecreaseRemainingPositionMarginState({
+  const marginState = getTriggerDecreaseRemainingPositionMarginState({
     marketInfo: position.marketInfo,
     collateralToken: position.collateralToken,
     isLong: position.isLong,
@@ -953,6 +950,8 @@ export function getOrderDecreaseRemainingPositionMarginState({
     proDiscountFactor,
     feeDiscountFactor,
   });
+
+  return marginState && { ...marginState, unpaidCostUsd: decreaseAmounts.unpaidCostUsd };
 }
 
 export function getTwapIncreaseOrderSequentialMarginState({

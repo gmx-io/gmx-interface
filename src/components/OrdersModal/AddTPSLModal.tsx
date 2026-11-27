@@ -18,6 +18,7 @@ import {
   selectAccount,
   selectBlockTimestampData,
   selectChainId,
+  selectClosedMarkets,
   selectGasLimits,
   selectGasPrice,
   selectIsOrdersLoading,
@@ -40,6 +41,7 @@ import {
 } from "domain/synthetics/express/validateMultichainExpressSubmit";
 import { estimateExecuteDecreaseOrderGasLimit, estimateOrderOraclePriceCount } from "domain/synthetics/fees";
 import { getNetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
+import { getIsMarketClosed } from "domain/synthetics/markets/utils";
 import {
   DecreasePositionSwapType,
   isLimitDecreaseOrderType,
@@ -82,6 +84,7 @@ import { getIsHighSwapProfitFee } from "domain/synthetics/trade/utils/warnings";
 import { buildTpSlBatchPayloads, buildTpSlInputPositionData, getTpSlDecreaseAmounts } from "domain/tpsl/sidecar";
 import {
   FULL_POSITION_CLOSE_SIZE_DELTA_USD,
+  getIsTpSlCostUnpayable,
   getTpSlRemainingPositionWarning,
   isFullClosePositionOrder,
   isTriggerBeyondLiquidation,
@@ -117,6 +120,7 @@ import {
 import { InsufficientGmxAccountTokenBalanceMessage, ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import { ExitPriceRow } from "components/ExitPriceRow/ExitPriceRow";
 import { ExpandableRow } from "components/ExpandableRow";
+import { MarketClosedBanner } from "components/MarketClosedBanner/MarketClosedBanner";
 import Modal from "components/Modal/Modal";
 import { NetworkFeeRow } from "components/NetworkFeeRow/NetworkFeeRow";
 import { DeltaUsdValue } from "components/NumericValue/DeltaUsdValue";
@@ -187,6 +191,8 @@ export function AddTPSLModal({
   const tokensData = useTokensData();
   const marketsInfoData = useSelector(selectMarketsInfoData);
   const gasLimits = useSelector(selectGasLimits);
+  const closedMarkets = useSelector(selectClosedMarkets);
+  const isMarketClosed = getIsMarketClosed(closedMarkets, position.marketAddress);
   const gasPrice = useSelector(selectGasPrice);
   const blockTimestampData = useSelector(selectBlockTimestampData);
   const isSetAcceptablePriceImpactEnabled = useSelector(selectIsSetAcceptablePriceImpactEnabled);
@@ -490,6 +496,8 @@ export function AddTPSLModal({
         minCollateralUsd,
         userReferralInfo,
         feeDiscountFactor,
+        priceImpactDiffUsd: decreaseAmounts.priceImpactDiffUsd,
+        collateralPrice: decreaseAmounts.collateralPrice,
       });
     },
     [
@@ -943,6 +951,9 @@ export function AddTPSLModal({
     if (slPriceError && slPriceInput) {
       return slPriceError;
     }
+    if ([tpDecreaseAmounts, slDecreaseAmounts].some(getIsTpSlCostUnpayable)) {
+      return t`Insufficient collateral to cover order costs`;
+    }
     if (orderPayloads.createOrderParams.length === 0 && orderPayloads.updateOrderParams.length === 0) {
       return t`Unable to calculate order`;
     }
@@ -952,6 +963,8 @@ export function AddTPSLModal({
     slPriceInput,
     tpPriceError,
     slPriceError,
+    tpDecreaseAmounts,
+    slDecreaseAmounts,
     orderPayloads.createOrderParams.length,
     orderPayloads.updateOrderParams.length,
     editTPSLSize,
@@ -1319,6 +1332,7 @@ export function AddTPSLModal({
         />
 
         {remainingPositionWarning && <RemainingPositionWarningCard warning={remainingPositionWarning} />}
+        {isMarketClosed && <MarketClosedBanner state="stopWaits" />}
 
         {isAutoCancelOrdersLimitExceeded && (
           <MaxAutoCancelOrdersWarning allowedAutoCancelOrdersNumber={allowedAutoCancelOrdersNumber} />

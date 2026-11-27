@@ -1,9 +1,6 @@
 import { decodeFunctionData, encodeErrorResult, getAddress, toHex } from "viem";
 
-import CustomErrors from "../../../sdk/src/abis/CustomErrors";
-import ExchangeRouter from "../../../sdk/src/abis/ExchangeRouter";
-import GlvRouter from "../../../sdk/src/abis/GlvRouter";
-import RewardRouterV3 from "../../../sdk/src/abis/RewardRouterV3";
+import { getAbi } from "../../../sdk/src/abis/getAbi";
 import type { ContractsChainId } from "../../../sdk/src/configs/chains";
 import { getContract } from "../../../sdk/src/configs/contracts";
 
@@ -13,6 +10,8 @@ export function unsignedTransactionReview(chainId: ContractsChainId, account: st
   const calls: { method: string; to: string }[] = [];
   const exchangeRouter = getAddress(getContract(chainId, "ExchangeRouter"));
   const glvRouter = getAddress(getContract(chainId, "GlvRouter"));
+  const routerAbi = (to: string) =>
+    to === exchangeRouter ? getAbi(chainId, "ExchangeRouter") : getAbi(chainId, "GlvRouter");
   return {
     calls,
     respond(request: RpcRequest) {
@@ -20,7 +19,7 @@ export function unsignedTransactionReview(chainId: ContractsChainId, account: st
       if (!tx?.from || !tx.to || !tx.data || getAddress(tx.from) !== account) return;
       const to = getAddress(tx.to);
       if (to === getAddress(getContract(chainId, "RewardRouterV3")) && request.method === "eth_estimateGas") {
-        const call = decodeFunctionData({ abi: RewardRouterV3, data: tx.data });
+        const call = decodeFunctionData({ abi: getAbi(chainId, "RewardRouterV3"), data: tx.data });
         if (!["stakeGmx", "handleRewards"].includes(call.functionName)) return;
         calls.push({ method: request.method, to });
         return { jsonrpc: "2.0", id: request.id, result: toHex(3_000_000n) };
@@ -34,16 +33,14 @@ export function unsignedTransactionReview(chainId: ContractsChainId, account: st
         return { jsonrpc: "2.0", id: request.id, result: toHex(3_000_000n) };
       }
       if (to !== exchangeRouter && to !== glvRouter) return;
-      const root = decodeFunctionData({ abi: to === exchangeRouter ? ExchangeRouter : GlvRouter, data: tx.data });
+      const root = decodeFunctionData({ abi: routerAbi(to), data: tx.data });
       if (root.functionName !== "multicall") return;
       if (request.method === "eth_estimateGas") {
         calls.push({ method: request.method, to });
         return { jsonrpc: "2.0", id: request.id, result: toHex(3_000_000n) };
       }
       if (request.method !== "eth_call") return;
-      const methods = root.args[0].map(
-        (data) => decodeFunctionData({ abi: to === exchangeRouter ? ExchangeRouter : GlvRouter, data }).functionName
-      );
+      const methods = root.args[0].map((data) => decodeFunctionData({ abi: routerAbi(to), data }).functionName);
       const simulation =
         to === exchangeRouter
           ? methods.includes("makeExternalCalls")
@@ -56,7 +53,7 @@ export function unsignedTransactionReview(chainId: ContractsChainId, account: st
         error: {
           code: 3,
           message: "execution reverted",
-          data: encodeErrorResult({ abi: CustomErrors, errorName: "EndOfOracleSimulation" }),
+          data: encodeErrorResult({ abi: getAbi(chainId, "CustomErrors"), errorName: "EndOfOracleSimulation" }),
         },
       };
     },

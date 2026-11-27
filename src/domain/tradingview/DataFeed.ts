@@ -321,6 +321,8 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
         return lastReturnedValue;
       }
 
+      if (this.isDestroyed) return lastReturnedValue;
+
       let newLastReturnedValue: Bar | undefined = lastReturnedValue;
 
       let didPatchPreviousCandle = false;
@@ -450,7 +452,7 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
 
   prefetchBars(symbol: string, resolution: ResolutionString): void {
     const prefetchKey = `${symbol}-${resolution}`;
-    if (prefetchKey in this.prefetchedBarsPromises) {
+    if (!metricsIsFirstLoadTime || prefetchKey in this.prefetchedBarsPromises) {
       return;
     }
 

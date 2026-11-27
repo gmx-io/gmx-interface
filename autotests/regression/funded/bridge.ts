@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { erc20Abi, getAddress, hashTypedData, type Hex } from "viem";
+import { erc20Abi, getAddress, hashTypedData, zeroHash, type Hex } from "viem";
 
 import { getContract } from "../../../sdk/src/configs/contracts";
 import { getBridgeOutTypedData } from "../../../sdk/src/utils/express/utils/bridgeOutUtils";
@@ -27,10 +27,11 @@ export function baseStableBalance(session: FundedSession) {
 export function inspectBridgeWithdrawal(
   prepared: CrossChainWithdrawPrepareResponse,
   params: BridgeOutParams,
-  state: Awaited<ReturnType<FundedSession["snapshot"]>>
+  state: Awaited<ReturnType<FundedSession["snapshot"]>>,
+  account: string
 ) {
   const relay = prepared.payload.relayParams as RelayParamsPayload;
-  const td = getBridgeOutTypedData({ chainId: 42161, srcChainId: 8453, params, relayParams: relay });
+  const td = getBridgeOutTypedData({ chainId: 42161, srcChainId: 8453, params, relayParams: relay, account });
   assert.equal(
     hashTypedData(td as never),
     hashTypedData(prepared.payload.typedData as never),
@@ -43,6 +44,11 @@ export function inspectBridgeWithdrawal(
   assert.equal(Number(relay.desChainId), 42161, "Bridge relay targets another chain");
   assert.ok(BigInt(relay.deadline) > BigInt(Math.floor(Date.now() / 1000)), "Bridge relay deadline has passed");
   assert.deepEqual(relay.tokenPermits, []);
+  assert.equal(
+    relay.eip6492SignatureWrapperHash,
+    zeroHash,
+    "Unexpected EIP-6492 signature wrapper in the bridge relay"
+  );
   for (const field of [
     "sendTokens",
     "sendAmounts",
@@ -118,7 +124,7 @@ export async function withdrawBridge(session: FundedSession) {
         bridgeOutParams: params,
         gasPaymentToken: state.usdc.address,
       });
-      inspectBridgeWithdrawal(quote, params, state);
+      inspectBridgeWithdrawal(quote, params, state, session.address);
       const available = balance - quote.payload.gasPaymentParams.gasPaymentTokenAmount - 10_000n;
       if (available >= amount && available - amount <= 10_000n) {
         inventory.bridgeWithdrawalAmount = amount.toString();
