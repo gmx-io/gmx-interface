@@ -83,6 +83,7 @@ import { TradeHistory } from "components/TradeHistory/TradeHistory";
 import ShareClosedPosition from "components/TradeHistory/TradeHistoryRow/ShareClosedPosition";
 import { Chart } from "components/TVChart/Chart";
 import ChartHeader from "components/TVChart/ChartHeader";
+import { ClosedMarketsTesterPanel } from "components/MarketClosedBadge/tester/ClosedMarketsTesterPanel"; // rewards-tester (DES-103 closed markets)
 import type { OpenChartTPSLModalParams } from "components/TVChartContainer/useChartContextMenu";
 
 import logoIcon from "img/logo-icon.svg";
@@ -645,6 +646,7 @@ export function SyntheticsPage(p: Props) {
           </div>
         )}
       </div>
+      <ClosedMarketsTesterPanel /> {/* rewards-tester (DES-103 closed markets) */}
       {ordersModalState.isVisible && (
         <OrdersModal
           isVisible={ordersModalState.isVisible}
