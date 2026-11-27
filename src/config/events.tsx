@@ -49,6 +49,57 @@ export type EventData = {
 
 export const appEventsData: EventData[] = [
   {
+    id: "release-134-135-136-137-highlights",
+    type: "update",
+    isActive: true,
+    startDate: "27 Nov 2026, 15:00",
+    endDate: "04 Dec 2026, 15:00",
+    variant: "info",
+    title: "App Update: Notifications, Closed Markets, Fewer Approvals",
+    summary: (
+      <>
+        Turn on order and liquidation notifications in Settings, see at a glance when a market is closed, and sign a
+        permit instead of an approval transaction in more places.
+      </>
+    ),
+    description: (
+      <span className="flex flex-col gap-12">
+        <span>
+          <span className="font-medium text-typography-primary">Notifications:</span> on Arbitrum, turn on order and
+          liquidation notifications in Settings
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Closed markets:</span> the app now shows when a market
+          is closed and which orders still work
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Approvals:</span> on Arbitrum, sign a permit for USDC,
+          USDT and WETH, also without Express
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">One confirmation:</span> on wallets that support
+          batching, approve and act in one step
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Privy wallets:</span> Express orders, edits and cancels
+          no longer open a confirmation window
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">USDG for gas:</span> pay Express and One-Click network
+          fees with USDG on Arbitrum
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">One-Click limits:</span> set your limits in Trading
+          settings before you activate One-Click
+        </span>
+        <span>
+          <span className="font-medium text-typography-primary">Transfer history:</span> now shows GM, GLV and USDG
+          deposits and withdrawals
+        </span>
+      </span>
+    ),
+  },
+  {
     id: "gt-airdrop-allocation",
     type: "update",
     isActive: true,
