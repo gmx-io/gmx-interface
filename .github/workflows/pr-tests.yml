@@ -9,9 +9,16 @@ on:
     types: [opened, edited, synchronize, reopened]
   workflow_dispatch:
 
+# `edited` is here for base branch changes. A title or description edit skips the jobs and gets
+# its own concurrency group, so it doesn't cancel a run that is still checking the code.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}-${{ github.event.action == 'edited' && !github.event.changes.base && github.run_id || 'checks' }}
+  cancel-in-progress: true
+
 jobs:
   ci:
     name: Linting, Type Checking, and Tests
+    if: github.event.action != 'edited' || github.event.changes.base
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -25,11 +32,6 @@ jobs:
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
-
-      - name: Build SDK
-        run: |
-          cd sdk
-          yarn build
 
       - name: Run linting
         run: yarn lint:ci
@@ -70,6 +72,7 @@ jobs:
 
   sdk-standalone:
     name: SDK standalone build (publish parity)
+    if: github.event.action != 'edited' || github.event.changes.base
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -99,3 +102,35 @@ jobs:
           yarn test:ci
           yarn tscheck:ci
           npm pack --dry-run
+
+  regression-checks:
+    # The browser suites only run on release PRs, so SDK and fixture changes that break them are caught here instead.
+    name: Regression suite types and unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "yarn"
+
+      - name: Install dependencies
+        run: |
+          yarn install --immutable --mode=skip-build
+          yarn --cwd sdk install --immutable --mode=skip-build
+
+      - name: Typecheck and unit test without a browser
+        env:
+          # Listing loads the regression config, which requires target URLs in CI; nothing is opened.
+          REGRESSION_BASE_URL: https://test.gmx-interface.pages.dev
+          REGRESSION_LANDING_URL: https://gmx.io
+        run: |
+          yarn test:regression:types
+          yarn test:regression:funded:types
+          yarn test:regression:funded:unit
+          yarn test:regression:fixtures:unit
+          yarn test:regression:ci:unit
+          REGRESSION_FUNDED_RUN_ID=listing REGRESSION_FUNDED_EXECUTE=1 REGRESSION_FUNDED_CASES=all yarn exec playwright test -c playwright-funded.config.ts --list

@@ -26,6 +26,7 @@ if (!fs.existsSync(reportPath)) {
   }
   const counts = { expected: 0, flaky: 0, unexpected: 0, skipped: 0 };
   let notRun = 0;
+  let unexplainedSkips = 0;
   const projects = new Map();
   const incomplete = [];
   // Worst status of the tests citing each checklist row, and what kind of evidence its passing tests give.
@@ -38,6 +39,8 @@ if (!fs.existsSync(reportPath)) {
       for (const spec of suite.specs || []) {
         for (const test of spec.tests) {
           if (test.status === "skipped" && !test.results.length) notRun++;
+          else if (test.status === "skipped" && !(test.annotations || []).some((entry) => entry.description))
+            unexplainedSkips++;
           counts[test.status] = (counts[test.status] || 0) + 1;
           for (const row of spec.title
             .match(/^(?:\d{1,2}\.\d{2}\s+)+/)?.[0]
@@ -115,7 +118,9 @@ if (!fs.existsSync(reportPath)) {
   }
   lines.push("");
   lines.push(...incomplete.map((line) => `- ${line.replace(/[\r\n]/g, " ")}`));
-  if (counts.unexpected || counts.skipped || report.errors?.length || (!counts.expected && !counts.flaky)) {
+  // A skip with a stated reason (no running competition, a fixme ticket) is listed above; one that never ran or gives no
+  // reason leaves its coverage unknown.
+  if (counts.unexpected || notRun || unexplainedSkips || report.errors?.length || (!counts.expected && !counts.flaky)) {
     process.exitCode = 1;
   }
 }

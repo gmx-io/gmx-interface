@@ -61,6 +61,7 @@ function openEditor(p: {
     updatedAtTime: 0n,
     validFromTime: 0n,
     uiFeeFactor: 0n,
+    srcChainId: 0n,
     isFrozen: false,
     isLong: false,
     shouldUnwrapNativeToken: false,

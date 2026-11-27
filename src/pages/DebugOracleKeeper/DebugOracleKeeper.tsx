@@ -31,7 +31,7 @@ export default function DebugOracleKeeper() {
   const [endpoints, setEndpoints] = useState(() => fetcher.oracleTracker.fallbackTracker.getCurrentEndpoints());
   const prevPrimaryEndpoint = usePrevious(endpoints.primary);
   const secondaryEndpoint = endpoints.fallbacks[0];
-  useTokenRecentPricesRequest(chainId);
+  useTokenRecentPricesRequest(chainId, { keeperOnly: true });
 
   useEffect(() => {
     const updateEndpoints = () => {

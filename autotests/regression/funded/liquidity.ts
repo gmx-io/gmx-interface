@@ -13,10 +13,7 @@ import {
 } from "viem";
 
 import EventEmitter from "../../../sdk/src/abis/EventEmitter";
-import ExchangeRouter from "../../../sdk/src/abis/ExchangeRouter";
-import GlvReader from "../../../sdk/src/abis/GlvReader";
-import GlvRouter from "../../../sdk/src/abis/GlvRouter";
-import SyntheticsReader from "../../../sdk/src/abis/SyntheticsReader";
+import { getAbi } from "../../../sdk/src/abis/getAbi";
 import { GmxSdk } from "../../../sdk/src/clients/v1";
 import { getContract } from "../../../sdk/src/configs/contracts";
 import {
@@ -102,7 +99,7 @@ export async function readLiquidityContext(session: FundedSession, kind: Kind, w
   };
   const gmResult = (await readFundedData("GM token price", () =>
     session.rpc.readContract({
-      abi: SyntheticsReader as Abi,
+      abi: getAbi(42161, "SyntheticsReader") as Abi,
       address: getContract(42161, "SyntheticsReader"),
       functionName: "getMarketTokenPrice",
       args: [
@@ -122,7 +119,7 @@ export async function readLiquidityContext(session: FundedSession, kind: Kind, w
   if (kind === "glv") {
     const infos = (await readFundedData("GLV markets", () =>
       session.rpc.readContract({
-        abi: GlvReader as Abi,
+        abi: getAbi(42161, "GlvReader") as Abi,
         address: getContract(42161, "GlvReader"),
         functionName: "getGlvInfoList",
         args: [dataStore, 0n, 100n],
@@ -164,7 +161,7 @@ export async function readLiquidityContext(session: FundedSession, kind: Kind, w
     });
     const result = (await readFundedData("GLV token price", () =>
       session.rpc.readContract({
-        abi: GlvReader as Abi,
+        abi: getAbi(42161, "GlvReader") as Abi,
         address: getContract(42161, "GlvReader"),
         functionName: "getGlvTokenPrice",
         args: [dataStore, glv.markets, indexPrices, prices.longTokenPrice, prices.shortTokenPrice, token, !withdrawal],
@@ -209,7 +206,7 @@ export async function readLiquidityContext(session: FundedSession, kind: Kind, w
     prices,
     fee,
     router: getContract(42161, kind === "gm" ? "ExchangeRouter" : "GlvRouter"),
-    abi: (kind === "gm" ? ExchangeRouter : GlvRouter) as Abi,
+    abi: getAbi(42161, kind === "gm" ? "ExchangeRouter" : "GlvRouter") as Abi,
   };
 }
 
@@ -275,7 +272,7 @@ export async function withdrawLiquidity(session: FundedSession, kind: Kind, reco
     const key = await liquidityRequestKey(session, kind, withdrawal, action);
     if (await requestPending(session, kind, withdrawal, key)) {
       if (!recovery) throw new Error("Liquidity request remains pending");
-      const abi = (kind === "gm" ? ExchangeRouter : GlvRouter) as Abi;
+      const abi = getAbi(42161, kind === "gm" ? "ExchangeRouter" : "GlvRouter") as Abi;
       const functionName = `cancel${kind === "glv" ? "Glv" : ""}${withdrawal ? "Withdrawal" : "Deposit"}`;
       await session.nativeTransaction(
         {
@@ -303,7 +300,7 @@ export async function withdrawLiquidity(session: FundedSession, kind: Kind, reco
   const gmAmount = kind === "gm" ? amount : (amount * ctx.tokenPrice) / ctx.gmPrice;
   const quote = (await readFundedData("Liquidity withdrawal quote", () =>
     session.rpc.readContract({
-      abi: SyntheticsReader as Abi,
+      abi: getAbi(42161, "SyntheticsReader") as Abi,
       address: getContract(42161, "SyntheticsReader"),
       functionName: "getWithdrawalAmountOut",
       args: [dataStore, ctx.market, ctx.prices, gmAmount, zeroAddress, 4],

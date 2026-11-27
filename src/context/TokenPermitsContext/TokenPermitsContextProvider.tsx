@@ -7,6 +7,7 @@ import { isAddressEqual, type Address } from "viem";
 import { isSolanaNetwork } from "config/chains";
 import { getTokenPermitsFallbackKey, getTokenPermitsKey, LEGACY_PERMITS_DISABLED_KEY } from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { getIsClassicTokenPermitsEnabled } from "domain/synthetics/uiFlags/uiFlags";
 import { useUiFlagsRequest } from "domain/synthetics/uiFlags/useUiFlagsRequest";
 import {
   createAndSignTokenPermit,
@@ -26,6 +27,7 @@ import { useChainId } from "lib/chains";
 import { getInvalidPermitSignatureError, PERMIT_WALLET_CHANGED_ERROR } from "lib/errors/customErrors";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { EMPTY_ARRAY } from "lib/objects";
+import type { WalletSigner } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { nowInSeconds } from "sdk/utils/time";
@@ -35,6 +37,10 @@ export type TokenPermitsState = {
   /** Usable permits only: empty while permits are switched off for the account */
   tokenPermits: SignedTokenPermit[];
   accountType: TokenPermitAccountType | undefined;
+  /** Permits can also go inside wallet-sent (Classic) transactions, not only relayed ones */
+  isClassicEnabled: boolean;
+  /** `tokenPermits` while `isClassicEnabled`, otherwise empty */
+  classicTokenPermits: SignedTokenPermit[];
   getIsPermitAvailable: (tokenAddress: string) => boolean;
   getPermitUnavailableReason: (tokenAddress: string) => TokenPermitUnavailableReason | undefined;
   addTokenPermit: AddTokenPermitFn;
@@ -48,7 +54,11 @@ export type AddTokenPermitFn = (
   tokenAddress: string,
   spenderAddress: string,
   value: bigint,
-  options?: { deadline?: bigint }
+  options?: {
+    deadline?: bigint;
+    /** Defaults to the wallet's signer from the last render */
+    signer?: WalletSigner;
+  }
 ) => Promise<SignedTokenPermit>;
 
 const TokenPermitsContext = createContext<TokenPermitsState | undefined>(undefined);
@@ -99,8 +109,7 @@ function useTokenPermitAccountType(chainId: number, account: string | undefined)
 
 export function TokenPermitsContextProvider({ children }: { children: React.ReactNode }) {
   const { chainId, networkId } = useChainId();
-  const { signer } = useWallet();
-  const account = signer?.address;
+  const { signer, account } = useWallet();
   const { uiFlags, isLoaded: isUiFlagsLoaded } = useUiFlagsRequest();
   const { isTokenPermitsQaOverrideEnabled } = useSettings();
   const accountType = useTokenPermitAccountType(chainId, isSolanaNetwork(networkId) ? undefined : account);
@@ -112,6 +121,7 @@ export function TokenPermitsContextProvider({ children }: { children: React.Reac
     isQaOverrideEnabled: isTokenPermitsQaOverrideEnabled,
   });
   const isEnabled = disabledReason === undefined;
+  const isClassicEnabled = isEnabled && (isTokenPermitsQaOverrideEnabled || getIsClassicTokenPermitsEnabled(uiFlags));
 
   useEffect(function retireLegacyPermitsDisabledKey() {
     localStorage.removeItem(JSON.stringify(LEGACY_PERMITS_DISABLED_KEY));
@@ -196,13 +206,15 @@ export function TokenPermitsContextProvider({ children }: { children: React.Reac
   }, [account, getIsPermitAvailable, isEnabled, storedTokenPermits]);
 
   const addTokenPermit = useCallback(
-    async (tokenAddress: string, spenderAddress: string, value: bigint, options?: { deadline?: bigint }) => {
+    async (tokenAddress: string, spenderAddress: string, value: bigint, options?: Parameters<AddTokenPermitFn>[3]) => {
+      const permitSigner = options?.signer ?? signer;
+
       // returning quietly would read as a signed permit to the caller while nothing was stored
-      if (!signer?.provider) {
+      if (!permitSigner?.provider) {
         throw new Error("Wallet is not ready to sign a permit");
       }
 
-      const signerWalletKey = `${chainId}:${signer.address}`;
+      const signerWalletKey = `${chainId}:${permitSigner.address}`;
       const assertWalletUnchanged = () => {
         if (latestStoredTokenPermits.current.walletKey !== signerWalletKey) {
           throw new Error(PERMIT_WALLET_CHANGED_ERROR);
@@ -213,7 +225,7 @@ export function TokenPermitsContextProvider({ children }: { children: React.Reac
 
       const { permit } = await createAndSignTokenPermit(
         chainId,
-        signer,
+        permitSigner,
         tokenAddress,
         spenderAddress,
         value,
@@ -351,6 +363,8 @@ export function TokenPermitsContextProvider({ children }: { children: React.Reac
     () => ({
       tokenPermits,
       accountType,
+      isClassicEnabled,
+      classicTokenPermits: isClassicEnabled ? tokenPermits : EMPTY_ARRAY,
       getIsPermitAvailable,
       getPermitUnavailableReason,
       addTokenPermit,
@@ -360,6 +374,7 @@ export function TokenPermitsContextProvider({ children }: { children: React.Reac
     [
       tokenPermits,
       accountType,
+      isClassicEnabled,
       getIsPermitAvailable,
       getPermitUnavailableReason,
       addTokenPermit,

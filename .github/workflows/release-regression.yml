@@ -97,24 +97,23 @@ jobs:
               .addLink('Successful Cloudflare check', preview.checkUrl)
               .write();
 
-  regression:
-    name: Regression (${{ matrix.chain_id }})
+  suites:
+    name: Suites (shard ${{ matrix.shard }}/3)
     needs: resolve-preview
     # Playwright 1.58 cannot install Chromium on ubuntu-latest (26.04)
     runs-on: ubuntu-24.04
-    timeout-minutes: 150
+    timeout-minutes: 75
     permissions:
       contents: read
       actions: read
     strategy:
       fail-fast: false
-      max-parallel: 1
       matrix:
-        chain_id: ${{ fromJSON(github.event_name == 'workflow_dispatch' && format('[{0}]', inputs.chain_id) || '[42161]') }}
+        shard: [1, 2, 3]
     env:
       REGRESSION_BASE_URL: ${{ needs.resolve-preview.outputs.preview_url }}
       REGRESSION_LANDING_URL: ${{ needs.resolve-preview.outputs.landing_url }}
-      REGRESSION_CHAIN_ID: ${{ matrix.chain_id }}
+      REGRESSION_CHAIN_ID: ${{ inputs.chain_id || '42161' }}
       REGRESSION_PR_NUMBER: ${{ needs.resolve-preview.outputs.pr_number }}
       REGRESSION_DEPLOYMENT_SHA: ${{ needs.resolve-preview.outputs.head_sha }}
       REGRESSION_DEPLOYMENT_CHECK_URL: ${{ needs.resolve-preview.outputs.check_url }}
@@ -136,6 +135,7 @@ jobs:
             src/config/events.tsx
             sdk/src/configs/oracleKeeper.ts
             sdk/src/configs/api.ts
+            sdk/src/configs/markets.ts
           sparse-checkout-cone-mode: false
           persist-credentials: false
       - name: Read indexer configuration from the commit the QA pass started on
@@ -153,7 +153,7 @@ jobs:
         with:
           run-id: ${{ inputs.baseline_run_id }}
           github-token: ${{ github.token }}
-          pattern: regression-pr-*-${{ matrix.chain_id }}-${{ inputs.baseline_run_id }}-*
+          pattern: regression-pr-*-${{ env.REGRESSION_CHAIN_ID }}-${{ inputs.baseline_run_id }}-*
           merge-multiple: true
           path: .context/regression-baseline
       - name: Record test suite revision and verify candidate checkout
@@ -161,46 +161,236 @@ jobs:
           test "$(git -C .context/regression-candidate rev-parse HEAD)" = "$REGRESSION_DEPLOYMENT_SHA"
           echo "REGRESSION_COMMIT=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
           if [ -d .context/regression-qa-start ]; then echo "REGRESSION_QA_START_ROOT=$PWD/.context/regression-qa-start" >> "$GITHUB_ENV"; fi
-          if [ -d .context/regression-baseline/test-results/baselines ]; then echo "REGRESSION_BASELINE_DIR=$PWD/.context/regression-baseline/test-results/baselines" >> "$GITHUB_ENV"; fi
+          # Sign-off runs before the shard split kept the test-results/ prefix in their artifacts.
+          for dir in .context/regression-baseline/test-results/baselines .context/regression-baseline/baselines; do
+            if [ -d "$dir" ]; then echo "REGRESSION_BASELINE_DIR=$PWD/$dir" >> "$GITHUB_ENV"; break; fi
+          done
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
           cache: yarn
       - name: Install dependencies
-        run: yarn install --immutable --mode=skip-build
-      - name: Install SDK dependencies for funded harness validation
-        run: yarn --cwd sdk install --immutable --mode=skip-build
+        run: |
+          yarn install --immutable --mode=skip-build
+          yarn --cwd sdk install --immutable --mode=skip-build
+      - name: Install Chromium
+        run: yarn exec playwright install --with-deps chromium
+      - name: Check the Alchemy key for source-chain reads
+        if: ${{ matrix.shard == 1 && env.REGRESSION_ALCHEMY_KEY != '' }}
+        run: |
+          for network in base-mainnet eth-mainnet bnb-mainnet; do
+            result=$(curl -s -m 20 -X POST -H 'content-type: application/json' \
+              -d '{"jsonrpc":"2.0","id":1,"method":"eth_blockNumber","params":[]}' \
+              "https://$network.g.alchemy.com/v2/$REGRESSION_ALCHEMY_KEY" | jq -r '.result // .error.message // "no response"')
+            case "$result" in
+              0x*) echo "$network: block $((result))" ;;
+              *) echo "::warning::Alchemy $network does not answer ($result); connected-state source-chain reads will fail" ;;
+            esac
+          done
+      - name: Run suites
+        env:
+          PLAYWRIGHT_BLOB_OUTPUT_DIR: blob-report
+          PLAYWRIGHT_BLOB_OUTPUT_NAME: report-${{ matrix.shard }}.zip
+        # A shard this broken is not worth finishing; the report lists the tests that did not run.
+        run: yarn test:regression --shard=${{ matrix.shard }}/3 --reporter=blob --max-failures=20
+      - name: Upload shard report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          # Fixed per shard, so a rerun of failed jobs replaces only its own shard in the merged report.
+          name: regression-blob-${{ matrix.shard }}
+          path: blob-report/
+          overwrite: true
+          retention-days: 3
+      - name: Upload failure evidence
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          # baseline_run_id downloads these by the regression-pr-*-<chain>-<run id>-* pattern.
+          name: regression-pr-${{ needs.resolve-preview.outputs.pr_number }}-${{ env.REGRESSION_CHAIN_ID }}-${{ github.run_id }}-${{ github.run_attempt }}-shard${{ matrix.shard }}
+          path: test-results/
+          retention-days: 14
+
+  funded-harness:
+    name: Funded harness checks (no funded wallet)
+    needs: resolve-preview
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    env:
+      REGRESSION_BASE_URL: ${{ needs.resolve-preview.outputs.preview_url }}
+      REGRESSION_LANDING_URL: ${{ needs.resolve-preview.outputs.landing_url }}
+      REGRESSION_CHAIN_ID: ${{ inputs.chain_id || '42161' }}
+      REGRESSION_PR_NUMBER: ${{ needs.resolve-preview.outputs.pr_number }}
+      REGRESSION_DEPLOYMENT_SHA: ${{ needs.resolve-preview.outputs.head_sha }}
+      REGRESSION_DEPLOYMENT_CHECK_URL: ${{ needs.resolve-preview.outputs.check_url }}
+      REGRESSION_CANDIDATE_ROOT: ${{ github.workspace }}/.context/regression-candidate
+      REGRESSION_ALCHEMY_KEY: ${{ secrets.REGRESSION_ALCHEMY_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Read endpoint and market configuration from the deployed PR commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.resolve-preview.outputs.head_sha }}
+          path: .context/regression-candidate
+          sparse-checkout: |
+            src/config/indexers.ts
+            src/config/markets.ts
+            src/config/backend.ts
+            src/config/events.tsx
+            sdk/src/configs/oracleKeeper.ts
+            sdk/src/configs/api.ts
+            sdk/src/configs/markets.ts
+          sparse-checkout-cone-mode: false
+          persist-credentials: false
+      - name: Record test suite revision and verify candidate checkout
+        run: |
+          test "$(git -C .context/regression-candidate rev-parse HEAD)" = "$REGRESSION_DEPLOYMENT_SHA"
+          echo "REGRESSION_COMMIT=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: yarn
+      - name: Install dependencies
+        run: |
+          yarn install --immutable --mode=skip-build
+          yarn --cwd sdk install --immutable --mode=skip-build
+      - name: Install Chromium
+        id: setup
+        run: yarn exec playwright install --with-deps chromium
+      # Each check below reports on its own, so a failing one does not hide the results of the others.
       - name: Typecheck regression tests
+        if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
         run: yarn test:regression:types
       - name: Validate fixtures and funded policies without a wallet or transactions
+        if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
         run: |
           yarn test:regression:funded:types
           yarn test:regression:funded:unit
           yarn test:regression:fixtures:unit
           yarn test:regression:ci:unit
           REGRESSION_FUNDED_RUN_ID=listing REGRESSION_FUNDED_EXECUTE=1 REGRESSION_FUNDED_CASES=all yarn exec playwright test -c playwright-funded.config.ts --list
-      - name: Install Chromium
-        run: yarn exec playwright install --with-deps chromium
-      - name: Run regression
-        run: yarn test:regression
-      - name: Run funded harness checks (no funded wallet)
-        if: ${{ !cancelled() }}
+      - name: Run funded harness checks
+        if: ${{ !cancelled() && steps.setup.outcome == 'success' }}
         run: yarn test:regression:funded-harness
       - name: Upload reports and failure evidence
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
-          name: regression-pr-${{ needs.resolve-preview.outputs.pr_number }}-${{ matrix.chain_id }}-${{ github.run_id }}-${{ github.run_attempt }}
+          name: regression-funded-harness
           path: |
-            playwright-report/regression/
             playwright-report/funded-harness/
             test-results/
+          overwrite: true
           retention-days: 14
-      - name: Summarize coverage
-        if: ${{ !cancelled() }}
+
+  report:
+    name: Report
+    needs: [resolve-preview, suites, funded-harness]
+    if: ${{ !cancelled() && needs.resolve-preview.result == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      pull-requests: write
+    env:
+      SUITES_LABEL: ${{ inputs.chain_id == '43114' && 'Avalanche' || 'Arbitrum + Avalanche subset' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: yarn
+      - name: Install dependencies
+        run: yarn install --immutable --mode=skip-build
+      - name: Download shard reports
+        uses: actions/download-artifact@v4
+        with:
+          pattern: regression-blob-*
+          path: blobs
+      - name: Download funded harness report
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: regression-funded-harness
+          path: funded
+      - name: Merge reports and summarize coverage
+        id: summarize
+        # report.cjs fails on incomplete coverage (a missing report, failed, unrun or unexplained skipped tests); the
+        # job fails on it only after the reports and the comment are published.
         run: |
-          node autotests/regression/report.cjs
-          node autotests/regression/report.cjs test-results/funded-harness-results.json
+          mkdir -p merged all-blobs
+          cp blobs/regression-blob-*/*.zip all-blobs/ 2>/dev/null || true
+          incomplete=""
+          shards=$(find all-blobs -name '*.zip' | wc -l | tr -d ' ')
+          if [ "$shards" -gt 0 ]; then
+            PLAYWRIGHT_JSON_OUTPUT_FILE=merged/report.json PLAYWRIGHT_HTML_OUTPUT_DIR=merged/html \
+              yarn playwright merge-reports --reporter=json,html all-blobs
+          fi
+          node autotests/regression/report.cjs merged/report.json > merged/summary.md || incomplete="$SUITES_LABEL"
+          # A shard that died before uploading leaves its tests out of the merged report instead of failing them.
+          if [ "$shards" -ne 3 ]; then
+            printf '\nOnly %s of 3 shard reports arrived; the tests of the others are not counted.\n' "$shards" >> merged/summary.md
+            incomplete="$SUITES_LABEL"
+          fi
+          if [ -f funded/test-results/funded-harness-results.json ]; then
+            cp funded/test-results/funded-harness-results.json merged/funded-harness.json
+          fi
+          node autotests/regression/report.cjs merged/funded-harness.json > merged/funded-harness-summary.md \
+            || incomplete="${incomplete:+$incomplete, }Funded harness"
+          echo "incomplete=$incomplete" >> "$GITHUB_OUTPUT"
+      - name: Upload merged reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: regression-report-pr-${{ needs.resolve-preview.outputs.pr_number }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: merged/
+          retention-days: 14
+      - name: List changed files
+        env:
+          GH_TOKEN: ${{ github.token }}
+        # The files API lists names without the diff, which GitHub refuses past 20,000 lines.
+        run: gh api --paginate "repos/${{ github.repository }}/pulls/${{ needs.resolve-preview.outputs.pr_number }}/files" --jq '.[].filename' > changed-files.txt || true
+      - name: Write report comment
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          OPENROUTER_MODEL: ${{ vars.OPENROUTER_MODEL }}
+          PR_NUMBER: ${{ needs.resolve-preview.outputs.pr_number }}
+          HEAD_SHA: ${{ needs.resolve-preview.outputs.head_sha }}
+          PREVIEW_URL: ${{ needs.resolve-preview.outputs.preview_url }}
+          LANDING_URL: ${{ needs.resolve-preview.outputs.landing_url }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          yarn tsx --tsconfig autotests/regression/tsconfig.json autotests/regression/ci/aiReport.ts \
+            --report "$SUITES_LABEL"=merged/report.json \
+            --summary "$SUITES_LABEL"=merged/summary.md \
+            --report "Funded harness"=merged/funded-harness.json \
+            --summary "Funded harness"=merged/funded-harness-summary.md \
+            --changed-files changed-files.txt --out regression-comment.md
+      - name: Post or update the PR comment
+        # Fork PRs get a read-only token; their summary stays in the job summary.
+        if: github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository
+        uses: actions/github-script@v7
+        env:
+          PR_NUMBER: ${{ needs.resolve-preview.outputs.pr_number }}
+        with:
+          script: |
+            const body = require('fs').readFileSync('regression-comment.md', 'utf8');
+            const marker = '<!-- regression-ai-report -->';
+            const issue = { ...context.repo, issue_number: Number(process.env.PR_NUMBER) };
+            const comments = await github.paginate(github.rest.issues.listComments, issue);
+            const previous = comments.find((comment) => comment.user?.type === 'Bot' && comment.body?.startsWith(marker));
+            if (previous) await github.rest.issues.updateComment({ ...context.repo, comment_id: previous.id, body });
+            else await github.rest.issues.createComment({ ...issue, body });
+      - name: Fail on incomplete coverage
+        if: ${{ steps.summarize.outputs.incomplete != '' }}
+        env:
+          INCOMPLETE: ${{ steps.summarize.outputs.incomplete }}
+        run: |
+          echo "::error::Incomplete regression coverage in: $INCOMPLETE. See the report comment."
+          exit 1
 
   funded-preflight:
     name: Funded gas preflight (no transactions)

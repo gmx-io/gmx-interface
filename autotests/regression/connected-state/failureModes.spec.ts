@@ -119,7 +119,7 @@ test.describe("relayer down", () => {
     const settings = await openSettings(page);
     // A funded wallet defaults to Express once the gas payment balance has loaded.
     await expect(tradingMode(settings, "Express")).toHaveClass(SELECTED_TRADING_MODE);
-    await settings.getByRole("button", { name: "Display settings", exact: true }).click();
+    await settings.getByRole("button", { name: "Display", exact: true }).click();
     await setSettingsToggle(settings, "Manual leverage", false);
     await page.keyboard.press("Escape");
     const button = await fillPositionOrder(page, { isLong: true, collateral: "2.5", size: "2.01" });
@@ -150,7 +150,7 @@ test.describe("relayer down", () => {
     await expect(page.getByTestId("trade-table-large")).toContainText("No open positions");
     await error.getByRole("button", { name: "settings", exact: true }).click();
     const modal = page.getByTestId("settings-modal");
-    await modal.getByRole("button", { name: "Trading settings", exact: true }).click();
+    await modal.getByRole("button", { name: "Trading", exact: true }).click();
     await expect(tradingMode(modal, "Classic")).toBeVisible();
   });
 });

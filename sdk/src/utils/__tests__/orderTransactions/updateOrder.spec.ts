@@ -5,7 +5,7 @@ import { getTokenBySymbol, getWrappedToken } from "configs/tokens";
 import { MOCK_GAS_PRICE } from "test/mock";
 import { parseValue, USD_DECIMALS } from "utils/numbers";
 import { DecreasePositionSwapType, OrderType } from "utils/orders/types";
-import { buildUpdateOrderPayload, UpdateOrderParams } from "utils/orderTransactions";
+import { buildUpdateOrderMulticall, buildUpdateOrderPayload, UpdateOrderParams } from "utils/orderTransactions";
 
 beforeAll(() => {
   vi.spyOn(Math, "random").mockReturnValue(0.5);
@@ -67,11 +67,14 @@ describe("Update Order Payloads", () => {
         autoCancel: false,
         executionFeeTopUp: EXECUTION_FEE_AMOUNT,
         indexTokenAddress: WETH.address,
-        validFromTime: 0n,
+        validFromTime: 1_800_000_000n,
         decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
       };
 
       const result = buildUpdateOrderPayload(params);
+
+      const { multicall } = buildUpdateOrderMulticall(result);
+      expect(multicall.find((call) => call.method === "updateOrder")?.params[5]).toBe(params.validFromTime);
 
       expect(result).toEqual({
         params,
@@ -82,7 +85,7 @@ describe("Update Order Payloads", () => {
           acceptablePrice: parseValue("1194", USD_DECIMALS - WETH.decimals)!, // Converted to contract price
           minOutputAmount: 0n,
           autoCancel: false,
-          validFromTime: 0n,
+          validFromTime: 1_800_000_000n,
           decreasePositionSwapType: DecreasePositionSwapType.NoSwap,
           executionFeeTopUp: EXECUTION_FEE_AMOUNT,
         },

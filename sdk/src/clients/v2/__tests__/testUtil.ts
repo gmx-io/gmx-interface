@@ -1,4 +1,5 @@
-import { generatePrivateKey } from "viem/accounts";
+import { keccak256, toHex } from "viem";
+import { generatePrivateKey, privateKeyToAddress } from "viem/accounts";
 
 import { ARBITRUM, getViemChain } from "configs/chains";
 import { sleep } from "utils/common";
@@ -306,12 +307,23 @@ export async function waitForPositionUpdate(
   return sdk.fetchPositionsInfo({ address: account });
 }
 
+// One subaccount per test wallet: a random key per activation would add an entry to the wallet's
+// on-chain subaccount list on every run, and nothing removes them.
+export function importTestSubaccount(sdkSub: GmxApiSdk, account: string): string {
+  // eslint-disable-next-line no-restricted-globals
+  const pk = process.env.GMX_TEST_PRIVATE_KEY;
+  if (!pk) return sdkSub.generateSubaccount();
+
+  const privateKey = keccak256(toHex(`${pk}:sdk-e2e-subaccount`)) as `0x${string}`;
+  return sdkSub.importSubaccount({ address: privateKeyToAddress(privateKey), privateKey, account });
+}
+
 export async function activateTestSubaccount(
   sdkSub: GmxApiSdk,
   signer: IAbstractSigner,
   account: string
 ): Promise<void> {
-  const subAddr = await sdkSub.generateSubaccount(signer);
+  const subAddr = sdkSub.exportSubaccount()?.address ?? importTestSubaccount(sdkSub, account);
   const status = await sdkSub.fetchSubaccountStatus({ account, subaccountAddress: subAddr });
   const maxAllowedCount = Number(status.currentActionsCount) + 50;
 

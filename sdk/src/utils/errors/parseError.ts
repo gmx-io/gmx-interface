@@ -51,6 +51,7 @@ export type OrderErrorContext =
   | "bestNonce"
   | "sending"
   | "pending"
+  | "pendingWalletBatch"
   | "relayer"
   | "minting"
   | "execution"

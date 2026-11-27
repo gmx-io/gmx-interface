@@ -8,10 +8,11 @@ import {
   recoverTypedDataAddress,
   type Hex,
 } from "viem";
+import { getAbi } from "../../../sdk/src/abis/getAbi";
 import IStargate from "../../../sdk/src/abis/IStargate";
-import MultichainTransferRouter from "../../../sdk/src/abis/MultichainTransferRouter";
 import { getContract } from "../../../sdk/src/configs/contracts";
 import { getLayerZeroEndpointId } from "../../../sdk/src/configs/multichain";
+import { getEmptyBridgeFeeParams } from "../../../sdk/src/utils/multichain/api";
 import { getMultichainTransferSendParams } from "../../../sdk/src/utils/multichain/sendParams";
 import { getBridgeOutTypedData } from "../../../sdk/src/utils/express/utils/bridgeOutUtils";
 import type { RelayParamsPayload } from "../../../sdk/src/utils/express/types";
@@ -64,6 +65,7 @@ export function bridgeReturnParams(token: string, minAmountOut = (bridgeReturnAm
     minAmountOut,
     provider: arbitrumPool,
     data: encodeAbiParameters([{ type: "uint32" }], [getLayerZeroEndpointId(8453)!]),
+    bridgeFee: getEmptyBridgeFeeParams(),
   };
 }
 
@@ -76,7 +78,7 @@ export function inspectUiBridgeSignature(
   const typed = walletTypedData(request, session.address);
   const now = BigInt(Math.floor(Date.now() / 1000));
   for (const tx of [...simulations].reverse()) {
-    const call = decodeFunctionData({ abi: MultichainTransferRouter, data: tx.data });
+    const call = decodeFunctionData({ abi: getAbi(42161, "MultichainTransferRouter"), data: tx.data });
     if (call.functionName !== "bridgeOut") continue;
     const [relay, account, source, params] = call.args;
     if (getAddress(account) !== session.address || source !== 8453n || params.amount !== bridgeReturnAmount) continue;
@@ -90,6 +92,7 @@ export function inspectUiBridgeSignature(
         srcChainId: 8453,
         params,
         relayParams: { ...relay, deadline: now + 3600n - lag } as unknown as RelayParamsPayload,
+        account: session.address,
       });
       if (hashTypedData(typed as never) === hashTypedData(minifiedUiTypedData(expected) as never))
         return { typed, rawDigest: hashTypedData(expected as never) };
@@ -105,7 +108,7 @@ export async function inspectUiBridgeReturn(
   signedHash: Hex
 ) {
   assert.equal(getAddress(payload.to), getAddress(getContract(42161, "MultichainTransferRouter")));
-  const call = decodeFunctionData({ abi: MultichainTransferRouter, data: payload.data });
+  const call = decodeFunctionData({ abi: getAbi(42161, "MultichainTransferRouter"), data: payload.data });
   assert.equal(call.functionName, "bridgeOut");
   if (call.functionName !== "bridgeOut") throw new Error("Expected bridge withdrawal");
   const [relay, account, source, params] = call.args;
@@ -119,6 +122,7 @@ export async function inspectUiBridgeReturn(
     srcChainId: 8453,
     params,
     relayParams: relay as unknown as RelayParamsPayload,
+    account: session.address,
   });
   assert.equal(hashTypedData(td as never), signedHash, "Relay differs from the signed UI withdrawal");
   assert.equal(

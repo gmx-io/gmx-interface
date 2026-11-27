@@ -22,6 +22,13 @@ export async function dismissOutageWarning(page: Page) {
   );
 }
 
+// Marks every deployed announcement as seen and dismisses the outage warning, so no top-right message shows up.
+export async function hideTopRightMessages(page: Page) {
+  await dismissOutageWarning(page);
+  const announcements = readRegressionAnnouncements().map((event) => event.id);
+  await page.addInitScript((ids) => localStorage.setItem("visited-announcements", JSON.stringify(ids)), announcements);
+}
+
 // Hover pauses the rotation first, so the slide cannot change between the dot clicks and the checks after them.
 export async function showWhatsNewSlide(whatsNew: Locator, title: string) {
   await whatsNew.hover();
