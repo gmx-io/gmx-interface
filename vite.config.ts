@@ -487,7 +487,7 @@ export function createViteConfig(
     test: {
       environment: "happy-dom",
       globalSetup: "./vitest.global-setup.js",
-      exclude: ["./autotests", "node_modules", "./sdk", "./.claude", "**/*.ct.spec.tsx"],
+      exclude: ["./autotests", "node_modules", "./sdk", "./.claude", "**/*.ct.spec.tsx", "**/*.parity.spec.ts"],
       setupFiles: ["./src/lib/polyfills.ts", "@vitest/web-worker"],
       projects: [
         { extends: true, test: { name: "isolated", exclude: sharedWorkerTestFiles } },
