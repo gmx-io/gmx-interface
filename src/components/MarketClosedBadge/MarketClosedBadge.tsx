@@ -6,13 +6,13 @@ import { TooltipContent, TooltipRow, TooltipText, TooltipTitle } from "component
 
 type Props = {
   poolName?: string;
-  isPool?: boolean;
+  poolType?: "GM" | "GLV";
   label?: "closed" | "marketClosed";
   isTruncatable?: boolean;
   className?: string;
 };
 
-export function MarketClosedBadge({ poolName, isPool, label = "closed", isTruncatable = false, className }: Props) {
+export function MarketClosedBadge({ poolName, poolType, label = "closed", isTruncatable = false, className }: Props) {
   return (
     <StandardTooltip
       className={cx(isTruncatable ? "min-w-0 max-w-full" : "shrink-0", className)}
@@ -30,7 +30,11 @@ export function MarketClosedBadge({ poolName, isPool, label = "closed", isTrunca
           <TooltipTitle>
             <Trans>Market closed</Trans>
           </TooltipTitle>
-          {isPool ? (
+          {poolType === "GLV" ? (
+            <TooltipText>
+              <Trans>GLV buys and sells are unavailable while any market in this GLV is closed.</Trans>
+            </TooltipText>
+          ) : poolType === "GM" ? (
             <TooltipText>
               <Trans>Buys, sells and shifts through this pool are unavailable until the market reopens.</Trans>
             </TooltipText>

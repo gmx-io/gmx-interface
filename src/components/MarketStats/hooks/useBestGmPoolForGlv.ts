@@ -17,12 +17,9 @@ import {
   selectPoolsDetailsShortTokenAmount,
 } from "context/PoolsDetailsContext/selectors";
 import { selectPoolsDetailsDepositCollateralSwapAmountOut } from "context/PoolsDetailsContext/selectors/selectDepositWithdrawalAmounts";
-import {
-  selectClosedMarkets,
-  selectSwapFeeReceiverFactor,
-} from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectSwapFeeReceiverFactor } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { getAvailableUsdLiquidityForCollateral, getIsMarketClosed } from "domain/synthetics/markets";
+import { getAvailableUsdLiquidityForCollateral } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { TokensData } from "domain/synthetics/tokens";
 import { getDepositAmounts } from "domain/synthetics/trade/utils/deposit";
@@ -50,7 +47,6 @@ export const useBestGmPoolAddressForGlv = ({
 }) => {
   const { chainId, srcChainId } = useChainId();
 
-  const closedMarkets = useSelector(selectClosedMarkets);
   const glvInfo = useSelector(selectPoolsDetailsGlvInfo);
   const glvTokenAmount = useSelector(selectPoolsDetailsGlvTokenAmount);
   const { isDeposit } = useSelector(selectPoolsDetailsFlags);
@@ -243,14 +239,18 @@ export const useBestGmPoolAddressForGlv = ({
       }
     }
 
-    const hasDepositAmount = isDeposit && ((longTokenAmount ?? 0n) !== 0n || (depositShortTokenAmount ?? 0n) !== 0n);
-    const rankedMarkets = hasDepositAmount ? byAmount : byComposition;
-    const bestOpenMarket = rankedMarkets.find(
-      ({ marketTokenAddress }) =>
-        !getIsMarketClosed(closedMarkets, marketTokenAddress) &&
-        (depositableMarketAddresses === undefined || depositableMarketAddresses.has(marketTokenAddress))
-    );
-    return (bestOpenMarket ?? rankedMarkets[0])?.marketTokenAddress;
+    if (isDeposit) {
+      if (
+        (longTokenAmount === 0n || longTokenAmount === undefined) &&
+        (depositShortTokenAmount === 0n || depositShortTokenAmount === undefined)
+      ) {
+        return byComposition[0]?.marketTokenAddress;
+      }
+
+      return byAmount[0]?.marketTokenAddress;
+    } else {
+      return byComposition[0]?.marketTokenAddress;
+    }
   }, [
     isMarketTokenDeposit,
     selectedMarketForGlv,
@@ -261,7 +261,6 @@ export const useBestGmPoolAddressForGlv = ({
     depositShortTokenAmount,
     byAmount,
     byComposition,
-    closedMarkets,
   ]);
 
   const previousLongAmount = usePrevious(longTokenAmount);
@@ -304,7 +303,6 @@ export const useBestGmPoolAddressForGlv = ({
       absDiffBps(marketTokenAmount ?? 0n, previousMarketTokenAmount ?? 0n) > AMOUNT_CHANGE_THRESHOLD_BPS;
 
     const shouldSetBestGmMarket =
-      getIsMarketClosed(closedMarkets, selectedMarketForGlv) ||
       longAmountChanged ||
       shortAmountChanged ||
       marketTokenAmountChanged ||
@@ -316,7 +314,6 @@ export const useBestGmPoolAddressForGlv = ({
     }
   }, [
     bestGmMarketAddress,
-    closedMarkets,
     setSelectedMarketAddressForGlv,
     setIsMarketForGlvSelectedManually,
     depositableMarketAddresses,

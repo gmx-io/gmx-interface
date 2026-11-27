@@ -502,6 +502,14 @@ export function getTradeboxLeverageSliderMarks(maxAllowedLeverage: number) {
 
 export const isMarketInfo = (market: GlvInfo | MarketInfo): market is MarketInfo => !isGlvInfo(market);
 
+export function getIsPoolClosed(closedMarkets: ClosedMarkets | undefined, pool: GlvInfo | string | undefined) {
+  if (typeof pool === "object") {
+    return pool.marketAddresses.some((address) => getIsMarketClosed(closedMarkets, address));
+  }
+
+  return getIsMarketClosed(closedMarkets, pool);
+}
+
 export function getIsMarketClosed(closedMarkets: ClosedMarkets | undefined, marketAddress: string | undefined) {
   return marketAddress !== undefined && closedMarkets?.[marketAddress] === true;
 }

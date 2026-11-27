@@ -60,7 +60,7 @@ export function GmSwapBoxPoolRow({
         label={
           <span className="inline-flex items-center gap-6">
             {t`Pool`}
-            {isMarketClosed && <MarketClosedBadge isPool />}
+            {!glvInfo && isMarketClosed && <MarketClosedBadge poolType="GM" />}
           </span>
         }
         value={

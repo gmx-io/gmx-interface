@@ -9975,6 +9975,10 @@ msgid "Bridge {tokenSymbol} to {chainName} with"
 msgstr "Bridgen Sie {tokenSymbol} zu {chainName} mit"
 
 #: src/components/MarketClosedBadge/MarketClosedBadge.tsx
+msgid "GLV buys and sells are unavailable while any market in this GLV is closed."
+msgstr "GLV-Käufe und -Verkäufe sind nicht möglich, solange mindestens ein Markt in diesem GLV geschlossen ist."
+
+#: src/components/MarketClosedBadge/MarketClosedBadge.tsx
 msgid "Buys, sells and shifts through this pool are unavailable until the market reopens."
 msgstr "Käufe, Verkäufe und Umschichtungen über diesen Pool sind erst wieder möglich, wenn der Markt öffnet."
 

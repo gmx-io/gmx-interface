@@ -21,7 +21,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeSelectors";
 import { createSelector } from "context/SyntheticsStateContext/utils";
 import { getAreBothCollateralsCrossChain } from "domain/multichain/areBothCollateralsCrossChain";
-import { getIsMarketClosed, getMintableMarketTokens, isMarketInfo } from "domain/synthetics/markets";
+import { getIsPoolClosed, getMintableMarketTokens, isMarketInfo } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { Mode, Operation } from "domain/synthetics/markets/types";
 import { getHasNoOnChainBalance } from "domain/synthetics/tokens";
@@ -195,7 +195,7 @@ export const selectPoolsDetailsMarketTokenAddress = createSelector((q) => {
 });
 
 export const selectPoolsDetailsIsMarketClosed = createSelector((q) =>
-  getIsMarketClosed(q(selectClosedMarkets), q(selectPoolsDetailsMarketTokenAddress))
+  getIsPoolClosed(q(selectClosedMarkets), q(selectPoolsDetailsGlvInfo) ?? q(selectPoolsDetailsGlvOrMarketAddress))
 );
 
 /**
