@@ -9553,6 +9553,8 @@ msgstr "<0>도착 네트워크 </0><1>{0}</1>"
 msgid "FX"
 msgstr "FX"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
+#: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/MarketClosedBadge/MarketClosedBadge.tsx
 #: src/components/MarketClosedBadge/MarketClosedBadge.tsx
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
@@ -9975,6 +9977,14 @@ msgstr "변환 후 구매"
 #: src/components/BridgingInfo/BridgingInfo.tsx
 msgid "Bridge {tokenSymbol} to {chainName} with"
 msgstr "{tokenSymbol}을(를) {chainName}(으)로 브릿지하려면 다음 서비스를 이용하십시오"
+
+#: src/components/MarketClosedBadge/MarketClosedBadge.tsx
+msgid "GLV buys and sells are unavailable while any market in this GLV is closed."
+msgstr "이 GLV에 포함된 시장 중 하나라도 휴장 중이면 GLV를 매수하거나 매도할 수 없습니다."
+
+#: src/components/MarketClosedBadge/MarketClosedBadge.tsx
+msgid "Buys, sells and shifts through this pool are unavailable until the market reopens."
+msgstr "시장이 다시 열릴 때까지 이 풀을 통한 매수, 매도 및 유동성 이동을 이용할 수 없습니다."
 
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "Show more"

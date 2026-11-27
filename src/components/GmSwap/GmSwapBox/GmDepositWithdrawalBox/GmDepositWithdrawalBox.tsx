@@ -33,6 +33,7 @@ import {
   selectPoolsDetailsHasNeitherUsdcNorUsdg,
   selectPoolsDetailsIsCrossChainMarket,
   selectPoolsDetailsIsDirectDepositBlocked,
+  selectPoolsDetailsIsMarketClosed,
   selectPoolsDetailsIsMarketTokenDeposit,
   selectPoolsDetailsMarketInfo,
   selectPoolsDetailsMarketOrGlvTokenAmount,
@@ -103,6 +104,7 @@ import {
 
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
+import { MarketClosedBadge } from "components/MarketClosedBadge/MarketClosedBadge";
 import { useBestGmPoolAddressForGlv } from "components/MarketStats/hooks/useBestGmPoolForGlv";
 import { UsdValue } from "components/NumericValue/UsdValue";
 import { SwitchToSettlementChainButtons } from "components/SwitchToSettlementChain/SwitchToSettlementChainButtons";
@@ -125,7 +127,7 @@ import { PaxosTransitDebugCard } from "./PaxosTransitDebugCard";
 import { PaxosTransitExecutionRows } from "./PaxosTransitExecutionRows";
 import { useDepositWithdrawalFees } from "./useDepositWithdrawalFees";
 import { useGmNetworkFeeDetails } from "./useGmNetworkFeeDetails";
-import { useGmSwapSubmitState } from "./useGmSwapSubmitState";
+import { type SubmitButtonState, useGmSwapSubmitState } from "./useGmSwapSubmitState";
 import { usePaxosTransitState } from "./usePaxosTransitState";
 import { useTechnicalFees } from "./useTechnicalFeesAsyncResult";
 import { useUpdateInputAmounts } from "./useUpdateInputAmounts";
@@ -168,6 +170,7 @@ export function GmSwapBoxDepositWithdrawal() {
   const glvAndMarketsInfoData = useSelector(selectGlvAndMarketsInfoData);
   const marketsInfoData = useSelector(selectMarketsInfoData);
   const marketTokensData = useSelector(selectPoolsDetailsMarketTokensData);
+  const isMarketClosed = useSelector(selectPoolsDetailsIsMarketClosed);
   const marketInfo = useSelector(selectPoolsDetailsMarketInfo);
   const glvInfo = useSelector(selectPoolsDetailsGlvInfo);
   const directDepositAccess = useSelector(selectPoolsDetailsDirectDepositAccess);
@@ -296,7 +299,13 @@ export function GmSwapBoxDepositWithdrawal() {
     onSent: resetInputs,
   });
 
-  const submitState = transitState.submitState ?? gmSwapSubmitState;
+  const submitState = useMemo<SubmitButtonState>(
+    () =>
+      isMarketClosed && !transitState.isWithdrawalSent
+        ? { text: t`Market closed`, disabled: true }
+        : transitState.submitState ?? gmSwapSubmitState,
+    [gmSwapSubmitState, isMarketClosed, transitState.isWithdrawalSent, transitState.submitState]
+  );
 
   const transitUsdgStepUsd =
     transitState.usdgStepAmount !== undefined && transitState.usdgToken
@@ -843,7 +852,12 @@ export function GmSwapBoxDepositWithdrawal() {
 
               <div className={cx("flex", isWithdrawal ? "flex-col-reverse" : "flex-col")}>
                 <BuyInputSection
-                  topLeftLabel={isWithdrawal ? t`Pay` : isTransitBuyStep2 ? t`Step 2: Receive` : t`Receive`}
+                  topLeftLabel={
+                    <span className="inline-flex items-center gap-6">
+                      {isWithdrawal ? t`Pay` : isTransitBuyStep2 ? t`Step 2: Receive` : t`Receive`}
+                      {glvInfo && isMarketClosed && <MarketClosedBadge poolType="GLV" />}
+                    </span>
+                  }
                   bottomLeftValue={<UsdValue usd={receiveTokenUsd ?? 0n} />}
                   isBottomLeftValueMuted={isTransitBuyStep2}
                   isDisabled={isTransitBuyStep2}
@@ -920,6 +934,7 @@ export function GmSwapBoxDepositWithdrawal() {
 
             <div className="flex flex-col gap-14">
               <GmSwapBoxPoolRow
+                isMarketClosed={isMarketClosed}
                 indexName={indexName}
                 marketAddress={selectedGlvOrMarketAddress}
                 marketTokensData={marketTokensData}

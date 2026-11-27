@@ -516,6 +516,7 @@ export function usePaxosTransitState({
 
   return {
     submitState,
+    isWithdrawalSent,
     isTransitRoute,
     shouldShowRouteSelector,
     isRouteSelectable,

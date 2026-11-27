@@ -9553,6 +9553,8 @@ msgstr "<0>至 </0><1>{0}</1>"
 msgid "FX"
 msgstr "外匯"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
+#: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/MarketClosedBadge/MarketClosedBadge.tsx
 #: src/components/MarketClosedBadge/MarketClosedBadge.tsx
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
@@ -9975,6 +9977,14 @@ msgstr "先轉換後買入"
 #: src/components/BridgingInfo/BridgingInfo.tsx
 msgid "Bridge {tokenSymbol} to {chainName} with"
 msgstr "將 {tokenSymbol} 橋接至 {chainName}，使用"
+
+#: src/components/MarketClosedBadge/MarketClosedBadge.tsx
+msgid "GLV buys and sells are unavailable while any market in this GLV is closed."
+msgstr "只要此 GLV 中有任一市場休市，就無法買入或賣出 GLV。"
+
+#: src/components/MarketClosedBadge/MarketClosedBadge.tsx
+msgid "Buys, sells and shifts through this pool are unavailable until the market reopens."
+msgstr "市場重新開放前，無法透過此池買入、賣出或轉移流動性。"
 
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "Show more"

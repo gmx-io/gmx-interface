@@ -34,6 +34,7 @@ export type GlvInfo = {
   name: string;
   longToken: TokenData;
   shortToken: TokenData;
+  marketAddresses: string[];
   markets: GlvMarket[];
   shiftLastExecutedAt: bigint;
   shiftMinInterval: bigint;

@@ -110,6 +110,7 @@ export function useGlvMarketsInfo(
   const glvs = useMemo(() => {
     return glvList?.map(({ glv, markets }) => ({
       glv,
+      marketAddresses: markets,
       markets: markets.filter((market) => marketsInfoData?.[market]),
     }));
   }, [glvList, marketsInfoData]);
@@ -269,7 +270,7 @@ export function useGlvMarketsInfo(
     }
 
     const result: GlvInfoData = {};
-    glvs.forEach(({ glv, markets }) => {
+    glvs.forEach(({ glv, marketAddresses, markets }) => {
       const glvPrices = glvRawData[glv.glvToken + "-prices"];
       if (!glvPrices) {
         return;
@@ -336,6 +337,7 @@ export function useGlvMarketsInfo(
         isDisabled: markets.every(
           (market) => glvRawData[glv.glvToken + "-" + market + "-info"].isGlvDisabled.returnValues[0]
         ),
+        marketAddresses,
         markets: markets
           .map((market) => {
             const marketData = glvRawData[glv.glvToken + "-" + market + "-info"];

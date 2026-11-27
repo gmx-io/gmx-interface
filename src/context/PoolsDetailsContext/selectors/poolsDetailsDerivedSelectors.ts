@@ -5,6 +5,7 @@ import { getPaxosTransitConfig } from "config/paxosTransit";
 import {
   selectAccountWhitelistsResult,
   selectChainId,
+  selectClosedMarkets,
   selectDepositMarketTokensData,
   selectGlvAndMarketsInfoData,
   selectGlvInfo,
@@ -20,7 +21,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeSelectors";
 import { createSelector } from "context/SyntheticsStateContext/utils";
 import { getAreBothCollateralsCrossChain } from "domain/multichain/areBothCollateralsCrossChain";
-import { getMintableMarketTokens, isMarketInfo } from "domain/synthetics/markets";
+import { getIsPoolClosed, getMintableMarketTokens, isMarketInfo } from "domain/synthetics/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { Mode, Operation } from "domain/synthetics/markets/types";
 import { getHasNoOnChainBalance } from "domain/synthetics/tokens";
@@ -29,12 +30,7 @@ import { ERC20Address, getGmToken, getTokenData, Token, TokenBalanceType } from 
 import { getIsEnteredAmount } from "lib/getIsEnteredAmount";
 import { parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import {
-  getMarketIsSameCollaterals,
-  getTokenAddressByMarket,
-  isMarketTokenAddress,
-  MARKETS,
-} from "sdk/configs/markets";
+import { getMarketIsSameCollaterals, getTokenAddressByMarket, isMarketTokenAddress } from "sdk/configs/markets";
 import { convertTokenAddress, getToken } from "sdk/configs/tokens";
 import { SwapPricingType } from "sdk/utils/orders/types";
 
@@ -186,30 +182,21 @@ export const selectPoolsDetailsGlvTokenAddress = createSelector((q) => {
 });
 
 export const selectPoolsDetailsMarketTokenAddress = createSelector((q) => {
-  const chainId = q(selectChainId);
-  const glvOrMarketAddress = q(selectPoolsDetailsGlvOrMarketAddress);
+  if (!q(selectPoolsDetailsGlvInfo)) {
+    return q(selectPoolsDetailsGlvOrMarketAddress);
+  }
+
   const selectedMarketForGlv = q(selectPoolsDetailsSelectedMarketAddressForGlv);
-  const firstTokenAddress = q(selectPoolsDetailsFirstTokenAddress);
-
-  const glvInfo = q(selectPoolsDetailsGlvInfo);
-
-  // If it's a GLV but no market is selected, return undefined
-  if (glvInfo !== undefined && selectedMarketForGlv === undefined) {
-    return undefined;
+  if (selectedMarketForGlv && q(selectPoolsDetailsIsMarketTokenDeposit)) {
+    return q(selectPoolsDetailsFirstTokenAddress);
   }
 
-  const isGlv = glvInfo !== undefined && selectedMarketForGlv !== undefined;
-
-  if (isGlv) {
-    if (firstTokenAddress && MARKETS[chainId][firstTokenAddress]) {
-      return firstTokenAddress;
-    }
-
-    return selectedMarketForGlv;
-  }
-
-  return glvOrMarketAddress;
+  return selectedMarketForGlv;
 });
+
+export const selectPoolsDetailsIsMarketClosed = createSelector((q) =>
+  getIsPoolClosed(q(selectClosedMarkets), q(selectPoolsDetailsGlvInfo) ?? q(selectPoolsDetailsGlvOrMarketAddress))
+);
 
 /**
  * Indicates the swap-to token after gm/glv sell

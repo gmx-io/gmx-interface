@@ -15,7 +15,7 @@ type MaxActionsProps = {
 };
 
 type Props = {
-  topLeftLabel: string;
+  topLeftLabel: ReactNode;
   bottomLeftValue?: ReactNode;
   isBottomLeftValueMuted?: boolean;
   bottomRightLabel?: string;

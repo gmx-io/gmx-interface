@@ -9553,6 +9553,8 @@ msgstr "<0>To </0><1>{0}</1>"
 msgid "FX"
 msgstr "FX"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
+#: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/MarketClosedBadge/MarketClosedBadge.tsx
 #: src/components/MarketClosedBadge/MarketClosedBadge.tsx
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
@@ -9975,6 +9977,14 @@ msgstr "Convert, then buy"
 #: src/components/BridgingInfo/BridgingInfo.tsx
 msgid "Bridge {tokenSymbol} to {chainName} with"
 msgstr "Bridge {tokenSymbol} to {chainName} with"
+
+#: src/components/MarketClosedBadge/MarketClosedBadge.tsx
+msgid "GLV buys and sells are unavailable while any market in this GLV is closed."
+msgstr "GLV buys and sells are unavailable while any market in this GLV is closed."
+
+#: src/components/MarketClosedBadge/MarketClosedBadge.tsx
+msgid "Buys, sells and shifts through this pool are unavailable until the market reopens."
+msgstr "Buys, sells and shifts through this pool are unavailable until the market reopens."
 
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "Show more"
