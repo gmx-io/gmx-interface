@@ -32,6 +32,7 @@ import {
   selectIsSetAcceptablePriceImpactEnabled,
 } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { type SolanaTriggerEntry, useSolanaOrderActions } from "domain/solana/solanaOrderActions";
 import { getIsGmxAccountPosition, getIsPositionActionGmxAccount } from "domain/synthetics/express/feeBalance";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import {
@@ -163,6 +164,8 @@ export function AddTPSLModal({
 }: Props) {
   const [tpPriceInput, setTpPriceInput] = useState("");
   const [slPriceInput, setSlPriceInput] = useState("");
+  const [tpRowKey, setTpRowKey] = useState(0);
+  const [slRowKey, setSlRowKey] = useState(0);
   const [keepLeverage, setKeepLeverage] = useState(true);
   const [editTPSLSize, setEditTPSLSize] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -177,6 +180,8 @@ export function AddTPSLModal({
   const srcChainId = useSelector(selectSrcChainId);
   const account = useSelector(selectAccount);
   const { signer } = useWallet();
+  const solanaOrderActions = useSolanaOrderActions();
+  const isSolana = Boolean(solanaOrderActions);
   const { provider } = useJsonRpcProvider(chainId);
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
   const userReferralInfo = useUserReferralInfo();
@@ -807,7 +812,9 @@ export function AddTPSLModal({
     isExpressEnabled: expressOrdersEnabled,
     positionLastSrcChainId: position.lastSrcChainId,
   });
-  const isPositionBalanceLoading = isSettlementChain(chainId) && position.lastSrcChainId === undefined;
+  // Solana keeps globals.chainId on Arbitrum, and its positions never get a lastSrcChainId
+  const isPositionBalanceLoading =
+    !solanaOrderActions && isSettlementChain(chainId) && position.lastSrcChainId === undefined;
   const isGmxAccountPosition = isPositionBalanceLoading ? undefined : getIsGmxAccountPosition(position.lastSrcChainId);
   const isExpressAvailable = useSelector(selectIsExpressTransactionAvailable);
   const isGmxAccountExpressUnavailable = isGmxAccount && !isExpressAvailable;
@@ -815,7 +822,8 @@ export function AddTPSLModal({
   const orderPayloads = useMemo(() => {
     const empty = { createOrderParams: [], updateOrderParams: [], cancelOrderParams: [] };
 
-    if (!account || !marketInfo || !collateralToken) {
+    // EVM payload builders look tokens up by EVM chain id; Solana sends through solanaOrderActions instead
+    if (solanaOrderActions || !account || !marketInfo || !collateralToken) {
       return empty;
     }
 
@@ -864,6 +872,7 @@ export function AddTPSLModal({
       userReferralCode: userReferralInfo?.referralCodeForTxn,
     });
   }, [
+    solanaOrderActions,
     tpDecreaseAmounts,
     slDecreaseAmounts,
     account,
@@ -882,6 +891,23 @@ export function AddTPSLModal({
     isGmxAccount,
     isGmxAccountPosition,
     isOrdersLoading,
+  ]);
+
+  // Solana sends each TP/SL as its own transaction from the decrease amounts; there are no EVM payloads or keeper fees.
+  const solanaTriggerEntries = useMemo((): SolanaTriggerEntry[] | undefined => {
+    if (!solanaOrderActions) return undefined;
+    return [
+      { amounts: tpPriceError ? undefined : tpDecreaseAmounts, existingFullCloseOrder: existingFullCloseTp },
+      { amounts: slPriceError ? undefined : slDecreaseAmounts, existingFullCloseOrder: existingFullCloseSl },
+    ];
+  }, [
+    solanaOrderActions,
+    tpPriceError,
+    tpDecreaseAmounts,
+    existingFullCloseTp,
+    slPriceError,
+    slDecreaseAmounts,
+    existingFullCloseSl,
   ]);
 
   const isAutoCancelOrdersLimitExceeded =
@@ -948,10 +974,14 @@ export function AddTPSLModal({
     if (slPriceError && slPriceInput) {
       return slPriceError;
     }
-    if (orderPayloads.createOrderParams.length === 0 && orderPayloads.updateOrderParams.length === 0) {
+    if (
+      solanaTriggerEntries
+        ? !solanaTriggerEntries.some((entry) => entry.amounts)
+        : orderPayloads.createOrderParams.length === 0 && orderPayloads.updateOrderParams.length === 0
+    ) {
       return t`Unable to calculate order`;
     }
-    return undefined;
+    return solanaOrderActions?.error;
   }, [
     tpPriceInput,
     slPriceInput,
@@ -964,9 +994,42 @@ export function AddTPSLModal({
     closeSize.showSizeInTokens,
     closeSize.formattedMaxCloseSize,
     indexTokenDecimals,
+    solanaTriggerEntries,
+    solanaOrderActions?.error,
   ]);
 
   const handleSubmit = useCallback(async () => {
+    if (solanaOrderActions) {
+      if (isSubmitting || isCreationPending || !solanaTriggerEntries) return;
+
+      setIsSubmitting(true);
+      try {
+        if (solanaOrderActions.hasPendingSubmission) {
+          if (await solanaOrderActions.checkPendingSubmission({ origin: "triggers" })) setIsVisible(false);
+        } else {
+          const [tpEntry, slEntry] = solanaTriggerEntries;
+          const sent = await solanaOrderActions.setTriggerOrders({ position, entries: solanaTriggerEntries });
+          if (sent.length > 0 && solanaTriggerEntries.every((entry) => !entry.amounts || sent.includes(entry))) {
+            setIsVisible(false);
+            onSuccess?.();
+          } else {
+            // A confirmed entry's row is cleared and remounted, so its gain/loss input cannot bring the price back.
+            if (sent.includes(tpEntry)) {
+              setTpPriceInput("");
+              setTpRowKey((key) => key + 1);
+            }
+            if (sent.includes(slEntry)) {
+              setSlPriceInput("");
+              setSlRowKey((key) => key + 1);
+            }
+          }
+        }
+      } finally {
+        setIsSubmitting(false);
+      }
+      return;
+    }
+
     if (isSubmitting || isCreationPending || !signer || !provider || !batchParams || !tokensData || !marketsInfoData)
       return;
 
@@ -1014,6 +1077,9 @@ export function AddTPSLModal({
   }, [
     isSubmitting,
     isCreationPending,
+    solanaOrderActions,
+    solanaTriggerEntries,
+    position,
     signer,
     provider,
     batchParams,
@@ -1024,7 +1090,6 @@ export function AddTPSLModal({
     shouldDisableValidationForTesting,
     blockTimestampData,
     makeOrderTxnCallback,
-    position.collateralToken.symbol,
     isGmxAccount,
     setIsVisible,
     onSuccess,
@@ -1066,7 +1131,7 @@ export function AddTPSLModal({
       isExpressLoading ||
       isMultichainSubmitDisabled ||
       isPositionBalanceLoading ||
-      isOrdersLoading ||
+      (isOrdersLoading && !isSolana) ||
       isGmxAccountBalanceLoading
     ) {
       return {
@@ -1085,6 +1150,18 @@ export function AddTPSLModal({
         text: t`Creating...`,
         disabled: true,
       };
+    }
+
+    if (solanaOrderActions?.busyReason) {
+      return { text: solanaOrderActions.busyReason, disabled: true };
+    }
+
+    if (solanaOrderActions?.hasPendingSubmission) {
+      return { text: t`Check transaction status`, disabled: false };
+    }
+
+    if (isSolana && isOrdersLoading) {
+      return { text: t`Loading...`, disabled: true };
     }
 
     if (submitError) {
@@ -1120,6 +1197,7 @@ export function AddTPSLModal({
     isMultichainSubmitDisabled,
     isPositionBalanceLoading,
     isOrdersLoading,
+    isSolana,
     isGmxAccountBalanceLoading,
     isGmxAccountExpressUnavailable,
     isSubmitting,
@@ -1127,6 +1205,8 @@ export function AddTPSLModal({
     marketPairLabel,
     modePrefix,
     submitError,
+    solanaOrderActions?.busyReason,
+    solanaOrderActions?.hasPendingSubmission,
   ]);
 
   const currentLeverage = formatLeverage(position.leverage);
@@ -1208,6 +1288,7 @@ export function AddTPSLModal({
       <div className="flex max-w-[464px] flex-col gap-16 px-20 py-16 max-md:max-w-none">
         <div className="flex flex-col gap-4">
           <TPSLInputRow
+            key={tpRowKey}
             type="takeProfit"
             priceValue={tpPriceInput}
             onPriceChange={handleTpPriceChange}
@@ -1222,6 +1303,7 @@ export function AddTPSLModal({
 
         <div className="flex flex-col gap-4">
           <TPSLInputRow
+            key={slRowKey}
             type="stopLoss"
             priceValue={slPriceInput}
             onPriceChange={handleSlPriceChange}
@@ -1390,7 +1472,13 @@ export function AddTPSLModal({
                   }
                 />
                 <SyntheticsInfoRow
-                  label={<Trans>Net price impact / fees</Trans>}
+                  label={
+                    position.marketInfo?.tradeMath === "gmsol" ? (
+                      <Trans>Price impact / fees</Trans>
+                    ) : (
+                      <Trans>Net price impact / fees</Trans>
+                    )
+                  }
                   value={
                     activeFees ? (
                       <>

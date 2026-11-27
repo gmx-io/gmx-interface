@@ -22,34 +22,6 @@ msgctxt "Market state"
 msgid "Closed"
 msgstr "마감"
 
-#: src/components/MarketClosedBadge/MarketClosedBadge.tsx
-msgid "Limit, Stop Market and TP/SL orders can still be created, but execute only after the market reopens."
-msgstr "지정가, 스탑 마켓, TP/SL 주문은 계속 생성할 수 있지만, 마켓이 다시 열린 후에만 체결됩니다."
-
-#: src/components/MarketClosedBadge/MarketClosedBadge.tsx
-msgid "Market orders, TWAP, Close, withdrawals and \"Now\" deposits are unavailable until then."
-msgstr "그때까지 시장가 주문, TWAP, 종료, 출금, \"즉시\" 입금은 사용할 수 없습니다."
-
-#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
-msgid "Market orders and TWAP are unavailable while the market is closed. Limit, Stop Market and TP/SL orders can still be created, but execute only after the market reopens."
-msgstr "마켓이 마감된 동안에는 시장가 주문과 TWAP을 사용할 수 없습니다. 지정가, 스탑 마켓, TP/SL 주문은 계속 생성할 수 있지만, 마켓이 다시 열린 후에만 체결됩니다."
-
-#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
-msgid "Switch to a limit order"
-msgstr "지정가 주문으로 전환"
-
-#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
-msgid "Market closed. This order executes only after the market reopens. The reopen price may differ from the last price."
-msgstr "마켓 마감. 이 주문은 마켓이 다시 열린 후에만 체결됩니다. 재개 가격은 마지막 가격과 다를 수 있습니다."
-
-#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
-msgid "Market closed. This order executes only after the market reopens. A price gap at the reopen can fill a Stop Market or Stop-Loss at a worse price."
-msgstr "마켓 마감. 이 주문은 마켓이 다시 열린 후에만 체결됩니다. 재개 시 가격 갭으로 인해 스탑 마켓 또는 손절매 주문이 더 불리한 가격에 체결될 수 있습니다."
-
-#: src/components/PositionItem/PositionItem.tsx
-msgid "This position is above liquidation risk, but it may become close to liquidation when the market switches to off-hours risk parameters."
-msgstr "이 포지션은 청산 리스크 범위 밖에 있지만, 마켓이 장외 시간 리스크 파라미터로 전환되면 청산에 가까워질 수 있습니다."
-
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Slippage exceeded"
 msgstr "슬리피지 초과"
@@ -185,14 +157,6 @@ msgstr "주문을 업데이트할 수 없습니다"
 #: src/components/TenderlySettings/TenderlySettings.tsx
 msgid "See <0>Tenderly docs</0>"
 msgstr "<0>Tenderly 문서</0>를 참조하십시오"
-
-#: src/components/SettingsModal/DebugSettings.tsx
-msgid "Force markets closed"
-msgstr "마켓 강제 마감"
-
-#: src/components/SettingsModal/DebugSettings.tsx
-msgid "Index token symbols, comma-separated. These markets show as closed."
-msgstr "인덱스 토큰 심볼(쉼표로 구분). 이 마켓은 마감된 것으로 표시됩니다."
 
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Show debug values"
@@ -512,6 +476,10 @@ msgstr "받는 사람"
 msgid "FAQ"
 msgstr "자주 묻는 질문"
 
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+msgid "Order updated"
+msgstr ""
+
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 msgid "Approve {depositTokenSymbol}"
 msgstr "{depositTokenSymbol} 승인"
@@ -572,6 +540,10 @@ msgstr "Limit Swap 수정: {fromSymbol}에서 {toSymbol}(으)로"
 msgid "Expired Market Increase"
 msgstr "Market Increase 만료됨"
 
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
+msgid "Unable to load trading data"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Percentage"
 msgstr "비율"
@@ -587,6 +559,8 @@ msgstr "스왑 UI 수수료"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
 msgid "Connecting wallet..."
 msgstr "지갑 연결 중..."
 
@@ -1201,6 +1175,10 @@ msgstr "이 풀에는 GMX만 유동성을 제공합니다. USDC와 USDG 스왑�
 msgid "Funding decrease factor"
 msgstr "펀딩 감소 계수"
 
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+msgid "Order submission status unknown. Check the transaction before retrying."
+msgstr ""
+
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "STIP.b retroactive bonus"
 msgstr "STIP.b 소급 보너스"
@@ -1584,6 +1562,10 @@ msgstr "거래량"
 msgid "{0} amount"
 msgstr "{0} 수량"
 
+#: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
+msgid "Price impact and fees from your trade."
+msgstr ""
+
 #: src/pages/AccountEvents/AccountEvents.tsx
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Error:"
@@ -1816,6 +1798,11 @@ msgstr "네트워크 수수료를 지불할 Gas 결제 토큰 잔액이 GMX Acco
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Paused until {reopenTime}"
 msgstr "{reopenTime}까지 일시 중지됨"
+
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
+msgid "Solana trading is unavailable"
+msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
 msgid "Deposited"
@@ -2447,7 +2434,7 @@ msgstr "지원되지 않음"
 msgid "Acceptable price for the order"
 msgstr "해당 주문의 허용 가격"
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 msgid "TWAP Swap"
 msgstr "TWAP 스왑"
 
@@ -2817,6 +2804,10 @@ msgstr "수취 토큰 유동성 부족"
 msgid "Size percentage required"
 msgstr "규모 비율을 입력해야 합니다"
 
+#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
+msgid "Market closed. This order executes only after the market reopens. A price gap at the reopen can fill a Stop Market or Stop-Loss at a worse price."
+msgstr "마켓 마감. 이 주문은 마켓이 다시 열린 후에만 체결됩니다. 재개 시 가격 갭으로 인해 스탑 마켓 또는 손절매 주문이 더 불리한 가격에 체결될 수 있습니다."
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
@@ -3072,7 +3063,7 @@ msgstr "Avalanche 수익률 최적화 도구"
 msgid "Withdrew {0} from {positionText}"
 msgstr "{positionText}에서 {0} 인출"
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 msgid "{orderTypeText} {0} for {1}"
 msgstr "{orderTypeText} {0} → {1}"
 
@@ -3213,6 +3204,11 @@ msgstr "사용 자본이 {0}을(를) 초과하는 포지션만 순위에 포함�
 msgid "A standard approval transaction is required to continue"
 msgstr "계속하려면 표준 승인 트랜잭션이 필요합니다"
 
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
+msgid "Not enough SOL for network fees, keeper fees and account rent"
+msgstr ""
+
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Decrease leverage to match the max allowed leverage."
 msgstr "허용된 최대 레버리지에 맞게 레버리지를 줄이십시오."
@@ -3290,6 +3286,11 @@ msgstr "종료 수수료 대비"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "FUNDING APR"
 msgstr "펀딩 APR"
+
+#: src/components/TradeBox/components/SideOrderEntry.tsx
+#: src/domain/gmsol/tradebox/tradeboxErrorMessages.ts
+msgid "Edit existing TP/SL orders in the positions list"
+msgstr ""
 
 #: src/components/Claims/filters/ActionFilter.tsx
 #: src/components/TradeHistory/filters/ActionFilter.tsx
@@ -3436,7 +3437,7 @@ msgstr "공유 가능한 이미지 생성 중..."
 msgid "RANK"
 msgstr "순위"
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 msgid "{txnTypeText} {0} order for"
 msgstr "{txnTypeText} {0} 주문"
 
@@ -3781,7 +3782,7 @@ msgstr "레버리지 거래 및 스왑 수수료를 축적하는 GM 토큰 자�
 msgid "<0>There's no fixed cutoff — the desk sets your tier from your recent and expected monthly volume. Most traders qualify for the base tier; reach out and we'll confirm your rate.</0>"
 msgstr "<0>고정된 기준은 없습니다 — 데스크가 최근 및 예상 월간 거래량을 기준으로 티어를 설정합니다. 대부분의 트레이더는 기본 티어 대상입니다. 문의해 주시면 요율을 확인해 드립니다.</0>"
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 msgid "Decreasing {indexTokenText} Short: -{sizeDeltaUsdText}"
 msgstr "{indexTokenText} 숏 축소: -{sizeDeltaUsdText}"
 
@@ -4005,13 +4006,18 @@ msgstr "포지션"
 msgid "<0>Deposit</0> or <1>buy</1> {wrappedNativeTokenSymbol}."
 msgstr "{wrappedNativeTokenSymbol}을(를) <0>입금</0>하거나 <1>구매</1>하십시오."
 
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
+msgid "This order cannot be changed on Solana"
+msgstr ""
+
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "Converting {offerAmount} to {0}"
 msgstr "{offerAmount}을(를) {0}(으)로 변환 중"
 
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
-#: src/components/StatusNotification/OrderStatusNotification.tsx
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 #: src/pages/Announcements/AnnouncementCard.tsx
 msgid "Update"
@@ -4032,6 +4038,10 @@ msgstr "GMX 토큰은 GMX 프로토콜의 거버넌스 토큰입니다. 플랫�
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max lendable impact USD"
 msgstr "최대 대여 가능 영향 USD"
+
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+msgid "Previous order request"
+msgstr ""
 
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "<0>Buying {0}{1}<1>{poolName}</1></0> <2>with {offerAmount}</2>"
@@ -4065,6 +4075,14 @@ msgstr "이 거래에 필요한 {symbol}이(가) GMX Account에 부족합니다.
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Removing old session..."
 msgstr "이전 세션 제거 중..."
+
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/OrdersModal/AddTPSLModal.tsx
+#: src/components/PositionEditor/usePositionEditorButtonState.tsx
+#: src/components/PositionSeller/PositionSeller.tsx
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
+msgid "Check transaction status"
+msgstr ""
 
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Double exposure: long {indexSymbol} from position + long {collateralSymbol} from collateral. Liquidation price varies with {collateralSymbol} price."
@@ -4322,6 +4340,13 @@ msgstr "GMX V2 Telegram & Discord 분석"
 msgid "Share your referral code with friends or your community —<0/> every trade made with your code earns you $-rewards"
 msgstr "친구 또는 커뮤니티와 추천 코드를 공유하십시오 —<0/> 해당 코드로 체결되는 모든 거래에서 $ 보상을 받습니다"
 
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/PositionEditor/usePositionEditorButtonState.tsx
+#: src/components/PositionSeller/PositionSeller.tsx
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
+msgid "Checking transaction status..."
+msgstr ""
+
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "GMX ecosystem pages"
 msgstr "GMX 생태계 페이지"
@@ -4341,6 +4366,10 @@ msgstr "Express를 사용하려면 GMX Account에 {gasPaymentTokensText}이(가)
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pending borrowing fees from all open positions"
 msgstr "모든 미결 포지션의 미지급 차입 수수료"
+
+#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
+msgid "Market closed. This order executes only after the market reopens. The reopen price may differ from the last price."
+msgstr "마켓 마감. 이 주문은 마켓이 다시 열린 후에만 체결됩니다. 재개 가격은 마지막 가격과 다를 수 있습니다."
 
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "Remove endpoint"
@@ -4610,6 +4639,10 @@ msgstr "접기"
 msgid "Launch boost (target)"
 msgstr "출시 부스트 (목표)"
 
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
+msgid "Another order request is in progress. Check your wallet"
+msgstr ""
+
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Banners"
 msgstr "배너"
@@ -4725,7 +4758,7 @@ msgstr "전송이 완료되었습니다"
 msgid "27% of protocol fees are accumulating in the Treasury and will be distributed proportionally to staking power when GMX reaches $90."
 msgstr "프로토콜 수수료의 27%가 트레저리에 적립되고 있으며, GMX가 $90에 도달하면 스테이킹 파워에 비례하여 분배됩니다."
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 msgid "Depositing {amountText} to {indexTokenText} Long..."
 msgstr "{indexTokenText} 롱에 {amountText} 예치 중..."
 
@@ -4736,6 +4769,10 @@ msgstr "베스팅 중지 및 출금"
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Position not found. It may have been closed."
 msgstr "포지션을 찾을 수 없습니다. 이미 종료되었을 수 있습니다."
+
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+msgid "Canceled by you"
+msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Trading"
@@ -4875,6 +4912,10 @@ msgstr "TWAP 스왑 부분 실패"
 msgid "No events in the past {DAYS_BACK} days"
 msgstr "최근 {DAYS_BACK}일 동안 이벤트가 없습니다"
 
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+msgid "The transaction expired before it landed. Nothing was executed."
+msgstr ""
+
 #: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
 msgid "Ready to withdraw"
 msgstr "출금 가능"
@@ -4906,6 +4947,8 @@ msgid "Net price impact / fees"
 msgstr "순 가격 영향 / 수수료"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
 msgid "Order canceled"
 msgstr "주문이 취소되었습니다"
 
@@ -4954,6 +4997,10 @@ msgstr "{fromText}에서"
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "{poolName} pool is closing and isn't taking new stop market orders."
 msgstr "{poolName} 풀이 종료 중이며 새로운 스탑 마켓 주문을 받지 않습니다."
+
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Index token symbols, comma-separated. These markets show as closed."
+msgstr "인덱스 토큰 심볼(쉼표로 구분). 이 마켓은 마감된 것으로 표시됩니다."
 
 #: landing/src/pages/Builders/EcosystemSection/EcosystemSection.tsx
 msgid "Frontends"
@@ -5046,6 +5093,10 @@ msgstr "금액 입력"
 #: src/components/OneClickSessions/OneClickSessions.tsx
 msgid "{count, plural, one {Active until {expiryDate}, # action left} other {Active until {expiryDate}, # actions left}}"
 msgstr "{count, plural, one {{expiryDate}까지 활성, 남은 작업 #개} other {{expiryDate}까지 활성, 남은 작업 #개}}"
+
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Force markets closed"
+msgstr "마켓 강제 마감"
 
 #: src/domain/multichain/useWithdrawBlockedError.tsx
 msgid "Add {0} to your wallet"
@@ -5169,6 +5220,8 @@ msgid "Returned margin"
 msgstr "반환 증거금"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
 msgid "Sending order request..."
 msgstr "주문 요청을 전송하는 중…"
 
@@ -5344,6 +5397,7 @@ msgstr "{receivedSymbol}(으)로 지급됨: {convertToSymbol}(으)로의 변환�
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrderItem/OrderItem.tsx
+#: src/components/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 msgid "Acceptable price"
 msgstr "허용 가격"
 
@@ -5362,6 +5416,10 @@ msgstr "서브계정에서 출금하는 중..."
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Stargate isn't accepting {tokenSymbol} transfers from {networkName} right now. Try another asset."
 msgstr "Stargate가 현재 {networkName}에서의 {tokenSymbol} 전송을 받지 않고 있습니다. 다른 자산으로 시도하십시오."
+
+#: src/domain/gmsol/tradebox/tradeboxErrorMessages.ts
+msgid "Turn on \"Set acceptable price impact\" in settings to edit this order on Solana"
+msgstr ""
 
 #: src/components/PositionSeller/rows/AllowedSlippageRow.tsx
 #: src/components/TradeBox/TradeBoxRows/AllowedSlippageRow.tsx
@@ -5430,6 +5488,10 @@ msgstr "주문이 체결되지 않을 수 있습니다: 최소 수령액으로 �
 #: src/components/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 msgid "Leverage"
 msgstr "레버리지"
+
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+msgid "The wallet request timed out. Nothing was sent."
+msgstr ""
 
 #: src/components/AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal.tsx
 msgid "Accrued price impact rebates"
@@ -5520,7 +5582,7 @@ msgstr "베스팅을 위해 예약된 스테이킹 토큰"
 msgid "Max 5 auto-cancel TP/SL orders allowed. Extra orders require manual cancellation. Existing orders still close with the position. <0>Read more</0>."
 msgstr "자동 취소 TP/SL 주문은 최대 5개까지 허용됩니다. 추가 주문은 수동으로 취소해야 합니다. 기존 주문은 여전히 포지션과 함께 종료됩니다. <0>자세히 보기</0>."
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 msgid "Withdrawing {amountText} from {indexTokenText} Short..."
 msgstr "{indexTokenText} 숏에서 {amountText} 출금 중..."
 
@@ -5648,6 +5710,10 @@ msgstr "제출 중..."
 msgid "Estimated time: ~5 min"
 msgstr "예상 시간: ~5분"
 
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
+msgid "Orders with a callback cannot be changed on Solana yet"
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "GLP vault"
 msgstr "GLP 볼트"
@@ -5666,6 +5732,10 @@ msgstr "롱 차입 지수"
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1>"
 msgstr "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1>"
+
+#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
+msgid "This market is closed. Settle after the market reopens."
+msgstr "이 마켓은 마감되었습니다. 마켓이 다시 열린 후 정산하십시오."
 
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Long funding rate"
@@ -5713,6 +5783,10 @@ msgstr "{sourceChainName}(으)로의 출금 실패"
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Enter recipient address"
 msgstr "수신자 주소 입력"
+
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
+msgid "Select wallet balance to trade on Solana"
+msgstr ""
 
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Break down net price impact"
@@ -5801,7 +5875,7 @@ msgstr "양수 팩터"
 #: src/components/OrdersModal/PendingTPSLOrder.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/PositionItem/PositionItemOrders.tsx
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Full position close"
 msgstr "포지션 전체 종료"
@@ -6038,6 +6112,7 @@ msgstr "지정가 취소"
 msgid "Gas token switched to {toSymbol} to enable external swap routing"
 msgstr "외부 스왑 라우팅을 활성화하기 위해 Gas 토큰이 {toSymbol}(으)로 전환되었습니다"
 
+#: src/domain/gmsol/tradebox/tradeboxErrorMessages.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select a market"
@@ -6078,10 +6153,6 @@ msgstr "공지사항을 불러오지 못했습니다. 나중에 다시 시도해
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Max open interest exceeded. Current: {openInterestText}, max: {maxOpenInterestText}"
 msgstr "최대 미결제약정 초과. 현재: {openInterestText}, 최대: {maxOpenInterestText}"
-
-#: src/components/PositionSeller/SplitReceiveSwapProfitFeeWarning.tsx
-msgid "Receiving as {receiveTokenSymbol} will cost {swapProfitFeePercentage} (<0>{swapProfitFeeUsd}</0>). Receive {profitTokenSymbol} and {collateralTokenSymbol} separately to skip the swap. <1>Read more</1>."
-msgstr "{receiveTokenSymbol}(으)로 받으면 {swapProfitFeePercentage}(<0>{swapProfitFeeUsd}</0>)의 비용이 발생합니다. 스왑을 건너뛰려면 {profitTokenSymbol} 및 {collateralTokenSymbol}을(를) 별도로 받으십시오. <1>자세히 보기</1>."
 
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 msgid "Anonymous by default — connect with just your wallet.<0/>Share an email only if you want updates."
@@ -6164,6 +6235,10 @@ msgstr "서명:"
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "This action is disabled"
 msgstr "이 작업은 비활성화되어 있습니다"
+
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
+msgid "This order is no longer open"
+msgstr ""
 
 #: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
 msgid "Processing claim..."
@@ -6558,6 +6633,10 @@ msgstr "로딩 중…"
 msgid "Funds will appear in your GMX Account soon"
 msgstr "자금이 곧 GMX Account에 입금됩니다"
 
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
+msgid "Not sent: {title}. {reason}"
+msgstr ""
+
 #: src/components/InterviewToast/InterviewToast.tsx
 msgid "Join an anonymous one-on-one chat to share your GMX liquidity provider experience"
 msgstr "GMX 유동성 공급자 경험을 공유할 익명 일대일 채팅에 참여하십시오"
@@ -6590,6 +6669,8 @@ msgstr "전송을 찾을 수 없습니다"
 msgid "Insufficient {tokenInSymbol} balance"
 msgstr "{tokenInSymbol} 잔액 부족"
 
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
 #: src/lib/useHasOutdatedUi.ts
 msgid "Page outdated. Refresh"
 msgstr "페이지가 오래되었습니다. 새로고침"
@@ -6622,6 +6703,12 @@ msgstr "풀 최대 롱 USD 입금 한도"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Net value"
 msgstr "순가치"
+
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
+msgid "Unable to prepare order"
+msgstr ""
 
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/Earn/EarnPageLayout.tsx
@@ -6669,6 +6756,10 @@ msgstr "{positionTitle} 주문"
 #: src/components/Errors/errorToasts.tsx
 msgid "<0>Your {walletName} is not available on {0}</0><1/><2>Add {1} to your {walletName}, then reconnect and try again</2>"
 msgstr "<0>{walletName}은(는) {0}에서 사용할 수 없습니다</0><1/><2>{walletName}에 {1}을(를) 추가한 후 재연결하여 다시 시도하세요</2>"
+
+#: src/domain/gmsol/tradebox/tradeboxErrorMessages.ts
+msgid "Receive the position's collateral token on Solana"
+msgstr ""
 
 #: landing/src/pages/Home/SocialSection/ProgramCards.tsx
 msgid "For affiliates"
@@ -6854,6 +6945,10 @@ msgstr "원활한 거래"
 msgid "close"
 msgstr "종료"
 
+#: src/components/MarketClosedBadge/MarketClosedBadge.tsx
+msgid "Market orders, TWAP, Close, withdrawals and \"Now\" deposits are unavailable until then."
+msgstr "그때까지 시장가 주문, TWAP, 종료, 출금, \"즉시\" 입금은 사용할 수 없습니다."
+
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 msgid "from your wallet"
 msgstr "지갑에서"
@@ -6888,8 +6983,8 @@ msgstr "출금을 찾을 수 없습니다. 이미 실행되었거나 취소되�
 #: src/components/PositionShare/PositionShareCard.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
-#: src/components/StatusNotification/OrderStatusNotification.tsx
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -6897,6 +6992,7 @@ msgstr "출금을 찾을 수 없습니다. 이미 실행되었거나 취소되�
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
 #: src/domain/synthetics/orders/utils.tsx
 #: src/domain/synthetics/usdgPools/addMarginReturn.ts
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -6980,6 +7076,10 @@ msgstr "출금 시 최대 대출 가능 영향 계수"
 msgid "Claim completed"
 msgstr "수령이 완료되었습니다"
 
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+msgid "Your accounts are prepared and any wrapped SOL is now WSOL in your wallet. Submit again to place the order."
+msgstr ""
+
 #: src/components/GmAssetDropdown/GmAssetDropdown.tsx
 msgid "Open in explorer"
 msgstr "탐색기에서 열기"
@@ -7035,7 +7135,7 @@ msgstr "모든 수수료 차감 후 PnL"
 msgid "Build on GMX. Get paid on every trade."
 msgstr "GMX 위에 구축하고 모든 거래에서 수익을 얻으세요."
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 msgid "Increasing {indexTokenText} Long: +{sizeDeltaUsdText}"
 msgstr "{indexTokenText} 롱 확대: +{sizeDeltaUsdText}"
 
@@ -7627,6 +7727,8 @@ msgid "Send fee"
 msgstr "전송 수수료"
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
+#: src/components/OrdersModal/AddTPSLModal.tsx
+#: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Price impact / fees"
 msgstr "가격 영향 / 수수료"
@@ -7713,6 +7815,9 @@ msgstr "활성, 만료 없음, 작업 무제한"
 #: src/components/ShareModal/CreateReferralCode.tsx
 #: src/components/TokenSelector/ConnectWalletModalContent.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Connect wallet"
 msgstr "지갑 연결"
@@ -7823,6 +7928,10 @@ msgstr "위에 16진수 오류 데이터를 입력하여 디코딩하십시오"
 msgid "Allowed actions"
 msgstr "허용된 작업"
 
+#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
+msgid "Switch to a limit order"
+msgstr "지정가 주문으로 전환"
+
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "Your discount is now active!"
 msgstr "할인이 활성화되었습니다!"
@@ -7911,6 +8020,10 @@ msgstr "그랜트 프로그램입니까? 토큰을 받을 수 있습니까?"
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Set SL price above mark price"
 msgstr "손절매 가격은 기준가보다 높게 설정해야 합니다"
+
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+msgid "Your accounts are prepared and the SOL for this order is now WSOL in your wallet. Pay is set to WSOL. Submit again to place the order."
+msgstr ""
 
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/Referrals/distributions/table/RebatesDistributionTable.tsx
@@ -8215,6 +8328,10 @@ msgstr "사용 자본 대비 PnL (자본 수익률)"
 msgid "Order error. Prices are volatile for this market. Try again by <0>increasing the allowed slippage</0>"
 msgstr "주문 오류. 이 마켓의 가격 변동성이 높습니다. <0>허용 슬리피지를 높여서</0> 다시 시도하십시오"
 
+#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
+msgid "Market orders and TWAP are unavailable while the market is closed. Limit, Stop Market and TP/SL orders can still be created, but execute only after the market reopens."
+msgstr "마켓이 마감된 동안에는 시장가 주문과 TWAP을 사용할 수 없습니다. 지정가, 스탑 마켓, TP/SL 주문은 계속 생성할 수 있지만, 마켓이 다시 열린 후에만 체결됩니다."
+
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "No transfer history matching search"
 msgstr "검색과 일치하는 전송 내역이 없습니다"
@@ -8373,7 +8490,7 @@ msgstr "{0} 수령 완료"
 msgid "Receive at least {toAmountText} if executed. Price updates based on fees and price impact."
 msgstr "체결 시 최소 {toAmountText}을(를) 수령합니다. 가격은 수수료 및 가격 영향에 따라 변동됩니다."
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 msgid "Increasing {indexTokenText} Short: +{sizeDeltaUsdText}"
 msgstr "{indexTokenText} 숏 포지션 증가 중: +{sizeDeltaUsdText}"
 
@@ -8442,6 +8559,10 @@ msgstr "TP 가격"
 msgid "ParaSwap"
 msgstr "ParaSwap"
 
+#: src/components/MarketClosedBadge/MarketClosedBadge.tsx
+msgid "Limit, Stop Market and TP/SL orders can still be created, but execute only after the market reopens."
+msgstr "지정가, 스탑 마켓, TP/SL 주문은 계속 생성할 수 있지만, 마켓이 다시 열린 후에만 체결됩니다."
+
 #: src/components/MarketsList/NetFeeHeaderTooltipContent.tsx
 msgid "Ensures available liquidity."
 msgstr "유동성 확보를 보장합니다."
@@ -8461,6 +8582,7 @@ msgstr "유동성 확보를 보장합니다."
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
+#: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
@@ -8470,6 +8592,10 @@ msgstr "유동성 확보를 보장합니다."
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
+#: src/components/TradeBox/TradeBox.tsx
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
 #: src/domain/multichain/useWithdrawBlockedError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
@@ -8696,7 +8822,7 @@ msgstr "지갑 연결이 해제되었습니다. 다시 연결 후 재시도하�
 msgid "Connect wallet or add an address to the URL"
 msgstr "지갑을 연결하거나 URL에 주소를 추가하십시오"
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 msgid "Withdrawing {amountText} from {indexTokenText} Long..."
 msgstr "{indexTokenText} 롱에서 {amountText} 출금 중..."
 
@@ -8779,6 +8905,10 @@ msgstr "증거금 편집"
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "TP/SL orders exceed the position"
 msgstr "TP/SL 주문이 포지션을 초과합니다"
+
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
+msgid "Create TP/SL order"
+msgstr ""
 
 #: src/components/MarketNetFee/MarketNetFee.tsx
 #: src/components/MarketNetFee/MarketNetFee.tsx
@@ -9043,6 +9173,10 @@ msgstr "GM과 GLV에는 더 이상 보유하지 않는 마켓도 포함됩니다
 msgid "The remaining position would exceed the maximum allowed leverage. Close a larger part, withdraw less, or add margin first."
 msgstr "남은 포지션이 최대 허용 레버리지를 초과하게 됩니다. 더 많은 부분을 종료하거나, 인출 금액을 줄이거나, 먼저 증거금을 추가하세요."
 
+#: src/components/PositionSeller/SplitReceiveSwapProfitFeeWarning.tsx
+msgid "Receiving as {receiveTokenSymbol} will cost {swapProfitFeePercentage} (<0>{swapProfitFeeUsd}</0>). Receive {profitTokenSymbol} and {collateralTokenSymbol} separately to skip the swap. <1>Read more</1>."
+msgstr "{receiveTokenSymbol}(으)로 받으면 {swapProfitFeePercentage}(<0>{swapProfitFeeUsd}</0>)의 비용이 발생합니다. 스왑을 건너뛰려면 {profitTokenSymbol} 및 {collateralTokenSymbol}을(를) 별도로 받으십시오. <1>자세히 보기</1>."
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX trading stats"
 msgstr "GMX 거래 통계"
@@ -9164,6 +9298,10 @@ msgstr "보장된 유동성"
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "V1 rebates"
 msgstr "V1 리베이트"
+
+#: src/components/Errors/errorToasts.tsx
+msgid "Increase the max network fee buffer {bufferText} in {settingsLink}"
+msgstr "{settingsLink}에서 최대 네트워크 수수료 버퍼를 {bufferText} 높이십시오"
 
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 msgid "Sell GLV"
@@ -9451,8 +9589,8 @@ msgstr "모든 거래에서 더 많이 가져가십시오"
 #: src/components/OneClickSessions/OneClickSessions.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
-#: src/components/StatusNotification/OrderStatusNotification.tsx
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Cancel"
 msgstr "취소"
@@ -9835,6 +9973,10 @@ msgstr "규모"
 msgid "Book a 30-min call"
 msgstr "30분 통화 예약"
 
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+msgid "Order outcome not confirmed. Check the transaction for updates."
+msgstr ""
+
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "From"
@@ -9945,6 +10087,7 @@ msgid "Dolomite"
 msgstr "Dolomite"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
 msgid "Order request sent"
 msgstr "주문 요청 전송됨"
 
@@ -10021,6 +10164,8 @@ msgstr "입금 금액 입력"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
@@ -10426,8 +10571,8 @@ msgstr "더 많은 정보"
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
-#: src/components/StatusNotification/OrderStatusNotification.tsx
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Create"
 msgstr "생성"
@@ -10632,7 +10777,7 @@ msgstr "<0>교차 증거금</0><1>교차 담보</1>"
 msgid "Fetching swap route ({0}/{1})..."
 msgstr "스왑 경로 가져오는 중({0}/{1})..."
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 msgid "Depositing {amountText} to {indexTokenText} Short..."
 msgstr "{indexTokenText} 숏 포지션에 {amountText} 입금 중..."
 
@@ -10654,6 +10799,7 @@ msgstr "24시간 거래량"
 #: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 #: src/components/Errors/getContractErrorMessage.ts
 #: src/components/OrdersModal/AddTPSLModal.tsx
+#: src/domain/gmsol/tradebox/tradeboxErrorMessages.ts
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -10992,6 +11138,7 @@ msgid "Conversion request sent"
 msgstr "변환 요청 전송됨"
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
+#: src/components/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 msgid "Execution price"
 msgstr "체결가"
 
@@ -11094,7 +11241,9 @@ msgstr "365일 예상"
 #: src/components/Claims/filters/ActionFilter.tsx
 #: src/components/DepthChart/DepthChartTooltip.tsx
 #: src/components/GmSwap/GmFees/GmFees.tsx
+#: src/components/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
+#: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -11113,6 +11262,11 @@ msgstr "GMX 내에서 {0}에서 {collateralSymbol}(으)로의 스왑 경로를 �
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Withdrawal unavailable"
 msgstr "출금 불가"
+
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
+#: src/domain/gmsol/tradebox/tradeboxErrorMessages.ts
+msgid "This order type is not supported on Solana"
+msgstr ""
 
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "It accrues to the code owner ({0})."
@@ -11274,6 +11428,7 @@ msgstr "깊은 유동성 시장"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
+#: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/PositionEditor/PositionEditor.tsx
@@ -11296,6 +11451,7 @@ msgid "Insufficient GM: {0} [{1}] liquidity in GLV. Choose a different pool, red
 msgstr "GLV 내 GM: {0} [{1}] 유동성이 부족합니다. 다른 풀을 선택하거나 판매 규모를 줄이거나 출금을 여러 풀로 나누십시오."
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
 msgid "Order filled"
 msgstr "주문 체결됨"
 
@@ -11769,6 +11925,7 @@ msgid "Show assets with small value ({0})"
 msgstr "가치가 낮은 자산 표시 ({0})"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
 msgid "Fulfilling order request..."
 msgstr "주문 요청을 실행하는 중…"
 
@@ -12110,8 +12267,8 @@ msgstr "주문을 수정할 수 없습니다. 해당 유형은 수정을 지원�
 #: src/components/PositionShare/PositionShareCard.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
-#: src/components/StatusNotification/OrderStatusNotification.tsx
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -12119,6 +12276,7 @@ msgstr "주문을 수정할 수 없습니다. 해당 유형은 수정을 지원�
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
 #: src/domain/synthetics/orders/utils.tsx
 #: src/domain/synthetics/usdgPools/addMarginReturn.ts
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -12340,6 +12498,10 @@ msgstr "모든 체인"
 msgid "BLOCK"
 msgstr "블록"
 
+#: src/domain/gmsol/tradebox/tradeboxErrorMessages.ts
+msgid "Pay with the selected collateral token"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pending borrowing fee"
@@ -12386,7 +12548,7 @@ msgstr "{0}에서 수신됨"
 msgid "Allow all tokens to transfer to the new account"
 msgstr "새 계정으로 모든 토큰을 전송하도록 허용"
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 msgid "{orderTypeText} {visualMultiplierPrefix}{0} {longShortText}: {sizeText}"
 msgstr "{orderTypeText} {visualMultiplierPrefix}{0} {longShortText}: {sizeText}"
 
@@ -12455,6 +12617,11 @@ msgstr "두 가지 수익원."
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Fulfilling shift request..."
 msgstr "시프트 요청을 실행하는 중..."
+
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
+#: src/domain/gmsol/tradebox/tradeboxErrorMessages.ts
+msgid "Review your TP/SL orders"
+msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Convert {tokenSymbol} to {nativeTokenSymbol}"
@@ -12619,6 +12786,10 @@ msgstr "알아두면 좋은 점"
 msgid "Select network"
 msgstr "네트워크 선택"
 
+#: src/domain/gmsol/tradebox/tradeboxErrorMessages.ts
+msgid "Solana market calculations are unavailable"
+msgstr ""
+
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Error simulating claim"
 msgstr "수령 시뮬레이션 오류"
@@ -12756,7 +12927,7 @@ msgstr "유효하지 않은 수신자 주소"
 msgid "Nonce:"
 msgstr "Nonce:"
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 msgid "{txnTypeText} margin deposit: {amountText} to {indexTokenText} {longShortText}"
 msgstr "{txnTypeText} 증거금 입금: {indexTokenText} {longShortText}에 {amountText}"
 
@@ -13033,6 +13204,10 @@ msgstr "GMX 추천 프로그램을 통해 수수료 할인을 받고 최대 25%�
 msgid "Vested GLP not withdrawn"
 msgstr "베스팅된 GLP가 출금되지 않음"
 
+#: src/domain/gmsol/tradebox/tradeboxErrorMessages.ts
+msgid "This collateral token is not supported for trading yet"
+msgstr ""
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Become a market maker"
 msgstr "마켓 메이커 되기"
@@ -13211,10 +13386,6 @@ msgstr "현재 영향: {0}. 더 나은 주문 체결을 위해 -0.30% 이상을 
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
 msgid "This market is disabled. Contact support to claim your remaining funding fees."
 msgstr "이 시장은 비활성화되었습니다. 남은 펀딩 수수료를 수령하려면 지원팀에 문의하십시오."
-
-#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
-msgid "This market is closed. Settle after the market reopens."
-msgstr "이 마켓은 마감되었습니다. 마켓이 다시 열린 후 정산하십시오."
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -13397,10 +13568,6 @@ msgstr "기준가"
 msgid "No — the API, SDK, and docs are open to everyone. Joining the program adds direct support and distribution on top."
 msgstr "아니요. API, SDK, 문서는 누구에게나 열려 있습니다. 프로그램 가입 시 직접 지원과 배포가 추가됩니다."
 
-#: src/components/Errors/errorToasts.tsx
-msgid "Increase the max network fee buffer {bufferText} in {settingsLink}"
-msgstr "{settingsLink}에서 최대 네트워크 수수료 버퍼를 {bufferText} 높이십시오"
-
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "GLP to GM airdrop"
 msgstr "GLP에서 GM으로 전환 에어드롭"
@@ -13419,7 +13586,7 @@ msgstr "허용 가격 영향"
 msgid "Default sorting"
 msgstr "기본 정렬"
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 msgid "Decreasing {indexTokenText} Long: -{sizeDeltaUsdText}"
 msgstr "{indexTokenText} 롱 축소: -{sizeDeltaUsdText}"
 
@@ -13502,7 +13669,7 @@ msgstr "높은 허용 가격 영향이 설정되었습니다. 현재 영향: {0}
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ModeTabs.tsx
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 #: src/components/SwapCard/SwapCard.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
@@ -13626,7 +13793,7 @@ msgstr "새 크기 또는 가격 입력"
 msgid "Copy your wallet address or scan a QR code"
 msgstr "지갑 주소를 복사하거나 QR 코드를 스캔하십시오"
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 #: src/components/TVChartContainer/constants.ts
 msgid "Unknown order"
 msgstr "알 수 없는 주문"
@@ -13886,7 +14053,7 @@ msgstr "트레이더 및 제휴 프로그램"
 msgid "Explore the VIP Desk"
 msgstr "VIP Desk 살펴보기"
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Swap"
 msgstr "Limit Swap"
@@ -13961,6 +14128,10 @@ msgstr "판매"
 msgid "Lent position impact pool amount"
 msgstr "포지션 영향 풀 대출 금액"
 
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+msgid "Order request failed"
+msgstr ""
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "short"
 msgstr "숏"
@@ -13994,6 +14165,7 @@ msgstr "{glvOrGm} 출금: {0}"
 msgid "Save tier"
 msgstr "등급 저장"
 
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{count, plural, one {Order} other {# Orders}}"
 msgstr "{count, plural, one {주문} other {주문 #건}}"
@@ -14024,6 +14196,7 @@ msgstr "숏 손절매 설정 @ {formattedPrice}"
 
 #: src/components/Errors/errorToasts.tsx
 #: src/components/Errors/errorToasts.tsx
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
 #: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
 msgid "Transaction canceled"
 msgstr "트랜잭션이 취소되었습니다"
@@ -14218,6 +14391,7 @@ msgstr "순 포지션 종료 수수료 / 가격 영향"
 msgid "Lifetime"
 msgstr "누적"
 
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{ordersText} canceled"
 msgstr "{ordersText} 취소됨"
@@ -14311,6 +14485,10 @@ msgstr "순 요율 / 1H"
 msgid "30d performance APY"
 msgstr "30일 실적 APY"
 
+#: src/components/PositionItem/PositionItem.tsx
+msgid "This position is above liquidation risk, but it may become close to liquidation when the market switches to off-hours risk parameters."
+msgstr "이 포지션은 청산 리스크 범위 밖에 있지만, 마켓이 장외 시간 리스크 파라미터로 전환되면 청산에 가까워질 수 있습니다."
+
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 #: src/components/ShareModal/ShareCardActionButtons.tsx
 msgid "Share on"
@@ -14319,6 +14497,10 @@ msgstr "공유하기"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Derivatives portfolio tracker"
 msgstr "파생상품 포트폴리오 트래커"
+
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+msgid "The order could not be executed"
+msgstr ""
 
 #: src/components/SettingsModal/NotificationsSettings.tsx
 msgid "Notifications aren't saved, so there's no history"
@@ -14337,6 +14519,7 @@ msgid "multiple asset classes"
 msgstr "다중 자산 클래스"
 
 #: src/components/AnnouncementBanner/AnnouncementBanner.tsx
+#: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
@@ -14538,6 +14721,10 @@ msgstr "액션 단위의 수수료와 가격 영향의 순 총합입니다. 값 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set trigger price below mark price"
 msgstr "조건가를 기준가보다 낮게 설정하십시오"
+
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
+msgid "Select a position"
+msgstr ""
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Active management"

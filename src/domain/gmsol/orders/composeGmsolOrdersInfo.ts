@@ -28,13 +28,13 @@ export function composeGmsolOrdersInfo(
 ) {
   const wrappedNativeToken = getGmsolWrappedToken();
   const ordersInfoData: OrdersInfoData = {};
-  const keys: string[] = [];
+  const activeOrders: ApiOrderInfo[] = [];
 
   for (const apiOrder of apiOrders) {
     if (apiOrder.actionState === "completed" || apiOrder.actionState === "cancelled") {
       continue;
     }
-    keys.push(apiOrder.key);
+    activeOrders.push(apiOrder);
 
     const order = convertApiOrderToOrder(toApiOrder(apiOrder));
     const orderInfo = getOrderInfo({ marketsInfoData, tokensData, wrappedNativeToken, order });
@@ -43,9 +43,21 @@ export function composeGmsolOrdersInfo(
       continue;
     }
 
+    if (apiOrder.orderAccount && apiOrder.rentReceiver && apiOrder.actionState && apiOrder.escrowTokens) {
+      orderInfo.solana = {
+        orderAccount: apiOrder.orderAccount,
+        rentReceiver: apiOrder.rentReceiver,
+        actionState: apiOrder.actionState,
+        positionAccount: apiOrder.positionAccount,
+        referrer: apiOrder.referrer,
+        callback: apiOrder.callback,
+        escrowTokens: apiOrder.escrowTokens,
+      };
+    }
+
     setOrderInfoTitle(orderInfo, marketsInfoData[order.marketAddress]?.indexToken);
     ordersInfoData[orderInfo.key] = orderInfo;
   }
 
-  return resolveGmsolAccountSnapshot({ keys, data: ordersInfoData, previousData });
+  return resolveGmsolAccountSnapshot({ items: activeOrders, data: ordersInfoData, previousData });
 }

@@ -33,9 +33,9 @@ function hasMarketTokenPrices(rawMarketsInfoData: RawMarketsInfoData, address: s
 }
 
 // Disabled markets are not part of this check. A missing price on an enabled market is one market, not the page.
-export function hasGmsolListedMarketPrices(rawMarketsInfoData: RawMarketsInfoData, tokensData: TokensData): boolean {
-  return getGmsolEnabledMarketAddresses(rawMarketsInfoData).every((address) =>
-    hasMarketTokenPrices(rawMarketsInfoData, address, tokensData)
+export function getGmsolUnpricedMarketAddresses(rawMarketsInfoData: RawMarketsInfoData, tokensData: TokensData) {
+  return getGmsolEnabledMarketAddresses(rawMarketsInfoData).filter(
+    (address) => !hasMarketTokenPrices(rawMarketsInfoData, address, tokensData)
   );
 }
 
@@ -64,6 +64,14 @@ export function composeGmsolMarkets(rawMarketsInfoData: RawMarketsInfoData, toke
     rawMarketsInfoData,
     tokensData,
   });
+
+  // TODO(TRD-108): gmx-api does not send tradeMath yet; an API value takes precedence once it does.
+  for (const address of Object.keys(marketsInfoData)) {
+    marketsInfoData[address] = {
+      ...marketsInfoData[address],
+      tradeMath: marketsInfoData[address].tradeMath ?? "gmsol",
+    };
+  }
 
   return { marketsAddresses, marketsData, marketsInfoData };
 }

@@ -12,6 +12,7 @@ import { usePositionOrdersWithErrors } from "context/SyntheticsStateContext/hook
 import { selectChainId, selectUserReferralInfo } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useSolanaOrderActions } from "domain/solana/solanaOrderActions";
 import {
   isIncreaseOrderType,
   isLimitDecreaseOrderType,
@@ -83,6 +84,7 @@ export function OrdersModal({
   const isMobile = isTablet;
 
   const chainId = useSelector(selectChainId);
+  const solanaOrderActions = useSolanaOrderActions();
   const [, setCancellingOrdersKeys] = useCancellingOrdersKeysState();
   const [editingOrderState, setEditingOrderState] = useEditingOrderState();
   const sendCancelOrdersTxn = useSendCancelOrdersTxn();
@@ -184,6 +186,19 @@ export function OrdersModal({
   );
 
   const handleCancelAll = useCallback(async () => {
+    if (solanaOrderActions && displayedOrders.length > 0) {
+      const orderKeys = displayedOrders.map((order) => order.key);
+      setIsCancellingAll(true);
+      setCancellingOrdersKeys((prev) => [...new Set([...prev, ...orderKeys])]);
+      try {
+        await solanaOrderActions.cancelOrders(displayedOrders);
+      } finally {
+        setIsCancellingAll(false);
+        setCancellingOrdersKeys((prev) => prev.filter((k) => !orderKeys.includes(k)));
+      }
+      return;
+    }
+
     if (displayedOrders.length === 0) return;
 
     setIsCancellingAll(true);
@@ -200,7 +215,13 @@ export function OrdersModal({
       setIsCancellingAll(false);
       setCancellingOrdersKeys((prev) => prev.filter((k) => !orderKeys.includes(k)));
     }
-  }, [displayedOrders, setCancellingOrdersKeys, sendCancelOrdersTxn, position?.collateralToken.symbol]);
+  }, [
+    solanaOrderActions,
+    displayedOrders,
+    setCancellingOrdersKeys,
+    sendCancelOrdersTxn,
+    position?.collateralToken.symbol,
+  ]);
 
   useEffect(() => {
     if (isVisible) {

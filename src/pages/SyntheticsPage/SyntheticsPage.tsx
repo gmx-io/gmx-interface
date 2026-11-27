@@ -26,6 +26,7 @@ import {
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useCalcSelector, useSelector } from "context/SyntheticsStateContext/utils";
+import { useSolanaOrderActions } from "domain/solana/solanaOrderActions";
 import { useExternalSwapHandler } from "domain/synthetics/externalSwaps/useExternalSwapHandler";
 import {
   isLimitDecreaseOrderType,
@@ -677,6 +678,7 @@ export function SyntheticsPage(p: Props) {
 }
 
 function useOrdersControl() {
+  const solanaOrderActions = useSolanaOrderActions();
   const [cancellingOrdersKeys, setCanellingOrdersKeys] = useCancellingOrdersKeysState();
   const [selectedOrderKeysRaw, setSelectedOrderKeysRaw] = useState<string[]>(EMPTY_ARRAY);
   const hasOutdatedUi = useHasOutdatedUi();
@@ -700,6 +702,20 @@ function useOrdersControl() {
         return;
       }
       const orders = selectedOrderKeys.map((key) => getByKey(ordersInfoData, key)).filter(defined) as OrderInfo[];
+
+      if (solanaOrderActions) {
+        const keys = orders.map((order) => order.key);
+        setCanellingOrdersKeys((p) => uniq(p.concat(keys)));
+        try {
+          if (await solanaOrderActions.cancelOrders(orders)) {
+            setSelectedOrderKeysRaw(EMPTY_ARRAY);
+          }
+        } finally {
+          setCanellingOrdersKeys((p) => p.filter((e) => !keys.includes(e)));
+        }
+        return;
+      }
+
       const orderKeys = orders.flatMap(getOrderKeys);
       setCanellingOrdersKeys((p) => uniq(p.concat(orderKeys)));
 
@@ -713,7 +729,7 @@ function useOrdersControl() {
         setCanellingOrdersKeys((p) => p.filter((e) => !orderKeys.includes(e)));
       }
     },
-    [hasOutdatedUi, ordersInfoData, selectedOrderKeys, sendCancelOrdersTxn, setCanellingOrdersKeys]
+    [hasOutdatedUi, ordersInfoData, selectedOrderKeys, sendCancelOrdersTxn, setCanellingOrdersKeys, solanaOrderActions]
   );
 
   const onCancelOrder = useCallback(
@@ -724,6 +740,16 @@ function useOrdersControl() {
       }
       const order = getByKey(ordersInfoData, key);
       if (!order) return;
+
+      if (solanaOrderActions) {
+        setCanellingOrdersKeys((p) => uniq(p.concat(key)));
+        try {
+          await solanaOrderActions.cancelOrders([order]);
+        } finally {
+          setCanellingOrdersKeys((p) => p.filter((e) => e !== key));
+        }
+        return;
+      }
 
       const orderKeys = getOrderKeys(order);
 
@@ -736,7 +762,7 @@ function useOrdersControl() {
         setSelectedOrderKeysRaw((prev) => prev.filter((k) => k !== key));
       }
     },
-    [hasOutdatedUi, ordersInfoData, sendCancelOrdersTxn, setCanellingOrdersKeys]
+    [hasOutdatedUi, ordersInfoData, sendCancelOrdersTxn, setCanellingOrdersKeys, solanaOrderActions]
   );
 
   return {

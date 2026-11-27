@@ -22,34 +22,6 @@ msgctxt "Market state"
 msgid "Closed"
 msgstr "已休市"
 
-#: src/components/MarketClosedBadge/MarketClosedBadge.tsx
-msgid "Limit, Stop Market and TP/SL orders can still be created, but execute only after the market reopens."
-msgstr "限价、触发市价和 TP/SL 订单仍可创建，但仅在市场重新开放后执行。"
-
-#: src/components/MarketClosedBadge/MarketClosedBadge.tsx
-msgid "Market orders, TWAP, Close, withdrawals and \"Now\" deposits are unavailable until then."
-msgstr "在此之前，市价订单、TWAP、平仓、提取和“立即”存入均不可用。"
-
-#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
-msgid "Market orders and TWAP are unavailable while the market is closed. Limit, Stop Market and TP/SL orders can still be created, but execute only after the market reopens."
-msgstr "市场休市期间，市价订单和 TWAP 不可用。限价、触发市价和 TP/SL 订单仍可创建，但仅在市场重新开放后执行。"
-
-#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
-msgid "Switch to a limit order"
-msgstr "切换到限价单"
-
-#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
-msgid "Market closed. This order executes only after the market reopens. The reopen price may differ from the last price."
-msgstr "市场已休市。此订单仅在市场重新开放后执行。重新开放时的价格可能与最后价格不同。"
-
-#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
-msgid "Market closed. This order executes only after the market reopens. A price gap at the reopen can fill a Stop Market or Stop-Loss at a worse price."
-msgstr "市场已休市。此订单仅在市场重新开放后执行。重新开放时的价格跳空可能导致触发市价单或止损单以更差的价格成交。"
-
-#: src/components/PositionItem/PositionItem.tsx
-msgid "This position is above liquidation risk, but it may become close to liquidation when the market switches to off-hours risk parameters."
-msgstr "该仓位未面临清算风险，但当市场切换至非交易时段风险参数时，可能会接近清算。"
-
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Slippage exceeded"
 msgstr "滑点超限"
@@ -185,14 +157,6 @@ msgstr "订单无法更新"
 #: src/components/TenderlySettings/TenderlySettings.tsx
 msgid "See <0>Tenderly docs</0>"
 msgstr "参阅 <0>Tenderly 文档</0>"
-
-#: src/components/SettingsModal/DebugSettings.tsx
-msgid "Force markets closed"
-msgstr "强制休市"
-
-#: src/components/SettingsModal/DebugSettings.tsx
-msgid "Index token symbols, comma-separated. These markets show as closed."
-msgstr "指数代币符号，用逗号分隔。这些市场将显示为已休市。"
 
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Show debug values"
@@ -512,6 +476,10 @@ msgstr "至"
 msgid "FAQ"
 msgstr "常见问题解答"
 
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+msgid "Order updated"
+msgstr ""
+
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 msgid "Approve {depositTokenSymbol}"
 msgstr "授权 {depositTokenSymbol}"
@@ -572,6 +540,10 @@ msgstr "编辑 Limit Swap：{fromSymbol} 至 {toSymbol}"
 msgid "Expired Market Increase"
 msgstr "Market Increase 已过期"
 
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
+msgid "Unable to load trading data"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Percentage"
 msgstr "百分比"
@@ -587,6 +559,8 @@ msgstr "兑换界面费用"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
 msgid "Connecting wallet..."
 msgstr "正在连接钱包..."
 
@@ -1201,6 +1175,10 @@ msgstr "只有 GMX 向此池提供流动性。该池用于 USDC 与 USDG 之间�
 msgid "Funding decrease factor"
 msgstr "资金费率递减因子"
 
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+msgid "Order submission status unknown. Check the transaction before retrying."
+msgstr ""
+
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "STIP.b retroactive bonus"
 msgstr "STIP.b 追溯奖励"
@@ -1584,6 +1562,10 @@ msgstr "交易量"
 msgid "{0} amount"
 msgstr "{0} 数量"
 
+#: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
+msgid "Price impact and fees from your trade."
+msgstr ""
+
 #: src/pages/AccountEvents/AccountEvents.tsx
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Error:"
@@ -1816,6 +1798,11 @@ msgstr "您的 GMX Account 中 Gas 支付代币余额不足，无法支付网络
 #: src/components/TradeBox/TradeBoxRows/PaxosRouteRows.tsx
 msgid "Paused until {reopenTime}"
 msgstr "暂停至 {reopenTime}"
+
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
+msgid "Solana trading is unavailable"
+msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/OrphanVaultPanel.tsx
 msgid "Deposited"
@@ -2447,7 +2434,7 @@ msgstr "不支持"
 msgid "Acceptable price for the order"
 msgstr "订单的可接受价格"
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 msgid "TWAP Swap"
 msgstr "TWAP 兑换"
 
@@ -2817,6 +2804,10 @@ msgstr "接收代币流动性不足"
 msgid "Size percentage required"
 msgstr "需要设置仓位比例"
 
+#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
+msgid "Market closed. This order executes only after the market reopens. A price gap at the reopen can fill a Stop Market or Stop-Loss at a worse price."
+msgstr "市场已休市。此订单仅在市场重新开放后执行。重新开放时的价格跳空可能导致触发市价单或止损单以更差的价格成交。"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
@@ -3072,7 +3063,7 @@ msgstr "Avalanche 上的收益优化器"
 msgid "Withdrew {0} from {positionText}"
 msgstr "已从 {positionText} 提取 {0}"
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 msgid "{orderTypeText} {0} for {1}"
 msgstr "{orderTypeText} {0} 换取 {1}"
 
@@ -3213,6 +3204,11 @@ msgstr "仅对已用资金超过 {0} 的仓位进行排名。<0/><1/>已用资�
 msgid "A standard approval transaction is required to continue"
 msgstr "需要标准授权交易才能继续"
 
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
+msgid "Not enough SOL for network fees, keeper fees and account rent"
+msgstr ""
+
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Decrease leverage to match the max allowed leverage."
 msgstr "请降低杠杆以匹配最大允许杠杆。"
@@ -3290,6 +3286,11 @@ msgstr "的平仓费"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "FUNDING APR"
 msgstr "资金费 APR"
+
+#: src/components/TradeBox/components/SideOrderEntry.tsx
+#: src/domain/gmsol/tradebox/tradeboxErrorMessages.ts
+msgid "Edit existing TP/SL orders in the positions list"
+msgstr ""
 
 #: src/components/Claims/filters/ActionFilter.tsx
 #: src/components/TradeHistory/filters/ActionFilter.tsx
@@ -3436,7 +3437,7 @@ msgstr "生成可分享图像中..."
 msgid "RANK"
 msgstr "排名"
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 msgid "{txnTypeText} {0} order for"
 msgstr "{txnTypeText} {0} 订单为"
 
@@ -3781,7 +3782,7 @@ msgstr "GM 代币自动再平衡金库，通过杠杆交易和兑换累积费用
 msgid "<0>There's no fixed cutoff — the desk sets your tier from your recent and expected monthly volume. Most traders qualify for the base tier; reach out and we'll confirm your rate.</0>"
 msgstr "<0>没有固定门槛 — 团队会根据您近期及预期的月交易量设定您的等级。大多数交易者符合基础等级；联系我们，我们将确认您的费率。</0>"
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 msgid "Decreasing {indexTokenText} Short: -{sizeDeltaUsdText}"
 msgstr "减少 {indexTokenText} 做空仓位：-{sizeDeltaUsdText}"
 
@@ -4005,13 +4006,18 @@ msgstr "仓位"
 msgid "<0>Deposit</0> or <1>buy</1> {wrappedNativeTokenSymbol}."
 msgstr "<0>存入</0>或<1>买入</1> {wrappedNativeTokenSymbol}。"
 
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
+msgid "This order cannot be changed on Solana"
+msgstr ""
+
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "Converting {offerAmount} to {0}"
 msgstr "正在将 {offerAmount} 转换为 {0}"
 
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
-#: src/components/StatusNotification/OrderStatusNotification.tsx
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 #: src/pages/Announcements/AnnouncementCard.tsx
 msgid "Update"
@@ -4032,6 +4038,10 @@ msgstr "GMX 代币是 GMX 协议的治理代币。平台收入的 27% 累积到�
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max lendable impact USD"
 msgstr "最大可借出影响 USD"
+
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+msgid "Previous order request"
+msgstr ""
 
 #: src/components/StatusNotification/PaxosTransitStatusNotification.tsx
 msgid "<0>Buying {0}{1}<1>{poolName}</1></0> <2>with {offerAmount}</2>"
@@ -4065,6 +4075,14 @@ msgstr "您的 GMX Account 中的 {symbol} 不足以完成此交易。<0>存入 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Removing old session..."
 msgstr "正在移除旧会话..."
+
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/OrdersModal/AddTPSLModal.tsx
+#: src/components/PositionEditor/usePositionEditorButtonState.tsx
+#: src/components/PositionSeller/PositionSeller.tsx
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
+msgid "Check transaction status"
+msgstr ""
 
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Double exposure: long {indexSymbol} from position + long {collateralSymbol} from collateral. Liquidation price varies with {collateralSymbol} price."
@@ -4322,6 +4340,13 @@ msgstr "GMX V2 Telegram & Discord 分析"
 msgid "Share your referral code with friends or your community —<0/> every trade made with your code earns you $-rewards"
 msgstr "与好友或您的社区分享您的推荐码 —<0/> 使用您的推荐码进行的每笔交易都会为您赚取美元奖励"
 
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/PositionEditor/usePositionEditorButtonState.tsx
+#: src/components/PositionSeller/PositionSeller.tsx
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
+msgid "Checking transaction status..."
+msgstr ""
+
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "GMX ecosystem pages"
 msgstr "GMX 生态页面"
@@ -4341,6 +4366,10 @@ msgstr "Express 需要您的 GMX Account 中有 {gasPaymentTokensText}。请存�
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pending borrowing fees from all open positions"
 msgstr "所有未平仓仓位的待结算借贷费用"
+
+#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
+msgid "Market closed. This order executes only after the market reopens. The reopen price may differ from the last price."
+msgstr "市场已休市。此订单仅在市场重新开放后执行。重新开放时的价格可能与最后价格不同。"
 
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "Remove endpoint"
@@ -4610,6 +4639,10 @@ msgstr "折叠"
 msgid "Launch boost (target)"
 msgstr "上线加成（目标）"
 
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
+msgid "Another order request is in progress. Check your wallet"
+msgstr ""
+
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Banners"
 msgstr "横幅"
@@ -4725,7 +4758,7 @@ msgstr "您的转账已完成"
 msgid "27% of protocol fees are accumulating in the Treasury and will be distributed proportionally to staking power when GMX reaches $90."
 msgstr "协议费用的 27% 正在累积到财库中，并将在 GMX 达到 $90 时按质押权重比例分配。"
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 msgid "Depositing {amountText} to {indexTokenText} Long..."
 msgstr "正在将 {amountText} 存入 {indexTokenText} 做多仓位..."
 
@@ -4736,6 +4769,10 @@ msgstr "停止归属并提取"
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Position not found. It may have been closed."
 msgstr "未找到仓位。该仓位可能已平仓。"
+
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+msgid "Canceled by you"
+msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Trading"
@@ -4875,6 +4912,10 @@ msgstr "TWAP 兑换子单失败"
 msgid "No events in the past {DAYS_BACK} days"
 msgstr "过去 {DAYS_BACK} 天内没有事件"
 
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+msgid "The transaction expired before it landed. Nothing was executed."
+msgstr ""
+
 #: src/components/Earn/Portfolio/UnstakeRequests/UnstakeRequests.tsx
 msgid "Ready to withdraw"
 msgstr "可提取"
@@ -4906,6 +4947,8 @@ msgid "Net price impact / fees"
 msgstr "净价格影响 / 费用"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
 msgid "Order canceled"
 msgstr "订单已取消"
 
@@ -4954,6 +4997,10 @@ msgstr "{fromText} 到"
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "{poolName} pool is closing and isn't taking new stop market orders."
 msgstr "{poolName} 池即将关闭，不再接受新的触发市价单。"
+
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Index token symbols, comma-separated. These markets show as closed."
+msgstr "指数代币符号，用逗号分隔。这些市场将显示为已休市。"
 
 #: landing/src/pages/Builders/EcosystemSection/EcosystemSection.tsx
 msgid "Frontends"
@@ -5046,6 +5093,10 @@ msgstr "输入金额"
 #: src/components/OneClickSessions/OneClickSessions.tsx
 msgid "{count, plural, one {Active until {expiryDate}, # action left} other {Active until {expiryDate}, # actions left}}"
 msgstr "{count, plural, one {活动至 {expiryDate}，剩余 # 次操作} other {活动至 {expiryDate}，剩余 # 次操作}}"
+
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Force markets closed"
+msgstr "强制休市"
 
 #: src/domain/multichain/useWithdrawBlockedError.tsx
 msgid "Add {0} to your wallet"
@@ -5169,6 +5220,8 @@ msgid "Returned margin"
 msgstr "返还的保证金"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
 msgid "Sending order request..."
 msgstr "正在发送订单请求…"
 
@@ -5344,6 +5397,7 @@ msgstr "已以 {receivedSymbol} 支付：无法完成到 {convertToSymbol} 的�
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrderItem/OrderItem.tsx
+#: src/components/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 msgid "Acceptable price"
 msgstr "可接受价格"
 
@@ -5362,6 +5416,10 @@ msgstr "正在从子账户提取…"
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Stargate isn't accepting {tokenSymbol} transfers from {networkName} right now. Try another asset."
 msgstr "Stargate 目前不接受从 {networkName} 转账 {tokenSymbol}。请尝试其他资产。"
+
+#: src/domain/gmsol/tradebox/tradeboxErrorMessages.ts
+msgid "Turn on \"Set acceptable price impact\" in settings to edit this order on Solana"
+msgstr ""
 
 #: src/components/PositionSeller/rows/AllowedSlippageRow.tsx
 #: src/components/TradeBox/TradeBoxRows/AllowedSlippageRow.tsx
@@ -5430,6 +5488,10 @@ msgstr "订单可能无法执行：按最小接收金额完成兑换的流动性
 #: src/components/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 msgid "Leverage"
 msgstr "杠杆"
+
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+msgid "The wallet request timed out. Nothing was sent."
+msgstr ""
 
 #: src/components/AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal.tsx
 msgid "Accrued price impact rebates"
@@ -5520,7 +5582,7 @@ msgstr "为归属期预留的已质押代币"
 msgid "Max 5 auto-cancel TP/SL orders allowed. Extra orders require manual cancellation. Existing orders still close with the position. <0>Read more</0>."
 msgstr "最多允许 5 个自动取消的 TP/SL 订单。超出的订单需手动取消。现有订单仍会随仓位一同关闭。<0>了解更多</0>。"
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 msgid "Withdrawing {amountText} from {indexTokenText} Short..."
 msgstr "正在从 {indexTokenText} 做空仓位提取 {amountText}..."
 
@@ -5648,6 +5710,10 @@ msgstr "提交中..."
 msgid "Estimated time: ~5 min"
 msgstr "预计时间：~5 分钟"
 
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
+msgid "Orders with a callback cannot be changed on Solana yet"
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "GLP vault"
 msgstr "GLP 金库"
@@ -5666,6 +5732,10 @@ msgstr "做多借贷指数"
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1>"
 msgstr "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1>"
+
+#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
+msgid "This market is closed. Settle after the market reopens."
+msgstr "该市场已休市。请在市场重新开放后结算。"
 
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Long funding rate"
@@ -5713,6 +5783,10 @@ msgstr "提取到 {sourceChainName} 失败"
 #: src/components/GmxAccountModal/WalletSendView.tsx
 msgid "Enter recipient address"
 msgstr "输入接收方地址"
+
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
+msgid "Select wallet balance to trade on Solana"
+msgstr ""
 
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Break down net price impact"
@@ -5801,7 +5875,7 @@ msgstr "正向因子"
 #: src/components/OrdersModal/PendingTPSLOrder.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/PositionItem/PositionItemOrders.tsx
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Full position close"
 msgstr "全部平仓"
@@ -6038,6 +6112,7 @@ msgstr "取消限价单"
 msgid "Gas token switched to {toSymbol} to enable external swap routing"
 msgstr "Gas 代币已切换为 {toSymbol}，以启用外部兑换路由"
 
+#: src/domain/gmsol/tradebox/tradeboxErrorMessages.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select a market"
@@ -6078,10 +6153,6 @@ msgstr "无法加载公告。请稍后重试。"
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Max open interest exceeded. Current: {openInterestText}, max: {maxOpenInterestText}"
 msgstr "超出最大未平仓量。当前：{openInterestText}，上限：{maxOpenInterestText}"
-
-#: src/components/PositionSeller/SplitReceiveSwapProfitFeeWarning.tsx
-msgid "Receiving as {receiveTokenSymbol} will cost {swapProfitFeePercentage} (<0>{swapProfitFeeUsd}</0>). Receive {profitTokenSymbol} and {collateralTokenSymbol} separately to skip the swap. <1>Read more</1>."
-msgstr "以 {receiveTokenSymbol} 接收将产生 {swapProfitFeePercentage}（<0>{swapProfitFeeUsd}</0>）的费用。分别接收 {profitTokenSymbol} 和 {collateralTokenSymbol} 可跳过兑换。<1>了解更多</1>。"
 
 #: landing/src/pages/TraderAffiliateProgram/ContactSection.tsx
 msgid "Anonymous by default — connect with just your wallet.<0/>Share an email only if you want updates."
@@ -6164,6 +6235,10 @@ msgstr "签名："
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "This action is disabled"
 msgstr "此操作已禁用"
+
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
+msgid "This order is no longer open"
+msgstr ""
 
 #: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
 msgid "Processing claim..."
@@ -6558,6 +6633,10 @@ msgstr "正在加载…"
 msgid "Funds will appear in your GMX Account soon"
 msgstr "资金将很快显示在您的 GMX Account 中"
 
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
+msgid "Not sent: {title}. {reason}"
+msgstr ""
+
 #: src/components/InterviewToast/InterviewToast.tsx
 msgid "Join an anonymous one-on-one chat to share your GMX liquidity provider experience"
 msgstr "加入匿名一对一访谈，分享您作为 GMX 流动性提供者的体验"
@@ -6590,6 +6669,8 @@ msgstr "未找到转账"
 msgid "Insufficient {tokenInSymbol} balance"
 msgstr "{tokenInSymbol} 余额不足"
 
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
 #: src/lib/useHasOutdatedUi.ts
 msgid "Page outdated. Refresh"
 msgstr "页面已过期，请刷新"
@@ -6622,6 +6703,12 @@ msgstr "存入时池做多代币最大 USD"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Net value"
 msgstr "净值"
+
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
+msgid "Unable to prepare order"
+msgstr ""
 
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/Earn/EarnPageLayout.tsx
@@ -6669,6 +6756,10 @@ msgstr "{positionTitle} 订单"
 #: src/components/Errors/errorToasts.tsx
 msgid "<0>Your {walletName} is not available on {0}</0><1/><2>Add {1} to your {walletName}, then reconnect and try again</2>"
 msgstr "<0>您的 {walletName} 在 {0} 上不可用</0><1/><2>请将 {1} 添加至您的 {walletName}，然后重新连接并重试</2>"
+
+#: src/domain/gmsol/tradebox/tradeboxErrorMessages.ts
+msgid "Receive the position's collateral token on Solana"
+msgstr ""
 
 #: landing/src/pages/Home/SocialSection/ProgramCards.tsx
 msgid "For affiliates"
@@ -6854,6 +6945,10 @@ msgstr "无缝交易"
 msgid "close"
 msgstr "平仓"
 
+#: src/components/MarketClosedBadge/MarketClosedBadge.tsx
+msgid "Market orders, TWAP, Close, withdrawals and \"Now\" deposits are unavailable until then."
+msgstr "在此之前，市价订单、TWAP、平仓、提取和“立即”存入均不可用。"
+
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 msgid "from your wallet"
 msgstr "从您的钱包"
@@ -6888,8 +6983,8 @@ msgstr "未找到提取请求。它可能已被执行或取消。"
 #: src/components/PositionShare/PositionShareCard.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
-#: src/components/StatusNotification/OrderStatusNotification.tsx
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -6897,6 +6992,7 @@ msgstr "未找到提取请求。它可能已被执行或取消。"
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
 #: src/domain/synthetics/orders/utils.tsx
 #: src/domain/synthetics/usdgPools/addMarginReturn.ts
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -6980,6 +7076,10 @@ msgstr "提取时最大可借出影响因子"
 msgid "Claim completed"
 msgstr "领取完成"
 
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+msgid "Your accounts are prepared and any wrapped SOL is now WSOL in your wallet. Submit again to place the order."
+msgstr ""
+
 #: src/components/GmAssetDropdown/GmAssetDropdown.tsx
 msgid "Open in explorer"
 msgstr "在区块浏览器中打开"
@@ -7035,7 +7135,7 @@ msgstr "扣除所有费用后的 PnL"
 msgid "Build on GMX. Get paid on every trade."
 msgstr "在 GMX 上构建。每笔交易都有收益。"
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 msgid "Increasing {indexTokenText} Long: +{sizeDeltaUsdText}"
 msgstr "正在增加 {indexTokenText} 做多仓位：+{sizeDeltaUsdText}"
 
@@ -7627,6 +7727,8 @@ msgid "Send fee"
 msgstr "发送费用"
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
+#: src/components/OrdersModal/AddTPSLModal.tsx
+#: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Price impact / fees"
 msgstr "价格影响 / 费用"
@@ -7713,6 +7815,9 @@ msgstr "活动中，无到期时间，无限操作"
 #: src/components/ShareModal/CreateReferralCode.tsx
 #: src/components/TokenSelector/ConnectWalletModalContent.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Connect wallet"
 msgstr "连接钱包"
@@ -7823,6 +7928,10 @@ msgstr "在上方输入十六进制错误数据以解码"
 msgid "Allowed actions"
 msgstr "允许的操作"
 
+#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
+msgid "Switch to a limit order"
+msgstr "切换到限价单"
+
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "Your discount is now active!"
 msgstr "您的折扣现已生效！"
@@ -7911,6 +8020,10 @@ msgstr "这是赠款计划吗？我会获得代币吗？"
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Set SL price above mark price"
 msgstr "将止损价格设为高于标记价格"
+
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+msgid "Your accounts are prepared and the SOL for this order is now WSOL in your wallet. Pay is set to WSOL. Submit again to place the order."
+msgstr ""
 
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/Referrals/distributions/table/RebatesDistributionTable.tsx
@@ -8215,6 +8328,10 @@ msgstr "PnL 与已用资金之比（资本回报率）"
 msgid "Order error. Prices are volatile for this market. Try again by <0>increasing the allowed slippage</0>"
 msgstr "订单错误。该市场价格波动剧烈。请尝试<0>增加允许的滑点</0>"
 
+#: src/components/MarketClosedBanner/MarketClosedBanner.tsx
+msgid "Market orders and TWAP are unavailable while the market is closed. Limit, Stop Market and TP/SL orders can still be created, but execute only after the market reopens."
+msgstr "市场休市期间，市价订单和 TWAP 不可用。限价、触发市价和 TP/SL 订单仍可创建，但仅在市场重新开放后执行。"
+
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "No transfer history matching search"
 msgstr "未找到与搜索匹配的转账历史记录"
@@ -8373,7 +8490,7 @@ msgstr "{0} 已领取"
 msgid "Receive at least {toAmountText} if executed. Price updates based on fees and price impact."
 msgstr "若订单执行，将至少收到 {toAmountText}。价格根据费用和价格影响更新。"
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 msgid "Increasing {indexTokenText} Short: +{sizeDeltaUsdText}"
 msgstr "正在增加 {indexTokenText} 做空仓位：+{sizeDeltaUsdText}"
 
@@ -8442,6 +8559,10 @@ msgstr "止盈价格"
 msgid "ParaSwap"
 msgstr "ParaSwap"
 
+#: src/components/MarketClosedBadge/MarketClosedBadge.tsx
+msgid "Limit, Stop Market and TP/SL orders can still be created, but execute only after the market reopens."
+msgstr "限价、触发市价和 TP/SL 订单仍可创建，但仅在市场重新开放后执行。"
+
 #: src/components/MarketsList/NetFeeHeaderTooltipContent.tsx
 msgid "Ensures available liquidity."
 msgstr "确保可用流动性。"
@@ -8461,6 +8582,7 @@ msgstr "确保可用流动性。"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
+#: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
@@ -8470,6 +8592,10 @@ msgstr "确保可用流动性。"
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
+#: src/components/TradeBox/TradeBox.tsx
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
 #: src/domain/multichain/useWithdrawBlockedError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
@@ -8696,7 +8822,7 @@ msgstr "钱包已断开连接。请重新连接并重试"
 msgid "Connect wallet or add an address to the URL"
 msgstr "连接钱包或在 URL 中添加地址"
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 msgid "Withdrawing {amountText} from {indexTokenText} Long..."
 msgstr "正在从 {indexTokenText} 做多仓位中提取 {amountText}..."
 
@@ -8779,6 +8905,10 @@ msgstr "编辑保证金"
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "TP/SL orders exceed the position"
 msgstr "TP/SL 订单超出仓位"
+
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
+msgid "Create TP/SL order"
+msgstr ""
 
 #: src/components/MarketNetFee/MarketNetFee.tsx
 #: src/components/MarketNetFee/MarketNetFee.tsx
@@ -9043,6 +9173,10 @@ msgstr "GM 和 GLV 包含您已不再持有的市场"
 msgid "The remaining position would exceed the maximum allowed leverage. Close a larger part, withdraw less, or add margin first."
 msgstr "剩余仓位将超过允许的最大杠杆。请平掉更大部分、减少提取金额，或先增加保证金。"
 
+#: src/components/PositionSeller/SplitReceiveSwapProfitFeeWarning.tsx
+msgid "Receiving as {receiveTokenSymbol} will cost {swapProfitFeePercentage} (<0>{swapProfitFeeUsd}</0>). Receive {profitTokenSymbol} and {collateralTokenSymbol} separately to skip the swap. <1>Read more</1>."
+msgstr "以 {receiveTokenSymbol} 接收将产生 {swapProfitFeePercentage}（<0>{swapProfitFeeUsd}</0>）的费用。分别接收 {profitTokenSymbol} 和 {collateralTokenSymbol} 可跳过兑换。<1>了解更多</1>。"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX trading stats"
 msgstr "GMX 交易统计"
@@ -9164,6 +9298,10 @@ msgstr "保障流动性"
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "V1 rebates"
 msgstr "V1 返佣"
+
+#: src/components/Errors/errorToasts.tsx
+msgid "Increase the max network fee buffer {bufferText} in {settingsLink}"
+msgstr "在 {settingsLink} 中将最大网络费用缓冲提高{bufferText}"
 
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 msgid "Sell GLV"
@@ -9451,8 +9589,8 @@ msgstr "留住更多交易收益"
 #: src/components/OneClickSessions/OneClickSessions.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
-#: src/components/StatusNotification/OrderStatusNotification.tsx
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Cancel"
 msgstr "取消"
@@ -9835,6 +9973,10 @@ msgstr "规模"
 msgid "Book a 30-min call"
 msgstr "预约 30 分钟通话"
 
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+msgid "Order outcome not confirmed. Check the transaction for updates."
+msgstr ""
+
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "From"
@@ -9945,6 +10087,7 @@ msgid "Dolomite"
 msgstr "Dolomite"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
 msgid "Order request sent"
 msgstr "订单请求已发送"
 
@@ -10021,6 +10164,8 @@ msgstr "输入存入金额"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/GmxAccountModal/WalletSendView.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/ShareModal/CreateReferralCode.tsx
@@ -10426,8 +10571,8 @@ msgstr "更多信息"
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
-#: src/components/StatusNotification/OrderStatusNotification.tsx
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Create"
 msgstr "创建"
@@ -10632,7 +10777,7 @@ msgstr "<0>全仓保证金</0><1>混合抵押品</1>"
 msgid "Fetching swap route ({0}/{1})..."
 msgstr "正在获取兑换路径（{0}/{1}）..."
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 msgid "Depositing {amountText} to {indexTokenText} Short..."
 msgstr "正在将 {amountText} 存入 {indexTokenText} 做空仓位..."
 
@@ -10654,6 +10799,7 @@ msgstr "24小时交易量"
 #: src/components/Earn/Portfolio/UnstakeRequests/UnstakeWithdrawModal.tsx
 #: src/components/Errors/getContractErrorMessage.ts
 #: src/components/OrdersModal/AddTPSLModal.tsx
+#: src/domain/gmsol/tradebox/tradeboxErrorMessages.ts
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -10992,6 +11138,7 @@ msgid "Conversion request sent"
 msgstr "转换请求已发送"
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
+#: src/components/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 msgid "Execution price"
 msgstr "成交价格"
 
@@ -11094,7 +11241,9 @@ msgstr "预期365天"
 #: src/components/Claims/filters/ActionFilter.tsx
 #: src/components/DepthChart/DepthChartTooltip.tsx
 #: src/components/GmSwap/GmFees/GmFees.tsx
+#: src/components/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
+#: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -11113,6 +11262,11 @@ msgstr "在 GMX 内未找到从 {0} 到 {collateralSymbol} 的兑换路径。"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Withdrawal unavailable"
 msgstr "提取不可用"
+
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
+#: src/domain/gmsol/tradebox/tradeboxErrorMessages.ts
+msgid "This order type is not supported on Solana"
+msgstr ""
 
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "It accrues to the code owner ({0})."
@@ -11274,6 +11428,7 @@ msgstr "深度流动性市场"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/GmShiftBox.tsx
+#: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/PositionEditor/PositionEditor.tsx
@@ -11296,6 +11451,7 @@ msgid "Insufficient GM: {0} [{1}] liquidity in GLV. Choose a different pool, red
 msgstr "GLV 中 GM：{0} [{1}] 的流动性不足。请选择其他池、减少卖出数量，或分散到多个池进行提取。"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
 msgid "Order filled"
 msgstr "订单已成交"
 
@@ -11769,6 +11925,7 @@ msgid "Show assets with small value ({0})"
 msgstr "显示价值较低的资产（{0}）"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
 msgid "Fulfilling order request..."
 msgstr "正在执行订单请求…"
 
@@ -12110,8 +12267,8 @@ msgstr "订单无法更新。该类型不支持修改"
 #: src/components/PositionShare/PositionShareCard.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
-#: src/components/StatusNotification/OrderStatusNotification.tsx
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -12119,6 +12276,7 @@ msgstr "订单无法更新。该类型不支持修改"
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
 #: src/domain/synthetics/orders/utils.tsx
 #: src/domain/synthetics/usdgPools/addMarginReturn.ts
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -12340,6 +12498,10 @@ msgstr "所有链"
 msgid "BLOCK"
 msgstr "区块"
 
+#: src/domain/gmsol/tradebox/tradeboxErrorMessages.ts
+msgid "Pay with the selected collateral token"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pending borrowing fee"
@@ -12386,7 +12548,7 @@ msgstr "已在 {0} 接收"
 msgid "Allow all tokens to transfer to the new account"
 msgstr "授权将所有代币转账至新账户"
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 msgid "{orderTypeText} {visualMultiplierPrefix}{0} {longShortText}: {sizeText}"
 msgstr "{orderTypeText} {visualMultiplierPrefix}{0} {longShortText}：{sizeText}"
 
@@ -12455,6 +12617,11 @@ msgstr "两种收入来源。"
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Fulfilling shift request..."
 msgstr "正在执行转移请求…"
+
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
+#: src/domain/gmsol/tradebox/tradeboxErrorMessages.ts
+msgid "Review your TP/SL orders"
+msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Convert {tokenSymbol} to {nativeTokenSymbol}"
@@ -12619,6 +12786,10 @@ msgstr "须知"
 msgid "Select network"
 msgstr "选择网络"
 
+#: src/domain/gmsol/tradebox/tradeboxErrorMessages.ts
+msgid "Solana market calculations are unavailable"
+msgstr ""
+
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Error simulating claim"
 msgstr "模拟领取时出错"
@@ -12756,7 +12927,7 @@ msgstr "接收地址无效"
 msgid "Nonce:"
 msgstr "Nonce："
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 msgid "{txnTypeText} margin deposit: {amountText} to {indexTokenText} {longShortText}"
 msgstr "{txnTypeText}保证金存入：{amountText} 至 {indexTokenText} {longShortText}"
 
@@ -13033,6 +13204,10 @@ msgstr "通过GMX推荐计划获得费用折扣并赚取高达25%的佣金"
 msgid "Vested GLP not withdrawn"
 msgstr "已归属 GLP 未提取"
 
+#: src/domain/gmsol/tradebox/tradeboxErrorMessages.ts
+msgid "This collateral token is not supported for trading yet"
+msgstr ""
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Become a market maker"
 msgstr "成为做市商"
@@ -13211,10 +13386,6 @@ msgstr "当前影响：{0}。使用 -0.30% 或更高以获得更好的订单执�
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
 msgid "This market is disabled. Contact support to claim your remaining funding fees."
 msgstr "此市场已禁用。请联系支持团队领取剩余资金费。"
-
-#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
-msgid "This market is closed. Settle after the market reopens."
-msgstr "该市场已休市。请在市场重新开放后结算。"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/lifecycleSettlement.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -13397,10 +13568,6 @@ msgstr "标记价格"
 msgid "No — the API, SDK, and docs are open to everyone. Joining the program adds direct support and distribution on top."
 msgstr "不需要——API、SDK 和文档对所有人开放。加入计划将额外获得直接支持和分发资源。"
 
-#: src/components/Errors/errorToasts.tsx
-msgid "Increase the max network fee buffer {bufferText} in {settingsLink}"
-msgstr "在 {settingsLink} 中将最大网络费用缓冲提高{bufferText}"
-
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "GLP to GM airdrop"
 msgstr "GLP 至 GM 空投"
@@ -13419,7 +13586,7 @@ msgstr "可接受的价格影响"
 msgid "Default sorting"
 msgstr "默认排序"
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 msgid "Decreasing {indexTokenText} Long: -{sizeDeltaUsdText}"
 msgstr "减少 {indexTokenText} 做多仓位：-{sizeDeltaUsdText}"
 
@@ -13502,7 +13669,7 @@ msgstr "已设置较高的可接受价格影响。当前影响：{0}。"
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ModeTabs.tsx
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 #: src/components/SwapCard/SwapCard.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
@@ -13626,7 +13793,7 @@ msgstr "输入新规模或价格"
 msgid "Copy your wallet address or scan a QR code"
 msgstr "复制您的钱包地址或扫描二维码"
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 #: src/components/TVChartContainer/constants.ts
 msgid "Unknown order"
 msgstr "未知订单"
@@ -13886,7 +14053,7 @@ msgstr "交易者与联盟伙伴计划"
 msgid "Explore the VIP Desk"
 msgstr "了解 VIP Desk"
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/StatusNotification/getOrderStatusTitle.ts
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Swap"
 msgstr "Limit Swap"
@@ -13961,6 +14128,10 @@ msgstr "卖出"
 msgid "Lent position impact pool amount"
 msgstr "借出的仓位影响池金额"
 
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+msgid "Order request failed"
+msgstr ""
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "short"
 msgstr "做空"
@@ -13994,6 +14165,7 @@ msgstr "提取 {glvOrGm}：{0}"
 msgid "Save tier"
 msgstr "保存等级"
 
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{count, plural, one {Order} other {# Orders}}"
 msgstr "{count, plural, one {订单} other {# 个订单}}"
@@ -14024,6 +14196,7 @@ msgstr "在 {formattedPrice} 设置做空止损"
 
 #: src/components/Errors/errorToasts.tsx
 #: src/components/Errors/errorToasts.tsx
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
 #: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
 msgid "Transaction canceled"
 msgstr "交易已取消"
@@ -14218,6 +14391,7 @@ msgstr "净平仓费用 / 价格影响"
 msgid "Lifetime"
 msgstr "累计"
 
+#: src/domain/gmsol/orderActions/GmsolOrderActionsProvider.tsx
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{ordersText} canceled"
 msgstr "{ordersText} 已取消"
@@ -14311,6 +14485,10 @@ msgstr "净费率 / 1小时"
 msgid "30d performance APY"
 msgstr "30天绩效 APY"
 
+#: src/components/PositionItem/PositionItem.tsx
+msgid "This position is above liquidation risk, but it may become close to liquidation when the market switches to off-hours risk parameters."
+msgstr "该仓位未面临清算风险，但当市场切换至非交易时段风险参数时，可能会接近清算。"
+
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 #: src/components/ShareModal/ShareCardActionButtons.tsx
 msgid "Share on"
@@ -14319,6 +14497,10 @@ msgstr "分享到"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Derivatives portfolio tracker"
 msgstr "衍生品投资组合追踪器"
+
+#: src/components/StatusNotification/SolanaOrderStatusNotification.tsx
+msgid "The order could not be executed"
+msgstr ""
 
 #: src/components/SettingsModal/NotificationsSettings.tsx
 msgid "Notifications aren't saved, so there's no history"
@@ -14337,6 +14519,7 @@ msgid "multiple asset classes"
 msgstr "多个资产类别"
 
 #: src/components/AnnouncementBanner/AnnouncementBanner.tsx
+#: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
@@ -14538,6 +14721,10 @@ msgstr "操作层级的费用和价格影响的净总和。将鼠标悬停在数
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set trigger price below mark price"
 msgstr "将触发价格设置为低于标记价格"
+
+#: src/domain/gmsol/tradebox/GmsolTradeboxAdapter.tsx
+msgid "Select a position"
+msgstr ""
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Active management"

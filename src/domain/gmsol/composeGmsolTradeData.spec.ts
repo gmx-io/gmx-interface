@@ -4,19 +4,21 @@ import { SWRConfig } from "swr";
 import { afterEach, expect, it, vi } from "vitest";
 
 import { GMSOL_MARKETS } from "config/gmsol/markets";
+import { MARKETS_STALE_THRESHOLD_MS } from "domain/synthetics/markets/useMarketsInfoRequest/useApiMarketsInfoRequest";
 import { PRICES_CACHE_TTL } from "lib/timeConstants";
 import { useSWRWithFreshness } from "lib/useSWRWithFreshness";
 import type { FeeDiscount } from "sdk/clients/v2";
-import type { RawMarketsInfoData } from "sdk/utils/markets/types";
+import type { RawMarketConfig, RawMarketsInfoData, RawMarketValues } from "sdk/utils/markets/types";
 import type { TokensData } from "sdk/utils/tokens/types";
 
 import type { GmsolTokenPricesData } from "./gmsolOracleUtils";
-import { composeGmsolMarkets, hasGmsolListedMarketPrices } from "./markets/composeGmsolMarkets";
+import { composeGmsolMarkets, getGmsolUnpricedMarketAddresses } from "./markets/composeGmsolMarkets";
 import { resolveGmsolAccountSnapshot } from "./resolveGmsolAccountSnapshot";
 import { fetchGmsolPrices } from "./tokens/fetchGmsolPrices";
 import { type GmsolTokensSnapshot, resolveGmsolTokensData } from "./tokens/resolveGmsolTokensData";
 import { useGmsolTokensData } from "./tokens/useGmsolTokensData";
 import { useGmsolFeeDiscount, useGmsolOrders } from "./useGmsolAccountData";
+import { getGmsolMarketValuesGaps } from "./useGmsolRawMarketsInfo";
 
 const gmsolApi = vi.hoisted(() => ({ fetchOrders: vi.fn(), fetchFeeDiscount: vi.fn() }));
 
@@ -105,7 +107,50 @@ it("keeps a disabled market so its positions stay listed", () => {
   } as unknown as RawMarketsInfoData;
 
   expect(composeGmsolMarkets(disabled, tokens(true)).marketsAddresses).toContain(market.marketTokenAddress);
-  expect(hasGmsolListedMarketPrices(disabled, tokens(false))).toBe(true);
+  expect(getGmsolUnpricedMarketAddresses(disabled, tokens(false))).toEqual([]);
+});
+
+it("blocks only the enabled markets that values omit, and every market when values cover none", () => {
+  const config = (marketTokenAddress: string, isDisabled = false) =>
+    ({
+      marketTokenAddress,
+      isDisabled,
+      virtualIndexTokenId: "0x00",
+      maxCollateralSumLongTokenLong: 0n,
+      maxCollateralSumLongTokenShort: 0n,
+      maxCollateralSumShortTokenLong: 0n,
+      maxCollateralSumShortTokenShort: 0n,
+    }) as RawMarketConfig;
+  const value = (marketTokenAddress: string, fields: Partial<RawMarketValues> = {}) =>
+    ({
+      marketTokenAddress,
+      updatedAt: 0,
+      virtualInventoryForPositionsInTokens: 0n,
+      longInterestUsdUsingLongToken: 0n,
+      longInterestUsdUsingShortToken: 0n,
+      shortInterestUsdUsingLongToken: 0n,
+      shortInterestUsdUsingShortToken: 0n,
+      longInterestInTokensUsingLongToken: 0n,
+      longInterestInTokensUsingShortToken: 0n,
+      shortInterestInTokensUsingLongToken: 0n,
+      shortInterestInTokensUsingShortToken: 0n,
+      ...fields,
+    }) as RawMarketValues;
+  const [sol, doge, btc] = [config("sol"), config("doge"), config("btc")];
+  const lagging = { updatedAt: -MARKETS_STALE_THRESHOLD_MS - 1 };
+  const cases: [RawMarketConfig[], RawMarketValues[], boolean, string[]][] = [
+    [[sol, doge], [value("sol")], false, ["doge"]],
+    [[sol, doge], [value("sol", { virtualInventoryForPositionsInTokens: undefined })], true, ["doge"]],
+    [[sol, doge, btc], [value("sol"), value("btc", lagging)], true, ["doge"]],
+    [[sol, doge], [value("eth")], true, ["sol", "doge"]],
+    [[sol, config("doge", true)], [value("sol")], false, []],
+    [[sol, config("doge", true)], [value("sol"), value("doge", { updatedAt: null })], false, []],
+    [[config("doge", true)], [], false, []],
+  ];
+
+  for (const [configData, valuesData, isStale, missingMarketAddresses] of cases) {
+    expect(getGmsolMarketValuesGaps(configData, valuesData)).toEqual({ isStale, missingMarketAddresses });
+  }
 });
 
 it("marks partial prices unavailable and retains missing account items without reviving closed ones FESOL-52", async () => {
@@ -119,33 +164,41 @@ it("marks partial prices unavailable and retains missing account items without r
   await renderHook(() => {
     result = useGmsolTokensData({ enabled: true, rawMarketsInfoData: raw });
   });
-  expect(result!.isUnavailable).toBe(false);
+  expect(result!.unavailableReason).toBeUndefined();
   includeIndex = false;
   await act(async () => {
     await vi.advanceTimersByTimeAsync(PRICES_CACHE_TTL);
   });
-  expect(result!.isUnavailable).toBe(true);
+  expect(result!.unavailableReason).toBe("coverage");
+  expect(result!.unpricedMarketAddresses).toEqual([market.marketTokenAddress]);
   expect(composeGmsolMarkets(raw, result!.tokensData!).marketsAddresses).not.toContain(market.marketTokenAddress);
 
   const previousData = { affected: { value: 1 }, healthy: { value: 1 }, closed: { value: 1 } };
   const data = { healthy: { value: 2 } };
-  const keys = ["affected", "healthy"];
-  expect(resolveGmsolAccountSnapshot({ keys, data, previousData })).toEqual({
+  const items = [
+    { key: "affected", marketAddress: "doge" },
+    { key: "healthy", marketAddress: "sol" },
+  ];
+  const uncovered = { uncoveredMarketAddresses: ["doge"] };
+  expect(resolveGmsolAccountSnapshot({ items, data, previousData })).toEqual({
     data: { affected: previousData.affected, healthy: data.healthy },
-    isIncomplete: true,
+    ...uncovered,
   });
-  expect(resolveGmsolAccountSnapshot({ keys, data, previousData: undefined })).toEqual({ data, isIncomplete: true });
-  expect(resolveGmsolAccountSnapshot({ keys: [], data: {}, previousData })).toEqual({ data: {}, isIncomplete: false });
+  expect(resolveGmsolAccountSnapshot({ items, data, previousData: undefined })).toEqual({ data, ...uncovered });
+  expect(resolveGmsolAccountSnapshot({ items: [], data: {}, previousData })).toEqual({
+    data: {},
+    uncoveredMarketAddresses: [],
+  });
 
   includeIndex = true;
   await act(async () => {
     await vi.advanceTimersByTimeAsync(5_000);
   });
-  expect(result!.isUnavailable).toBe(false);
+  expect(result!.unavailableReason).toBeUndefined();
   const recovered = { affected: { value: 3 }, healthy: { value: 3 } };
-  expect(resolveGmsolAccountSnapshot({ keys, data: recovered, previousData })).toEqual({
+  expect(resolveGmsolAccountSnapshot({ items, data: recovered, previousData })).toEqual({
     data: recovered,
-    isIncomplete: false,
+    uncoveredMarketAddresses: [],
   });
 });
 

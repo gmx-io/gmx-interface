@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import { isAddressEqual } from "viem";
 import { useAccount } from "wagmi";
 
-import { getChainName } from "config/chains";
+import { getChainName, isSolanaNetwork } from "config/chains";
 import { ValidationResult } from "domain/synthetics/trade/utils/validation";
 import { useChainId as useDisplayedChainId } from "lib/chains";
 import useWallet from "lib/wallets/useWallet";
@@ -55,12 +55,15 @@ export function getMultipleWalletExtensionsChainError({
   requiredChainId,
   isSuspicious,
   isConnected,
+  isSolana,
 }: {
   requiredChainId: number | undefined;
   isSuspicious: boolean;
   isConnected: boolean;
+  isSolana: boolean;
 }): ValidationResult {
-  if (!isConnected || requiredChainId === undefined || !isSuspicious) {
+  // Solana transactions are signed by the Solana wallet, so conflicting EVM extension networks cannot affect them
+  if (isSolana || !isConnected || requiredChainId === undefined || !isSuspicious) {
     return {};
   }
 
@@ -82,10 +85,11 @@ export function getMultipleWalletExtensionsChainError({
 }
 
 export function useMultipleWalletExtensionsChainError(): ValidationResult {
-  const { chainId, srcChainId } = useDisplayedChainId();
+  const { chainId, srcChainId, networkId } = useDisplayedChainId();
   const { isConnected } = useAccount();
   const { isSuspicious } = useSuspiciousWallets();
   const requiredChainId = srcChainId ?? chainId;
+  const isSolana = isSolanaNetwork(networkId);
 
   return useMemo(
     () =>
@@ -93,7 +97,8 @@ export function useMultipleWalletExtensionsChainError(): ValidationResult {
         requiredChainId,
         isSuspicious,
         isConnected,
+        isSolana,
       }),
-    [requiredChainId, isSuspicious, isConnected]
+    [requiredChainId, isSuspicious, isConnected, isSolana]
   );
 }

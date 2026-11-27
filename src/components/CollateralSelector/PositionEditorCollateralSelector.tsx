@@ -3,7 +3,7 @@ import React, { useCallback, useEffect } from "react";
 import { toast } from "react-toastify";
 import { useMedia } from "react-use";
 
-import { ContractsChainId, GMX_ACCOUNT_PSEUDO_CHAIN_ID, getChainName } from "config/chains";
+import { GMX_ACCOUNT_PSEUDO_CHAIN_ID, getChainName } from "config/chains";
 import { getChainIcon } from "config/icons";
 import type { TokenData } from "domain/synthetics/tokens/types";
 import { formatBalanceAmount } from "lib/numbers";
@@ -26,7 +26,8 @@ import {
 import "./CollateralSelector.scss";
 
 type Props = {
-  chainId: ContractsChainId;
+  // only shown as a badge and name, so a Solana network id works too
+  chainId: number;
   // eslint-disable-next-line react/no-unused-prop-types
   selectedTokenSymbol?: string;
   // eslint-disable-next-line react/no-unused-prop-types
@@ -119,7 +120,8 @@ function CollateralListItemDesktop({
   onSelect,
 }: {
   variant?: "balance" | "destination";
-  chainId: ContractsChainId;
+  // only shown as a badge and name, so a Solana network id works too
+  chainId: number;
   tokenData: TokenData;
   onSelect: () => void;
 }) {
@@ -234,7 +236,8 @@ function CollateralListItemMobile({
   onSelect,
 }: {
   variant?: "balance" | "destination";
-  chainId: ContractsChainId;
+  // only shown as a badge and name, so a Solana network id works too
+  chainId: number;
   tokenData: TokenData;
   onSelect: () => void;
 }) {

@@ -30,3 +30,8 @@ export function loadGmsolSdk(): Promise<GmsolSdk> {
 
   return gmsolSdkEntryPromise.then((entry) => entry.initialize());
 }
+
+// A failed entry import is not cached, so the next loadGmsolSdk call retries it and reports the error.
+export function preloadGmsolSdk() {
+  void loadGmsolSdk().catch(() => undefined);
+}

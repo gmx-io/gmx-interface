@@ -1,9 +1,11 @@
-import { useEffect, useReducer, useRef } from "react";
+import { useEffect, useMemo, useReducer, useRef } from "react";
 
 import { getUiApiCacheKey } from "config/api";
 import { ARBITRUM, SOLANA_NETWORK_ID } from "config/chains";
 import type { TokensDataResult } from "domain/synthetics/tokens";
+import { EMPTY_ARRAY } from "lib/objects";
 import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher/useOracleKeeperFetcher";
+import type { SolanaBalances } from "lib/solana/balances";
 import { FREQUENT_UPDATE_INTERVAL, PRICES_CACHE_TTL } from "lib/timeConstants";
 import { API_STALE_MS, isSnapshotPastGrace, useSWRWithFreshness } from "lib/useSWRWithFreshness";
 import type { RawMarketsInfoData } from "sdk/utils/markets/types";
@@ -11,15 +13,22 @@ import type { RawMarketsInfoData } from "sdk/utils/markets/types";
 import { fetchGmsolPrices } from "./fetchGmsolPrices";
 import { type GmsolTokensSnapshot, resolveGmsolTokensData } from "./resolveGmsolTokensData";
 import type { GmsolTokenPricesData } from "../gmsolOracleUtils";
-import { hasGmsolListedMarketPrices } from "../markets/composeGmsolMarkets";
+import { getGmsolUnpricedMarketAddresses } from "../markets/composeGmsolMarkets";
+import type { GmsolMarketsUnavailableReason } from "../markets/gmsolMarketsUnavailable";
 
 export function useGmsolTokensData({
   enabled,
   rawMarketsInfoData,
+  balancesData,
 }: {
   enabled: boolean;
   rawMarketsInfoData: RawMarketsInfoData | undefined;
-}): TokensDataResult & { isUnavailable: boolean; refetch: () => Promise<unknown> } {
+  balancesData?: SolanaBalances;
+}): TokensDataResult & {
+  unavailableReason: GmsolMarketsUnavailableReason | undefined;
+  unpricedMarketAddresses: string[];
+  refetch: () => Promise<unknown>;
+} {
   const oracleFetcher = useOracleKeeperFetcher(ARBITRUM);
   const key = enabled
     ? ["gmsolPrices", SOLANA_NETWORK_ID, getUiApiCacheKey(SOLANA_NETWORK_ID), oracleFetcher.url]
@@ -58,19 +67,39 @@ export function useGmsolTokensData({
 
   const isExpired = isSnapshotPastGrace(receivedAt, FREQUENT_UPDATE_INTERVAL);
   const tokensData = isExpired ? undefined : snapshot?.tokensData;
-  const isIncomplete =
-    rawMarketsInfoData !== undefined &&
-    tokensData !== undefined &&
-    !hasGmsolListedMarketPrices(rawMarketsInfoData, tokensData);
+  const unpricedMarketAddresses = useMemo(
+    () =>
+      rawMarketsInfoData && tokensData ? getGmsolUnpricedMarketAddresses(rawMarketsInfoData, tokensData) : EMPTY_ARRAY,
+    [rawMarketsInfoData, tokensData]
+  );
+
+  const tokensWithBalances = useMemo(
+    () =>
+      tokensData &&
+      Object.fromEntries(
+        Object.entries(tokensData).map(([address, token]) => [
+          address,
+          { ...token, balance: balancesData?.[address], walletBalance: balancesData?.[address] },
+        ])
+      ),
+    [tokensData, balancesData]
+  );
 
   return {
-    tokensData,
+    tokensData: tokensWithBalances,
     pricesUpdatedAt: isExpired ? undefined : pricesUpdatedAt,
     isGmxAccountBalancesLoaded: false,
-    isWalletBalancesLoaded: false,
-    isBalancesLoaded: false,
+    isWalletBalancesLoaded: balancesData !== undefined,
+    isBalancesLoaded: balancesData !== undefined,
     error,
-    isUnavailable: Boolean(error) || isExpired || isIncomplete || (receivedAt !== undefined && !tokensData),
+    unavailableReason: error
+      ? "request"
+      : isExpired || (receivedAt !== undefined && !tokensData)
+        ? "stale"
+        : unpricedMarketAddresses.length > 0
+          ? "coverage"
+          : undefined,
+    unpricedMarketAddresses,
     refetch,
   };
 }

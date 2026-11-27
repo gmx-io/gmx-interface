@@ -8,6 +8,7 @@ import type {
   SolanaWalletSessionContextValue,
 } from "lib/wallets/solanaWalletSession";
 
+import { publishSolanaWalletSession } from "./activeSession";
 import SolanaWalletSessionSync from "./SolanaWalletSessionSync";
 
 // Wallets that never restore (no prior authorization), or a Privy that never reports ready, must not leave
@@ -66,14 +67,18 @@ export default function SolanaWalletSessionState({
       address: wallet?.address,
       disconnect,
       isRestoring: Boolean(walletId) && !wallet && !restoreTimedOut,
+      signTransaction: wallet?.signTransaction,
       rememberConnectedWallet,
     }),
     [disconnect, rememberConnectedWallet, restoreTimedOut, wallet, walletId]
   );
 
   useEffect(() => {
+    publishSolanaWalletSession(session);
     onChange(session);
   }, [onChange, session]);
+
+  useEffect(() => () => publishSolanaWalletSession(undefined), []);
 
   return <SolanaWalletSessionSync walletId={walletId} onChange={handleWallets} />;
 }
