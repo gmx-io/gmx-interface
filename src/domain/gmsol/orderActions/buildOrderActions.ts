@@ -1,5 +1,6 @@
 import { maxUint256 } from "viem";
 
+import { getIsSolanaCollateralToken } from "domain/solana/solanaReceiveTokens";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import type { OrderInfo, PositionOrderInfo } from "sdk/utils/orders/types";
 import type { PositionInfo } from "sdk/utils/positions/types";
@@ -91,7 +92,7 @@ export function buildGmsolDepositAction({
   if (amount <= 0n) throw new GmsolTradeboxError("amounts");
   const payWithNativeSol = payToken.isNative === true && payToken.address === NATIVE_TOKEN_ADDRESS;
   const payTokenAddress = payWithNativeSol ? payToken.wrappedAddress : payToken.address;
-  if (payTokenAddress !== position.collateralTokenAddress) throw new GmsolTradeboxError("swap");
+  if (!getIsSolanaCollateralToken(payToken, position.collateralToken)) throw new GmsolTradeboxError("swap");
 
   return {
     type: "create",
@@ -112,7 +113,8 @@ export function buildGmsolDepositAction({
         payWithNativeSol,
         receiveToken: undefined,
         swapPath: [],
-        unwrapNative: false,
+        // gmsol refunds a cancelled order's escrowed WSOL as native SOL only with this flag.
+        unwrapNative: payWithNativeSol,
         validFromTs: undefined,
         decreaseSwapType: undefined,
       },

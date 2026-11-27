@@ -260,6 +260,7 @@ describe("Solana collateral deposit and withdraw intents TRD-83", () => {
           acceptablePrice: depositPrice * usd,
           payToken: WRAPPED_SOL_MINT,
           payWithNativeSol: native,
+          unwrapNative: native,
         }),
       ]);
       expect(withdraw.orders).toEqual([

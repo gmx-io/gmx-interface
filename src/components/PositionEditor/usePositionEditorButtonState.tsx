@@ -599,10 +599,12 @@ export function usePositionEditorButtonState(
       return;
     }
 
+    if (actions.busyReason) return;
+
     if (actions.hasPendingSubmission) {
       setIsSubmitting(true);
       try {
-        await actions.checkPendingSubmission({ origin: "collateral" });
+        if (await actions.checkPendingSubmission({ origin: "collateral" })) onClose();
       } finally {
         setIsSubmitting(false);
       }
@@ -774,6 +776,14 @@ export function usePositionEditorButtonState(
     errorBannerContent,
     bannerErrorName: validationResult.bannerErrorName,
   };
+
+  if (isSolana && solanaOrderActions?.busyReason && !isSubmitting) {
+    return {
+      text: solanaOrderActions.busyReason,
+      disabled: true,
+      ...commonParams,
+    };
+  }
 
   if (isSolana && solanaOrderActions?.hasPendingSubmission) {
     return {

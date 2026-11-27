@@ -308,11 +308,12 @@ export function GmsolOrderActionsProvider({ children }: { children: ReactNode })
             {
               trackExecution: true,
               build: () => buildGmsolDepositAction({ position, payToken, amount, allowedSlippage }),
+              // Titled by the collateral mint it pays, which the unwrap flag of a native SOL deposit shows as SOL.
               titles: (action) =>
                 getGmsolCreateOrderTitles(action, {
                   marketInfo: position.marketInfo,
                   collateralToken: position.collateralToken,
-                  payToken,
+                  payToken: position.collateralToken,
                 }),
             },
           ],

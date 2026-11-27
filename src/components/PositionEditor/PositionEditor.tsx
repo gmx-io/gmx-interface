@@ -47,6 +47,7 @@ import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/se
 import { selectTradeboxSetIsFromTokenGmxAccount } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { toastEnableExpress } from "domain/multichain/toastEnableExpress";
+import { getIsSolanaCollateralToken } from "domain/solana/solanaReceiveTokens";
 import { getNetworkFeeGasPaymentParams } from "domain/synthetics/express/validateMultichainExpressSubmit";
 import { getNetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
 import { useIsSwapTabPaxosOffered } from "domain/synthetics/paxosTransit/useIsSwapTabPaxosOffered";
@@ -220,13 +221,12 @@ export function PositionEditor() {
 
   const filteredTokensData = useMemo(() => {
     if (isSolanaNetwork(networkId)) {
-      // the SDK token getters know no Solana mints, and synthetic index placeholders also carry a collateral
-      // wrappedAddress: only the collateral mint itself and native SOL for WSOL can be paid or received
+      // keyed on the position, not the selection: WSOL has no link back to native SOL
+      const positionCollateral = position?.collateralToken;
+
       return pickBy(
         tokensData,
-        (token) =>
-          token.address === collateralOptionsAddress ||
-          (token.isNative === true && token.wrappedAddress === collateralOptionsAddress)
+        (token) => positionCollateral !== undefined && getIsSolanaCollateralToken(token, positionCollateral)
       );
     }
 
@@ -237,7 +237,7 @@ export function PositionEditor() {
         token.wrappedAddress === collateralOptionsAddress ||
         convertTokenAddress(chainId, token.address, "native") === collateralOptionsAddress
     );
-  }, [chainId, collateralOptionsAddress, networkId, tokensData]);
+  }, [chainId, collateralOptionsAddress, networkId, position?.collateralToken, tokensData]);
 
   const options = useMemo(
     () => getCollateralOptions(Object.values(filteredTokensData), srcChainId, features.gmxAccount),

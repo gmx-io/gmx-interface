@@ -243,7 +243,12 @@ it("builds collateral-only market orders and keeps every other order sized TRD-8
         .flat()
         .flatMap((bytes) => decodeGmsolTransaction(bytes, plan).message.instructions)
         .filter((ix) => ix.programAddress === GMSOL_STORE_PROGRAM_ID)
-        .map((ix) => decodeGmsolInstruction(copySolanaBytes(ix.data!), [...ix.accounts!].map((a) => a.address)))
+        .map((ix) =>
+          decodeGmsolInstruction(
+            copySolanaBytes(ix.data!),
+            [...ix.accounts!].map((a) => a.address)
+          )
+        )
         .find((ix) => ix.name === "create_order_v2")!;
       create.reader.read(32);
       expect(readCreateOrderParams(create.reader)).toMatchObject({ size: 0n, amount: 1000000n });
