@@ -318,18 +318,24 @@ jobs:
           name: regression-funded-harness
           path: funded
       - name: Merge reports and summarize coverage
+        id: summarize
+        # report.cjs fails on incomplete coverage (failed, unrun or unexplained skipped tests); the job fails on it
+        # only after the reports and the comment are published.
         run: |
           mkdir -p merged all-blobs
           cp blobs/regression-blob-*/*.zip all-blobs/ 2>/dev/null || true
+          incomplete=""
           if ls all-blobs/*.zip >/dev/null 2>&1; then
             PLAYWRIGHT_JSON_OUTPUT_FILE=merged/report.json PLAYWRIGHT_HTML_OUTPUT_DIR=merged/html \
               yarn playwright merge-reports --reporter=json,html all-blobs
-            node autotests/regression/report.cjs merged/report.json > merged/summary.md || true
+            node autotests/regression/report.cjs merged/report.json > merged/summary.md || incomplete="$SUITES_LABEL"
           fi
           if [ -f funded/test-results/funded-harness-results.json ]; then
             cp funded/test-results/funded-harness-results.json merged/funded-harness.json
-            node autotests/regression/report.cjs merged/funded-harness.json > merged/funded-harness-summary.md || true
+            node autotests/regression/report.cjs merged/funded-harness.json > merged/funded-harness-summary.md \
+              || incomplete="${incomplete:+$incomplete, }Funded harness"
           fi
+          echo "incomplete=$incomplete" >> "$GITHUB_OUTPUT"
       - name: Upload merged reports
         uses: actions/upload-artifact@v4
         with:
@@ -372,6 +378,13 @@ jobs:
             const previous = comments.find((comment) => comment.user?.type === 'Bot' && comment.body?.startsWith(marker));
             if (previous) await github.rest.issues.updateComment({ ...context.repo, comment_id: previous.id, body });
             else await github.rest.issues.createComment({ ...issue, body });
+      - name: Fail on incomplete coverage
+        if: ${{ steps.summarize.outputs.incomplete != '' }}
+        env:
+          INCOMPLETE: ${{ steps.summarize.outputs.incomplete }}
+        run: |
+          echo "::error::Incomplete regression coverage in: $INCOMPLETE. See the report comment."
+          exit 1
 
   funded-preflight:
     name: Funded gas preflight (no transactions)

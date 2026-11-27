@@ -157,7 +157,16 @@ test("8.01 8.08 partial: position row re-renders API-updated size, mark and liqu
   Object.assign(accountState.positions[0], { sizeInUsd: 500n * USD, markPrice: 2300n * USD });
   await expect(row.getByRole("cell").nth(1)).toContainText(/\$\s*500\.00/);
   await expect(row.getByRole("cell").nth(5)).toContainText(/2,300\.00/);
-  await expect.poll(liquidation).not.toBeCloseTo(initialLiquidation, 0);
+  // A missing price ("NA") reads as NaN, which would pass a bare not.toBeCloseTo.
+  await expect
+    .poll(
+      async () => {
+        const value = await liquidation();
+        return Number.isFinite(value) && Math.abs(value - initialLiquidation) >= 0.5;
+      },
+      { message: "liquidation price changes to another finite value" }
+    )
+    .toBe(true);
   accountState.positions = [];
   await expect(row).toHaveCount(0);
   await expect(page.getByText("No open positions", { exact: true })).toBeVisible();
