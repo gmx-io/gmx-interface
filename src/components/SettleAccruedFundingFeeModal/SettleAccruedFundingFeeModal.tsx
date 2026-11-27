@@ -16,6 +16,7 @@ import {
   selectSettlementChainGasPaymentToken,
   selectUnavailableGasPaymentTokenAddresses,
 } from "context/SyntheticsStateContext/selectors/expressSelectors";
+import { selectClosedMarkets } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import {
@@ -31,6 +32,7 @@ import {
 } from "domain/synthetics/fees";
 import { getNetworkFeeSource } from "domain/synthetics/fees/networkFeeSource";
 import { getTotalAccruedFundingUsd } from "domain/synthetics/markets";
+import { getIsMarketClosed } from "domain/synthetics/markets/utils";
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
@@ -96,6 +98,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
   const isExpressAvailable = useSelector(selectIsExpressTransactionAvailable);
   const walletGasPaymentToken = useSelector(selectSettlementChainGasPaymentToken);
   const gmxAccountGasPaymentToken = useSelector(selectGmxAccountGasPaymentToken);
+  const closedMarkets = useSelector(selectClosedMarkets);
 
   const canUseGmxAccountFeeSource = chainId === ARBITRUM && srcChainId === undefined && isExpressAvailable;
   const preferGmxAccount = canUseGmxAccountFeeSource && (settings.receiveToGmxAccount ?? false);
@@ -129,11 +132,12 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
         shouldPreSelectPosition(
           position,
           feeUsd ?? 0n,
-          getMarketPositionLimits(position.marketInfo, positionConstants).minCollateralUsd
+          getMarketPositionLimits(position.marketInfo, positionConstants).minCollateralUsd,
+          getIsMarketClosed(closedMarkets, position.marketAddress)
         )
       )
       .map((position) => position.key);
-  }, [positiveFeePositions, feeUsd, positionConstants]);
+  }, [positiveFeePositions, feeUsd, positionConstants, closedMarkets]);
 
   const [positionKeys, setPositionKeys] = useState<string[]>([]);
 
@@ -149,10 +153,11 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
           positionKeys.includes(position.key) &&
           getIsPositionSettleable(
             position,
-            getMarketPositionLimits(position.marketInfo, positionConstants).minCollateralUsd
+            getMarketPositionLimits(position.marketInfo, positionConstants).minCollateralUsd,
+            getIsMarketClosed(closedMarkets, position.marketAddress)
           )
       ),
-    [positionConstants, positionKeys, positiveFeePositions]
+    [positionConstants, positionKeys, positiveFeePositions, closedMarkets]
   );
   const selectedPositionKeys = useMemo(() => selectedPositions.map((position) => position.key), [selectedPositions]);
   const total = useMemo(() => getTotalAccruedFundingUsd(selectedPositions), [selectedPositions]);
@@ -497,6 +502,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
               key={position.key}
               position={position}
               isMarketDisabled={position.marketInfo?.isDisabled ?? false}
+              isMarketClosed={getIsMarketClosed(closedMarkets, position.marketAddress)}
               blockReason={getSettlementBlockReason(
                 position,
                 getMarketPositionLimits(position.marketInfo, positionConstants).minCollateralUsd

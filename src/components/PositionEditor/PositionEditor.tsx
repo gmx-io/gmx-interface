@@ -37,6 +37,7 @@ import {
   selectPositionEditorDepositMaxInstantAmount,
   selectPositionEditorDepositRestInstantAmountOut,
   selectPositionEditorIsDepositSwapUnfillable,
+  selectPositionEditorIsMarketClosed,
   selectPositionEditorMaxWithdrawAmount,
   selectPositionEditorOpenDepositNow,
   selectPositionEditorSelectedCollateralToken,
@@ -86,6 +87,7 @@ import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import { EmbeddedActionButton } from "components/Button/EmbeddedActionButton";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
+import { MarketClosedBanner } from "components/MarketClosedBanner/MarketClosedBanner";
 import { MaxActions } from "components/MaxActions/MaxActions";
 import Modal from "components/Modal/Modal";
 import NumberInput from "components/NumberInput/NumberInput";
@@ -170,6 +172,7 @@ export function PositionEditor() {
   const [atPriceOpenRequest, clearAtPriceOpenRequest] = usePositionEditorAtPriceOpenRequest();
   const replacingOrder = usePositionEditorReplacingOrder();
   const isAtPriceDeposit = isDeposit && depositMode === "atPrice";
+  const isMarketClosed = useSelector(selectPositionEditorIsMarketClosed);
 
   const [selectedCollateralAddress, setSelectedCollateralAddress] = usePositionEditorSelectedCollateralAddress();
   const [isCollateralTokenFromGmxAccount, setIsCollateralTokenFromGmxAccount] =
@@ -860,6 +863,8 @@ export function PositionEditor() {
                 isGmxAccount={isCollateralTokenFromGmxAccount}
                 onAfterAction={onClose}
               />
+
+              {isMarketClosed && isAtPriceDeposit && <MarketClosedBanner state="limitWaits" />}
 
               {isConversionTooLarge ? (
                 <>

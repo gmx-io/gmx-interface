@@ -16,6 +16,8 @@ export type GlvAndGmMarketsInfoData = {
 
 export type GlvOrMarketInfo = MarketInfo | GlvInfo;
 
+export type ClosedMarkets = Partial<Record<string, true>>;
+
 export type GlvInfoData = {
   [key in string]: GlvInfo;
 };

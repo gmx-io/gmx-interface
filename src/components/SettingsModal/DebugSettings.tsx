@@ -6,6 +6,7 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { AbFlagSettings } from "components/AbFlagsSettings/AbFlagsSettings";
 import { DebugSwapsSettings } from "components/DebugSwapsSettings/DebugSwapsSettings";
 import { MetricsDebugSettings } from "components/MetricsDebugSettings/MetricsDebugSettings";
+import { NotificationsDebugSettings } from "components/NotificationsDebugSettings/NotificationsDebugSettings";
 import TenderlySettings from "components/TenderlySettings/TenderlySettings";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 
@@ -54,6 +55,28 @@ export function DebugSettings({ isSettingsVisible }: DebugSettingsProps) {
           <Trans>Enable token permits regardless of UI flags</Trans>
         </ToggleSwitch>
 
+        <ToggleSwitch
+          isChecked={settings.isWalletBatchingQaOverrideEnabled}
+          setIsChecked={settings.setIsWalletBatchingQaOverrideEnabled}
+        >
+          <Trans>Enable wallet batching regardless of UI flags</Trans>
+        </ToggleSwitch>
+
+        <div>
+          <div className="mb-8">
+            <Trans>Force markets closed</Trans>
+          </div>
+          <input
+            value={settings.debugClosedMarkets ?? ""}
+            onChange={(e) => settings.setDebugClosedMarkets(e.target.value)}
+            placeholder="GOLD, SILVER"
+            className="w-full rounded-4 border border-slate-600 px-11 py-8 text-14"
+          />
+          <div className="mt-8 text-12 text-typography-secondary">
+            <Trans>Index token symbols, comma-separated. These markets show as closed.</Trans>
+          </div>
+        </div>
+
         <AbFlagSettings />
 
         <DebugSwapsSettings />
@@ -63,6 +86,8 @@ export function DebugSettings({ isSettingsVisible }: DebugSettingsProps) {
         <RpcDebugSettings />
 
         <TenderlySettings isSettingsVisible={isSettingsVisible} />
+
+        <NotificationsDebugSettings />
       </SettingsSection>
       <SettingsSection className="mt-16 gap-16">
         <div className="text-14 font-medium text-typography-primary">

@@ -275,6 +275,37 @@ export function hashSignedTypedData({
   return hashTypedDataWithViem({ domain, ...toSign });
 }
 
+export async function signMessage({
+  signer,
+  message,
+  verificationChainId,
+}: {
+  signer: WalletSigner | Wallet | AbstractSigner;
+  message: string;
+  verificationChainId: number;
+}): Promise<string> {
+  const from = await signer.getAddress();
+  const startingChainId = getChainId(getWagmiConfig());
+
+  return withSmartWalletChainSwap(
+    { signer, address: from, targetChainId: verificationChainId },
+    async (signWith, signingChainId) => {
+      const signature = await signWith.signMessage(message);
+
+      reportSignatureProduced({
+        address: from,
+        signature,
+        signaturePurpose: "message",
+        signingChainId,
+        startingChainId,
+        verificationChainId,
+      });
+
+      return signature;
+    }
+  );
+}
+
 export async function signTypedData(params: SignTypedDataParams) {
   const { typedData, verificationChainId, relayParams } = params;
   const signature = await signTypedDataOnce(params);

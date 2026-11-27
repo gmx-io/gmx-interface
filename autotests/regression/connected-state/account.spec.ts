@@ -63,28 +63,21 @@ test("4.10 19.01 settings open from the account panel, the top-bar gear and the 
   };
   await page.getByRole("button", { name: "Settings", exact: true }).last().click();
   await expect(modal).toBeVisible();
-  await expect(modal.getByRole("button", { name: "Trading settings", exact: true })).toBeVisible();
+  await expect(modal.getByRole("button", { name: "Trading", exact: true })).toBeVisible();
   await close();
   await page.getByRole("banner").getByRole("button", { name: "", exact: true }).click();
-  await expect(modal.getByRole("button", { name: "Trading settings", exact: true })).toBeVisible();
+  await expect(modal.getByRole("button", { name: "Trading", exact: true })).toBeVisible();
   await close();
   await page.locator("nav, aside").getByRole("button", { name: "Settings", exact: true }).click();
-  await expect(modal.getByRole("button", { name: "Trading settings", exact: true })).toBeVisible();
+  await expect(modal.getByRole("button", { name: "Trading", exact: true })).toBeVisible();
 });
 
-test("4.09 account panel opens GMX alerts covering trade confirmations, liquidation risk and price alerts", async ({
+test("4.09 PRO-4216 account panel's Notifications opens Settings on the Notifications tab, with no Notifi link", async ({
   page,
 }) => {
   await page.getByRole("button", { name: "Notifications", exact: true }).click();
-  const alerts = page
-    .locator(".Modal-content")
-    .filter({ has: page.locator(".Modal-title").getByText("GMX alerts", { exact: true }) });
-  for (const topic of ["Trade confirmations", "Liquidation risk alerts", "Trading pair price alerts"]) {
-    await expect(alerts.getByText(topic, { exact: true })).toBeVisible();
-  }
-  await expect(alerts.getByRole("link", { name: /Discover GMX alerts/ })).toHaveAttribute(
-    "href",
-    "https://gmx.notifi.network"
-  );
+  const modal = page.getByTestId("settings-modal");
+  await expect(modal.getByText("Notifications on this device", { exact: true })).toBeVisible();
+  await expect(page.locator('a[href*="notifi.network"]')).toHaveCount(0);
   await expect(page.getByRole("button", { name: "PnL analysis", exact: true })).toBeHidden();
 });

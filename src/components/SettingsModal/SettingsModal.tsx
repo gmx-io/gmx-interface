@@ -1,11 +1,14 @@
 import { msg, t } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useLatest } from "react-use";
 
 import { isDevelopment } from "config/env";
 import { getNetworkFeatures } from "config/features";
-import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { useNotificationsContext } from "context/NotificationsContext/NotificationsContextProvider";
+import { type SettingsTab, type SettingsTabSource, useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
+import { sendNotificationsTabOpenEvent } from "domain/notifications/notificationsAnalytics";
 import { getOrderRelayRouterAddress } from "domain/synthetics/express/expressOrderUtils";
 import {
   getIsSubaccountActionsExceeded,
@@ -25,22 +28,19 @@ import Tabs from "components/Tabs/Tabs";
 
 import { DebugSettings } from "./DebugSettings";
 import { DisplaySettings } from "./DisplaySettings";
+import { NotificationsSettings } from "./NotificationsSettings";
 import { TradingMode } from "./shared";
 import { TradingSettings } from "./TradingSettings";
 
-let SETTINGS_TABS: ("trading" | "display" | "debug")[] = [];
-if (isDevelopment()) {
-  SETTINGS_TABS = ["trading", "display", "debug"];
-} else {
-  SETTINGS_TABS = ["trading", "display"];
-}
-
-type SettingsTab = (typeof SETTINGS_TABS)[number];
+const SETTINGS_TABS: SettingsTab[] = isDevelopment()
+  ? ["trading", "display", "notifications", "debug"]
+  : ["trading", "display", "notifications"];
 
 const TAB_LABELS = {
-  trading: msg`Trading settings`,
-  display: msg`Display settings`,
-  debug: msg`Debug settings`,
+  trading: msg`Trading`,
+  display: msg`Display`,
+  notifications: msg`Notifications`,
+  debug: msg`Debug`,
 };
 
 export function SettingsModal({
@@ -273,6 +273,46 @@ export function SettingsModal({
     }
   }, [activeTab, tabOptions]);
 
+  const { settingsTabRequest, setSettingsTabRequest } = settings;
+  const [tabSource, setTabSource] = useState<SettingsTabSource>();
+
+  // Set during the render, so the tab used last does not show for a moment: the Notifications tab counts its opens.
+  const [wasSettingsVisible, setWasSettingsVisible] = useState(isSettingsVisible);
+  if (isSettingsVisible !== wasSettingsVisible) {
+    setWasSettingsVisible(isSettingsVisible);
+
+    if (isSettingsVisible) {
+      // Settings links in toasts mean trading settings, so Settings doesn't reopen on the tab used last.
+      setActiveTab(settingsTabRequest?.tab ?? tabOptions[0].value);
+      setTabSource(settingsTabRequest?.source);
+    }
+  }
+
+  useEffect(() => {
+    if (isSettingsVisible && settingsTabRequest) {
+      setActiveTab(settingsTabRequest.tab);
+      setTabSource(settingsTabRequest.source);
+      setSettingsTabRequest(undefined);
+    }
+  }, [isSettingsVisible, settingsTabRequest, setSettingsTabRequest]);
+
+  const handleTabChange = useCallback((tab: SettingsTab) => {
+    setActiveTab(tab);
+    setTabSource(undefined);
+  }, []);
+
+  // Counted here, not in the tab: the modal remounts its content when the window crosses the mobile breakpoint.
+  const isNotificationsTabShown = isSettingsVisible && activeTab === "notifications";
+  const { status: notificationsStatus } = useNotificationsContext();
+  // The entry and the state as the tab opens; later changes are not another open.
+  const latestNotificationsOpen = useLatest({ entry: tabSource ?? ("settings" as const), state: notificationsStatus });
+
+  useEffect(() => {
+    if (isNotificationsTabShown) {
+      sendNotificationsTabOpenEvent(latestNotificationsOpen.current.entry, latestNotificationsOpen.current.state);
+    }
+  }, [isNotificationsTabShown, latestNotificationsOpen]);
+
   return (
     <SlideModal
       isVisible={isSettingsVisible}
@@ -284,7 +324,7 @@ export function SettingsModal({
       desktopZIndex={1002}
     >
       <div className="flex flex-col gap-8">
-        <Tabs options={tabOptions} selectedValue={activeTab} onChange={setActiveTab} type="inline" />
+        <Tabs options={tabOptions} selectedValue={activeTab} onChange={handleTabChange} type="underline" />
         <div className="flex max-w-[380px] flex-row items-start overflow-x-hidden max-md:max-w-none">
           {showTradingSettings && (
             <TabWrapper tab="trading" activeTab={activeTab}>
@@ -302,6 +342,9 @@ export function SettingsModal({
           )}
           <TabWrapper tab="display" activeTab={activeTab}>
             <DisplaySettings />
+          </TabWrapper>
+          <TabWrapper tab="notifications" activeTab={activeTab}>
+            <NotificationsSettings isSettingsVisible={isSettingsVisible} />
           </TabWrapper>
           <TabWrapper tab="debug" activeTab={activeTab}>
             <DebugSettings isSettingsVisible={isSettingsVisible} />

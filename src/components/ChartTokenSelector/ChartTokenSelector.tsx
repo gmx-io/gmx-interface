@@ -13,6 +13,10 @@ import {
   selectAvailablePerpChartTokens,
   selectAvailableSwapChartTokens,
 } from "context/SyntheticsStateContext/selectors/chartSelectors";
+import {
+  selectClosedIndexTokens,
+  selectTradeboxIsMarketClosed,
+} from "context/SyntheticsStateContext/selectors/closedMarketsSelectors";
 import { selectChainId, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectIndexTokenStatsMap } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import {
@@ -55,6 +59,7 @@ import Button from "components/Button/Button";
 import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
 import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
 import { RecentlyListedFavoriteSlot } from "components/FavoriteTabs/RecentlyListedFavoriteSlot";
+import { MarketClosedBadge } from "components/MarketClosedBadge/MarketClosedBadge";
 import { AmountHumanValue } from "components/NumericValue/AmountHumanValue";
 import { UsdPriceValue } from "components/NumericValue/UsdPriceValue";
 import SearchInput from "components/SearchInput/SearchInput";
@@ -109,6 +114,7 @@ export default function ChartTokenSelector(props: Props) {
 
   const marketInfo = useSelector(selectTradeboxMarketInfo);
   const { isSwap } = useSelector(selectTradeboxTradeFlags);
+  const isMarketClosed = useSelector(selectTradeboxIsMarketClosed);
   const { mode } = useTokensFavorites("chart-token-selector");
   const poolName = marketInfo && !isSwap ? getMarketPoolName(marketInfo) : null;
 
@@ -119,7 +125,7 @@ export default function ChartTokenSelector(props: Props) {
     <SelectorBase
       popoverPlacement="bottom-start"
       handleClassName={cx({
-        "mr-24": oneRowLabels === false,
+        "mr-24": oneRowLabels === false && !isMarketClosed,
         "py-0 md:h-40": isSwap,
       })}
       desktopPanelClassName={cx("max-w-[100vw] shadow-md", {
@@ -151,19 +157,26 @@ export default function ChartTokenSelector(props: Props) {
                       "flex-row items-center": oneRowLabels,
                     })}
                   >
-                    <span className="text-start text-[13px] font-medium text-typography-primary">
-                      {!isSwap && <>{getTokenVisualMultiplier(selectedToken)}</>}
-                      {selectedToken.symbol}
-                      {t`/USD`}
-                    </span>
-                    {poolName && (
-                      <span
-                        className={cx("text-12 font-normal text-typography-secondary", {
-                          "ml-4": oneRowLabels,
-                        })}
-                      >
-                        <span>[{poolName}]</span>
+                    <span className="flex items-center gap-2">
+                      <span className="text-start text-[13px] font-medium text-typography-primary">
+                        {!isSwap && <>{getTokenVisualMultiplier(selectedToken)}</>}
+                        {selectedToken.symbol}
+                        {t`/USD`}
                       </span>
+                      {!oneRowLabels && <ChevronDownIcon className="inline-block size-16 shrink-0" />}
+                    </span>
+                    {isMarketClosed && !oneRowLabels ? (
+                      <MarketClosedBadge poolName={poolName ?? undefined} />
+                    ) : (
+                      poolName && (
+                        <span
+                          className={cx("text-12 font-normal text-typography-secondary", {
+                            "ml-4": oneRowLabels,
+                          })}
+                        >
+                          <span>[{poolName}]</span>
+                        </span>
+                      )
                     )}
 
                     {isSwap && !oneRowLabels ? (
@@ -173,7 +186,9 @@ export default function ChartTokenSelector(props: Props) {
                     ) : null}
                   </span>
 
-                  <ChevronDownIcon className="inline-block size-16" />
+                  {isMarketClosed && oneRowLabels && <MarketClosedBadge poolName={poolName ?? undefined} />}
+
+                  {oneRowLabels && <ChevronDownIcon className="inline-block size-16" />}
                 </div>
               </div>
             </span>
@@ -333,6 +348,7 @@ function MarketsList() {
   const dayVolumesData = use24hVolumes();
   const dayVolumes = dayVolumesData?.byIndexToken;
   const indexTokenStatsMap = useSelector(selectIndexTokenStatsMap).indexMap;
+  const closedIndexTokens = useSelector(selectClosedIndexTokens);
 
   const { isMobile, isSmallMobile } = useBreakpoints();
 
@@ -385,9 +401,19 @@ function MarketsList() {
         openInterestLong: indexTokenStatsMap?.[wrappedAddress]?.totalOpenInterestLong,
         openInterestShort: indexTokenStatsMap?.[wrappedAddress]?.totalOpenInterestShort,
         maxLeverage: indexTokenStatsMap?.[wrappedAddress]?.maxUiAllowedLeverage,
+        isClosed: closedIndexTokens[wrappedAddress] === true,
       };
     });
-  }, [sortedTokens, chainId, networkId, tokensData, dayPriceDeltaMap, dayVolumes, indexTokenStatsMap]);
+  }, [
+    sortedTokens,
+    chainId,
+    networkId,
+    tokensData,
+    dayPriceDeltaMap,
+    dayVolumes,
+    indexTokenStatsMap,
+    closedIndexTokens,
+  ]);
 
   useMissedCoinsSearch({
     searchText: searchKeyword,
@@ -578,7 +604,16 @@ function MarketsList() {
 
           <tbody>
             {sortedDetails?.map(
-              ({ token, tokenData, dayPriceDelta, dayVolume, openInterestLong, openInterestShort, maxLeverage }) => (
+              ({
+                token,
+                tokenData,
+                dayPriceDelta,
+                dayVolume,
+                openInterestLong,
+                openInterestShort,
+                maxLeverage,
+                isClosed,
+              }) => (
                 <MarketListItem
                   key={token.address}
                   token={token}
@@ -588,6 +623,7 @@ function MarketsList() {
                   openInterestLong={openInterestLong}
                   openInterestShort={openInterestShort}
                   maxLeverage={maxLeverage}
+                  isClosed={isClosed}
                   isSwap={isSwap}
                   isMobile={isMobile}
                   isFavorite={favoriteTokens?.includes(token.address)}
@@ -751,6 +787,7 @@ function MarketListItem({
   openInterestLong,
   openInterestShort,
   maxLeverage,
+  isClosed,
   isSwap,
   isMobile,
   isFavorite,
@@ -768,6 +805,7 @@ function MarketListItem({
   openInterestLong: bigint | undefined;
   openInterestShort: bigint | undefined;
   maxLeverage: number | undefined;
+  isClosed: boolean;
   isSwap: boolean;
   isMobile: boolean;
   isFavorite?: boolean;
@@ -875,16 +913,19 @@ function MarketListItem({
         </Button>
       </td>
       <td className={cx("pl-12 text-[13px]", rowVerticalPadding, isMobile ? "pr-2" : rowHorizontalPadding)}>
-        <div className={cx("flex", isMobile ? "items-start" : "items-center")}>
-          <TokenIcon className="ChartToken-list-icon mr-6" symbol={token.symbol} displaySize={16} />
-          <span className={cx("flex flex-wrap items-center gap-6")}>
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-4">
+          <span className="flex items-center">
+            <TokenIcon className="ChartToken-list-icon mr-6" symbol={token.symbol} displaySize={16} />
             <span className="font-medium leading-1">
               <MarketLabel token={token} />
             </span>
+          </span>
+          {!(isMobile && isClosed) && (
             <span className="rounded-full bg-slate-700 px-6 py-[1.5px] text-12 font-medium leading-[1.25] text-typography-secondary numbers">
               {maxLeverage ? `${maxLeverage}x` : "-"}
             </span>
-          </span>
+          )}
+          {isClosed && <MarketClosedBadge />}
         </div>
       </td>
 

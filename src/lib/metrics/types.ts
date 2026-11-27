@@ -812,7 +812,8 @@ export type TokenApprovalEvent = {
   event: "tokenApproval";
   isError: false;
   data: Omit<TokenApprovalMetricParams, "hideSpender"> & {
-    method: "transaction" | "permit";
+    /** `batch`: approved in one wallet confirmation together with the action (EIP-5792) */
+    method: "transaction" | "permit" | "batch";
     outcome: "accepted" | "rejected" | "failed";
     chainId: number;
     tokenAddress: string;
@@ -868,6 +869,32 @@ export type SubaccountRemovalEvent = {
     /** `unknown`: the relay didn't confirm, the next attempt finds out on chain */
     outcome: "removed" | "rejected" | "failed" | "unknown";
     chainId: number;
+  };
+};
+
+export type WalletBatchOutcome =
+  | "sent"
+  | "confirmed"
+  | "rejected"
+  | "upgradeRejected"
+  | "unsupported"
+  | "failed"
+  | "statusUnknown"
+  // the result of a `statusUnknown` batch, learned when the next send of its flow asks the wallet
+  | "confirmedLate"
+  | "failedLate";
+
+export type WalletBatchEvent = {
+  event: "walletBatch";
+  isError: false;
+  data: {
+    outcome: WalletBatchOutcome;
+    flow: string;
+    chainId: number;
+    callsCount: number;
+    /** `ready` means the wallet asked to upgrade the account to a smart account first */
+    atomicStatus: string | undefined;
+    errorCode: number | undefined;
   };
 };
 

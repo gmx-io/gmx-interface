@@ -17,6 +17,7 @@ import { _debugOracleKeeper, OracleKeeperDebugFlags } from "./_debug";
 import { OracleKeeperFallbackTracker } from "./OracleFallbackTracker";
 import {
   ApiMarket,
+  ApiMarketState,
   ApyInfo,
   ApyPeriod,
   BatchReportBody,
@@ -319,5 +320,14 @@ export class OracleKeeperFetcher implements OracleFetcher {
         return undefined;
       },
     }).then((res) => res.markets as ApiMarket[]);
+  }
+
+  fetchMarketsState(): Promise<ApiMarketState[]> {
+    return this.request("/markets/state", {
+      validate: (res) => {
+        if (!res || !Array.isArray(res.markets)) return new Error("Invalid /markets/state response");
+        return undefined;
+      },
+    }).then((res) => res.markets as ApiMarketState[]);
   }
 }
