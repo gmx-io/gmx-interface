@@ -8,7 +8,7 @@ import BurgerMenuIcon from "img/ic_burger_menu.svg?react";
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 import MenuDotsIcon from "img/ic_menu_dots.svg?react";
 
-import { getIsShareInIosMenu, PwaPlatform } from "./pwaPlatform";
+import { getIosSharePlace, PwaPlatform } from "./pwaPlatform";
 
 export type InstallStep = { text: ReactNode; icon?: ReactNode };
 
@@ -67,20 +67,38 @@ export function getInstallSteps(platform: PwaPlatform, iosVersion: number | unde
       ];
     default:
       return [
-        getIsShareInIosMenu(iosVersion)
-          ? {
-              text: <Trans>Tap ≡ in the address bar, then Share</Trans>,
-              icon: (
-                <span className="flex gap-4">
-                  <BurgerMenuIcon className="size-16" />
-                  {shareIcon}
-                </span>
-              ),
-            }
-          : { text: <Trans>Tap Share in the toolbar</Trans>, icon: shareIcon },
+        getIphoneSafariShareStep(iosVersion),
         { text: <Trans>Scroll down and tap Add to Home Screen</Trans> },
         { text: <Trans>Tap Add</Trans> },
       ];
+  }
+}
+
+/** First iPhone Safari step: where Share sits depends on the iOS version (getIosSharePlace). */
+function getIphoneSafariShareStep(iosVersion: number | undefined): InstallStep {
+  switch (getIosSharePlace(iosVersion)) {
+    case "page-menu":
+      return {
+        text: <Trans>Tap ≡ in the address bar, then Share</Trans>,
+        icon: (
+          <span className="flex gap-4">
+            <BurgerMenuIcon className="size-16" />
+            {shareIcon}
+          </span>
+        ),
+      };
+    case "more-menu":
+      return {
+        text: <Trans>Tap ••• next to the address bar, then Share</Trans>,
+        icon: (
+          <span className="flex gap-4">
+            <MenuDotsIcon className="size-16 rotate-90" />
+            {shareIcon}
+          </span>
+        ),
+      };
+    default:
+      return { text: <Trans>Tap Share in the toolbar</Trans>, icon: shareIcon };
   }
 }
 

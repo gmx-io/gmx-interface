@@ -61,7 +61,7 @@ export default function DownloadPage() {
           <PageTitle
             isTop
             title={t`Get the GMX app`}
-            subtitle={t`Full-screen charts, one tap to open, and notifications when an order executes or a position is liquidated on Arbitrum`}
+            subtitle={t`Full-screen charts, one tap to open, and notifications for Limit, Stop Market and TP/SL orders and liquidations on Arbitrum`}
             qa="download-page"
           />
 

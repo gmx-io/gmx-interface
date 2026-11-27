@@ -78,10 +78,14 @@ export function detectPwaPlatform(): PwaPlatform {
 }
 
 /**
- * From this iOS version Safari keeps Share behind ≡ in the address bar, so the first install step changes.
- * The build task confirms the exact version on a device.
+ * Where Safari keeps Share in its default layout, so the first install step matches the phone. iOS 26: behind ••• next
+ * to the address bar. iOS 27: behind the page menu ≡ in the address bar. Earlier iOS: in the toolbar.
+ * The build task confirms both on a device.
  */
-export const IOS_SHARE_IN_MENU_FROM_VERSION = 27;
+export const IOS_SHARE_IN_MORE_MENU_FROM_VERSION = 26;
+export const IOS_SHARE_IN_PAGE_MENU_FROM_VERSION = 27;
+
+export type IosSharePlace = "page-menu" | "more-menu" | "toolbar";
 
 /**
  * The iOS major version. Safari on iOS 26+ freezes the OS number in the user agent (it keeps saying 18_x), so its real
@@ -98,9 +102,11 @@ export function detectIosVersion(): number | undefined {
   return version ? Number(version) : undefined;
 }
 
-export function getIsShareInIosMenu(iosVersion: number | undefined) {
+export function getIosSharePlace(iosVersion: number | undefined): IosSharePlace {
   // Unknown version: show the newest steps.
-  return iosVersion === undefined || iosVersion >= IOS_SHARE_IN_MENU_FROM_VERSION;
+  if (iosVersion === undefined || iosVersion >= IOS_SHARE_IN_PAGE_MENU_FROM_VERSION) return "page-menu";
+  if (iosVersion >= IOS_SHARE_IN_MORE_MENU_FROM_VERSION) return "more-menu";
+  return "toolbar";
 }
 
 export function getIsPhonePlatform(platform: PwaPlatform) {

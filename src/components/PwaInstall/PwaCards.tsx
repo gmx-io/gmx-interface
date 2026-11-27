@@ -39,8 +39,8 @@ export function InstallCard({ platform }: { platform: PwaPlatform }) {
         description={
           isIphone ? (
             <Trans>
-              Full-screen charts, one tap to open, and notifications when an order executes or a position is liquidated
-              on Arbitrum
+              Full-screen charts, one tap to open, and notifications for Limit, Stop Market and TP/SL orders and
+              liquidations on Arbitrum
             </Trans>
           ) : (
             <Trans>Full-screen charts and one tap to open from your home screen</Trans>
@@ -106,7 +106,9 @@ export function NotificationsOfferCard() {
       <PwaCardHeader
         icon={<BellIcon className="size-20" />}
         title={<Trans>Get notified on this device</Trans>}
-        description={<Trans>Know when an order executes or a position is liquidated on Arbitrum</Trans>}
+        description={
+          <Trans>Know when a Limit, Stop Market or TP/SL order executes, or a position is liquidated on Arbitrum</Trans>
+        }
         onClose={dismissNotificationsOffer}
       />
       <Button variant="primary" size="medium" className="w-full" onClick={turnOnNotifications}>
