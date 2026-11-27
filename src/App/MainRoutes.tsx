@@ -16,6 +16,7 @@ import CompleteAccountTransfer from "pages/AccountTransfer/CompleteAccountTransf
 import { AccountsRouter } from "pages/Actions/ActionsRouter";
 import AnnouncementsPage from "pages/Announcements/Announcements";
 import DashboardV2 from "pages/Dashboard/DashboardV2";
+import DownloadPage from "pages/Download/DownloadPage";
 import { getBuyGmxDeepLinkUrl } from "pages/Earn/buyGmxDeepLink";
 import EarnAdditionalOpportunitiesPage from "pages/Earn/EarnAdditionalOpportunitiesPage";
 import EarnDiscoveryPage from "pages/Earn/EarnDiscoveryPage";
@@ -36,6 +37,7 @@ import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
 
 import { EarnRedirect } from "components/Earn/EarnRedirect";
+import { getIsPwaInstallUiEnabled } from "components/PwaInstall/pwaPlatform";
 import { RedirectWithQuery } from "components/RedirectWithQuery/RedirectWithQuery";
 
 const LEGACY_TRADER_PROFILE_PATHS = ["/accounts/:account", "/actions/:account"];
@@ -154,6 +156,11 @@ function SolanaRoutes({ openSettings }: { openSettings: () => void }) {
       <Route exact path="/rpc-debug">
         <RpcDebugPage />
       </Route>
+      {getIsPwaInstallUiEnabled() && (
+        <Route exact path="/download">
+          <DownloadPage />
+        </Route>
+      )}
       <Route path={EVM_ONLY_PAGE_PATHS}>
         <EvmNetworksOnlyNotice />
       </Route>
@@ -256,6 +263,11 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
       <Route exact path="/announcements">
         <AnnouncementsPage />
       </Route>
+      {getIsPwaInstallUiEnabled() && (
+        <Route exact path="/download">
+          <DownloadPage />
+        </Route>
+      )}
       <Route path="/leaderboard/">
         <SyntheticsStateContextProvider skipLocalReferralCode pageType="leaderboard">
           <LeaderboardPage />

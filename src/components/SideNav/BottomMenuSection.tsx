@@ -6,6 +6,7 @@ import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { InstallAppNavItem } from "components/PwaInstall/InstallAppNavItem";
 
 import CollapseIcon from "img/collapse.svg?react";
 import DocsIcon from "img/docs.svg?react";
@@ -36,6 +37,7 @@ export function BottomMenuSection({
     <div>
       <ul className="flex list-none flex-col px-0">
         <SupportChatNavItem isCollapsed={isCollapsed} />
+        <InstallAppNavItem isCollapsed={isCollapsed} />
         <SettingsNavItem isCollapsed={isCollapsed} />
       </ul>
 
