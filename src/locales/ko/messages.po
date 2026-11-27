@@ -1260,6 +1260,10 @@ msgstr "만료된 Market Decrease"
 msgid "Prices are volatile. <0>Increase allowed slippage</0>"
 msgstr "가격 변동이 심합니다. <0>허용 슬리피지를 높이십시오</0>"
 
+#: src/components/TVChart/ChartResizeHandle.tsx
+msgid "{chartHeight} pixels"
+msgstr ""
+
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
 #: src/components/TradeBox/hooks/useTradeboxPaxosRoute.tsx
 msgid "The approval has not executed yet. Convert again after it executes."
@@ -4967,6 +4971,10 @@ msgstr "연락 요청하기"
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Sending..."
 msgstr "전송 중..."
+
+#: src/components/TVChart/ChartResizeHandle.tsx
+msgid "Drag to resize. Double-click to reset."
+msgstr ""
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/usePaxosTransitState.tsx
 msgid "Zero-fee conversion is no longer available. Review the conversion and confirm again."
@@ -10263,6 +10271,10 @@ msgstr "체인"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Open interest reserve factor shorts"
 msgstr "숏 미결제약정 준비금 비율"
+
+#: src/components/TVChart/ChartResizeHandle.tsx
+msgid "Resize chart"
+msgstr ""
 
 #: src/components/Errors/getContractErrorMessage.ts
 #: src/components/Errors/getContractErrorMessage.ts

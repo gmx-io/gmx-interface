@@ -103,15 +103,21 @@
     min-height: 320px;
   }
 
-  @media (min-width: $screen-lg) and (max-width: 2559px) {
+  // Wider than 1024 px, ChartResizeHandle sets the height (defaults in chartHeight.ts). This keeps the 1024 px layout.
+  @media (min-width: $screen-lg) {
     min-height: 536px;
   }
+}
 
-  @media (min-width: 2560px) and (max-width: 3839px) {
-    min-height: 780px;
+body.ChartResizeHandle-dragging {
+  cursor: row-resize;
+  user-select: none;
+
+  * {
+    cursor: row-resize !important;
   }
 
-  @media (min-width: 3840px) {
-    min-height: 1140px;
+  iframe {
+    pointer-events: none;
   }
 }
