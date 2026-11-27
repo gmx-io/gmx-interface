@@ -84,6 +84,7 @@ import { getIsHighSwapProfitFee } from "domain/synthetics/trade/utils/warnings";
 import { buildTpSlBatchPayloads, buildTpSlInputPositionData, getTpSlDecreaseAmounts } from "domain/tpsl/sidecar";
 import {
   FULL_POSITION_CLOSE_SIZE_DELTA_USD,
+  getIsTpSlCostUnpayable,
   getTpSlRemainingPositionWarning,
   isFullClosePositionOrder,
   isTriggerBeyondLiquidation,
@@ -495,6 +496,8 @@ export function AddTPSLModal({
         minCollateralUsd,
         userReferralInfo,
         feeDiscountFactor,
+        priceImpactDiffUsd: decreaseAmounts.priceImpactDiffUsd,
+        collateralPrice: decreaseAmounts.collateralPrice,
       });
     },
     [
@@ -948,6 +951,9 @@ export function AddTPSLModal({
     if (slPriceError && slPriceInput) {
       return slPriceError;
     }
+    if ([tpDecreaseAmounts, slDecreaseAmounts].some(getIsTpSlCostUnpayable)) {
+      return t`Insufficient collateral to cover order costs`;
+    }
     if (orderPayloads.createOrderParams.length === 0 && orderPayloads.updateOrderParams.length === 0) {
       return t`Unable to calculate order`;
     }
@@ -957,6 +963,8 @@ export function AddTPSLModal({
     slPriceInput,
     tpPriceError,
     slPriceError,
+    tpDecreaseAmounts,
+    slDecreaseAmounts,
     orderPayloads.createOrderParams.length,
     orderPayloads.updateOrderParams.length,
     editTPSLSize,

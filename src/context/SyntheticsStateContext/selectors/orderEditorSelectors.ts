@@ -44,7 +44,11 @@ import {
 } from "domain/synthetics/trade";
 import { getAvailableTradeQuote } from "domain/synthetics/trade/utils/common";
 import { ORDER_EDITOR_RECEIVE_MODE_FLAG } from "domain/synthetics/uiFlags/uiFlags";
-import { getTpSlLiqPriceWarning } from "domain/tpsl/utils";
+import {
+  FULL_POSITION_CLOSE_SIZE_DELTA_USD,
+  getPositionCloseSizeDeltaUsdForDisplay,
+  getTpSlLiqPriceWarning,
+} from "domain/tpsl/utils";
 import { BN_ZERO, expandDecimals, formatAmountFree, parseValue, PRECISION, roundUpDivision } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
 import { isContractsV2_2_1 } from "sdk/configs/contracts";
@@ -258,7 +262,15 @@ export const selectOrderEditorReceiveTokens = createSelector((q) => {
   const collateralToken = order.targetCollateralToken;
   if (getIsEquivalentTokens(pnlToken, collateralToken)) return;
 
-  return { pnlToken, collateralToken };
+  // a stored withdrawal was sized for the stored mode and 2.2.1 updateOrder can't change it. Only a MaxUint256 close
+  // that this edit keeps whole is a full close at execution, which returns all collateral whatever the withdrawal
+  const canSwitchMode =
+    order.initialCollateralDeltaAmount === 0n ||
+    (order.sizeDeltaUsd === FULL_POSITION_CLOSE_SIZE_DELTA_USD &&
+      q(selectOrderEditorSizeDeltaUsd) ===
+        getPositionCloseSizeDeltaUsdForDisplay(order.sizeDeltaUsd, q(selectOrderEditorExistingPosition)?.sizeInUsd));
+
+  return { pnlToken, collateralToken, canSwitchMode };
 });
 
 export const selectOrderEditorIsReceiveSeparated = createSelector((q) => {
@@ -274,7 +286,7 @@ export const selectOrderEditorDecreasePositionSwapType = createSelector((q) => {
 
   if (!order) return undefined;
 
-  if (!q(selectOrderEditorReceiveTokens)) {
+  if (!q(selectOrderEditorReceiveTokens)?.canSwitchMode) {
     return order.decreasePositionSwapType;
   }
 
@@ -829,6 +841,16 @@ export const selectOrderEditorPositionOrderError = createSelector((q) => {
   const nextPositionValuesForIncrease = q(selectOrderEditorNextPositionValuesWithoutPnlForIncrease);
   const maxAllowedLeverage = q(selectOrderEditorMaxAllowedLeverage);
   const marginDepositProjections = q(selectOrderEditorMarginDepositProjections);
+  let unpaidCostUsd: bigint | undefined;
+  // with an editable receive mode the projection settles the mode that will be signed, as in the max leverage check
+  if (q(selectOrderEditorReceiveTokens)) {
+    const decreaseProjection = q(selectOrderEditorDecreaseProjection);
+    unpaidCostUsd = decreaseProjection?.marginState ? decreaseProjection.decreaseAmounts.unpaidCostUsd : undefined;
+  } else {
+    unpaidCostUsd = q(
+      makeSelectOrderDecreaseRemainingPositionMarginState(order.key, triggerPrice, sizeDeltaUsd)
+    )?.unpaidCostUsd;
+  }
 
   return getPositionOrderError({
     positionOrder,
@@ -842,6 +864,7 @@ export const selectOrderEditorPositionOrderError = createSelector((q) => {
     resultingPositionMarginState: q(selectOrderEditorIncreaseResultingPositionMarginState),
     isResultingPositionCheckBlocking: q(selectOrderEditorIsIncreaseExecutableNow),
     marginDepositNextLiqPrice: marginDepositProjections?.nextLiqPrice,
+    isCostUnpayable: (unpaidCostUsd ?? 0n) > 0n,
     decreasePositionSwapType: q(selectOrderEditorDecreasePositionSwapType),
   });
 });
@@ -963,6 +986,9 @@ export const makeSelectOrderEditorPositionOrderError = createSelectorFactory(
       const resultingPositionMarginState = isIncrease
         ? q(makeSelectOrderIncreaseResultingPositionMarginState(orderKey, triggerPrice, order.sizeDeltaUsd))
         : undefined;
+      const decreaseMarginState = q(
+        makeSelectOrderDecreaseRemainingPositionMarginState(orderKey, triggerPrice, sizeDeltaUsd)
+      );
       const isIncreaseExecutableNow =
         isIncrease && indexToken
           ? getIsIncreaseOrderExecutableNow({
@@ -985,6 +1011,7 @@ export const makeSelectOrderEditorPositionOrderError = createSelectorFactory(
         resultingPositionMarginState,
         isResultingPositionCheckBlocking: isIncreaseExecutableNow,
         marginDepositNextLiqPrice: marginDepositProjections?.nextLiqPrice,
+        isCostUnpayable: (decreaseMarginState?.unpaidCostUsd ?? 0n) > 0n,
       });
     });
   }

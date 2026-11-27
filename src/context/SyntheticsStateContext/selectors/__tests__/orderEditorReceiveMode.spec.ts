@@ -183,11 +183,44 @@ describe("order editor receive mode PRO-4070", () => {
     ["swap path", { mode: ToCollateral, swapPath: [SWAP_MARKET], separated: true }, false, ToCollateral, true, 0n],
     ["2.2c chain", { mode: NoSwap, chainId: AVALANCHE_FUJI, separated: false }, false, NoSwap, true, 0n],
     ["limit increase", { mode: NoSwap, type: LimitIncrease, trigger: 1800, separated: false }, false, NoSwap, true, 0n],
+    // TRD-18: a stored withdrawal was sized for its mode; only a MaxUint256 close kept whole ignores it at execution
+    [
+      "half close, stored withdrawal",
+      { mode: ToCollateral, ...HALF, withdrawal: USDC_200, separated: true },
+      false,
+      ToCollateral,
+      true,
+      0n,
+    ],
+    [
+      "full close, stored withdrawal",
+      { mode: ToCollateral, orderSize: FULL, withdrawal: USDC_1000, separated: true },
+      true,
+      NoSwap,
+      false,
+      -1n,
+    ],
+    [
+      "exact-size full close, stored withdrawal",
+      { mode: ToCollateral, withdrawal: USDC_1000, separated: true },
+      false,
+      ToCollateral,
+      true,
+      0n,
+    ],
+    [
+      "full close cut to half, stored withdrawal",
+      { mode: ToCollateral, orderSize: FULL, withdrawal: USDC_1000, size: 1000, separated: true },
+      false,
+      ToCollateral,
+      false,
+      0n,
+    ],
   ])("%s", (_, p, isShown, sentMode, isNoChange, extraSwaps) => {
     const state = makeState(p);
     const gas = (s: SyntheticsState) => selectOrderEditorExecutionFee(s)?.gasLimit ?? 0n;
 
-    expect(Boolean(selectOrderEditorReceiveTokens(state))).toBe(isShown);
+    expect(Boolean(selectOrderEditorReceiveTokens(state)?.canSwitchMode)).toBe(isShown);
     if (p.noPosition) expect(selectOrderEditorReceiveOutputs(state)).toEqual([]);
     expect(selectOrderEditorIsReceiveSeparated(state)).toBe(p.separated ?? p.mode === NoSwap);
     expect(selectOrderEditorDecreasePositionSwapType(state)).toBe(sentMode);

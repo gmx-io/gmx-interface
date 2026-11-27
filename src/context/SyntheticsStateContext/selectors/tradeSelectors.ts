@@ -635,6 +635,8 @@ export const makeSelectNextPositionValuesForDecrease = createSelectorFactory(
           minCollateralUsd,
           userReferralInfo,
           feeDiscountFactor: q(selectFeeDiscountFactor),
+          priceImpactDiffUsd: decreaseAmounts.priceImpactDiffUsd,
+          collateralPrice: decreaseAmounts.collateralPrice,
         });
       }
     })
