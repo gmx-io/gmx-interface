@@ -1,7 +1,7 @@
 // @vitest-shared-worker
 import { describe, expect, it } from "vitest";
 
-import { sanitizeNumberInputValue } from "./NumberInput";
+import { limitNumberInputValue, sanitizeNumberInputValue } from "./NumberInput";
 
 describe("sanitizeNumberInputValue", () => {
   it("accepts valid numbers", () => {
@@ -53,5 +53,36 @@ describe("sanitizeNumberInputValue", () => {
     expect(sanitizeNumberInputValue("1.2.3")).toBe(undefined);
     expect(sanitizeNumberInputValue("-1")).toBe(undefined);
     expect(sanitizeNumberInputValue(" 1")).toBe(undefined);
+  });
+});
+
+describe("limitNumberInputValue", () => {
+  it("keeps up to 15 digits before the point", () => {
+    expect(limitNumberInputValue("999999999999999", "99999999999999")).toBe("999999999999999");
+    expect(limitNumberInputValue("9999999999999999", "999999999999999")).toBe(undefined);
+  });
+
+  it("refuses a pasted amount that is too long instead of cutting it", () => {
+    expect(limitNumberInputValue("1234567890123456789", "")).toBe(undefined);
+    expect(limitNumberInputValue("1234567890123456789.5", "12")).toBe(undefined);
+  });
+
+  it("keeps a longer value set by Max editable while its whole part doesn't grow", () => {
+    expect(limitNumberInputValue("1234567890123456789.1", "1234567890123456789")).toBe("1234567890123456789.1");
+    expect(limitNumberInputValue("123456789012345678", "1234567890123456789")).toBe("123456789012345678");
+    expect(limitNumberInputValue("12345678901234567890", "1234567890123456789")).toBe(undefined);
+  });
+
+  it("keeps up to 18 decimals, or the field's maxDecimals when lower", () => {
+    expect(limitNumberInputValue("0." + "1".repeat(20), "")).toBe("0." + "1".repeat(18));
+    expect(limitNumberInputValue("1.1234567", "1.123456", 6)).toBe("1.123456");
+    expect(limitNumberInputValue("1." + "1".repeat(20), "1", 30)).toBe("1." + "1".repeat(18));
+    expect(limitNumberInputValue("12.5", "12", 0)).toBe("12");
+  });
+
+  it("leaves short values and partial typing alone", () => {
+    expect(limitNumberInputValue("", "5")).toBe("");
+    expect(limitNumberInputValue("0.", "0")).toBe("0.");
+    expect(limitNumberInputValue("1.5", "1.")).toBe("1.5");
   });
 });

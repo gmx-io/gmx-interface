@@ -2,7 +2,7 @@ import { formatUnits, parseUnits } from "viem";
 
 import { bigMath } from "utils/bigmath";
 
-import { joinNumberParts, NumberPart, numberParts, USD_PART } from "./parts";
+import { BREAK_PART, joinNumberParts, NumberPart, numberParts, USD_PART } from "./parts";
 
 export type Numeric = number | bigint;
 export type BigNumberish = string | Numeric;
@@ -434,7 +434,7 @@ export function formatTokenAmountWithUsdParts(
     displayPlus: opts.displayPlus,
   });
 
-  return numberParts(`${tokenStr} (`, usdParts, ")");
+  return numberParts(tokenStr, BREAK_PART, "(", usdParts, ")");
 }
 
 export function formatTokenAmountWithUsd(

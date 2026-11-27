@@ -208,7 +208,7 @@ test("8.09 live position: margin editor rejects empty and oversized withdrawals 
   const confirm = modal.getByTestId("confirm-button");
   await expect(confirm).toBeDisabled();
   await modal.getByTestId("operation-tabs").getByRole("button", { name: "Withdraw", exact: true }).click();
-  await input.fill("999999999999999999");
+  await input.fill("999999999999999"); // the longest amount the field takes (15 digits)
   await expect(confirm).toBeDisabled();
   await expect(confirm).toHaveText(/Max|Insufficient|margin|leverage|Withdrawal unavailable/i);
   await input.fill("0.1");

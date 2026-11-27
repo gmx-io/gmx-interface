@@ -105,7 +105,6 @@ import {
   formatDeltaUsd,
   formatDeltaUsdParts,
   formatPercentage,
-  formatTokenAmount,
   formatTokenAmountWithUsdParts,
   formatUsd,
   numberParts,
@@ -149,6 +148,7 @@ import { MultichainTokenSelector } from "components/TokenSelector/MultichainToke
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import StandardTooltip from "components/Tooltip/StandardTooltip";
 import { TradeboxMarginFields } from "components/TradeboxMarginFields";
+import { formatTokenAmountHint, formatUsdHintParts } from "components/TradeboxMarginFields/approxHints";
 import { MarginPercentageSlider } from "components/TradeboxMarginFields/MarginPercentageSlider";
 import { TradeInputField, DisplayMode } from "components/TradeboxMarginFields/TradeInputField";
 import { TradeboxPoolWarnings } from "components/TradeboxPoolWarnings/TradeboxPoolWarnings";
@@ -1171,15 +1171,14 @@ export function TradeBox({ isMobile, activeFormId }: { isMobile: boolean; active
 
     const closeAlternateValue = (() => {
       if (closeDisplayMode === "token") {
-        return <UsdValue usd={closeSizeHook.closeSizeUsd} />;
+        return formatUsdHintParts(closeSizeHook.closeSizeUsd);
       }
       if (!selectedPosition || !toToken || selectedPosition.sizeInUsd === 0n) {
         return "0";
       }
       const closeSizeInTokens =
         (closeSizeHook.closeSizeUsd * selectedPosition.sizeInTokens) / selectedPosition.sizeInUsd;
-      const visualMultiplier = BigInt(toToken.visualMultiplier ?? 1);
-      return formatTokenAmount(closeSizeInTokens / visualMultiplier, toToken.decimals, toToken.symbol);
+      return formatTokenAmountHint(closeSizeInTokens, toToken);
     })();
 
     return (

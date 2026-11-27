@@ -1,4 +1,4 @@
-export type NumberPartKind = "text" | "currency" | "multiplier";
+export type NumberPartKind = "text" | "currency" | "multiplier" | "break";
 
 export type NumberPart = {
   kind: NumberPartKind;
@@ -10,6 +10,10 @@ export type NumberPartInput = string | NumberPart | NumberPart[] | undefined;
 export const USD_SYMBOL = "$ ";
 
 export const USD_PART: NumberPart = { kind: "currency", text: USD_SYMBOL };
+
+// a space where a long value may wrap onto the next line, e.g. between "1,000 USDC" and "($1,000.00)";
+// the numbers on each side never split
+export const BREAK_PART: NumberPart = { kind: "break", text: " " };
 
 export function multiplierPart(text: string): NumberPart {
   return { kind: "multiplier", text };
