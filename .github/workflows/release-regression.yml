@@ -319,22 +319,28 @@ jobs:
           path: funded
       - name: Merge reports and summarize coverage
         id: summarize
-        # report.cjs fails on incomplete coverage (failed, unrun or unexplained skipped tests); the job fails on it
-        # only after the reports and the comment are published.
+        # report.cjs fails on incomplete coverage (a missing report, failed, unrun or unexplained skipped tests); the
+        # job fails on it only after the reports and the comment are published.
         run: |
           mkdir -p merged all-blobs
           cp blobs/regression-blob-*/*.zip all-blobs/ 2>/dev/null || true
           incomplete=""
-          if ls all-blobs/*.zip >/dev/null 2>&1; then
+          shards=$(find all-blobs -name '*.zip' | wc -l | tr -d ' ')
+          if [ "$shards" -gt 0 ]; then
             PLAYWRIGHT_JSON_OUTPUT_FILE=merged/report.json PLAYWRIGHT_HTML_OUTPUT_DIR=merged/html \
               yarn playwright merge-reports --reporter=json,html all-blobs
-            node autotests/regression/report.cjs merged/report.json > merged/summary.md || incomplete="$SUITES_LABEL"
+          fi
+          node autotests/regression/report.cjs merged/report.json > merged/summary.md || incomplete="$SUITES_LABEL"
+          # A shard that died before uploading leaves its tests out of the merged report instead of failing them.
+          if [ "$shards" -ne 3 ]; then
+            printf '\nOnly %s of 3 shard reports arrived; the tests of the others are not counted.\n' "$shards" >> merged/summary.md
+            incomplete="$SUITES_LABEL"
           fi
           if [ -f funded/test-results/funded-harness-results.json ]; then
             cp funded/test-results/funded-harness-results.json merged/funded-harness.json
-            node autotests/regression/report.cjs merged/funded-harness.json > merged/funded-harness-summary.md \
-              || incomplete="${incomplete:+$incomplete, }Funded harness"
           fi
+          node autotests/regression/report.cjs merged/funded-harness.json > merged/funded-harness-summary.md \
+            || incomplete="${incomplete:+$incomplete, }Funded harness"
           echo "incomplete=$incomplete" >> "$GITHUB_OUTPUT"
       - name: Upload merged reports
         uses: actions/upload-artifact@v4
